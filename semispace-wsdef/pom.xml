@@ -1,0 +1,30 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.semispace</groupId>
+		<artifactId>semispace</artifactId>
+		<version>1.1.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.semispace</groupId>
+	<artifactId>semispace-wsdef</artifactId>
+	<name>semispace-wsdef</name>
+	<version>1.1.1-SNAPSHOT</version>
+    <description>The webservices server side glue code, typically included with a spring configuration.</description>
+    <url>http://www.semispace.org/semispace/semispace-wsdef</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.semispace</groupId>
+			<artifactId>semispace-main</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+</project>

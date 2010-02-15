@@ -1,0 +1,127 @@
+				----
+				Problems suitable for a Tuple Space
+				----
+				
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Do not distribute for its own sake
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Much of the traditional view of tuple spaces concentrate on
+ distribution of workload. Whereas this <can> be a benefit, I
+ often find it overrated. In order to benefit from distribution, 
+ you need an problem which is scalable in itself. 
+ {{{http://en.wikipedia.org/wiki/Amdahls_law}Amdahl's law}}
+ explains that the speedup of a program using multiple processors
+ in parallel computing is limited by the sequential fraction of
+ the program.
+ 
+ Additionally, you have the question of network pipe. Let's say
+ you want to distribute image scaling. With images having a 
+ "normal" compact camera size, you quickly begin to test the
+ network instead. On the other hand, you may remove load from 
+ the from end servers.
+ 
+ Everything has to be done for a reason, and figuring those reasons
+ out in advance has it's benefit. 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Not everything is a nail
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ It might be tempting to use tuple oriented problem solving on
+ everything that needs distribution. For instance, if you need
+ a distributed file system and distributed processing, 
+ {{{http://hadoop.apache.org}Hadoop}} with its 
+ {{{http://en.wikipedia.org/wiki/Map_reduce}Map Reduce}} 
+ implementation might be more suitable. The converse is also true, of
+ course. Map reduce has its benefits, but is not suitable for all
+ problems.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Reasons for using SemiSpace
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Even though you can use SemiSpace on a standalone server, you 
+ benefit the most when you distribute.
+ 
+ Distribution idioms are easy to implement and maintain, 
+ whether this is used for caching, information gathering
+ or maintenance of session information. 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Failover and load balancing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ A fairly standard setup, is to have two or more front end 
+ servers accepting queries in a load balanced manner. SemiSpace
+ can be set up in order to make the the impact of adding a new
+ node minimal.
+ 
+ When having back end servers treating queries and data, you can
+ add specialized processing machines for treating workloads that
+ are large. Consider having 5 nodes, and figuring out that graph  
+ generation takes a lot of time. Re-assign one of the nodes, or 
+ add a new one, which is dedicated to only graph generation. This
+ can be quite simple if the task is not too interconnected with the
+ rest of the application.
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Time bound processing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ SemiSpace is similar to JavaSpace in that processing can be time
+ bound. This has the benefit that you can guarantee an answer (as
+ no answer also is an answer). Lets say you have 10 elements that
+ need to be processed for you web page, and only the content 
+ retrieval is critical. The other parts may be graphs, statistics 
+ or other non-critical information. You can setup your application 
+ to await the content bulk, but disregard the rest if it has not
+ finished processing.
+ 
+ Time bound processing is also useful when dealing with animations
+ and other data that need to be supplied in a tick-tock manner, i.e.
+ regularly. You need to move the animation even if not all the data
+ is present. 
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Avoiding spiraling death
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Let's say you have 5 front end servers. One of them gets a problem 
+ due to workload and goes down. If this makes the other 4 servers
+ fail, you have a spiraling death problem, and in effect, you may
+ need to take all servers out of commission while you correct the 
+ problem. (This actually is a lot more common than you think.)  
+
+ That servers bounce up and down is normal. The impact on the
+ overall service should be minimized. This can be done by having
+ (that is, changing an existing) architecture to degrade gracefully.
+ 
+ Lets say you have two components, content generation and graph 
+ generation. Content is critical, and graph generation is not - even
+ if it generates the most load. Let both generate their content in
+ a master / worker manner. Give content generation 10 workers and
+ graph generation only 2 (multiply with factors as you see fit). The 
+ timeout for waiting for a graph should be reasonable. As the graph
+ generation now is load bound, one missing server does not take the 
+ other servers down.
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Inherent caching
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ If you are distributing queries, you may get an out-of-the box 
+ cache by simply first querying to find if an equal query has
+ already given a result. This is performed by not performing a
+ <<<take>>> on the space, but rather a <<<read.>>>
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Divide and conquer your program
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Even when you are not having load or distribution problems, you
+ will benefit from dividing your program into separate autonomous
+ parts. This makes it easier for multiple programmers to divide
+ tasks between themselves.
+ 

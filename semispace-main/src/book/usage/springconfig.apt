@@ -1,0 +1,82 @@
+					------
+					Spring configuration
+					------
+					
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using Spring to configure space
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ {{{http://www.springsource.org/documentation}Spring}} can be used for configuration.
+ Remember that this configuration is not interchangeable with other
+ configuration options, due to reasons explained in {{{terraconfig.html}the 
+ Terracotta configuration}} chapter. 
+ 
+ <<Notice>> that this description is <<not>> complete, as there
+ are several elements to configure and take into consideration. The 
+ easiest way of working with this, is probably to start with the 
+ sources for semispace-war, run the application with <<<mvn jetty:run>>> 
+ and examine the result(s). 
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Configure your webapp's beans for spring
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ As of Terracotta 3.2, you do not need to add anything particular
+  in your <<<tc-config.xml>>> file.
+
+ The part you need, is the configuration in Spring's 
+ <<<application-context.xml>>>
+ 
+%{snippet|id=springAppContextConfiguration|file=semispace-war/src/main/resources/applicationContext.xml}
+
+ The bean is used in the "normal" way, which is to say that it is
+ either injected into a controller, or retrieved as a bean.
+ <<Notice>> that you <<do not need>> to configure SemiSpace
+ for Spring, as the other parts of the <<<tc-config.xml>>> covers
+ those classes, even when they are instantiated with spring.
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+** Exposing the web service in spring
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ The webservices configuration needs some more configuration in 
+ <<<applicationContext.xml:>>>
+ 
+%{snippet|id=springWebservicesConfig|file=semispace-war/src/main/resources/applicationContext.xml}
+
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+** Running the CXF servlet
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ In addition to setting up the spring controller servlet, you need to 
+ start the CXF servlet in web.xml:
+ 
+%{snippet|id=cxfConfiguration|file=semispace-war/src/main/webapp/WEB-INF/web.xml}
+
+ This will interface with the CXF configuration you performed 
+ in <<<applicationContext.xml.>>>
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* JMX exposure
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ The application context for <<<semispace-war>>> is configured to expose statistical data
+ to a JMX client. In order to avoid setting up alternate strategies for injection of 
+ the statistical object, the data is exposed through the SemiSpace instance itself. The
+ problem is that it is difficult (but not impossible) to successfully use different
+ wiring strategies together with terracotta. SemiSpace uses the easiest approach...
+  
+ The following spring MBean configuration is used for exposing the statistic:
+
+%{snippet|id=springMbeanServer|file=semispace-war/src/main/resources/applicationContext.xml}
+
+ You need either a container which registers and presents the JMX data, or SDK-1.6. 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+** Examine JMX data with JConsole
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ With SDK-1.6 (or greater), you have <<<jconsole>>> available, and can
+ connect to the bean for obtaining statistical information.
+ 

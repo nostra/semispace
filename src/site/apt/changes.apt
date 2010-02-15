@@ -1,0 +1,25 @@
+                -----
+                Changes and bug fixes
+                -----
+
+ Changes over the versions from version 1.0.0. The changes are grouped by the
+ snapshot versions for which they were made.
+
+1.0.1-SNAPSHOT
+
+*----------------------------------+------------+
+|| Change or bug || Change
+*----------------------------------+------------+
+| Listener block timeout error      | During read or take, the listener would always block for the length of the timeout,
+|                                   | even when it has been previously notified and the timeout should decrease proportionally.
+|                                   | Timeout now decreases correctly.
+*----------------------------------+------------+
+| Element written before listener kicked in | Listener is now activated before the search is performed, which
+|                                   | fixes the problem of possible listener starvation.
+*----------------------------------+------------+
+| Notifying oldest listener first   | Increasing the possibility that listener starvation is avoided. Should also introduce
+|                                   | a level of fairness to the listeners.
+*----------------------------------+------------+
+| No longer supporting jdk-1.5      | Jdk-1.5 is end of line. Use semispace-1.0.0 if you need 1.5 support.
+*----------------------------------+------------+
+

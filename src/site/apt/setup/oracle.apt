@@ -1,0 +1,32 @@
+Oracle issue
+
+ Oracle has bundled toplink with several versions of oc4j. This has the 
+ effect that hibernate (which is wildy superior to toplink as an ORM
+ tool in any case) reports:
+
+------------
+CharScanner; panic: ClassNotFoundException: org.hibernate.hql.ast.HqlToken
+------------
+
+ This has to do with the antlr library.
+
+Solution: Remove toplink
+
+ Remove toplink from the distribution by doing something similar to:
+
++----------------+
+cd $OC4J_HOME
+/etc/init.d/oc4j stop
+mv toplink/ toplink_is_useless              
+/etc/init.d/oc4j start
++----------------+
+
+ A different solution is suggested by removing toplink as
+ shared library. This is done in the orion-application.xml 
+ file with the following:
+
++----------------+
+  <imported-shared-libraries>
+    <remove-inherited name="oracle.toplink"/>
+  </imported-shared-libraries>
++----------------+

@@ -1,0 +1,13 @@
+			-----
+			semispace-google-client
+			-----
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~ 			
+Client interface for google application
+~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+ An application which offers an interface to the google project configuration.
+ 
+ Please consult the {{{../semispace-main/semispace-book}semispace-book}} 
+ for details.
+ 

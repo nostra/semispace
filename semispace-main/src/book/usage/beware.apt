@@ -1,0 +1,115 @@
+                ------
+                Issues
+                ------
+                
+
+Issues and limitations
+~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ <<Disappearance of admin server>> \
+ If the admin server disappears or is changed, you may experience time
+ skew problems. This is as resynchronization takes the time
+ from the instance identified as admin. If the difference in skew
+ is large, you may experience some incorrect lifetimes. This is
+ only relevant when distributing with Terracotta.
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ <<Webapp and console apps>> \
+ Notice when having a heterogeneous system with a webapp
+ and a console application, you need to configure the the
+ applications in your <<<tc-config.xml>>> file. More details
+ can be found here:
+ {{{http://www.terracotta.org/kit/reflector?kitID=3.2&pageID=ConfigGuideAndRef}Terracotta
+ configuration manual}}.
+  
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ <<Spring loaded or class loaded>> \
+ You can not mix whether you load the SemiSpace with 
+ {{{http://www.springframework.org}Spring}} 
+ or with from the java objects directly, and need to 
+ choose one or the other.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ <<More than one terracotta-loaded webapp on the same server>> \
+ You can not deploy more than one SemiSpace-enabled war on one server, unless
+ you use different roots in the <<<tc-config.xml>>> file.
+ The error terracotta gives you is: 
+ "<Perhaps you have the same root name assigned more than once to variables 
+ of different types.>" This problem is due to the webapp class loader.
+ In the tutorial project, this problem is solved by using
+ webservices locally.
+
+ You can solve this problem with grouping your web applications
+ in the <<<tc-config.xml>>> file.
+
+ Even though you can share classes between a standalone app and a 
+ webapp (and several standalone webapps), you still cannot share
+ objects between webapps in the same container. Please see:
+ 
+ * {{https://jira.terracotta.org/jira/browse/CDV-112}} (Marked as closed)
+ 
+ * {{https://jira.terracotta.org/jira/browse/CDV-272}} (Marked as solved)
+
+ * {{https://jira.terracotta.org/jira/browse/CDV-81}}
+ 
+ []
+
+ A simple <<workaround>> is to use different processes for each war. The only
+ problem with this, is that the shared wars need to be equal. This should
+ not be necessary, but as of Terracotta version 3.0.1, I did not manage
+ to get it to work. Even when having an <<<app-groups>>> configuration.
+ This may have something to do with the spring configuration.
+
+ This boils down to the following: <<When having a complex setup with
+ many different applications, make sure they can be distributed early.>> If
+ you wait to long before running into a problem, you have a real risk of
+ having to modify your archetecture on an ad hoc basis, which is
+ suboptimal - to say the least.
+ 
+ ~~ "-Dcom.tc.loader.system.name=Any.class.loader.name"
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ <<You may need to download sun jars >> \
+ Some of the dependencies, may demand that you have downloaded
+ some 3rd party jars from Sun. If you only use <<<semispace-main,>>>
+ this is not relevant, as it does not have any such dependencies.
+ Read more about this in
+ {{{http://maven.apache.org/guides/mini/guide-coping-with-sun-jars.html}Mavens guide for coping with sun jars.}}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ <<Changed fields during class upgrade will break your runtime >> \
+ The data which is stored in semispace, is your objects as XML. Therefore, 
+ a change in, lets say, field names will result in an error when the
+ object has been read from the space. If you are making changes to
+ your object, which is not compatible with existing contents in
+ the space, you need to remove all relevant elements from the
+ space first.  
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ <<Do not insert inner classes>> \
+ When inserting inner classes, XStream will add a reference to the
+ outer class - in toto. This can lead to <<unexpected and
+ devastating results,>> particularly when using the persistence
+ add-on. In the best case, you just get an unexpected increase of size.
+ Worst case, you get severe faults due to non-serializability of
+ the element.
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ <<Be careful with protected fields>> \
+ In order to reduce visibility for a (transport) class, it may be tempting
+ to change a field to protected. This will make SemiSpace disregard
+ the field in total, which leads to confusing query results, as the
+ field would not be part of a query. Remember: All fields that are going
+ to be used for queries <<need to be public.>> However, you can have as many
+ private and protected fields as you like - as long as they are not part
+ of a query. 
+ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ <<XML will expose all variables>> \
+ When transporting an object over the web services interface, all 
+ fields will be exposed, as XML does not differentiate 
+ between private and public fields. Bear this in mind when
+ constructing transport objects, as you could introduce side
+ effects when querying on the space with XML.
+ 

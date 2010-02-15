@@ -1,0 +1,46 @@
+                ---------
+                Actor pattern framework
+                ---------
+
+ The {{{http://en.wikipedia.org/wiki/Actor_model}actor pattern}} framework is a
+ powerful mechanism for inter process communication. The framework (mainly) supports
+ communication between actors.
+ 
+ One of the main benefits of the abstraction is that you can easily create an
+ asynchronous message based system, which is suitable for (particularly) a
+ Swing application. As Swing (as almost all GUI libraries) is based on a
+ <<{{{http://en.wikipedia.org/wiki/Event_dispatching_thread}single
+ thread model}},>> you need to pass any real work to a <<worker thread>> - unless
+ you do not mind creating a sluggish application.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Utilizing actors in a Swing application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Actors in SemiSpace extend the {{{../apidocs/org/semispace/actor/Actor.html}Actor}}
+ object. The object offers <<<send>>>, <<<receive>>> and the optional methods
+ <<<getReadTemplates>>> and <<<getTakeTemplates>>>. A typical "manager" actor will
+ register templates it want to react on. For instance, an OrderManager actor will
+ want to receive Orders, place by a Client actor.
+
+ The following declaration is annotated with
+ {{{../apidocs/org/semispace/actor/SwingActor.html}SwingActor}} which makes the
+ <<<receive>>> call executed on the Swing thread, which is essential when
+ you are changing values that shall be displayed in the GUI.
+
+%{snippet|id=swingActor|file=semispace-tutorials/semispace-google-client/src/main/java/org/semispace/googled/internal/SwingActorSearch.java}
+
+ Sending an actor query is performed with send. The example fills out an address
+ query template, and sends it to whichever actor that is willing to answer. The
+ receiving actor can, of course, reside in a server process (which is the case
+ in the tutorial).
+
+%{snippet|id=actorSend|file=semispace-tutorials/semispace-google-client/src/main/java/org/semispace/googled/internal/SwingActorSearch.java}
+
+ After the "search manager" actor has performed the query, it will reply to the sender
+ by using the originator identification field on the payload as destination address.
+ This makes the answer go directly to the actor which made the query, and the
+ answer is given in in the receive method:
+
+%{snippet|id=actorReceive|file=semispace-tutorials/semispace-google-client/src/main/java/org/semispace/googled/internal/SwingActorSearch.java}
+

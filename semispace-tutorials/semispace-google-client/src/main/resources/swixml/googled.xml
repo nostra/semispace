@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Schema definition garble swixml runtime output for some reason. 
+    xmlns="http://www.swixml.org/2007/Swixml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.swixml.org/2007/Swixml http://swixml.org/2007/swixml.xsd" -->
+<frame id="frame" size="440,285" title="semispace-googled-client" layout="BorderLayout">
+	<panel id="cardPanel" constraints="BorderLayout.CENTER" layout="CardLayout(0,0)">
+        <panel id="loginPanel" name="loginPanel" constraints="loginPanel" background="dbdbdb" layout="GridBagLayout" border="TitledBorder(Please login)">
+            <label text="username">
+                <gridbagconstraints id="gbc_1" insets="2,2,2,2" gridx="0" gridy="0" />
+            </label>
+            <textfield id="username" columns="24" text="">
+                <gridbagconstraints use="gbc_1" gridx="1"/>
+            </textfield>
+            <label labelfor="password" text="password">
+                <gridbagconstraints use="gbc_1" gridx="0" gridy="1" />
+            </label>
+            <textfield id="password" columns="24" text="">
+                <gridbagconstraints use="gbc_1" gridx="1" gridy="1" />
+            </textfield>
+            <button text="submit" action="login" background="dbdbdb">
+                <gridbagconstraints use="gbc_1" gridx="1" gridy="2" anchor="GridBagConstraints.EAST"/>
+            </button>
+        </panel>
+    	<panel id="searchPanel" name="searchPanel" constraints="searchPanel" layout="FlowLayout" border="TitledBorder(Perform search)">
+			<label labelfor="search" text="search" />
+			<textfield id="searchField" columns="24" text="" />
+			<button text="submit" action="search" />
+			<textarea id="searchResult" columns="38" rows="11" text="" />
+		</panel>
+	</panel>
+    <panel id="bottom" constraints="BorderLayout.SOUTH" background="dbdbdb" layout="GridBagLayout">
+            <button text="quit" action="quit">
+                <gridbagconstraints id="gbc_2" insets="2,20,2,2" weightx="1" gridx="0" gridy="0" anchor="GridBagConstraints.EAST"/>
+            </button>
+            
+    </panel>
+
+	<!--<panel constraints="BorderLayout.SOUTH">
+		<button Text="Card 1" Action="showAction" ActionCommand="c1" />
+		<button Text="Card 2" Action="showAction" ActionCommand="c2" />
+		<button Text="Card 3" Action="showAction" ActionCommand="c3" />
+		<button Text="Card 4" Action="showAction" ActionCommand="c4" />
+		<separator />
+		<button Text="Next" Action="nextAction" />
+	</panel>
+    -->
+</frame>

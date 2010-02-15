@@ -1,0 +1,121 @@
+					-----
+					Spacepad
+					-----
+					
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+DEPRECATED; Spacepad - a distributed notepad
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ Spacepad is a simple swing-based notepad which 
+ demonstrates propagation of contents. For each
+ pressed key, the contents of the notepad is
+ distributed to all members of space.
+ 
+ We will use spacepad for explaining other aspects
+ of space interaction, when we come to the webapp
+ project. 
+ 
+
+ 
+~~~~~~~~~~~~~~~~~~
+* Running spacepad
+~~~~~~~~~~~~~~~~~~
+
+ Perform the following in order to build and run the 
+ spacepad:
+ 
++-------------------------------+
+mvn clean install
+unzip spacepad.zip
+chmod a+x *.sh
++-------------------------------+
+
+ Start terracotta, and set the relevant environmental 
+ variables, as explained {{{terracotta.html}previosuly.}}
+ 
+ Run the application twice. Twice in order to get two pads
+ that can communicate with each other:
+ 
++-------------------------------+
+./spacepad.sh &
+./spacepad.sh 
++-------------------------------+
+
+ You should see two windows pop up, and any text written in 
+ one of them, should appear in the other. At least one 
+ application window must be present for text to be retained.
+ 
+ We are going to use the spacepad again when running the 
+ webapp example.
+ 
+~~~~~~~~~~~~~~~~~~
+* Run against the webapp
+~~~~~~~~~~~~~~~~~~
+ 
+ You can run the spacepad against the semispace-war project.
+ Notice that the following description does <<not describe
+ webapp distribution.>> That explanation comes later.
+ 
+ This explanation presumes you start from the sources, downloadable
+ from 
+ {{{http://www.dynamicus.org/artifacts}http://www.dynamicus.org/artifacts}}
+ 
+~~~~~~~~~~~~~~~~~~
+** Start the webapp sources with jetty
+~~~~~~~~~~~~~~~~~~
+ 
+ Enter the semispace-war project, and start the webapp with 
+ jetty:
+ 
++-------------------------------------+
+cd semispace-war
+mvn jetty:run
++-------------------------------------+
+ 
+ If you access the localhost, you should now see a status page:
+ {{{http://localhost:8080/semispace-war/}http://localhost:8080/semispace-war/}}
+ 
+ The page contains information similar to:
+
++-------------------------------------+
+You may want to expose one of the following interfaces through apache proxy or something similar.
+    * The unauthenticated space interface and the wsdl definition
+    * The token authenticated space interface and the wsdl definition
++-------------------------------------+
+
+~~~~~~~~~~~~~~~~~~
+*** Alternative to mvn jetty:run
+~~~~~~~~~~~~~~~~~~
+
+ If you do not want to use maven for running the webapp, you 
+ can, naturally, deploy the war in a container. This should 
+ not make any difference with regards to the result. The next 
+ section will focus more on running within a J2EE container.
+ 
+~~~~~~~~~~~~~~~~~~
+** Start spacepad against webapp
+~~~~~~~~~~~~~~~~~~
+ 
+ The spacepad startup script can take an argument, which is the
+ unauthenticated URL of the space. Try:
+ 
++-------------------------------+
+./spacepad.sh http://localhost:8080/semispace-war/services/space &
+./spacepad.sh http://localhost:8080/semispace-war/services/space
++-------------------------------+
+
+ The result should be similar to what you saw when running 
+ spacepad over Terracotta. Notice that this version is not
+ distributed, as the jetty runs the space as a standalone, single 
+ process.
+
+~~~~~~~~~~~~~~~~~~ 
+* Summary
+~~~~~~~~~~~~~~~~~~
+
+ You have seen a standalone client interface SemiSpace in two 
+ different ways. Even when the distribution strategy is totally
+ different (single webapp-server versus Terracotta-distributed), 
+ the result and functional operation is the same.
+ 

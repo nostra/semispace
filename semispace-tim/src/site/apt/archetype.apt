@@ -1,0 +1,17 @@
+        ---------
+        TIM archetype
+        ---------
+
+ Archetype created with:
+
++-----
+mvn org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-7:create \
+  -DarchetypeGroupId=org.terracotta.maven.archetypes \
+  -DarchetypeArtifactId=tim-archetype \
+  -DarchetypeVersion=1.2.2 \
+  -DgroupId=org.semispace \
+  -DartifactId=semispace-tim \
+  -Dversion=1.0.0 \
+  -DremoteRepositories=http://www.terracotta.org/download/reflector/maven2
++-----
+  

@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+        <groupId>org.semispace</groupId>
+        <artifactId>semispace-tutorials</artifactId>
+		<version>1.1.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.semispace</groupId>
+	<artifactId>semispace-tutorial</artifactId>
+	<packaging>jar</packaging>
+	<version>1.1.1-SNAPSHOT</version>
+	<name>semispace-tutorial</name>
+    <description>Part of the SemiSpace tutorial: Simple example of SemiSpace interaction.</description>
+    <url>http://www.semispace.org/semispace/semispace-tutorials/semispace-tutorial</url>
+	<dependencies>
+<!--START SNIPPET: semispaceDependency -->
+		<dependency>
+			<groupId>org.semispace</groupId>
+			<artifactId>semispace-main</artifactId>
+			<version>1.1.1-SNAPSHOT</version>
+		</dependency>
+<!--END SNIPPET: semispaceDependency -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.13</version>
+		</dependency>
+
+	</dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>
+							src/assemble/assembly.xml
+						</descriptor>
+					</descriptors>
+					<finalName>tutorial</finalName>
+				</configuration>
+		        <executions>
+		          <execution>
+		            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+		            <phase>package</phase> <!-- append to the packaging phase. -->
+		            <goals>
+		              <goal>attached</goal> <!-- goals == mojos -->
+		            </goals>
+		          </execution>
+		        </executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!--
+		REPORTING 
+ 	-->
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>

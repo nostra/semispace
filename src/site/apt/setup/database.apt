@@ -1,0 +1,41 @@
+Setup of postresql database
+
+ Add user space with a password
+ 
++-------------------+
+createuser space
+psql template1 -c "alter user space with password 'spock472';"
++-------------------+
+
+ Create database intraspace
+ 
++-------------------+ 
+createdb --encoding UNICODE intraspace
+psql intraspace -c "GRANT ALL on database intraspace TO  space;"
++-------------------+
+
+ Sql for HILO generation. (Will be created automatically if not 
+ present.)
+ 
++-------------------+
+-- Create the HILO table which shall contain support elements for 
+-- ID creation.
+CREATE TABLE HILO (
+  sequence_name varchar(255),
+  sequence_next_hi_value int
+);
+GRANT ALL on HILO to space;
++-------------------+
+
+
+Creating java objects from definition XML
+
+ Possibly this must be called from the hbm project. This is due to an error in the hibernate plugin.
+
++-------------------+
+mvn hibernate3:hbm2java
++-------------------+
+
++-------------------+
+mvn clean hibernate3:hbm2java compile package
++-------------------+

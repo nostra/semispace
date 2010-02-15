@@ -1,0 +1,33 @@
+		----
+		Doc to be written
+		----
+		
+Doc needed
+
+ This is a test to see how the links work out on the site.
+ 
+  * <ul>
+ * <li>DONE: Propagate system time across VMs</li>
+ * <li>Ignored: Treat subclasses of a class</li>
+ * Done: Answer: Yes. Q: What happens if there is a take in the notify? Will all still be notified?
+ * <li>DONE: Possible usage problems which may be solved if cloning objects.</li>
+ * <li>DONE: Using xstream in data holder in order to avoid configuring transfer objects in tc-config.xml</li>
+ * <li>Partial: Create internal interface / structure for handling / propagating admin data</li>
+ * Done: Answer: Works OK, statistics will be broken. Q: What happens if a listener cease to exist??
+ * Done: Answer: The getter wins. Q: what happens if you have a public field _and_ getters and setters? Will one of them win?
+ * Done: Answer: No. Q: Can you deploy several wars using semispace if they reside in an EAR?
+ * <li>Done: One map per class</li>
+ * <li>Combination of notification and take can decrease holding time?</li>
+ * <li>Space using DSL?</li>
+ * <li>Partial: (Issues with object duplication) Back end storage for objects with "long" life?</li>
+ * <li>Integration with hadoop?</li>
+ * <li>Integration with cache channels?</li>
+ * </ul>
+ * 
+
+ - jgroups integration
+ - support for internal ad-hoc indexes, for speeding up queries
+ - improved actor pattern support
+ - improved startup and resync time with regards to admin role
+ - upgrade spring dependencies
+ - support more databases and operations in the persistence module

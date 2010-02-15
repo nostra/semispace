@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	<import resource="${spacecfg}/DataSource.xml" />
+
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  <property name="dataSource" ref="semiSpaceDataSource"/>
+	</bean>
+
+    <bean id="annotatedClasses" class="java.util.ArrayList">
+        <constructor-arg index="0">
+            <list>
+		       <value>org.semispace.persistence.domain.Lease</value>
+		       <value>org.semispace.persistence.domain.Tag</value>
+			</list>
+		</constructor-arg>
+    </bean>
+
+    <bean id="annotatedPackages" class="java.util.ArrayList">
+		<constructor-arg index="0">
+     		<list>
+		       <value>org.semispace.persistence.domain</value>
+			</list>
+		</constructor-arg>
+ </bean>
+    
+    <bean id="hibernateTemplate"
+        class="org.springframework.orm.hibernate3.HibernateTemplate">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+        <property name="alwaysUseNewSession" value="true" />
+    </bean>
+    
+    <bean id="tagDao"
+        class="org.semispace.persistence.dao.HibernateTagDao">
+        <property name="hibernateTemplate">
+            <ref bean="hibernateTemplate"/>
+        </property>
+    </bean>
+    
+    <bean id="leaseDao"
+        class="org.semispace.persistence.dao.HibernateLeaseDao">
+        <property name="hibernateTemplate">
+            <ref bean="hibernateTemplate"/>
+        </property>
+    </bean>
+    
+    <bean id="SemiSpaceDatabaseService"
+        class="org.semispace.persistence.DatabaseService" scope="singleton">
+        <property name="tagDao">
+            <ref bean="tagDao"/>
+        </property>
+        <property name="leaseDao">
+            <ref bean="leaseDao"/>
+        </property>
+    </bean>
+    
+</beans>

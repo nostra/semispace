@@ -1,0 +1,58 @@
+
+ <<NB>> Obsolete documentation
+
+Howto override the Spring configuration.
+
+ You have 2 java VM parameters which can be set for changing the configuration:
+ 
++----------------------------+
+ -Dspacecfg=config_type
+ -Dspaceoverride=somewhere/exists/a/property/file.properties
++----------------------------+
+ 
+ The first of these arguments (<<spacecfg>>) chooses the configuration type, presently mock or live.
+ 
+ The property file is a reference to a "regular" java property file which contains override 
+ information in a dotted manner. If, for example, you would like to override the datasource driver, 
+ this can be performed in the following manner:
+ 
++----------------------------+
+ dataSource.driverClassName=xxx.xxx.xx
++----------------------------+
+ 
+ A more apt example is the reconfiguration and insertion of test data. The database service
+ is configured up to be changed with the following:
+ 
++----------------------------+
+ IntraDatabaseService.needForTestData=true
+ IntraDatabaseService.pathToDbUnitXml=/opt/home/en/workspace/spacedefault.xml
++----------------------------+
+
+ Change the last path to something more suitable for your own environment.
+
+
+Override mock hsql to use postgresql
+
+ This is an example as you just as well can use <<<-Dspacecfg=live>>> in order to
+ achieve the same thing.
+
+ The following elements can be inserted into the override file in order to 
+ change configuration from hsql to postgresql:
+ 
++------------------------------------------+
+# Reconfigure elements to use spring config
+dataSource.url=jdbc:postgresql://localhost/intraspace
+dataSource.username=space
+dataSource.password=spock472
+dataSource.driverClassName=org.postgresql.Driver
+
+# Changing hibernate props.
+sessionFactory.hibernateProperties[hibernate.dialect]=org.hibernate.dialect.PostgreSQLDialect
+sessionFactory.hibernateProperties[connection.pool_size]=5
++------------------------------------------+
+
+ This file is the loaded by using the VM property. Example:
+
++------------------------------------------+
+ -Dspaceoverride=/opt/home/en/workspace/au2override.properties
++------------------------------------------+

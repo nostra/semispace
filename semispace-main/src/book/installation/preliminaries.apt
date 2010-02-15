@@ -1,0 +1,51 @@
+		----
+		Preliminaries
+		----
+
+Preliminaries
+
+ SemiSpace runs on
+ {{{http://java.sun.com/javase/6/docs/}J2SE 6.0}} or greater. 
+ The other components are optional. If you are not intending 
+ to distribute, you will not need Terracotta, etc.
+ 
+ If you want SemiSpace to be distributed, you need to download
+ and install {{{http://www.terracotta.org}Terracotta.}}
+ 
+ In order to benefit from the webservices proxy (more about this
+ in the tutorial), you need a sensible endpoint. This is in 
+ effect a webapp. Choose this at your own discretion. The 
+ recommendation is {{{http://jetty.codehaus.org/jetty/}Jetty}}, but
+ you should be effortlessly able to use {{{http://tomcat.apache.org}Tomcat}}, or
+ {{{http://geronimo.apache.org/}Geronimo}} as well.
+ 
+ It is presumed that you use bash as shell, most likely under 
+ MacOSX or Linux. Scripts and instructions must be adapted at 
+ your discretion if you are running something else. 
+
+~~~~~~~~~~~~~~~~~~~~
+* XStream support jars
+~~~~~~~~~~~~~~~~~~~~
+
+ XStream has some optional dependencies, and the XML support
+ library <xpp> has been configured to be default, but you
+ can exclude it and include a different support library
+ instead. See {{http://xstream.codehaus.org/download.html}}
+ for details, or just include the following in your 
+ {{{http://maven.apache.org}maven}} dependencies:
+ 
+%{snippet|id=xpp3Dependency|file=pom.xml}
+
+~~~~~~~~~~~~~~~~~~~~
+* Sun jars
+~~~~~~~~~~~~~~~~~~~~
+ 
+  The persistence and webapp sub projects depend on sun jars, 
+  which you may have to download and install yourself.
+  
+  See 
+  {{{http://maven.apache.org/guides/mini/guide-coping-with-sun-jars.html}Maven's
+  guide to coping with Sun JARs}} for more information.
+  
+  The semispace-main project does not have any such dependencies, indeed
+  it is {{{../dependencies.html}depends only on XStream and slf4j logging.}}

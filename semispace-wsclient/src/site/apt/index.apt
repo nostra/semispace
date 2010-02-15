@@ -1,0 +1,11 @@
+        -----
+        semispace-wsclient
+        -----
+        
+ Client side webservices proxy definition of semispace. This is
+ the package you want to depend on, if you are interfacing 
+ SemiSpace from a proxy. 
+
+ Please see the {{{semispace-book.html}semispace-book}} for in-depth
+ information about installation and usage.
+ 

@@ -1,0 +1,10 @@
+        -----
+        semispace-main
+        -----
+
+ This is the main module of SemiSpace, and the only dependency you need for beginning
+ to use SemiSpace.
+
+ Please see the {{{../semispace-main/semispace-book}semispace-book}} for in-depth
+ information about installation and usage.
+ 

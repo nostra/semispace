@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+   Copyright 2008 Erlend Nossum
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<xml-fragment>
+  <instrumented-classes>
+    <include>
+      <class-expression>org.semispace.SemiSpace</class-expression>
+      <honor-transient>true</honor-transient>
+      <on-load>
+        <method>initTransients</method>
+      </on-load>
+    </include>
+    <include>
+      <class-expression>org.semispace.Holder</class-expression>
+      <honor-transient>true</honor-transient>
+    </include>
+    <include>
+      <class-expression>org.semispace.HolderContainer</class-expression>
+      <honor-transient>true</honor-transient>
+    </include>
+    <include>
+      <class-expression>org.semispace.HolderElement</class-expression>
+      <honor-transient>true</honor-transient>
+    </include>
+    <include>
+      <class-expression>org.semispace.EventDistributor</class-expression>
+      <honor-transient>true</honor-transient>
+    </include>
+    <include>
+      <class-expression>org.semispace.SemiSpaceStatistics</class-expression>
+      <honor-transient>true</honor-transient>
+    </include>
+    <include>
+       <class-expression>org.semispace.event.SemiExpirationEvent</class-expression>
+     </include>
+    <include>
+       <class-expression>org.semispace.event.SemiAvailabilityEvent</class-expression>
+     </include>
+    <include>
+       <class-expression>org.semispace.event.SemiTakenEvent</class-expression>
+     </include>
+    <include>
+       <class-expression>org.semispace.event.SemiRenewalEvent</class-expression>
+     </include>
+  </instrumented-classes>
+  <locks>
+    <autolock>
+      <method-expression>* org.semispace.SemiSpace*.*(..)</method-expression>
+      <lock-level>write</lock-level>
+    </autolock>
+    <autolock>
+      <method-expression>* org.semispace.Holder*.*(..)</method-expression>
+      <lock-level>write</lock-level>
+    </autolock>
+    <autolock>
+      <method-expression>* org.semispace.EventDistributor*.*(..)</method-expression>
+      <lock-level>write</lock-level>
+    </autolock>
+  </locks>
+  <roots>
+    <root>
+      <field-name>org.semispace.SemiSpace.instance</field-name>
+    </root>
+    <root>
+      <field-name>org.semispace.HolderContainer.instance</field-name>
+    </root>
+  </roots>
+  <transient-fields>
+    <field-name>org.semispace.SemiSpace.listeners</field-name>
+    <field-name>org.semispace.SemiSpace.admin</field-name>
+    <field-name>org.semispace.SemiSpace.xStream</field-name>
+  </transient-fields>
+  <distributed-methods>
+    <method-expression>void org.semispace.SemiSpace.notifyListeners(org.semispace.EventDistributor)</method-expression>
+  </distributed-methods>
+
+</xml-fragment>
