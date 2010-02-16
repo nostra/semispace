@@ -31,3 +31,5 @@ Doc needed
  - improved startup and resync time with regards to admin role
  - upgrade spring dependencies
  - support more databases and operations in the persistence module
+ - examine overhead when using statistics (should it be removed?)
+ 
