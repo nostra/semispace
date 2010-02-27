@@ -129,7 +129,7 @@
                 <version>${jetty.version}</version>
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <contextPath>/google</contextPath>
+                    <contextPath>/semispace-google</contextPath>
                     <systemProperties>
                         <systemProperty>
                             <name>slf4j</name>
