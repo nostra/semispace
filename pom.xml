@@ -35,10 +35,10 @@
     </ciManagement>-->
 
     <properties>
-        <springframework.version>3.0.0.RELEASE</springframework.version>
+        <springframework.version>3.0.1.RELEASE</springframework.version>
         <cxf.version>2.2.6</cxf.version>
         <jetty.version>6.1.22</jetty.version>
-        <slf4j.version>1.5.10</slf4j.version>
+        <slf4j.version>1.5.11</slf4j.version>
     </properties>
 
     <!--
@@ -49,7 +49,7 @@
             <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.7</version>
+            <version>4.8.1</version>
         </dependency>
         
 		<dependency>
@@ -173,11 +173,11 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-	
+	    <!-- Consider exchanging this with c3p0 -->
         <dependency>
             <artifactId>commons-dbcp</artifactId>
             <groupId>commons-dbcp</groupId>
-            <version>1.2.2</version>
+            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>org.swixml</groupId>
