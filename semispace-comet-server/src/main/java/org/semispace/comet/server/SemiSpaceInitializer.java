@@ -23,7 +23,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.cometd.Bayeux;
-import org.semispace.comet.HelloService;
 import org.semispace.comet.client.ReadClient;
 
 public class SemiSpaceInitializer extends GenericServlet {
@@ -32,7 +31,6 @@ public class SemiSpaceInitializer extends GenericServlet {
     public void init() throws ServletException {
 
         Bayeux bayeux = (Bayeux)getServletContext().getAttribute(Bayeux.ATTRIBUTE);
-        new HelloService(bayeux);
         rs = new ReadService(bayeux);
     }
     

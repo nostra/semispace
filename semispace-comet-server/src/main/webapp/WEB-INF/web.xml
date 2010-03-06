@@ -19,7 +19,7 @@
         <servlet-class>org.semispace.comet.server.SemiSpaceInitializer</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
-
+    <!-- Need jetty7 in order to activate this filter
     <filter>
         <filter-name>cross-origin</filter-name>
         <filter-class>org.eclipse.jetty.servlets.CrossOriginFilter</filter-class>
@@ -28,5 +28,6 @@
         <filter-name>cross-origin</filter-name>
         <url-pattern>/cometd/*</url-pattern>
     </filter-mapping>
+    -->
 
 </web-app>

@@ -20,12 +20,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.semispace.NameValueQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ReadClientTest {
+    private static final Logger log = LoggerFactory.getLogger(ReadClientTest.class);
     private SemiSpaceCometProxy proxy;
     @Before
     public void setUp() throws Exception {
+        log.warn("\n\n\n\nNOT SUPPORTING NORMAL BUILD TESTS YET\nUse\n  mvn -Denv=dev clean install\nwhen building this module\n\n\n");
         proxy = new SemiSpaceCometProxy();
         proxy.init("http://localhost:8080/semispace-comet-server/cometd/");
     }

@@ -39,6 +39,7 @@
         <cxf.version>2.2.6</cxf.version>
         <jetty.version>6.1.22</jetty.version>
         <slf4j.version>1.5.11</slf4j.version>
+        <cometd.version>1.0.1</cometd.version>
     </properties>
 
     <!--
@@ -82,7 +83,23 @@
             <artifactId>semispace-wsclient</artifactId>
             <version>${version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.cometd.javascript</groupId>
+            <artifactId>cometd-javascript-dojo</artifactId>
+            <version>${cometd.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.cometd.java</groupId>
+            <artifactId>cometd-java-server</artifactId>
+            <version>${cometd.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.cometd.java</groupId>
+            <artifactId>cometd-java-client</artifactId>
+            <version>${cometd.version}</version>
+        </dependency>
+            
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>

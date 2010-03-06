@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <artifactId>semispace</artifactId>
-        <groupId>org.semispace</groupId>
-        <version>1.1.1-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>org.semispace</groupId>
+		<artifactId>semispace</artifactId>
+		<version>1.1.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
     <groupId>org.semispace.comet</groupId>
     <artifactId>semispace-comet-server</artifactId>
     <packaging>war</packaging>
     <version>1.1.1-SNAPSHOT</version>
-
+    <name>semispace-comet-server</name>
     <build>
         <defaultGoal>install</defaultGoal>
         <plugins>
@@ -44,36 +43,25 @@
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.1</version>
-        </dependency>
-        <dependency>
              <groupId>org.semispace</groupId>
              <artifactId>semispace-main</artifactId>
-             <version>1.1.0</version>
          </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.cometd.javascript</groupId>
             <artifactId>cometd-javascript-dojo</artifactId>
-            <version>1.0.1</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.cometd.java</groupId>
             <artifactId>cometd-java-server</artifactId>
-            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.cometd.java</groupId>
             <artifactId>cometd-java-client</artifactId>
-            <version>1.0.1</version>
         </dependency>
     </dependencies>
 
