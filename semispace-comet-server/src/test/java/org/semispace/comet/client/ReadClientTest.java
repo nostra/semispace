@@ -44,7 +44,7 @@ public class ReadClientTest {
     @Test
     public void testRead() throws Exception {
         //for ( int i=0 ; i < 1000 ; i++ )
-        NameValueQuery nvq = proxy.read(new NameValueQuery(), 8000);
+        NameValueQuery nvq = proxy.readIfExists(new NameValueQuery());//proxy.read(new NameValueQuery(), 8000);
         Assert.assertNotNull(nvq);
         Assert.assertEquals("dummyName", nvq.name);        
     }

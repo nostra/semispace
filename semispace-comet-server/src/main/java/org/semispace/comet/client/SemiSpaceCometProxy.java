@@ -97,20 +97,9 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         return null;
     }
 
-    private Map<String, Object> uneccessary_transformHolderToMap(Holder holder) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("class", holder.getClassName());
-        map.put("id", Long.valueOf(holder.getId()));
-        map.put("liveUntil", Long.valueOf(holder.getLiveUntil()));
-        map.put("searchMap", holder.getSearchMap());
-        map.put("xml", holder.getXml());
-
-        return map;
-    }
-
     @Override
     public <T> T readIfExists(T template) {
-        return null;  
+        return read( template, 0 );  
     }
 
     @Override
@@ -169,6 +158,19 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         Holder holder = new Holder(xmlsource, duration, doctype, -1, map );
         return holder;
     }
+
+
+    private Map<String, Object> uneccessary_transformHolderToMap(Holder holder) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("class", holder.getClassName());
+        map.put("id", Long.valueOf(holder.getId()));
+        map.put("liveUntil", Long.valueOf(holder.getLiveUntil()));
+        map.put("searchMap", holder.getSearchMap());
+        map.put("xml", holder.getXml());
+
+        return map;
+    }
+    
     private static class ProxyLifeCycle implements LifeCycle.Listener {
         @Override
         public void lifeCycleStarting(LifeCycle event) {

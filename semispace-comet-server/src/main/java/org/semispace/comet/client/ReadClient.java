@@ -21,6 +21,7 @@ import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.MessageListener;
 import org.cometd.client.BayeuxClient;
+import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,27 +33,25 @@ import java.util.concurrent.CountDownLatch;
  */
 public class ReadClient {
     private static final Logger log = LoggerFactory.getLogger(ReadClient.class);
-    public static final String CALL_CHANNEL = "/semispace/call/read";
-    public static final String REPLY_CHANNEL = "/semispace/reply/read";
 
     private final ReadListener readListener = new ReadListener();
 
     private void attach(BayeuxClient client) {
         client.addListener(readListener);
-        client.subscribe(REPLY_CHANNEL);
+        client.subscribe(CometConstants.READ_REPLY_CHANNEL);
         client.subscribe(Bayeux.META_HANDSHAKE);
     }
 
     private void detach(BayeuxClient client) {
         client.removeListener(readListener);
-        client.unsubscribe(REPLY_CHANNEL);
+        client.unsubscribe(CometConstants.READ_REPLY_CHANNEL);
     }
 
     public String doRead(BayeuxClient client, Map<String, Object> map) {
         attach(client);
 
         try {
-            client.publish(ReadClient.CALL_CHANNEL, map, ""+map.get("id") );
+            client.publish(CometConstants.READ_CALL_CHANNEL, map, null );
             log.debug("Awaiting...");
             readListener.getLatch().await();
             log.debug("... unlatched");
@@ -80,7 +79,7 @@ public class ReadClient {
         @Override
         public void deliver(Client from, Client to, Message message) {
             log.debug("Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-            if (REPLY_CHANNEL.equals(message.getChannel())) {
+            if (CometConstants.READ_REPLY_CHANNEL.equals(message.getChannel())) {
                 // Here we received a message on the channel
                 log.info("Channel is correct: "+message.getChannel()+" client id "+message.getClientId());
                 Map map = (Map) message.getData();
