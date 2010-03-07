@@ -51,15 +51,14 @@ public class ReadClient {
         client.unsubscribe(REPLY_CHANNEL);
     }
 
-    public void doRead(BayeuxClient client) {
+    public void doRead(BayeuxClient client, Map<String, Object> map) {
         attach(client);
-        Map map = new HashMap();
-        map.put("name", "Zzzzzzzzzzz xxx");
-        map.put("something", "Inconsequential");
-        client.publish(ReadClient.CALL_CHANNEL, map, "23" );
+        client.publish(ReadClient.CALL_CHANNEL, map, ""+map.get("id") );
         
         try {
+            log.debug("Awaiting...");
             readListener.getLatch().await();
+            log.debug("... unlatched");
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException. Masked: "+e);
         }
@@ -68,7 +67,7 @@ public class ReadClient {
     }
 
 
-    private class ReadListener implements MessageListener {
+    private static class ReadListener implements MessageListener {
         private final CountDownLatch latch;
 
         public CountDownLatch getLatch() {

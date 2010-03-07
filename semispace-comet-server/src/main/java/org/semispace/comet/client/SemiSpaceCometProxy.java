@@ -16,21 +16,39 @@
 
 package org.semispace.comet.client;
 
+import com.thoughtworks.xstream.XStream;
 import org.cometd.client.BayeuxClient;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.util.component.LifeCycle;
+import org.semispace.Holder;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiLease;
 import org.semispace.SemiSpaceInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * Client side of comet proxy
+ */
 public class SemiSpaceCometProxy implements SemiSpaceInterface {
     private static final Logger log = LoggerFactory.getLogger(SemiSpaceCometProxy.class);
     private BayeuxClient client;
     private HttpClient httpClient;
+    private XStream xstream;
+
+    public SemiSpaceCometProxy() {
+        xstream = new XStream();
+    }
 
     // "http://localhost:8080/semispace-comet-server/cometd/"
     public void init(String endpoint) {
@@ -65,9 +83,26 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     @Override
     public <T> T read(T template, long duration) {
         ReadClient read = new ReadClient();
-        read.doRead(client);
+        Holder holder = retrievePropertiesFromXml(xstream.toXML(template), duration);
+
+        holder.getSearchMap();
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("searchMap", holder.getSearchMap());
+        param.put("duration", Long.valueOf(duration));
+        read.doRead(client, param );
 
         return null;
+    }
+
+    private Map<String, Object> uneccessary_transformHolderToMap(Holder holder) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("class", holder.getClassName());
+        map.put("id", Long.valueOf(holder.getId()));
+        map.put("liveUntil", Long.valueOf(holder.getLiveUntil()));
+        map.put("searchMap", holder.getSearchMap());
+        map.put("xml", holder.getXml());
+
+        return map;
     }
 
     @Override
@@ -90,7 +125,48 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         return null;  
     }
 
-    private class ProxyLifeCycle implements LifeCycle.Listener {
+
+    /**
+     * TODO Presently duplicated from WsSpaceImpl
+     * Protected for the benefit of junit test(s)
+     * @return A <b>temporary</b> holder object containing the relevant elements found in the source.
+     */
+    protected Holder retrievePropertiesFromXml(String xmlsource, long duration) {
+        // InputStream is = new StringConverterBufferedInputStream( new FileInputStream( tmpfile ) );
+        InputSource is = new InputSource( new StringReader(xmlsource));
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+        Document doc = null;
+        try {
+            doc = factory.newDocumentBuilder().parse( is );
+        } catch (Exception e) {
+            log.error("Returning null, due to exception parsing xml: "+xmlsource, e);
+            return null;
+        }
+        String doctype = doc.getDocumentElement().getNodeName();
+
+        Map<String, String> map = new HashMap<String, String>();
+
+        NodeList children = doc.getDocumentElement().getChildNodes();
+        for ( int i=0 ; i < children.getLength() ; i++) {
+            Node node = children.item( i );
+            //log.info("Got node "+node.getNodeName()+" which contains "+node.getNodeValue());
+
+            if ( node.getNodeType() == Node.ELEMENT_NODE && node.getChildNodes().getLength() > 0) {
+                String name = node.getNodeName();
+                String value = node.getChildNodes().item(0).getNodeValue();
+                //log.info("This is an element node with "+node.getChildNodes().getLength()+" children which is "+value);
+                if( value != null ) {
+                    map.put(name,value);
+                }
+            }
+        }
+        map.put("class", doctype);
+
+        Holder holder = new Holder(xmlsource, duration, doctype, -1, map );
+        return holder;
+    }
+    private static class ProxyLifeCycle implements LifeCycle.Listener {
         @Override
         public void lifeCycleStarting(LifeCycle event) {
             log.debug("Starting "+event.toString());

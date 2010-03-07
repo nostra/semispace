@@ -20,6 +20,8 @@ import org.cometd.Bayeux;
 import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.server.BayeuxService;
+import org.semispace.NameValueQuery;
+import org.semispace.SemiSpace;
 import org.semispace.comet.client.ReadClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,16 +41,20 @@ public class ReadService extends BayeuxService {
 
     public void semispaceRead(Client remote, Message message) {
         log.debug("Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-        
-        //Map<String, Object> input = (Map<String, Object>)message.getData();
+        SemiSpace space = (SemiSpace) SemiSpace.retrieveSpace();
 
-        /*
-        String name = (String)input.get("name");
-        System.out.println("Processhello "+input);
+        NameValueQuery dummy = new NameValueQuery();
+        dummy.name = "dummyName";
+        dummy.value= "dummyValue";                        
+        space.write(dummy, 1000);
 
-        */
+        final Map<String, Object> data = (Map<String, Object>) message.getData();
+        final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
+        final Long duration = (Long) data.get("duration");
+        String result = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), false);
+
         Map<String, Object> output = new HashMap<String, Object>();
-        output.put("greeting", "Now replying read with, well, something");
-        remote.deliver(getClient(), ReadClient.REPLY_CHANNEL, output, "fdg");
+        output.put("result", result);
+        remote.deliver(getClient(), ReadClient.REPLY_CHANNEL, output, message.getClientId());
     }
 }

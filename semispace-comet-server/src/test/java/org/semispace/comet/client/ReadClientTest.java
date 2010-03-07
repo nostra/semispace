@@ -36,13 +36,13 @@ public class ReadClientTest {
 
     @After
     public void tearDown() throws Exception {
-        Thread.sleep(10000);
+        Thread.sleep(500);
         proxy.destroy();
     }
 
     @Test
     public void testRead() throws Exception {
         //for ( int i=0 ; i < 1000 ; i++ )
-            proxy.read(new NameValueQuery(), 1000);
+            proxy.read(new NameValueQuery(), 8000);
     }
 }
