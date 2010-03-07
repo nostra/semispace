@@ -143,11 +143,13 @@ public class ReadClientTest {
         different.fieldA = "a";
         different.fieldB = "b";
 
+        AlternateHolder query = new AlternateHolder();
+        query.fieldA = "a";
+        assertNull("Expecting null",space.takeIfExists(query));
+
         space.write(holder, 1000);
         space.write(different, 1000);
 
-        AlternateHolder query = new AlternateHolder();
-        query.fieldA = "a";
 
         assertEquals("" + holder, "" + space.takeIfExists(query));
         assertEquals("null", "" + space.takeIfExists(query));
