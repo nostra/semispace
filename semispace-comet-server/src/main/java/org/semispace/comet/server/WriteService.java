@@ -20,6 +20,7 @@ import org.cometd.Bayeux;
 import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.server.BayeuxService;
+import org.semispace.SemiLease;
 import org.semispace.SemiSpace;
 import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
@@ -31,29 +32,31 @@ import java.util.Map;
 /**
  * Supporting semispace read.
  */
-public class ReadService extends BayeuxService {
-    private static final Logger log = LoggerFactory.getLogger(ReadService.class);
+public class WriteService extends BayeuxService {
+    private static final Logger log = LoggerFactory.getLogger(WriteService.class);
     private final SemiSpace space;
-    
-    public ReadService(Bayeux bayeux, SemiSpace space ) {
-        super(bayeux, "read");
-        subscribe(CometConstants.READ_CALL_CHANNEL+"/*", "semispaceRead");
+
+    public WriteService(Bayeux bayeux, SemiSpace space ) {
+        super(bayeux, "write");
+        subscribe(CometConstants.WRITE_CALL_CHANNEL+"/*", "semispaceWrite");
         this.space = space;
     }
 
-    public void semispaceRead(Client remote, Message message) {
-        log.debug("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-
+    public void semispaceWrite(Client remote, Message message) {
         final Map<String, Object> data = (Map<String, Object>) message.getData();
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
-        final Long duration = (Long) data.get("duration");
-        final Boolean shallTake = (Boolean) data.get("shallTake");
+        final Long timeToLiveMs = (Long) data.get("timeToLiveMs");
+        final String xml = (String) data.get("xml");
+        final String className = (String) data.get("classname");
+        log.debug("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" classname "+className);
 
-        String result = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), shallTake.booleanValue());
+        SemiLease lease = space.writeToElements(className,timeToLiveMs, xml, searchMap);
 
         Map<String, String> output = new HashMap<String, String>();
-        if ( result != null ) {
-            output.put("result", result);
+        if ( lease != null ) {
+            output.put("holderId", ""+lease.getHolderId());
+        } else {
+            output.put("error", "Did not get lease");
         }
         remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
     }

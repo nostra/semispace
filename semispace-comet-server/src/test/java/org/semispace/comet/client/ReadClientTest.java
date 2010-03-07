@@ -45,8 +45,21 @@ public class ReadClientTest {
     public void testRead() throws Exception {
         //for ( int i=0 ; i < 1000 ; i++ ) proxy.read(new NameValueQuery(), 8000);
         //proxy.readIfExists(new NameValueQuery());//
-        NameValueQuery nvq = proxy.read(new NameValueQuery(), 8000);
+        NameValueQuery nvq = proxy.take(new NameValueQuery(), 500);
+        Assert.assertNull("Expecting not to be able to take something before something is present.", nvq);
+
+        NameValueQuery q = new NameValueQuery();
+        q.name = "somename";
+        q.value = "some value";
+        proxy.write(q, 2000);
+        
+        nvq = proxy.read(new NameValueQuery(), 2000);
         Assert.assertNotNull("Expecting to find value", nvq);
-        Assert.assertEquals("dummyName", nvq.name);        
+        Assert.assertEquals(q.name , nvq.name);
+        nvq = proxy.takeIfExists(new NameValueQuery());
+        Assert.assertNotNull("Expecting to take", nvq);
+        Assert.assertEquals(q.name, nvq.name);
+        
+        Assert.assertNull("Expecting not to be able to take something twice", proxy.take(new NameValueQuery(), 2000));
     }
 }

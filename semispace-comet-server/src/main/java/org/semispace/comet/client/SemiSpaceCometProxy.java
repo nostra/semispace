@@ -84,22 +84,37 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
      * @return null TODO Presently always returning null, as lease is not yet supported.
      */
     @Override
-    public SemiLease write(Object obj, long duration) {
-        WriteClient write = new WriteClient();
+    public SemiLease write(Object obj, long timeToLiveMs) {
+        // TODO Use different method for extracting properties.
+        final String xml = xstream.toXML(obj);
+        Holder holder = retrievePropertiesFromXml(xml, timeToLiveMs);
+
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("searchMap", holder.getSearchMap());
+        param.put("timeToLiveMs", Long.valueOf(timeToLiveMs));
+        param.put("xml", xml);
+        param.put("classname", holder.getClassName());
+
+        WriteClient write = new WriteClient(myCallCounter.getAndIncrement());
+        write.doWrite(client, param);
         return null;
     }
 
     @Override
     public <T> T read(T template, long duration) {
+        return readOrTake( template, duration, false);
+    }
+
+    private <T> T readOrTake(T template, long duration, boolean shallTake) {
         ReadClient read = new ReadClient( myCallCounter.getAndIncrement() );
 
         // TODO Use different method for extracting properties.
         Holder holder = retrievePropertiesFromXml(xstream.toXML(template), duration);
 
-        holder.getSearchMap();
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("searchMap", holder.getSearchMap());
         param.put("duration", Long.valueOf(duration));
+        param.put("shallTake", Boolean.valueOf(shallTake));
         String xml = read.doRead(client, param );
         if ( xml != null ) {
             return (T) xstream.fromXML(xml);
@@ -115,17 +130,17 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
     @Override
     public <T> T take(T template, long duration) {
-        return null;  
+        return readOrTake(template, duration, true);
     }
 
     @Override
     public <T> T takeIfExists(T template) {
-        return null;  
+        return take( template, 0);  
     }
 
     @Override
     public SemiEventRegistration notify(Object template, SemiEventListener listener, long duration) {
-        return null;  
+        throw new RuntimeException("Notification not supported yet.");
     }
 
 

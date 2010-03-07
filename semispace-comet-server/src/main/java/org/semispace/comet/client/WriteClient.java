@@ -16,7 +16,6 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.Bayeux;
 import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.MessageListener;
@@ -27,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Taking care of the write interaction
@@ -34,27 +34,32 @@ import java.util.concurrent.CountDownLatch;
 public class WriteClient {
     private static final Logger log = LoggerFactory.getLogger(WriteClient.class);
 
-    private final WriteListener writeListener = new WriteListener();
+    private final WriteListener writeListener;
+    private final int callId;
+
+    public WriteClient(int  callId) {
+        this.callId = callId;
+        this.writeListener = new WriteListener(callId);
+    }
 
     private void attach(BayeuxClient client) {
         client.addListener(writeListener);
-        client.subscribe(CometConstants.WRITE_REPLY_CHANNEL);
-        client.subscribe(Bayeux.META_HANDSHAKE);
+        client.subscribe(CometConstants.WRITE_REPLY_CHANNEL+"/"+callId);
     }
 
     private void detach(BayeuxClient client) {
         client.removeListener(writeListener);
-        client.unsubscribe(CometConstants.WRITE_REPLY_CHANNEL);
+        client.unsubscribe(CometConstants.WRITE_REPLY_CHANNEL+"/"+callId);
     }
 
     public void doWrite(BayeuxClient client, Map<String, Object> map) {
         attach(client);
 
         try {
-            client.publish(CometConstants.WRITE_CALL_CHANNEL, map, null );
+            client.publish(CometConstants.WRITE_CALL_CHANNEL+"/"+callId, map, null );
             log.debug("Awaiting...");
             // TODO Add representative timeout value
-            writeListener.getLatch().await();
+            writeListener.getLatch().await(10, TimeUnit.SECONDS);
             log.debug("... unlatched");
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);
@@ -66,19 +71,21 @@ public class WriteClient {
 
     private static class WriteListener implements MessageListener {
         private final CountDownLatch latch;
+        private final int callId;
+
+        public WriteListener(int callId) {
+            this.callId = callId;
+            this.latch = new CountDownLatch(1);
+        }
 
         public CountDownLatch getLatch() {
             return latch;
         }
 
-        public WriteListener() {
-            this.latch = new CountDownLatch(1);
-        }
         @Override
         public void deliver(Client from, Client to, Message message) {
-            if (CometConstants.WRITE_REPLY_CHANNEL.equals(message.getChannel())) {
-                // Here we received a message on the channel
-                log.info("Channel is correct: "+message.getChannel()+" client id "+message.getClientId());
+            if ((CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
+                log.info("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             }
         }

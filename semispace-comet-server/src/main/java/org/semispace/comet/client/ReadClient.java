@@ -87,15 +87,9 @@ public class ReadClient {
         }
         @Override
         public void deliver(Client from, Client to, Message message) {
-            try {
-                log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-            } catch( Throwable t ) {
-                log.error("Totally foobared!", t);
-                throw new RuntimeException("Not expected");
-            }
+            log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
             if ((CometConstants.READ_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
-                // Here we received a message on the channel
-                log.info("Channel is correct: "+message.getChannel()+" client id "+message.getClientId());
+                log.info("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 Map map = (Map) message.getData();
                 if ( map != null ) {
                     data = (String) map.get("result");
