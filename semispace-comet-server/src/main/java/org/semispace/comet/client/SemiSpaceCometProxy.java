@@ -96,7 +96,11 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         param.put("classname", holder.getClassName());
 
         WriteClient write = new WriteClient(myCallCounter.getAndIncrement());
-        write.doWrite(client, param);
+        try {
+            write.doWrite(client, param);
+        } catch ( Throwable t ) {
+            log.error("Unforeseen error occurred publishing.", t);
+        }
         return null;
     }
 
@@ -106,18 +110,22 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     }
 
     private <T> T readOrTake(T template, long duration, boolean shallTake) {
-        ReadOrTakeClient readOrTake = new ReadOrTakeClient( myCallCounter.getAndIncrement() );
+        try {
+            ReadOrTakeClient readOrTake = new ReadOrTakeClient( myCallCounter.getAndIncrement() );
 
-        // TODO Use different method for extracting properties.
-        Holder holder = retrievePropertiesFromXml(xstream.toXML(template), duration);
+            // TODO Use different method for extracting properties.
+            Holder holder = retrievePropertiesFromXml(xstream.toXML(template), duration);
 
-        Map<String, Object> param = new HashMap<String, Object>();
-        param.put("searchMap", holder.getSearchMap());
-        param.put("duration", Long.valueOf(duration));
-        param.put("shallTake", Boolean.valueOf(shallTake));
-        String xml = readOrTake.doRead(client, param );
-        if ( xml != null ) {
-            return (T) xstream.fromXML(xml);
+            Map<String, Object> param = new HashMap<String, Object>();
+            param.put("searchMap", holder.getSearchMap());
+            param.put("duration", Long.valueOf(duration));
+            param.put("shallTake", Boolean.valueOf(shallTake));
+            String xml = readOrTake.doRead(client, param );
+            if ( xml != null ) {
+                return (T) xstream.fromXML(xml);
+            }
+        } catch ( Throwable t ) {
+            log.error("Unforeseen error occurred publishing.", t);
         }
 
         return null;
