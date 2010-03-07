@@ -17,49 +17,141 @@
 package org.semispace.comet.client;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.semispace.NameValueQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 
 public class ReadClientTest {
     private static final Logger log = LoggerFactory.getLogger(ReadClientTest.class);
-    private SemiSpaceCometProxy proxy;
+    private SemiSpaceCometProxy space;
+
     @Before
     public void setUp() throws Exception {
         log.warn("\n\n\n\nNOT SUPPORTING NORMAL BUILD TESTS YET\nUse\n  mvn -Denv=dev clean install\nwhen building this module\n\n\n");
-        proxy = new SemiSpaceCometProxy();
-        proxy.init("http://localhost:8080/semispace-comet-server/cometd/");
+        space = new SemiSpaceCometProxy();
+        space.init("http://localhost:8080/semispace-comet-server/cometd/");
     }
 
     @After
     public void tearDown() throws Exception {
         Thread.sleep(500);
-        proxy.destroy();
+        space.destroy();
     }
 
     @Test
     public void testRead() throws Exception {
-        //for ( int i=0 ; i < 1000 ; i++ ) proxy.read(new NameValueQuery(), 8000);
-        //proxy.readIfExists(new NameValueQuery());//
-        NameValueQuery nvq = proxy.take(new NameValueQuery(), 500);
-        Assert.assertNull("Expecting not to be able to take something before something is present.", nvq);
+        space.readIfExists(new NameValueQuery());//
+        NameValueQuery nvq = space.take(new NameValueQuery(), 500);
+        assertNull("Expecting not to be able to take something before something is present.", nvq);
 
         NameValueQuery q = new NameValueQuery();
         q.name = "somename";
         q.value = "some value";
-        proxy.write(q, 2000);
+        space.write(q, 2000);
+        //for ( int i=0 ; i < 1000 ; i++ ) space.read(new NameValueQuery(), 1000);
+
+        nvq = space.read(new NameValueQuery(), 2000);
+        assertNotNull("Expecting to find value", nvq);
+        assertEquals(q.name , nvq.name);
+        nvq = space.takeIfExists(new NameValueQuery());
+        assertNotNull("Expecting to take", nvq);
+        assertEquals(q.name, nvq.name);
         
-        nvq = proxy.read(new NameValueQuery(), 2000);
-        Assert.assertNotNull("Expecting to find value", nvq);
-        Assert.assertEquals(q.name , nvq.name);
-        nvq = proxy.takeIfExists(new NameValueQuery());
-        Assert.assertNotNull("Expecting to take", nvq);
-        Assert.assertEquals(q.name, nvq.name);
-        
-        Assert.assertNull("Expecting not to be able to take something twice", proxy.take(new NameValueQuery(), 2000));
+        assertNull("Expecting not to be able to take something twice", space.take(new NameValueQuery(), 2000));
     }
+
+    @Test
+    public void testWrite() {
+        FieldHolder fh = new FieldHolder();
+        fh.setFieldA("a");
+        fh.setFieldB("b");
+
+        // Lease lease = space.write(entry,100000);
+        space.write(fh, 100000);
+
+        FieldHolder search = new FieldHolder();
+        search.setFieldA("a");
+        assertNotNull("Expecting to be able to find element searched for. Using \n" + search + " \nto search for \n"
+                + fh, space.readIfExists(search));
+        assertNotNull(space.read(fh, 0));
+        assertEquals("Identity", fh, fh);
+        assertEquals(fh, space.take(fh, 0));
+        assertNull(space.readIfExists(fh));
+        assertNull(space.takeIfExists(fh));
+    }
+
+    @Test
+    public void testTimeout() {
+        FieldHolder entry = new FieldHolder();
+        entry.setFieldA("c");
+        entry.setFieldB("d");
+        FieldHolder templ = new FieldHolder();
+        templ.setFieldA(entry.getFieldA());
+        templ.setFieldB(entry.getFieldB());
+
+        space.write(entry, 1000);
+        assertNotNull(space.read(templ, 30));
+
+        try {
+            Thread.sleep(1005);
+        } catch (InterruptedException ignored) {
+            // Ignore
+        }
+        assertNull("Space must honor timeout", space.readIfExists(entry));
+    }
+
+    @Test
+    public void testDoNotQueryWithIdentity() throws InterruptedException {
+        FieldHolder entry = new FieldHolder();
+        entry.setFieldA("c");
+        entry.setFieldB("d");
+
+        space.write(entry, 250);
+        Thread.sleep(50);
+        assertNotNull(space.readIfExists(entry));
+        assertNotNull(space.takeIfExists(entry));
+    }
+
+    @Test
+    public void testReadTimeout() {
+        FieldHolder entry = new FieldHolder();
+        entry.setFieldA("e");
+        entry.setFieldB("f");
+
+        long time = System.currentTimeMillis() + 500;
+        FieldHolder read = space.read(entry, 501);
+        assertNull("Expected null, got " + read, read);
+        long systime = System.currentTimeMillis();
+        assertTrue("Read should block for the indicated time. It did not. Got systime " + systime
+                + " which should (but is not) greater than estimated time " + time, time < systime);
+    }
+
+    @Test
+    public void testAlmostEqualHolders() {
+        AlternateHolder holder = new AlternateHolder();
+        holder.fieldA = "a";
+        holder.fieldB = "b";
+        AlternateButEqual different = new AlternateButEqual();
+        different.fieldA = "a";
+        different.fieldB = "b";
+
+        space.write(holder, 1000);
+        space.write(different, 1000);
+
+        AlternateHolder query = new AlternateHolder();
+        query.fieldA = "a";
+
+        assertEquals("" + holder, "" + space.takeIfExists(query));
+        assertEquals("null", "" + space.takeIfExists(query));
+        assertEquals("" + different, "" + space.takeIfExists(different));
+    }
+
 }

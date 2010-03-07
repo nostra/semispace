@@ -66,6 +66,9 @@ public class ReadOrTakeClient {
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);
             return null;
+        } catch (Throwable t ) {
+            log.error("Got an unexpected exception treating message.", t);
+            throw new RuntimeException("Unexpected exception", t);
         } finally {
             detach(client);
         }
@@ -87,6 +90,15 @@ public class ReadOrTakeClient {
         }
         @Override
         public void deliver(Client from, Client to, Message message) {
+            try {
+                deliverInternal(from, to, message);
+            } catch (Throwable t ) {
+                log.error("Got an unexpected exception treating message.", t);
+                throw new RuntimeException("Unexpected exception", t);
+            }
+        }
+
+        private void deliverInternal( Client from, Client to, Message message) {
             if ((CometConstants.READ_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
                 log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
@@ -96,7 +108,6 @@ public class ReadOrTakeClient {
                 latch.countDown();
             }
         }
-
         public Object getData() {
             return data;
         }

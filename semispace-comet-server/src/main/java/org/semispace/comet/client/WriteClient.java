@@ -63,6 +63,9 @@ public class WriteClient {
             log.trace("... unlatched");
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);
+        } catch (Throwable t ) {
+            log.error("Got an unexpected exception treating message.", t);
+            throw new RuntimeException("Unexpected exception", t);
         } finally {
             detach(client);
         }
@@ -84,10 +87,19 @@ public class WriteClient {
 
         @Override
         public void deliver(Client from, Client to, Message message) {
+            try {
+                deliverInternal(from, to, message);
+            } catch (Throwable t ) {
+                log.error("Got an unexpected exception treating message.", t);
+                throw new RuntimeException("Unexpected exception", t);
+            }
+        }
+
+        private void deliverInternal(Client from, Client to, Message message) {
             if ((CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
                 log.debug("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
-            }
+            }            
         }
     }
     
