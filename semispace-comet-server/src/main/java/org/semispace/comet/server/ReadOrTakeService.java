@@ -29,19 +29,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Supporting semispace read.
+ * Supporting semispace read or take.
  */
-public class ReadService extends BayeuxService {
-    private static final Logger log = LoggerFactory.getLogger(ReadService.class);
+public class ReadOrTakeService extends BayeuxService {
+    private static final Logger log = LoggerFactory.getLogger(ReadOrTakeService.class);
     private final SemiSpace space;
     
-    public ReadService(Bayeux bayeux, SemiSpace space ) {
+    public ReadOrTakeService(Bayeux bayeux, SemiSpace space ) {
         super(bayeux, "read");
-        subscribe(CometConstants.READ_CALL_CHANNEL+"/*", "semispaceRead");
+        subscribe(CometConstants.READ_CALL_CHANNEL+"/*", "semispaceReadOrTake");
         this.space = space;
     }
 
-    public void semispaceRead(Client remote, Message message) {
+    public void semispaceReadOrTake(Client remote, Message message) {
         log.debug("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();

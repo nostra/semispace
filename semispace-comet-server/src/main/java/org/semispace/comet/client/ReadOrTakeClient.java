@@ -31,13 +31,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * Supporting read from SemiSpace
  */
-public class ReadClient {
-    private static final Logger log = LoggerFactory.getLogger(ReadClient.class);
+public class ReadOrTakeClient {
+    private static final Logger log = LoggerFactory.getLogger(ReadOrTakeClient.class);
 
     private final ReadListener readListener;
     private final int callId;
 
-    public ReadClient(int callId) {
+    public ReadOrTakeClient(int callId) {
         this.callId = callId;
         readListener = new ReadListener(callId);
     }
@@ -58,10 +58,10 @@ public class ReadClient {
 
         try {
             client.publish(CometConstants.READ_CALL_CHANNEL+"/"+callId, map, null );
-            log.debug("Awaiting...");
+            log.trace("Awaiting...");
             // TODO Add representative timeout value
             readListener.getLatch().await(10, TimeUnit.SECONDS);
-            log.debug("... unlatched");
+            log.trace("... unlatched");
             return readListener.data;
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);
@@ -87,9 +87,8 @@ public class ReadClient {
         }
         @Override
         public void deliver(Client from, Client to, Message message) {
-            log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
             if ((CometConstants.READ_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
-                log.info("Channel: "+message.getChannel()+" client id "+message.getClientId());
+                log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
                 if ( map != null ) {
                     data = (String) map.get("result");

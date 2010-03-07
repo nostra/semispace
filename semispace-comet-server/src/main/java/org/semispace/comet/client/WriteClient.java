@@ -57,10 +57,10 @@ public class WriteClient {
 
         try {
             client.publish(CometConstants.WRITE_CALL_CHANNEL+"/"+callId, map, null );
-            log.debug("Awaiting...");
+            log.trace("Awaiting...");
             // TODO Add representative timeout value
             writeListener.getLatch().await(10, TimeUnit.SECONDS);
-            log.debug("... unlatched");
+            log.trace("... unlatched");
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);
         } finally {
@@ -85,7 +85,7 @@ public class WriteClient {
         @Override
         public void deliver(Client from, Client to, Message message) {
             if ((CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
-                log.info("Channel: "+message.getChannel()+" client id "+message.getClientId());
+                log.debug("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             }
         }
