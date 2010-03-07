@@ -29,7 +29,7 @@
         <url-pattern>/cometd/*</url-pattern>
     </filter-mapping>
     -->
-    <!-- Continuation is built in jetty7 - but presently we use jetty6 -->
+    <!-- Continuation is built in jetty7 - but presently we use jetty6
     <filter>
         <filter-name>continuation</filter-name>
         <filter-class>org.eclipse.jetty.continuation.ContinuationFilter</filter-class>
@@ -38,4 +38,5 @@
         <filter-name>continuation</filter-name>
         <url-pattern>/cometd/*</url-pattern>
     </filter-mapping>
+     -->
 </web-app>

@@ -34,10 +34,10 @@ public class ReadService extends BayeuxService {
     private static final Logger log = LoggerFactory.getLogger(ReadClient.class);
     public ReadService(Bayeux bayeux) {
         super(bayeux, "read");
-        subscribe(ReadClient.CALL_CHANNEL, "semispaceWrite");
+        subscribe(ReadClient.CALL_CHANNEL, "semispaceRead");
     }
 
-    public void semispaceWrite(Client remote, Message message) {
+    public void semispaceRead(Client remote, Message message) {
         log.debug("Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
         
         //Map<String, Object> input = (Map<String, Object>)message.getData();

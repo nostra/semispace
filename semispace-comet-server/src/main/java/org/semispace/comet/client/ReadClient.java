@@ -37,51 +37,36 @@ public class ReadClient {
     private static final Logger log = LoggerFactory.getLogger(ReadClient.class);
     public static final String CALL_CHANNEL = "/semispace/call/read";
     public static final String REPLY_CHANNEL = "/semispace/reply/read";
-    private BayeuxClient client;
-
 
     private final ReadListener readListener = new ReadListener();
 
-    private void attach(HttpClient httpClient, String endpoint) {
-        if ( client != null ) {
-            detach();
-        }
-        try {
-            client = new SemiSpaceBayeuxClient(httpClient, endpoint);
-            client.start();
-        } catch (Exception e) {
-            log.error("Could not start client", e);
-            throw new RuntimeException("Could not start client", e);
-        }
-
+    private void attach(BayeuxClient client) {
         client.addListener(readListener);
         client.subscribe(REPLY_CHANNEL);
         client.subscribe(Bayeux.META_HANDSHAKE);
     }
 
-    private void detach() {
-        if ( client != null ) {
-            client.removeListener(readListener);
-            client.unsubscribe(REPLY_CHANNEL);
-            client.disconnect();
-        }
-        client = null;
+    private void detach(BayeuxClient client) {
+        client.removeListener(readListener);
+        client.unsubscribe(REPLY_CHANNEL);
     }
 
-    public void doRead(HttpClient httpClient, String endpoint) {
-        attach( httpClient, endpoint);
+    public void doRead(BayeuxClient client) {
+        attach(client);
         Map map = new HashMap();
         map.put("name", "Zzzzzzzzzzz xxx");
         map.put("something", "Inconsequential");
         client.publish(ReadClient.CALL_CHANNEL, map, "23" );
+        
         try {
             readListener.getLatch().await();
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException. Masked: "+e);
         }
 
-        detach();
+        detach(client);
     }
+
 
     private class ReadListener implements MessageListener {
         private final CountDownLatch latch;

@@ -16,7 +16,9 @@
 
 package org.semispace.comet.client;
 
+import org.cometd.client.BayeuxClient;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.util.component.LifeCycle;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiLease;
@@ -27,21 +29,24 @@ import org.slf4j.LoggerFactory;
 
 public class SemiSpaceCometProxy implements SemiSpaceInterface {
     private static final Logger log = LoggerFactory.getLogger(SemiSpaceCometProxy.class);
+    private BayeuxClient client;
     private HttpClient httpClient;
-    private String endpoint;
 
     // "http://localhost:8080/semispace-comet-server/cometd/"
     public void init(String endpoint) {
-        this.endpoint = endpoint;
         httpClient = new HttpClient();
         try {
             httpClient.start();
+            client = new SemiSpaceBayeuxClient(httpClient, endpoint);
+            client.addLifeCycleListener(new ProxyLifeCycle());
+            client.start();
         } catch (Exception e) {
             throw new RuntimeException("Could not start client", e);
         }
     }
 
     public void destroy() {
+        client.disconnect();
         if ( httpClient != null ) {
             try {
                 httpClient.stop();
@@ -59,8 +64,9 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
     @Override
     public <T> T read(T template, long duration) {
-        ReadClient client = new ReadClient();
-        client.doRead(httpClient, endpoint);
+        ReadClient read = new ReadClient();
+        read.doRead(client);
+
         return null;
     }
 
@@ -82,5 +88,32 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     @Override
     public SemiEventRegistration notify(Object template, SemiEventListener listener, long duration) {
         return null;  
+    }
+
+    private class ProxyLifeCycle implements LifeCycle.Listener {
+        @Override
+        public void lifeCycleStarting(LifeCycle event) {
+            log.debug("Starting "+event.toString());
+        }
+
+        @Override
+        public void lifeCycleStarted(LifeCycle event) {
+            log.debug("Started "+event.toString());
+        }
+
+        @Override
+        public void lifeCycleFailure(LifeCycle event, Throwable cause) {
+            log.debug("Failure "+event.toString());
+        }
+
+        @Override
+        public void lifeCycleStopping(LifeCycle event) {
+            log.debug("Stopping "+event.toString());
+        }
+
+        @Override
+        public void lifeCycleStopped(LifeCycle event) {
+            log.debug("Stopped "+event.toString());
+        }
     }
 }
