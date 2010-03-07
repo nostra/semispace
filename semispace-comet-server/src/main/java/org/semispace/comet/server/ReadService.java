@@ -38,7 +38,7 @@ public class ReadService extends BayeuxService {
     
     public ReadService(Bayeux bayeux, SemiSpace space ) {
         super(bayeux, "read");
-        subscribe(CometConstants.READ_CALL_CHANNEL, "semispaceRead");
+        subscribe(CometConstants.READ_CALL_CHANNEL+"/*", "semispaceRead");
         this.space = space;
     }
 
@@ -59,6 +59,6 @@ public class ReadService extends BayeuxService {
         if ( result != null ) {
             output.put("result", result);
         }
-        remote.deliver(getClient(), CometConstants.READ_REPLY_CHANNEL, output, message.getId());
+        remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
     }
 }

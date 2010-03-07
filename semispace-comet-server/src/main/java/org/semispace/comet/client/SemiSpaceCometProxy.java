@@ -36,6 +36,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Client side of comet proxy
@@ -45,6 +46,10 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     private BayeuxClient client;
     private HttpClient httpClient;
     private XStream xstream;
+    /**
+     * The call counter is used for differentiating between different calls from the same VM. 
+     */
+    private AtomicInteger myCallCounter = new AtomicInteger(1);
 
     public SemiSpaceCometProxy() {
         xstream = new XStream();
@@ -86,7 +91,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
     @Override
     public <T> T read(T template, long duration) {
-        ReadClient read = new ReadClient();
+        ReadClient read = new ReadClient( myCallCounter.getAndIncrement() );
 
         // TODO Use different method for extracting properties.
         Holder holder = retrievePropertiesFromXml(xstream.toXML(template), duration);

@@ -16,7 +16,6 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.Bayeux;
 import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.MessageListener;
@@ -35,24 +34,30 @@ import java.util.concurrent.TimeUnit;
 public class ReadClient {
     private static final Logger log = LoggerFactory.getLogger(ReadClient.class);
 
-    private final ReadListener readListener = new ReadListener();
+    private final ReadListener readListener;
+    private final int callId;
+
+    public ReadClient(int callId) {
+        this.callId = callId;
+        readListener = new ReadListener(callId);
+    }
 
     private void attach(BayeuxClient client) {
         client.addListener(readListener);
-        client.subscribe(CometConstants.READ_REPLY_CHANNEL);
-        client.subscribe(Bayeux.META_HANDSHAKE);
+        // Documentation says I have to subscribe to this channel, but it seems like I do not have to.
+        client.subscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);
     }
 
     private void detach(BayeuxClient client) {
         client.removeListener(readListener);
-        client.unsubscribe(CometConstants.READ_REPLY_CHANNEL);
+        client.unsubscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);
     }
 
     public String doRead(BayeuxClient client, Map<String, Object> map) {
         attach(client);
 
         try {
-            client.publish(CometConstants.READ_CALL_CHANNEL, map, null );
+            client.publish(CometConstants.READ_CALL_CHANNEL+"/"+callId, map, null );
             log.debug("Awaiting...");
             // TODO Add representative timeout value
             readListener.getLatch().await(10, TimeUnit.SECONDS);
@@ -69,14 +74,16 @@ public class ReadClient {
 
     private static class ReadListener implements MessageListener {
         private final CountDownLatch latch;
+        private final int callId;
         private String data;
 
         public CountDownLatch getLatch() {
             return latch;
         }
 
-        public ReadListener() {
+        public ReadListener(int callId) {
             this.latch = new CountDownLatch(1);
+            this.callId = callId;
         }
         @Override
         public void deliver(Client from, Client to, Message message) {
@@ -86,7 +93,7 @@ public class ReadClient {
                 log.error("Totally foobared!", t);
                 throw new RuntimeException("Not expected");
             }
-            if (CometConstants.READ_REPLY_CHANNEL.equals(message.getChannel())) {
+            if ((CometConstants.READ_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
                 // Here we received a message on the channel
                 log.info("Channel is correct: "+message.getChannel()+" client id "+message.getClientId());
                 Map map = (Map) message.getData();
