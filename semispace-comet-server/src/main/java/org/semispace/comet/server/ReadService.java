@@ -34,14 +34,16 @@ import java.util.Map;
  */
 public class ReadService extends BayeuxService {
     private static final Logger log = LoggerFactory.getLogger(ReadClient.class);
-    public ReadService(Bayeux bayeux) {
+    private final SemiSpace space;
+    
+    public ReadService(Bayeux bayeux, SemiSpace space ) {
         super(bayeux, "read");
         subscribe(ReadClient.CALL_CHANNEL, "semispaceRead");
+        this.space = space;
     }
 
     public void semispaceRead(Client remote, Message message) {
         log.debug("Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-        SemiSpace space = (SemiSpace) SemiSpace.retrieveSpace();
 
         NameValueQuery dummy = new NameValueQuery();
         dummy.name = "dummyName";
@@ -53,8 +55,10 @@ public class ReadService extends BayeuxService {
         final Long duration = (Long) data.get("duration");
         String result = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), false);
 
-        Map<String, Object> output = new HashMap<String, Object>();
-        output.put("result", result);
+        Map<String, String> output = new HashMap<String, String>();
+        if ( result != null ) {
+            output.put("result", result);
+        }
         remote.deliver(getClient(), ReadClient.REPLY_CHANNEL, output, message.getClientId());
     }
 }

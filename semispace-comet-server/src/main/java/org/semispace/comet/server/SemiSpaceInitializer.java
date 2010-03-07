@@ -16,26 +16,26 @@
 
 package org.semispace.comet.server;
 
-import java.io.IOException;
+import org.cometd.Bayeux;
+import org.semispace.SemiSpace;
+
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.cometd.Bayeux;
-import org.semispace.comet.client.ReadClient;
+import java.io.IOException;
 
 public class SemiSpaceInitializer extends GenericServlet {
     private ReadService rs;
     @Override
     public void init() throws ServletException {
-
+        SemiSpace space = (SemiSpace) SemiSpace.retrieveSpace();
         Bayeux bayeux = (Bayeux)getServletContext().getAttribute(Bayeux.ATTRIBUTE);
-        rs = new ReadService(bayeux);
+        rs = new ReadService(bayeux, space);
     }
     
     @Override
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-        throw new ServletException("Initializer does not support any services");
+        throw new ServletException(getClass().getName()+" does not support any services");
     }
 }

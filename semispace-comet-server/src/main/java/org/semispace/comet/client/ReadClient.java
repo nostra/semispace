@@ -21,12 +21,9 @@ import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.MessageListener;
 import org.cometd.client.BayeuxClient;
-import org.eclipse.jetty.client.HttpClient;
-import org.semispace.comet.client.SemiSpaceBayeuxClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -51,24 +48,27 @@ public class ReadClient {
         client.unsubscribe(REPLY_CHANNEL);
     }
 
-    public void doRead(BayeuxClient client, Map<String, Object> map) {
+    public String doRead(BayeuxClient client, Map<String, Object> map) {
         attach(client);
-        client.publish(ReadClient.CALL_CHANNEL, map, ""+map.get("id") );
-        
+
         try {
+            client.publish(ReadClient.CALL_CHANNEL, map, ""+map.get("id") );
             log.debug("Awaiting...");
             readListener.getLatch().await();
             log.debug("... unlatched");
+            return readListener.data;
         } catch (InterruptedException e) {
-            log.warn("Got InterruptedException. Masked: "+e);
+            log.warn("Got InterruptedException - returning null. Masked: "+e);
+            return null;
+        } finally {
+            detach(client);
         }
-
-        detach(client);
     }
 
 
     private static class ReadListener implements MessageListener {
         private final CountDownLatch latch;
+        private String data;
 
         public CountDownLatch getLatch() {
             return latch;
@@ -77,13 +77,22 @@ public class ReadClient {
         public ReadListener() {
             this.latch = new CountDownLatch(1);
         }
+        @Override
         public void deliver(Client from, Client to, Message message) {
             log.debug("Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
             if (REPLY_CHANNEL.equals(message.getChannel())) {
                 // Here we received a message on the channel
                 log.info("Channel is correct: "+message.getChannel()+" client id "+message.getClientId());
+                Map map = (Map) message.getData();
+                if ( map != null ) {
+                    data = (String) map.get("result");
+                }
                 latch.countDown();
             }
+        }
+
+        public Object getData() {
+            return data;
         }
     }
 

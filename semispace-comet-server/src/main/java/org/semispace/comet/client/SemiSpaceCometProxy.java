@@ -89,7 +89,10 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("searchMap", holder.getSearchMap());
         param.put("duration", Long.valueOf(duration));
-        read.doRead(client, param );
+        String xml = read.doRead(client, param );
+        if ( xml != null ) {
+            return (T) xstream.fromXML(xml);
+        }
 
         return null;
     }
