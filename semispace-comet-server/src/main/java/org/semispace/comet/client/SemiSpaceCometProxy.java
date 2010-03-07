@@ -75,14 +75,20 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
     }
 
+    /**
+     * @return null TODO Presently always returning null, as lease is not yet supported.
+     */
     @Override
-    public SemiLease write(Object obj, long duration) {        
+    public SemiLease write(Object obj, long duration) {
+        WriteClient write = new WriteClient();
         return null;
     }
 
     @Override
     public <T> T read(T template, long duration) {
         ReadClient read = new ReadClient();
+
+        // TODO Use different method for extracting properties.
         Holder holder = retrievePropertiesFromXml(xstream.toXML(template), duration);
 
         holder.getSearchMap();

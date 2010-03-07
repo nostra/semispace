@@ -27,79 +27,61 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Supporting read from SemiSpace
+ * Taking care of the write interaction
  */
-public class ReadClient {
-    private static final Logger log = LoggerFactory.getLogger(ReadClient.class);
+public class WriteClient {
+    private static final Logger log = LoggerFactory.getLogger(WriteClient.class);
 
-    private final ReadListener readListener = new ReadListener();
+    private final WriteListener writeListener = new WriteListener();
 
     private void attach(BayeuxClient client) {
-        client.addListener(readListener);
-        client.subscribe(CometConstants.READ_REPLY_CHANNEL);
+        client.addListener(writeListener);
+        client.subscribe(CometConstants.WRITE_REPLY_CHANNEL);
         client.subscribe(Bayeux.META_HANDSHAKE);
     }
 
     private void detach(BayeuxClient client) {
-        client.removeListener(readListener);
-        client.unsubscribe(CometConstants.READ_REPLY_CHANNEL);
+        client.removeListener(writeListener);
+        client.unsubscribe(CometConstants.WRITE_REPLY_CHANNEL);
     }
 
-    public String doRead(BayeuxClient client, Map<String, Object> map) {
+    public void doWrite(BayeuxClient client, Map<String, Object> map) {
         attach(client);
 
         try {
-            client.publish(CometConstants.READ_CALL_CHANNEL, map, null );
+            client.publish(CometConstants.WRITE_CALL_CHANNEL, map, null );
             log.debug("Awaiting...");
             // TODO Add representative timeout value
-            readListener.getLatch().await(10, TimeUnit.SECONDS);
+            writeListener.getLatch().await();
             log.debug("... unlatched");
-            return readListener.data;
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);
-            return null;
         } finally {
             detach(client);
         }
     }
 
 
-    private static class ReadListener implements MessageListener {
+    private static class WriteListener implements MessageListener {
         private final CountDownLatch latch;
-        private String data;
 
         public CountDownLatch getLatch() {
             return latch;
         }
 
-        public ReadListener() {
+        public WriteListener() {
             this.latch = new CountDownLatch(1);
         }
         @Override
         public void deliver(Client from, Client to, Message message) {
-            try {
-                log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-            } catch( Throwable t ) {
-                log.error("Totally foobared!", t);
-                throw new RuntimeException("Not expected");
-            }
-            if (CometConstants.READ_REPLY_CHANNEL.equals(message.getChannel())) {
+            if (CometConstants.WRITE_REPLY_CHANNEL.equals(message.getChannel())) {
                 // Here we received a message on the channel
                 log.info("Channel is correct: "+message.getChannel()+" client id "+message.getClientId());
-                Map map = (Map) message.getData();
-                if ( map != null ) {
-                    data = (String) map.get("result");
-                }
                 latch.countDown();
             }
         }
-
-        public Object getData() {
-            return data;
-        }
     }
-
+    
 }

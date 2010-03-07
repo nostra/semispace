@@ -22,7 +22,6 @@ import org.cometd.Message;
 import org.cometd.server.BayeuxService;
 import org.semispace.NameValueQuery;
 import org.semispace.SemiSpace;
-import org.semispace.comet.client.ReadClient;
 import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ import java.util.Map;
  * Supporting semispace read.
  */
 public class ReadService extends BayeuxService {
-    private static final Logger log = LoggerFactory.getLogger(ReadClient.class);
+    private static final Logger log = LoggerFactory.getLogger(ReadService.class);
     private final SemiSpace space;
     
     public ReadService(Bayeux bayeux, SemiSpace space ) {
@@ -44,7 +43,7 @@ public class ReadService extends BayeuxService {
     }
 
     public void semispaceRead(Client remote, Message message) {
-        log.debug("Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
+        log.debug("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
 
         NameValueQuery dummy = new NameValueQuery();
         dummy.name = "dummyName";
@@ -60,6 +59,6 @@ public class ReadService extends BayeuxService {
         if ( result != null ) {
             output.put("result", result);
         }
-        remote.deliver(getClient(), CometConstants.READ_REPLY_CHANNEL, output, null);
+        remote.deliver(getClient(), CometConstants.READ_REPLY_CHANNEL, output, message.getId());
     }
 }

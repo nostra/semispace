@@ -22,4 +22,6 @@ package org.semispace.comet.common;
 public class CometConstants {
     public static final String READ_CALL_CHANNEL = "/semispace/call/read";
     public static final String READ_REPLY_CHANNEL = "/semispace/reply/read";
+    public static final String WRITE_CALL_CHANNEL = "/semispace/call/write";
+    public static final String WRITE_REPLY_CHANNEL = "/semispace/reply/write";
 }
