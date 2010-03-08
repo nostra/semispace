@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Supporting read from SemiSpace
@@ -59,8 +58,8 @@ public class ReadOrTakeClient {
         try {
             client.publish(CometConstants.READ_CALL_CHANNEL+"/"+callId, map, null );
             log.debug("Awaiting..."+CometConstants.READ_CALL_CHANNEL+"/"+callId+" map is: "+map);
-            // TODO Add representative timeout value
-            readListener.getLatch().await(10, TimeUnit.SECONDS);
+            // TODO Add representative timeout value - 10, TimeUnit.SECONDS
+            readListener.getLatch().await();
             log.trace("... unlatched");
             return readListener.data;
         } catch (InterruptedException e) {

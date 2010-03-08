@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Taking care of the write interaction
@@ -58,8 +57,8 @@ public class WriteClient {
         try {
             client.publish(CometConstants.WRITE_CALL_CHANNEL+"/"+callId, map, null );
             log.trace("Awaiting...");
-            // TODO Add representative timeout value
-            writeListener.getLatch().await(10, TimeUnit.SECONDS);
+            // TODO Add representative timeout value - 10, TimeUnit.SECONDS
+            writeListener.getLatch().await();
             log.trace("... unlatched");
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);
