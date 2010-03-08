@@ -20,6 +20,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.semispace.NameValueQuery;
+import org.semispace.comet.demo.FieldHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,14 +37,16 @@ public class ReadClientTest {
     @Before
     public void setUp() throws Exception {
         log.warn("\n\n\n\nNOT SUPPORTING NORMAL BUILD TESTS YET\nUse\n  mvn -Denv=dev clean install\nwhen building this module\n\n\n");
-        space = new SemiSpaceCometProxy();
-        space.init("http://localhost:8080/semispace-comet-server/cometd/");
+        if ( space == null ) {
+            space = new SemiSpaceCometProxy();
+            space.init("http://localhost:8080/semispace-comet-server/cometd/");
+        }
     }
 
     @After
     public void tearDown() throws Exception {
         Thread.sleep(500);
-        space.destroy();
+        //space.destroy();
     }
 
     @Test

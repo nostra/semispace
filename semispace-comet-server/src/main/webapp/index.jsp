@@ -2,21 +2,13 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <script type="text/javascript" src="${pageContext.request.contextPath}/dojo/dojo.js.uncompressed.js"></script>
-    <script type="text/javascript" src="application.js"></script>
-    <%--
-    The reason to use a JSP is that it is very easy to obtain server-side configuration
-    information (such as the contextPath) and pass it to the JavaScript environment on the client.
-    --%>
-    <script type="text/javascript">
-        var config = {
-            contextPath: '${pageContext.request.contextPath}'
-        };
-    </script>
 </head>
 <body>
-
-    <div id="body"></div>
+<h1>semispace-comet</h1>
+<ul>
+    <li><a href="insert?param=demo">Insert servlet</a></li>
+    <li><a href="app.jsp">App</a></li>
+</ul>
 
 </body>
 </html>

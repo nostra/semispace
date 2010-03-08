@@ -58,7 +58,7 @@ public class ReadOrTakeClient {
 
         try {
             client.publish(CometConstants.READ_CALL_CHANNEL+"/"+callId, map, null );
-            log.trace("Awaiting...");
+            log.debug("Awaiting..."+CometConstants.READ_CALL_CHANNEL+"/"+callId+" map is: "+map);
             // TODO Add representative timeout value
             readListener.getLatch().await(10, TimeUnit.SECONDS);
             log.trace("... unlatched");
@@ -100,7 +100,7 @@ public class ReadOrTakeClient {
 
         private void deliverInternal( Client from, Client to, Message message) {
             if ((CometConstants.READ_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
-                log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
+                //log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
                 if ( map != null ) {
                     data = (String) map.get("result");

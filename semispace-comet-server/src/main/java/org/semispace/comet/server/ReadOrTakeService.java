@@ -42,14 +42,15 @@ public class ReadOrTakeService extends BayeuxService {
     }
 
     public void semispaceReadOrTake(Client remote, Message message) {
-        log.debug("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
+        log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
-        final Long duration = (Long) data.get("duration");
-        final Boolean shallTake = (Boolean) data.get("shallTake");
+        final Long duration = Long.valueOf((String) data.get("duration"));
+        final boolean shallTake = "true".equals( data.get("shallTake"));
 
-        String result = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), shallTake.booleanValue());
+        String result = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), shallTake);
+        // log.debug("Did "+(result == null?"NOT":"")+" get a result: "+result);
 
         Map<String, String> output = new HashMap<String, String>();
         if ( result != null ) {

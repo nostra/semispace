@@ -45,7 +45,7 @@ public class WriteService extends BayeuxService {
     public void semispaceWrite(Client remote, Message message) {
         final Map<String, Object> data = (Map<String, Object>) message.getData();
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
-        final Long timeToLiveMs = (Long) data.get("timeToLiveMs");
+        final Long timeToLiveMs = Long.valueOf(""+data.get("timeToLiveMs"));
         final String xml = (String) data.get("xml");
         final String className = (String) data.get("classname");
         log.debug("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" classname "+className);

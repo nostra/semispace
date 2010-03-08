@@ -30,7 +30,7 @@
  * ============================================================================ 
  */
 
-package org.semispace.comet.client;
+package org.semispace.comet.demo;
 
 public class FieldHolder {
     private String fieldA;

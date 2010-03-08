@@ -91,7 +91,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("searchMap", holder.getSearchMap());
-        param.put("timeToLiveMs", Long.valueOf(timeToLiveMs));
+        param.put("timeToLiveMs",""+timeToLiveMs);
         param.put("xml", xml);
         param.put("classname", holder.getClassName());
 
@@ -118,8 +118,8 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
             Map<String, Object> param = new HashMap<String, Object>();
             param.put("searchMap", holder.getSearchMap());
-            param.put("duration", Long.valueOf(duration));
-            param.put("shallTake", Boolean.valueOf(shallTake));
+            param.put("duration", ""+duration);
+            param.put("shallTake", ""+shallTake);
             String xml = readOrTake.doRead(client, param );
             if ( xml != null ) {
                 return (T) xstream.fromXML(xml);
