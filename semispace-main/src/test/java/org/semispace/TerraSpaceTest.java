@@ -223,11 +223,9 @@ public class TerraSpaceTest extends TestCase {
                 fh.setFieldB("b");
 
                 for ( int i=0 ; i < 500 ; i++ ) {
-//                    increaseSimultanous();
                     if (space.take(fh, 19500) == null && problem == null ) {
                         problem = "Got null when taking element "+i;
                     }
-//                    decreaseSimultanous();
                 }
             }
         };
@@ -239,11 +237,9 @@ public class TerraSpaceTest extends TestCase {
                 ah.fieldB = "b";
 
                 for ( int i=0 ; i < 500 ; i++ ) {
-//                    increaseSimultanous();
                     if (space.take(ah, 19500) == null && problem == null ) {
                         problem = "Got null when taking element "+i;
                     }
-//                    decreaseSimultanous();
                 }
             }
         };
@@ -269,26 +265,6 @@ public class TerraSpaceTest extends TestCase {
         assertNull(problem, problem );
     }
 
-    /*
-    private synchronized void increaseSimultanous() {
-        int count = 0;
-        while ( simultaneous > 100 ) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                // Ignored
-            }
-            if ( ++count > 10 ) {
-                throw new RuntimeException("Problematic count - does not decrease"); 
-            }
-        }
-        simultaneous++;
-    }
-    
-    private synchronized void decreaseSimultanous()  {
-        simultaneous--;
-    }
-    */
     
     /**
      * Will not fail on insertion time, really. Just testing how many
@@ -299,11 +275,11 @@ public class TerraSpaceTest extends TestCase {
         NameValueQuery nvq = new NameValueQuery();
         nvq.name = "junit";
         nvq.value = "insertion time";
-        
+
         log.debug("Started insertion");
         int counter = 0;
         long startTime = System.currentTimeMillis();
-        while ( startTime > System.currentTimeMillis() - 500 ) {
+        while ( startTime > System.currentTimeMillis() - 1000 ) {
             space.write(nvq, 10000);
             counter++;
         }
@@ -312,8 +288,8 @@ public class TerraSpaceTest extends TestCase {
         while ( space.take( nvq, 200 ) != null ) {
             takenCounter++;
         }
-        log.debug("Total running time "+(System.currentTimeMillis() - startTime));
-        
+        log.debug("Total running time "+(System.currentTimeMillis() - startTime)+" ms, inserted (and hopefully took) "+counter+" items.");
+
         assertEquals("Should be able to take as many elements as was inserted.", counter, takenCounter);
     }
 

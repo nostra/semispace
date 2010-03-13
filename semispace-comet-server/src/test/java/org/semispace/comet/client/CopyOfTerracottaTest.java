@@ -293,26 +293,6 @@ public class CopyOfTerracottaTest extends TestCase {
         assertNull(problem, problem );
     }
 
-    /*
-    private synchronized void increaseSimultanous() {
-        int count = 0;
-        while ( simultaneous > 100 ) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                // Ignored
-            }
-            if ( ++count > 10 ) {
-                throw new RuntimeException("Problematic count - does not decrease");
-            }
-        }
-        simultaneous++;
-    }
-
-    private synchronized void decreaseSimultanous()  {
-        simultaneous--;
-    }
-    */
 
     /**
      * Will not fail on insertion time, really. Just testing how many
