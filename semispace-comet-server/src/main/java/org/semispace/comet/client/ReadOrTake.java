@@ -27,7 +27,7 @@ public interface ReadOrTake {
     /**
      * Lag in network which will be added to wait time for operations
      */
-    public static final long PRESUMED_NETWORK_LAG_MS = 500;
+    public static final long PRESUMED_NETWORK_LAG_MS = 1500;
 
     String doReadOrTake(BayeuxClient client, Map<String, Object> map, long maxWaitMs );
 }

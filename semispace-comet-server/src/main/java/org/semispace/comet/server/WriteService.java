@@ -51,6 +51,7 @@ public class WriteService extends BayeuxService {
         searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
         log.debug("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" class "+className);
 
+        // Not putting this into separate thread, as this is expected to perform reasonably quickly
         SemiLease lease = space.writeToElements(className,timeToLiveMs, xml, searchMap);
 
         Map<String, String> output = new HashMap<String, String>();

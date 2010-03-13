@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Supporting semispace take.
@@ -34,6 +36,7 @@ import java.util.Map;
 public class TakeService extends BayeuxService {
     private static final Logger log = LoggerFactory.getLogger(TakeService.class);
     private final SemiSpace space;
+    private ExecutorService threadPool = Executors.newCachedThreadPool();
 
     public TakeService(Bayeux bayeux, SemiSpace space ) {
         super(bayeux, "take");
@@ -41,25 +44,38 @@ public class TakeService extends BayeuxService {
         this.space = space;
     }
 
-    public void semispaceTake(Client remote, Message message) {
+    public void semispaceTake(final Client remote, final Message message) {
         log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();
         final Long duration = Long.valueOf((String) data.get("duration"));
-        final boolean shallTake = true;
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
+        final String outChannel = message.getChannel().replace("/call/", "/reply/");
         searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
 
-        String result = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), shallTake);
-        // log.debug("Did "+(result == null?"NOT":"")+" get a result: "+result);
+        Runnable takeResult = new Runnable() {
+            @Override
+            public void run() {
+                String result = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), true);
+                // log.debug("Did "+(result == null?"NOT":"")+" get a result: "+result);
 
-        Map<String, String> output = new HashMap<String, String>();
-        if ( result != null ) {
-            output.put("result", result);
-            log.trace("take ended up with a result");
-        } else {
-            log.trace("take did not get a result");
-        }
-        remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
+                Map<String, String> output = new HashMap<String, String>();
+                if ( result != null ) {
+                    output.put("result", result);
+                    log.trace("take ended up with a result");
+                } else {
+                    log.trace("take did not get a result");
+                }
+                log.debug("(take) Running deliver with "+remote.getClass().getName());
+                try {
+                    remote.deliver(getClient(), outChannel, output, null);
+                } catch ( Throwable t ) {
+                    log.error("Got a problem delivering", t);
+                } finally {
+                    log.trace("======== delivered TAKE on channel {} - done", outChannel);
+                }
+            }
+        };
+        threadPool.submit(takeResult);
     }
 }

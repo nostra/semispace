@@ -64,8 +64,11 @@ public class TakeClient implements ReadOrTake {
         */
         try {
             client.publish(CometConstants.TAKE_CALL_CHANNEL+"/"+callId, map, null );
-            log.debug("Awaiting..."+CometConstants.TAKE_CALL_CHANNEL+"/"+callId+" map is: "+map);
-            takeListener.getLatch().await(maxWaitMs+ PRESUMED_NETWORK_LAG_MS, TimeUnit.MILLISECONDS);
+            log.debug("Awaiting..."+CometConstants.TAKE_REPLY_CHANNEL+"/"+callId+" map is: "+map);
+            boolean finishedOk = takeListener.getLatch().await(maxWaitMs+ PRESUMED_NETWORK_LAG_MS, TimeUnit.MILLISECONDS);
+            if ( !finishedOk) {
+                log.warn("Did not receive callback on take. That is not to savory. Problem with connection?");
+            }
             log.trace("... unlatched");
             return takeListener.data;
         } catch (InterruptedException e) {

@@ -160,7 +160,7 @@ public class CopyOfTerracottaTest extends TestCase {
 
         Runnable insert = new Runnable( ) {
             public void run() {
-                for ( int i=0 ; i < 1000 ; i++ ) {
+                for ( int i=0 ; i < 100 ; i++ ) {
                     FieldHolder fh = new FieldHolder();
                     fh.setFieldA("a");
                     fh.setFieldB("b");
@@ -176,7 +176,7 @@ public class CopyOfTerracottaTest extends TestCase {
         new Thread(insert).start();
         FieldHolder templ = new FieldHolder();
         templ.setFieldA("a");
-        for ( int i=0 ; i < 1000 ; i++ ) {
+        for ( int i=0 ; i < 100 ; i++ ) {
 /*            if ( i % 100 == 0 ) {
                 log.debug("Take statistics: "+((SemiSpace)space).getStatistics());
             }*/
@@ -251,6 +251,7 @@ public class CopyOfTerracottaTest extends TestCase {
 //                    increaseSimultanous();
                     if (space.take(fh, 19500) == null && problem == null ) {
                         problem = "Got null when taking element "+i;
+                        return;
                     }
 //                    decreaseSimultanous();
                 }
@@ -267,6 +268,7 @@ public class CopyOfTerracottaTest extends TestCase {
 //                    increaseSimultanous();
                     if (space.take(ah, 19500) == null && problem == null ) {
                         problem = "Got null when taking element "+i;
+                        return;
                     }
 //                    decreaseSimultanous();
                 }
@@ -287,7 +289,7 @@ public class CopyOfTerracottaTest extends TestCase {
         d.join();
         FieldHolder fx = new FieldHolder();
         fx.setFieldA("a");
-        assertNull("Should have consumed all of the elements. Still have some.", space.readIfExists(fx));
+        assertNull("Should have consumed all of the elements. Still have some. Reported problem (if any): "+problem, space.readIfExists(fx));
         AlternateHolder ah = new AlternateHolder();
         ah.fieldA = "a";
         assertNull("Should have consumed all of the elements. Still have some alternate versions. Logged problem: "+problem, space.readIfExists(ah));
