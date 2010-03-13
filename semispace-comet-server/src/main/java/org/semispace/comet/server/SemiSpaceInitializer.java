@@ -26,14 +26,18 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 public class SemiSpaceInitializer extends GenericServlet {
-    private ReadOrTakeService rs;
+    private ReadService rs;
     private WriteService ws;
+    private TakeService ts;
     @Override
     public void init() throws ServletException {
         SemiSpace space = (SemiSpace) SemiSpace.retrieveSpace();
         Bayeux bayeux = (Bayeux)getServletContext().getAttribute(Bayeux.ATTRIBUTE);
-        rs = new ReadOrTakeService(bayeux, space);
+        rs = new ReadService(bayeux, space);
         rs.setSeeOwnPublishes(false);
+        ts = new TakeService(bayeux, space);
+        ts.setSeeOwnPublishes(false);
+
         ws = new WriteService(bayeux, space);
         ws.setSeeOwnPublishes(false);
     }

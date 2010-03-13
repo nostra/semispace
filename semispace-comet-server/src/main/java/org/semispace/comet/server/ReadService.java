@@ -29,24 +29,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Supporting semispace read or take.
+ * Supporting semispace read.
  */
-public class ReadOrTakeService extends BayeuxService {
-    private static final Logger log = LoggerFactory.getLogger(ReadOrTakeService.class);
+public class ReadService extends BayeuxService {
+    private static final Logger log = LoggerFactory.getLogger(ReadService.class);
     private final SemiSpace space;
     
-    public ReadOrTakeService(Bayeux bayeux, SemiSpace space ) {
+    public ReadService(Bayeux bayeux, SemiSpace space ) {
         super(bayeux, "read");
-        subscribe(CometConstants.READ_CALL_CHANNEL+"/*", "semispaceReadOrTake");
+        subscribe(CometConstants.READ_CALL_CHANNEL+"/*", "semispaceRead");
         this.space = space;
     }
 
-    public void semispaceReadOrTake(Client remote, Message message) {
+    public void semispaceRead(Client remote, Message message) {
         log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();
         final Long duration = Long.valueOf((String) data.get("duration"));
-        final boolean shallTake = "true".equals( data.get("shallTake"));
+        final boolean shallTake = false;
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
         searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
 
@@ -56,6 +56,9 @@ public class ReadOrTakeService extends BayeuxService {
         Map<String, String> output = new HashMap<String, String>();
         if ( result != null ) {
             output.put("result", result);
+            log.trace("read ended up with a result");
+        } else {
+            log.trace("read did not get a result");
         }
         remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
     }

@@ -48,7 +48,6 @@ public class ReadClientTest {
 
     @Test
     public void testRead() throws Exception {
-        space.readIfExists(new NameValueQuery());//
         NameValueQuery nvq = space.take(new NameValueQuery(), 500);
         assertNull("Expecting not to be able to take something before something is present.", nvq);
 
@@ -114,7 +113,7 @@ public class ReadClientTest {
         entry.setFieldA("c");
         entry.setFieldB("d");
 
-        space.write(entry, 250);
+        space.write(entry, 450);
         Thread.sleep(50);
         assertNotNull(space.readIfExists(entry));
         assertNotNull(space.takeIfExists(entry));

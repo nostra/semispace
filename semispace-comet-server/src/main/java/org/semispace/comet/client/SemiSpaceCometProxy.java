@@ -112,7 +112,12 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
     private <T> T readOrTake(T template, long duration, boolean shallTake) {
         try {
-            ReadOrTakeClient readOrTake = new ReadOrTakeClient( myCallCounter.getAndIncrement() );
+            final ReadOrTake readOrTake;
+            if ( shallTake ) {
+                readOrTake = new TakeClient( myCallCounter.getAndIncrement());
+            } else {
+                readOrTake = new ReadClient( myCallCounter.getAndIncrement());
+            }
 
             // TODO Use different method for extracting properties.
             Holder holder = retrievePropertiesFromXml(xstream.toXML(template), duration);
@@ -120,8 +125,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
             Map<String, Object> param = new HashMap<String, Object>();
             param.put("searchMap", holder.getSearchMap());
             param.put("duration", ""+duration);
-            param.put("shallTake", ""+shallTake);
-            String xml = readOrTake.doRead(client, param, duration );
+            String xml = readOrTake.doReadOrTake(client, param, duration );
             if ( xml != null ) {
                 return (T) xstream.fromXML(xml);
             }

@@ -31,29 +31,29 @@ import java.util.concurrent.TimeUnit;
 /**
  * Supporting read from SemiSpace
  */
-public class ReadOrTakeClient {
-    private static final Logger log = LoggerFactory.getLogger(ReadOrTakeClient.class);
+public class TakeClient implements ReadOrTake {
+    private static final Logger log = LoggerFactory.getLogger(TakeClient.class);
 
-    private final ReadListener readListener;
+    private final TakeListener takeListener;
     private final int callId;
 
-    public ReadOrTakeClient(int callId) {
+    public TakeClient(int callId) {
         this.callId = callId;
-        readListener = new ReadListener(callId);
+        takeListener = new TakeListener(callId);
     }
 
     private void attach(BayeuxClient client) {
-        client.addListener(readListener);
+        client.addListener(takeListener);
         // Documentation says I have to subscribe to this channel, but it seems like I do not have to.
-        client.subscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);
+        client.subscribe(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId);
     }
 
     private void detach(BayeuxClient client) {
-        client.removeListener(readListener);
-        client.unsubscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);
+        client.removeListener(takeListener);
+        client.unsubscribe(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId);
     }
 
-    public String doRead(BayeuxClient client, Map<String, Object> map, long maxWaitMs ) {
+    public String doReadOrTake(BayeuxClient client, Map<String, Object> map, long maxWaitMs ) {
         attach(client);
         /*
         Map sm = ((Map)map.get("searchMap"));
@@ -63,11 +63,11 @@ public class ReadOrTakeClient {
         }
         */
         try {
-            client.publish(CometConstants.READ_CALL_CHANNEL+"/"+callId, map, null );
-            log.debug("Awaiting..."+CometConstants.READ_CALL_CHANNEL+"/"+callId+" map is: "+map);
-            readListener.getLatch().await(maxWaitMs, TimeUnit.MILLISECONDS);
+            client.publish(CometConstants.TAKE_CALL_CHANNEL+"/"+callId, map, null );
+            log.debug("Awaiting..."+CometConstants.TAKE_CALL_CHANNEL+"/"+callId+" map is: "+map);
+            takeListener.getLatch().await(maxWaitMs+ PRESUMED_NETWORK_LAG_MS, TimeUnit.MILLISECONDS);
             log.trace("... unlatched");
-            return readListener.data;
+            return takeListener.data;
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);
             return null;
@@ -80,7 +80,7 @@ public class ReadOrTakeClient {
     }
 
 
-    private static class ReadListener implements MessageListener {
+    private static class TakeListener implements MessageListener {
         private final CountDownLatch latch;
         private final int callId;
         private String data;
@@ -89,7 +89,7 @@ public class ReadOrTakeClient {
             return latch;
         }
 
-        public ReadListener(int callId) {
+        public TakeListener(int callId) {
             this.latch = new CountDownLatch(1);
             this.callId = callId;
         }
@@ -104,7 +104,7 @@ public class ReadOrTakeClient {
         }
 
         private void deliverInternal( Client from, Client to, Message message) {
-            if ((CometConstants.READ_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
+            if ((CometConstants.TAKE_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
                 //log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
                 if ( map != null ) {
