@@ -34,12 +34,12 @@ import org.semispace.event.SemiEvent;
 public class ToBeNotified implements SemiEventListener {
     private int notified;
     private Class clazz;
-    private boolean toTake;
+    private boolean toCancelLease;
     private SemiEventRegistration lease;
 
-    public ToBeNotified( Class clazz, boolean toTake ) {
+    public ToBeNotified(boolean toCancelLease) {
         this.clazz = clazz;
-        this.toTake = toTake;
+        this.toCancelLease = toCancelLease;
     }
     
     
@@ -57,7 +57,7 @@ public class ToBeNotified implements SemiEventListener {
         
         if ( theEvent instanceof SemiAvailabilityEvent ) {
             notified++;
-            if ( toTake ) {
+            if (toCancelLease) {
                 lease.getLease().cancel();
             }
         }
