@@ -221,12 +221,13 @@ public class CopyOfTerracottaTest extends TestCase {
 
 
     public void testAsyncWithFourThreads() throws InterruptedException {
+        final int numberOfItems = 100;
         Runnable write = new Runnable() {
             public void run() {
                     FieldHolder fh = new FieldHolder();
                     fh.setFieldA("a");
                     fh.setFieldB("b");
-                    for ( int i=0 ; i < 500 ; i++ ) {
+                    for ( int i=0 ; i < numberOfItems ; i++ ) {
                         space.write(fh, 19500);
                     }
             }
@@ -236,7 +237,7 @@ public class CopyOfTerracottaTest extends TestCase {
                 AlternateHolder ah = new AlternateHolder();
                 ah.fieldA = "a";
                 ah.fieldB = "b";
-                for ( int i=0 ; i < 500 ; i++ ) {
+                for ( int i=0 ; i < numberOfItems ; i++ ) {
                     space.write(ah, 19500);
                 }
             }
@@ -247,13 +248,11 @@ public class CopyOfTerracottaTest extends TestCase {
                 fh.setFieldA("a");
                 fh.setFieldB("b");
 
-                for ( int i=0 ; i < 500 ; i++ ) {
-//                    increaseSimultanous();
+                for ( int i=0 ; i < numberOfItems ; i++ ) {
                     if (space.take(fh, 19500) == null && problem == null ) {
                         problem = "Got null when taking element "+i;
                         return;
                     }
-//                    decreaseSimultanous();
                 }
             }
         };
@@ -264,13 +263,11 @@ public class CopyOfTerracottaTest extends TestCase {
                 ah.fieldA = "a";
                 ah.fieldB = "b";
 
-                for ( int i=0 ; i < 500 ; i++ ) {
-//                    increaseSimultanous();
+                for ( int i=0 ; i < numberOfItems ; i++ ) {
                     if (space.take(ah, 19500) == null && problem == null ) {
                         problem = "Got null when taking element "+i;
                         return;
                     }
-//                    decreaseSimultanous();
                 }
             }
         };
@@ -330,7 +327,7 @@ public class CopyOfTerracottaTest extends TestCase {
         log.debug("Started insertion");
         int counter = 0;
         long startTime = System.currentTimeMillis();
-        while ( startTime > System.currentTimeMillis() - 500 ) {
+        while ( startTime > System.currentTimeMillis() - 1000 ) {
             space.write(nvq, 10000);
             counter++;
         }
@@ -339,7 +336,7 @@ public class CopyOfTerracottaTest extends TestCase {
         while ( space.take( nvq, 200 ) != null ) {
             takenCounter++;
         }
-        log.debug("Total running time "+(System.currentTimeMillis() - startTime));
+        log.debug("Total running time "+(System.currentTimeMillis() - startTime)+" ms, inserted (and hopefully took) "+counter+" items.");
 
         assertEquals("Should be able to take as many elements as was inserted.", counter, takenCounter);
     }
