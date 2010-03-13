@@ -58,8 +58,11 @@ public class WriteClient {
         try {
             client.publish(CometConstants.WRITE_CALL_CHANNEL+"/"+callId, map, null );
             log.trace("Awaiting...");
-            // TODO Add representative timeout value 
-            writeListener.getLatch().await(45, TimeUnit.SECONDS);
+            // Should be able to write an element within 5 seconds
+            boolean finishedOk = writeListener.getLatch().await(5, TimeUnit.SECONDS);
+            if ( !finishedOk) {
+                log.warn("Could not write element within 5 seconds. That is not to savory. Problem with connection?");
+            }
             log.trace("... unlatched");
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);

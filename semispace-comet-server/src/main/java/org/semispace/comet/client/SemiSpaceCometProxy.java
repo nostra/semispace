@@ -121,7 +121,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
             param.put("searchMap", holder.getSearchMap());
             param.put("duration", ""+duration);
             param.put("shallTake", ""+shallTake);
-            String xml = readOrTake.doRead(client, param );
+            String xml = readOrTake.doRead(client, param, duration );
             if ( xml != null ) {
                 return (T) xstream.fromXML(xml);
             }

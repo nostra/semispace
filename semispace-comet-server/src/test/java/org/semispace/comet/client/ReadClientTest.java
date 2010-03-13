@@ -43,7 +43,6 @@ public class ReadClientTest {
 
     @After
     public void tearDown() throws Exception {
-        Thread.sleep(500);
         space.destroy();
     }
 
