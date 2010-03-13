@@ -17,14 +17,14 @@ dojo.addOnLoad(function()
             {
                 cometd.unsubscribe(_subscription);
             }
-            _subscription = cometd.subscribe('/semispace/reply/readOrTake/1', function(message)
+            _subscription = cometd.subscribe('/semispace/reply/read/1', function(message)
             {
                 dojo.byId('body').innerHTML += '<div>Server Says: <pre>' + message.data.result+ '</pre></div>';
             });
             //// Publish on a service channel since the message is for the server only
             //cometd.publish('/service/hello', { name: 'World' });
             // Waiting an hour, if need be
-            cometd.publish('/semispace/call/readOrTake/1', {duration: '600000', searchMap: {class: 'org.semispace.comet.demo.FieldHolder'}, shallTake: 'false'});
+            cometd.publish('/semispace/call/read/1', {duration: '600000', searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
         });//
     }
 
