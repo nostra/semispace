@@ -47,8 +47,9 @@ public class WriteService extends BayeuxService {
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
         final Long timeToLiveMs = Long.valueOf(""+data.get("timeToLiveMs"));
         final String xml = (String) data.get("xml");
-        final String className = (String) data.get("classname");
+        final String className = (String) data.get(CometConstants.OBJECT_TYPE_KEY);
         log.debug("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" classname "+className);
+        searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
 
         SemiLease lease = space.writeToElements(className,timeToLiveMs, xml, searchMap);
 

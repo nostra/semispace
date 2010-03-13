@@ -24,4 +24,8 @@ public class CometConstants {
     public static final String READ_REPLY_CHANNEL = "/semispace/reply/readOrTake";
     public static final String WRITE_CALL_CHANNEL = "/semispace/call/write";
     public static final String WRITE_REPLY_CHANNEL = "/semispace/reply/write";
+    /**
+     * Need to translate internal class type identifier with object type key
+     */
+    public static final String OBJECT_TYPE_KEY = "semispaceObjectTypeKey";
 }

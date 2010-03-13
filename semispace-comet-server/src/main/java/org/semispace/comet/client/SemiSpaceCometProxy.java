@@ -25,6 +25,7 @@ import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiLease;
 import org.semispace.SemiSpaceInterface;
+import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -93,7 +94,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         param.put("searchMap", holder.getSearchMap());
         param.put("timeToLiveMs",""+timeToLiveMs);
         param.put("xml", xml);
-        param.put("classname", holder.getClassName());
+        param.put(CometConstants.OBJECT_TYPE_KEY, holder.getClassName());
 
         WriteClient write = new WriteClient(myCallCounter.getAndIncrement());
         try {
@@ -125,7 +126,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
                 return (T) xstream.fromXML(xml);
             }
         } catch ( Throwable t ) {
-            log.error("Unforeseen error occurred publishing.", t);
+            log.error("Unforeseen error occurred publishing "+(shallTake?"take":"read")+" query.", t);
         }
 
         return null;
@@ -187,7 +188,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
                 }
             }
         }
-        map.put("class", doctype);
+        map.put(CometConstants.OBJECT_TYPE_KEY, doctype);
 
         Holder holder = new Holder(xmlsource, duration, doctype, -1, map );
         return holder;

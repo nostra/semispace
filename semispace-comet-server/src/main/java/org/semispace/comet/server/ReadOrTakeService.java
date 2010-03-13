@@ -45,9 +45,10 @@ public class ReadOrTakeService extends BayeuxService {
         log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();
-        final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
         final Long duration = Long.valueOf((String) data.get("duration"));
         final boolean shallTake = "true".equals( data.get("shallTake"));
+        final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
+        searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
 
         String result = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), shallTake);
         // log.debug("Did "+(result == null?"NOT":"")+" get a result: "+result);

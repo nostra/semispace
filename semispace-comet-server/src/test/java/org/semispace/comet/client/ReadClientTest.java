@@ -37,16 +37,14 @@ public class ReadClientTest {
     @Before
     public void setUp() throws Exception {
         log.warn("\n\n\n\nNOT SUPPORTING NORMAL BUILD TESTS YET\nUse\n  mvn -Denv=dev clean install\nwhen building this module\n\n\n");
-        if ( space == null ) {
-            space = new SemiSpaceCometProxy();
-            space.init("http://localhost:8080/semispace-comet-server/cometd/");
-        }
+        space = new SemiSpaceCometProxy();
+        space.init("http://localhost:8080/semispace-comet-server/cometd/");
     }
 
     @After
     public void tearDown() throws Exception {
         Thread.sleep(500);
-        //space.destroy();
+        space.destroy();
     }
 
     @Test
@@ -149,7 +147,6 @@ public class ReadClientTest {
         AlternateHolder query = new AlternateHolder();
         query.fieldA = "a";
         assertNull("Expecting null",space.takeIfExists(query));
-
         space.write(holder, 1000);
         space.write(different, 1000);
 

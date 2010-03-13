@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -55,6 +56,12 @@ public class ReadOrTakeClient {
 
     public String doRead(BayeuxClient client, Map<String, Object> map) {
         attach(client);
+
+        Map sm = ((Map)map.get("searchMap"));
+        Set<Map.Entry<Object,Object>> es = sm.entrySet();
+        for ( Map.Entry x : es) {
+            log.debug(x.getKey()+"="+x.getValue()+": "+x.getValue().getClass().getName());
+        }
 
         try {
             client.publish(CometConstants.READ_CALL_CHANNEL+"/"+callId, map, null );
