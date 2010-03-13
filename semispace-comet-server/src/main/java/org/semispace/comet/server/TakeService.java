@@ -66,7 +66,7 @@ public class TakeService extends BayeuxService {
                 } else {
                     log.trace("take did not get a result");
                 }
-                log.debug("(take) Running deliver with "+remote.getClass().getName());
+                //log.debug("(take) Running deliver with "+remote.getClass().getName());
                 try {
                     remote.deliver(getClient(), outChannel, output, null);
                 } catch ( Throwable t ) {
