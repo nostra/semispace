@@ -22,6 +22,11 @@
             <name>Erlend Nossum</name>
             <email>semispace@semispace.org</email>
         </developer>
+        <developer>
+            <id>trygve</id>
+            <name>Trygve Lie</name>
+            <email>semispace@semispace.org</email>
+        </developer>
     </developers>
 
     <scm>
