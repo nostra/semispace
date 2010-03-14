@@ -19,7 +19,13 @@ dojo.addOnLoad(function()
             }
             _subscription = cometd.subscribe('/semispace/reply/read/1', function(message)
             {
-                dojo.byId('body').innerHTML += '<div>Server Says: <pre>' + message.data.result+ '</pre></div>';
+                var data;
+                if ( message && message.data && message.data.result) {
+                    data = message.data.result;
+                } else {
+                    data = "No response from server";
+                }
+                dojo.byId('body').innerHTML += '<div>Server Says: <pre>' + data+ '</pre></div>';
             });
             //// Publish on a service channel since the message is for the server only
             //cometd.publish('/service/hello', { name: 'World' });
