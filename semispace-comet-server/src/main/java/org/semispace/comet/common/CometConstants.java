@@ -30,4 +30,5 @@ public class CometConstants {
      * Need to translate internal class type identifier with object type key
      */
     public static final String OBJECT_TYPE_KEY = "semispaceObjectTypeKey";
+    public static final String PAYLOAD_MARKER = "json";
 }

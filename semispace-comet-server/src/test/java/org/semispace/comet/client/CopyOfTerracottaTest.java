@@ -17,10 +17,7 @@
 package org.semispace.comet.client;
 
 import junit.framework.TestCase;
-import org.semispace.AlternateHolder;
-import org.semispace.FieldHolder;
 import org.semispace.NameValueQuery;
-import org.semispace.TerraSpaceTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * elements that are inserted are typically quite fewer than in the terracotta test.
  */
 public class CopyOfTerracottaTest extends TestCase {
-    private static final Logger log = LoggerFactory.getLogger(TerraSpaceTest.class);
+    private static final Logger log = LoggerFactory.getLogger(CopyOfTerracottaTest.class);
 
     // Used in a test:
     private String problem=null;
@@ -186,7 +183,7 @@ public class CopyOfTerracottaTest extends TestCase {
     }
 
     public void testAlternateHolder() {
-        org.semispace.AlternateHolder ah = new AlternateHolder();
+        AlternateHolder ah = new AlternateHolder();
         ah.fieldA = "a";
         ah.fieldB = "b";
         space.write(ah, 1000);

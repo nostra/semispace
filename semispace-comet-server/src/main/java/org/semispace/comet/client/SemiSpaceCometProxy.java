@@ -17,6 +17,8 @@
 package org.semispace.comet.client;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
+import com.thoughtworks.xstream.io.xml.CompactWriter;
 import org.cometd.client.BayeuxClient;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.util.component.LifeCycle;
@@ -26,6 +28,8 @@ import org.semispace.SemiEventRegistration;
 import org.semispace.SemiLease;
 import org.semispace.SemiSpaceInterface;
 import org.semispace.comet.common.CometConstants;
+import org.semispace.comet.common.Json2Xml;
+import org.semispace.comet.common.Xml2Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -35,6 +39,7 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,6 +52,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     private BayeuxClient client;
     private HttpClient httpClient;
     private XStream xstream;
+    // private XStream jsonstream;
     /**
      * The call counter is used for differentiating between different calls from the same VM. 
      */
@@ -54,6 +60,11 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
     public SemiSpaceCometProxy() {
         xstream = new XStream();
+        // Conversion to / from JSON necessitates no references:
+        xstream.setMode(XStream.NO_REFERENCES);
+        JettisonMappedXmlDriver driver = new JettisonMappedXmlDriver();
+        //jsonstream = new XStream(driver);
+        //jsonstream.setMode(XStream.NO_REFERENCES);
     }
 
     // "http://localhost:8080/semispace-comet-server/cometd/"
@@ -87,13 +98,13 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     @Override
     public SemiLease write(Object obj, long timeToLiveMs) {
         // TODO Use different method for extracting properties.
-        final String xml = xstream.toXML(obj);
+        final String xml = toXML(obj);
         Holder holder = retrievePropertiesFromXml(xml, timeToLiveMs);
 
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("searchMap", holder.getSearchMap());
         param.put("timeToLiveMs",""+timeToLiveMs);
-        param.put("xml", xml);
+        param.put(CometConstants.PAYLOAD_MARKER, Xml2Json.transform(xml));
         param.put(CometConstants.OBJECT_TYPE_KEY, holder.getClassName());
 
         WriteClient write = new WriteClient(myCallCounter.getAndIncrement());
@@ -103,6 +114,16 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
             log.error("Unforeseen error occurred publishing.", t);
         }
         return null;
+    }
+
+    private String toXML(Object obj) {
+        StringWriter writer = new StringWriter();
+        xstream.marshal(obj, new CompactWriter(writer));
+        return writer.toString();
+    }
+
+    private Object fromXML(String xml) {
+        return xstream.fromXML(xml);
     }
 
     @Override
@@ -120,14 +141,14 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
             }
 
             // TODO Use different method for extracting properties.
-            Holder holder = retrievePropertiesFromXml(xstream.toXML(template), duration);
+            Holder holder = retrievePropertiesFromXml(toXML(template), duration);
 
             Map<String, Object> param = new HashMap<String, Object>();
             param.put("searchMap", holder.getSearchMap());
             param.put("duration", ""+duration);
-            String xml = readOrTake.doReadOrTake(client, param, duration );
-            if ( xml != null ) {
-                return (T) xstream.fromXML(xml);
+            String json = readOrTake.doReadOrTake(client, param, duration );
+            if ( json != null ) {
+                return (T) fromXML(Json2Xml.transform(json));
             }
         } catch ( Throwable t ) {
             log.error("Unforeseen error occurred publishing "+(shallTake?"take":"read")+" query.", t);
@@ -198,17 +219,6 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         return holder;
     }
 
-
-    private Map<String, Object> uneccessary_transformHolderToMap(Holder holder) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("class", holder.getClassName());
-        map.put("id", Long.valueOf(holder.getId()));
-        map.put("liveUntil", Long.valueOf(holder.getLiveUntil()));
-        map.put("searchMap", holder.getSearchMap());
-        map.put("xml", holder.getXml());
-
-        return map;
-    }
     
     private static class ProxyLifeCycle implements LifeCycle.Listener {
         @Override

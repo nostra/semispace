@@ -100,7 +100,7 @@ public class WriteClient {
 
         private void deliverInternal(Client from, Client to, Message message) {
             if ((CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
-                log.debug("Channel: "+message.getChannel()+" client id "+message.getClientId());
+                log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             }            
         }

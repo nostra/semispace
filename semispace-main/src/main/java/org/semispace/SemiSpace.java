@@ -27,6 +27,7 @@
 package org.semispace;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.CompactWriter;
 import org.semispace.admin.InternalQuery;
 import org.semispace.admin.SemiSpaceAdmin;
 import org.semispace.admin.SemiSpaceAdminInterface;
@@ -38,6 +39,7 @@ import org.semispace.event.SemiTakenEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -476,7 +478,9 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     private String objectToXml(Object obj) {
-        return xStream.toXML(obj);
+        StringWriter writer = new StringWriter();
+        xStream.marshal(obj, new CompactWriter(writer));
+        return writer.toString();
     }
 
     private Object xmlToObject(String xml) {

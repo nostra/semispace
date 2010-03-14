@@ -59,4 +59,30 @@ public class Xml2JsonTest {
         Assert.assertEquals("Got some problem with transformed object: "+back, ah.fieldA, back.fieldA);
         Assert.assertEquals(ah.fieldB, back.fieldB);      
     }
+
+    @Test
+    public void testRoundTrip()  {
+        XStream xstream = new XStream(); // new XStream(new StaxDriver());
+        xstream.setMode(XStream.NO_REFERENCES);
+
+        AlternateHolder ah = new AlternateHolder();
+        ah.fieldA = "a";
+        ah.fieldB = "b";
+
+        StringWriter writer = new StringWriter();
+        // Emulating how proxy will transform objects
+        xstream.marshal(ah, new CompactWriter(writer));
+        String xml = writer.toString();
+        log.debug("Got xml:\n"+xml);
+
+        String fromJsonToXml = Xml2Json.transform(xml);
+        String fromJson2Xml = Json2Xml.transform(fromJsonToXml);
+        String roundTrip = Json2Xml.transform(Xml2Json.transform(fromJson2Xml));
+        log.debug("roundTrip:\n"+roundTrip );
+
+        AlternateHolder back = (AlternateHolder) xstream.fromXML(roundTrip );
+        Assert.assertEquals("Got some problem with transformed object: "+back, ah.fieldA, back.fieldA);
+        Assert.assertEquals(ah.fieldB, back.fieldB);
+    }
+
 }

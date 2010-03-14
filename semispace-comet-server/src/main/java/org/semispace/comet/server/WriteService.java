@@ -23,6 +23,7 @@ import org.cometd.server.BayeuxService;
 import org.semispace.SemiLease;
 import org.semispace.SemiSpace;
 import org.semispace.comet.common.CometConstants;
+import org.semispace.comet.common.Json2Xml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,13 +47,14 @@ public class WriteService extends BayeuxService {
         final Map<String, Object> data = (Map<String, Object>) message.getData();
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
         final Long timeToLiveMs = Long.valueOf(""+data.get("timeToLiveMs"));
-        final String xml = (String) data.get("xml");
+        final String json = (String) data.get(CometConstants.PAYLOAD_MARKER);
+        final String xml = Json2Xml.transform(json);
         final String className = (String) data.get(CometConstants.OBJECT_TYPE_KEY);
         searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
-        log.debug("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" class "+className);
+        log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" class "+className+" xml:\n"+xml);
 
-        // Not putting this into separate thread, as this is expected to perform reasonably quickly
-        SemiLease lease = space.writeToElements(className,timeToLiveMs, xml, searchMap);
+        // Not putting this operation into separate thread, as it is expected to perform reasonably quickly
+        SemiLease lease = space.writeToElements(className, timeToLiveMs.longValue(), xml, searchMap);
 
         Map<String, String> output = new HashMap<String, String>();
         if ( lease != null ) {

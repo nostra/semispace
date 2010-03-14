@@ -22,6 +22,7 @@ import org.cometd.Message;
 import org.cometd.server.BayeuxService;
 import org.semispace.SemiSpace;
 import org.semispace.comet.common.CometConstants;
+import org.semispace.comet.common.Xml2Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,12 +57,12 @@ public class TakeService extends BayeuxService {
         Runnable takeResult = new Runnable() {
             @Override
             public void run() {
-                String result = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), true);
-                // log.debug("Did "+(result == null?"NOT":"")+" get a result: "+result);
+                String xml = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), true);
+                // log.debug("Did "+(xml == null?"NOT":"")+" get a xml: "+xml);
 
                 Map<String, String> output = new HashMap<String, String>();
-                if ( result != null ) {
-                    output.put("result", result);
+                if ( xml != null ) {
+                    output.put("result", Xml2Json.transform( xml));
                     log.trace("take ended up with a result");
                 } else {
                     log.trace("take did not get a result");

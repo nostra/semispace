@@ -16,8 +16,10 @@
 
 package org.semispace.comet.demo;
 
+import com.thoughtworks.xstream.XStream;
 import org.semispace.SemiSpace;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +30,15 @@ import java.io.IOException;
  * Just insert something into the space
  */
 public class InsertServlet extends HttpServlet {
-    
+    private SemiSpace space;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        space = (SemiSpace) SemiSpace.retrieveSpace();
+        space.getXStream().setMode(XStream.NO_REFERENCES);
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String param = req.getParameter("param");
@@ -38,7 +48,7 @@ public class InsertServlet extends HttpServlet {
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("InsertServlet");
         fh.setFieldB(param);
-        SemiSpace.retrieveSpace().write(fh, 15000);
+        space.write(fh, 15000);
         resp.setContentType("text/plain");
         resp.getWriter().write("Inserted following into space with a lifetime of 15 seconds:\n"+fh);
     }

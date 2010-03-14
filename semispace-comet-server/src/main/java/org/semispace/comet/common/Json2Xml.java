@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.copy.HierarchicalStreamCopier;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
-import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
+import com.thoughtworks.xstream.io.xml.CompactWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class Json2Xml {
         StringReader reader = new StringReader(json);
         HierarchicalStreamReader hsr = driver.createReader(reader);
         StringWriter writer = new StringWriter();
-        new HierarchicalStreamCopier().copy(hsr, new PrettyPrintWriter(writer));
+        new HierarchicalStreamCopier().copy(hsr, new CompactWriter(writer));
         try {
             writer.close();
         } catch (IOException e) {
