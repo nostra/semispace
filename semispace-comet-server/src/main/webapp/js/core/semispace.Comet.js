@@ -1,0 +1,6 @@
+/**
+ *
+ */
+semispace.Comet = function(){
+
+};
