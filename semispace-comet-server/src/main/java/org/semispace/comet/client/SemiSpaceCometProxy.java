@@ -17,7 +17,6 @@
 package org.semispace.comet.client;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
 import org.cometd.client.BayeuxClient;
 import org.eclipse.jetty.client.HttpClient;
@@ -59,10 +58,10 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     private AtomicInteger myCallCounter = new AtomicInteger(1);
 
     public SemiSpaceCometProxy() {
+        //JettisonMappedXmlDriver driver = new JettisonMappedXmlDriver();
         xstream = new XStream();
         // Conversion to / from JSON necessitates no references:
         xstream.setMode(XStream.NO_REFERENCES);
-        JettisonMappedXmlDriver driver = new JettisonMappedXmlDriver();
         //jsonstream = new XStream(driver);
         //jsonstream.setMode(XStream.NO_REFERENCES);
     }
