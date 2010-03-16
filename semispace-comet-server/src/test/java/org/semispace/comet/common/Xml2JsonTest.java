@@ -59,7 +59,7 @@ public class Xml2JsonTest {
         XStream json = new XStream(new JettisonMappedXmlDriver());
         xstream.setMode(XStream.NO_REFERENCES);
         log.debug("Should be rather similar to :\n"+json.toXML(ah));
-        Assert.assertEquals(json.toXML(ah).replace('.','-'), fromJsonToXml );
+        Assert.assertEquals(json.toXML(ah).replaceAll("\\.","__"), fromJsonToXml );
     }
 
     @Test
@@ -105,7 +105,7 @@ public class Xml2JsonTest {
         final String xml = ww.toString();
         log.debug("Got xml:\n"+xml);
 
-        final HierarchicalStreamDriver jettison = new DashifyJettisonDriver();
+        final HierarchicalStreamDriver jettison = new UnderscoreJettisonDriver();
         
         final XppDriver xpp = new XppDriver();
 

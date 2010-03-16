@@ -26,9 +26,10 @@ import java.io.Reader;
 import java.io.Writer;
 
 /**
- * 
+ * Exchanging dots in package names with underscore (_) - which again
+ * is transformed by XStream into double underscores (__)
  */
-public class DashifyJettisonDriver extends JettisonMappedXmlDriver {
+public class UnderscoreJettisonDriver extends JettisonMappedXmlDriver {
     @Override
     public HierarchicalStreamWriter createWriter(Writer out) {
         return new WriterWrapper(super.createWriter(out)) {
@@ -38,14 +39,14 @@ public class DashifyJettisonDriver extends JettisonMappedXmlDriver {
             }
             @Override
             public void startNode(String name, Class clazz) {
-                wrapped.startNode(name.replace('.', '-'));
+                wrapped.startNode(name.replace('.', '_'));
             }
         };
     }
     public HierarchicalStreamReader createReader(final Reader reader) {
         return new ReaderWrapper(super.createReader(reader)) {
             public String getNodeName() {
-                return wrapped.getNodeName().replace('-', '.');
+                return wrapped.getNodeName().replace('_', '.');
             }
         };
     }

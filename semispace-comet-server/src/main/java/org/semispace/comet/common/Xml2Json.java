@@ -43,7 +43,7 @@ public class Xml2Json {
      * @return
      */
     public static final String transform( String xml ) {
-        final HierarchicalStreamDriver jettison = new DashifyJettisonDriver();
+        final HierarchicalStreamDriver jettison = new UnderscoreJettisonDriver();
         final XppDriver xpp = new XppDriver();
 
         StringReader reader = new StringReader(xml);

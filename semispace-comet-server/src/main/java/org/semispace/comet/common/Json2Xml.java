@@ -43,7 +43,7 @@ public class Json2Xml {
      * @return XML representation
      */
     public static final String transform( String json ) {
-        HierarchicalStreamDriver driver = new DashifyJettisonDriver();
+        HierarchicalStreamDriver driver = new UnderscoreJettisonDriver();
         StringReader reader = new StringReader(json);
         HierarchicalStreamReader hsr = driver.createReader(reader);
         StringWriter writer = new StringWriter();
