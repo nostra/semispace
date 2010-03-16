@@ -1,6 +1,7 @@
 {
     "org.semispace.comet.demo.FieldHolder": {
         "fieldA": "InsertServlet",
-        "fieldB": "Something"
+        "fieldB": "Something",
+        "fieldC": "Something More"
     }
 }
