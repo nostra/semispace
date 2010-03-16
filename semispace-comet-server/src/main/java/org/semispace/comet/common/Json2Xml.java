@@ -20,6 +20,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.copy.HierarchicalStreamCopier;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,11 +44,12 @@ public class Json2Xml {
      * @return XML representation
      */
     public static final String transform( String json ) {
-        HierarchicalStreamDriver driver = new UnderscoreJettisonDriver();
+        HierarchicalStreamDriver driver = new SemiSpaceJettisonDriver();
         StringReader reader = new StringReader(json);
         HierarchicalStreamReader hsr = driver.createReader(reader);
         StringWriter writer = new StringWriter();
-        new HierarchicalStreamCopier().copy(hsr, new CompactWriter(writer));
+        //  new XmlFriendlyReplacer("_-", "_"))
+        new HierarchicalStreamCopier().copy(hsr, new CompactWriter(writer, new XmlFriendlyReplacer("$","_")));
         try {
             writer.close();
         } catch (IOException e) {

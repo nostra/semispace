@@ -17,20 +17,14 @@
 package org.semispace.comet.common;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.copy.HierarchicalStreamCopier;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
-import com.thoughtworks.xstream.io.xml.XppDriver;
 import org.junit.Assert;
 import org.junit.Test;
 import org.semispace.comet.client.AlternateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 
 /**
@@ -59,7 +53,7 @@ public class Xml2JsonTest {
         XStream json = new XStream(new JettisonMappedXmlDriver());
         xstream.setMode(XStream.NO_REFERENCES);
         log.debug("Should be rather similar to :\n"+json.toXML(ah));
-        Assert.assertEquals(json.toXML(ah).replaceAll("\\.","__"), fromJsonToXml );
+        Assert.assertEquals(json.toXML(ah).replaceAll("\\.","_"), fromJsonToXml );
     }
 
     @Test
@@ -86,52 +80,4 @@ public class Xml2JsonTest {
         Assert.assertEquals("Got some problem with transformed object: "+back, ah.fieldA, back.fieldA);
         Assert.assertEquals(ah.fieldB, back.fieldB);
     }
-
-    /**
-     * Just an implementation help. Retained as it may be useful if xstream gets updated
-     */
-    @Test
-    public void testRawFunctionality() throws IOException {
-        XStream xstream = new XStream(); // new XStream(new StaxDriver());
-        xstream.setMode(XStream.NO_REFERENCES);
-
-        AlternateHolder ah = new AlternateHolder();
-        ah.fieldA = "a";
-        ah.fieldB = "b";
-
-        StringWriter ww = new StringWriter();
-        // Emulating how proxy will transform objects
-        xstream.marshal(ah, new CompactWriter(ww));
-        final String xml = ww.toString();
-        log.debug("Got xml:\n"+xml);
-
-        final HierarchicalStreamDriver jettison = new UnderscoreJettisonDriver();
-        
-        final XppDriver xpp = new XppDriver();
-
-        StringReader reader = new StringReader(xml);
-        HierarchicalStreamReader hsr= xpp.createReader(reader);
-        StringWriter writer = new StringWriter();
-        new HierarchicalStreamCopier().copy(hsr, jettison.createWriter(writer));
-        writer.close();
-        String json = writer.toString();
-        Assert.assertEquals("Should not have any dots present in writer: "+json, -1, json.indexOf("."));
-        log.debug("Json is: "+json);
-
-        //
-        // Transform back
-        //
-
-        reader = new StringReader(json);
-        hsr = jettison.createReader(reader);
-        writer = new StringWriter();
-        new HierarchicalStreamCopier().copy(hsr, new CompactWriter(writer));
-        try {
-            writer.close();
-        } catch (IOException e) {
-            log.error("Unforeseen exception.", e);
-        }
-        log.debug("After transforming json back, I got: "+writer);
-    }
-
 }

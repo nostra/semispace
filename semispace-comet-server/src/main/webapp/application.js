@@ -30,7 +30,7 @@ dojo.addOnLoad(function()
                     data = "No response from server";
                 }
                 // Note - transforming back: JSON.stringify(param)
-                dojo.byId('body').innerHTML += '<div>Server Says: <b>'+data+'</b><pre>' + param.org__semispace__comet__demo__FieldHolder.fieldB+ '</pre></div>';
+                dojo.byId('body').innerHTML += '<div>Server Says: <b>'+data+'</b><pre>' + param.org_semispace_comet_demo_FieldHolder.fieldB+ '</pre></div>';
             });
             //// Publish on a service channel since the message is for the server only
             //cometd.publish('/service/hello', { name: 'World' });
