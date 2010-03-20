@@ -15,14 +15,6 @@
 *----------------------------------+------------+
 
 
-*----------------------------------+------------+
-|| Change or bug || Change
-*----------------------------------+------------+
-| Listener block timeout error      | During read or take, the listener would always block for the length of the timeout,
-|                                   | even when it has been previously notified and the timeout should decrease proportionally.
-|                                   | Timeout now decreases correctly.
-*----------------------------------+------------+
-
 1.0.1-SNAPSHOT
 
 *----------------------------------+------------+
