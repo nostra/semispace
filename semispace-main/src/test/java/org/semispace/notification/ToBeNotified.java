@@ -33,12 +33,10 @@ import org.semispace.event.SemiEvent;
 
 public class ToBeNotified implements SemiEventListener {
     private int notified;
-    private Class clazz;
     private boolean toCancelLease;
     private SemiEventRegistration lease;
 
     public ToBeNotified(boolean toCancelLease) {
-        this.clazz = clazz;
         this.toCancelLease = toCancelLease;
     }
     
