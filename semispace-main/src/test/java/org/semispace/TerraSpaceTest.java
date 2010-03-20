@@ -25,7 +25,8 @@ import org.slf4j.LoggerFactory;
  */
 public class TerraSpaceTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(TerraSpaceTest.class);
-            
+    private static final int LARGE_QUANTITY_NUMBER=100; // For a more comprehensive tests, use 20000
+
     // Used in a test:
     private String problem=null;
     private SemiSpaceInterface space;
@@ -122,14 +123,14 @@ public class TerraSpaceTest extends TestCase {
         assertNull("Should not start with elements present", space.takeIfExists(templ));
         templ.setFieldA("a");
 
-        for ( int i=0 ; i < 1000 ; i++ ) {
+        for ( int i=0 ; i < LARGE_QUANTITY_NUMBER ; i++ ) {
             FieldHolder fh = new FieldHolder();
             fh.setFieldA("a");
             fh.setFieldB("b");
             
             space.write(fh, 29999);
         }
-        for ( int i=0 ; i < 1000 ; i++ ) {
+        for ( int i=0 ; i < LARGE_QUANTITY_NUMBER ; i++ ) {
             assertNotNull("Notice that this may be due to slow computer... Missing element at "+i, space.takeIfExists(templ));
         }
         assertNull("Should not have any elements left", space.takeIfExists(templ));
@@ -164,24 +165,43 @@ public class TerraSpaceTest extends TestCase {
         assertNull("Should not have any elements left", space.takeIfExists(templ));
     }
 
-    public void testQuantity3() {
+    /**
+     * Test illustrates that a large number of items could benefit from having an index. The
+     * test is horrendously slow when having a large number of elements.
+     */
+    public void testWhichIllustratesSlownessWithManyElements() {
         FieldHolder shouldBeNull = space.takeIfExists(new FieldHolder());
         assertNull("Should not start with elements present: "+shouldBeNull, shouldBeNull);
-
-        for ( int i=0 ; i < 1000 ; i++ ) {
+        log.debug("Statistics before start: "+((SemiSpace)space).getStatistics());
+        for ( int i=0 ; i < LARGE_QUANTITY_NUMBER ; i++ ) {
             FieldHolder fh = new FieldHolder();
             fh.setFieldA("a");
             fh.setFieldB(""+i);
 
-            space.write(fh, 29999);
+            space.write(fh, 30000);
         }
-        for ( int i=0 ; i < 1000 ; i++ ) {
+        log.debug("Statistics after write loop: "+((SemiSpace)space).getStatistics());
+        long stopAt = System.currentTimeMillis()+25500;
+        for ( int i=0 ; System.currentTimeMillis() < stopAt && i < LARGE_QUANTITY_NUMBER ; i++ ) {
+            if( i % 1000 == 0 ) {
+                log.debug("Within read loop: "+((SemiSpace)space).getStatistics());                
+            }
             FieldHolder templ = new FieldHolder();
             templ.setFieldA("a");
             templ.setFieldB(""+i);
-            assertNotNull("Notice that this may be due to slow computer... Missing element at "+i, space.takeIfExists(templ));
+            long takeOp = System.currentTimeMillis();
+            FieldHolder x = space.takeIfExists(templ);
+            assertNotNull("Notice that this may be due to slow computer... Missing element at "+i+
+                    ". Retake gave "+space.take(templ, 100)+" Time left: "+(System.currentTimeMillis()-stopAt)+
+                    ". Last takeIfExistOp: "+(System.currentTimeMillis()-takeOp) +". "+
+                    "Statistics "+((SemiSpace)space).getStatistics(), x);
         }
-        assertNull("Should not have any elements left", space.takeIfExists(new FieldHolder()));
+        // Cleanup if necessary as we may have exceeded time limit
+        int numberOfCleanedUpElements = 0;
+        while ( space.takeIfExists(new FieldHolder()) != null ) {
+            numberOfCleanedUpElements ++;
+        }
+        log.debug("number of elements cleaned up "+numberOfCleanedUpElements);
     }
 
     public void testAlternateHolder() {
@@ -220,12 +240,13 @@ public class TerraSpaceTest extends TestCase {
 
 
     public void testAsyncWithFourThreads() throws InterruptedException {
+        final int numberToTest = 5000;
         Runnable write = new Runnable() {
             public void run() {
                     FieldHolder fh = new FieldHolder();
                     fh.setFieldA("a");
                     fh.setFieldB("b");
-                    for ( int i=0 ; i < 500 ; i++ ) {
+                    for ( int i=0 ; i < numberToTest; i++ ) {
                         space.write(fh, 19500);
                     }
             }
@@ -235,7 +256,7 @@ public class TerraSpaceTest extends TestCase {
                 AlternateHolder ah = new AlternateHolder();
                 ah.fieldA = "a";
                 ah.fieldB = "b";
-                for ( int i=0 ; i < 500 ; i++ ) {
+                for ( int i=0 ; i < numberToTest ; i++ ) {
                     space.write(ah, 19500);
                 }
             }
@@ -246,7 +267,7 @@ public class TerraSpaceTest extends TestCase {
                 fh.setFieldA("a");
                 fh.setFieldB("b");
 
-                for ( int i=0 ; i < 500 ; i++ ) {
+                for ( int i=0 ; i < numberToTest ; i++ ) {
                     if (space.take(fh, 19500) == null && problem == null ) {
                         problem = "Got null when taking element "+i;
                     }
@@ -260,7 +281,7 @@ public class TerraSpaceTest extends TestCase {
                 ah.fieldA = "a";
                 ah.fieldB = "b";
 
-                for ( int i=0 ; i < 500 ; i++ ) {
+                for ( int i=0 ; i < numberToTest ; i++ ) {
                     if (space.take(ah, 19500) == null && problem == null ) {
                         problem = "Got null when taking element "+i;
                     }
@@ -292,7 +313,7 @@ public class TerraSpaceTest extends TestCase {
 
     public void testAsyncWithFourThreadsAndId() throws InterruptedException {
         globalCounter = 2;
-        final int numberOfIterations = 100; // TODO Seems to fail if numIt > 1000
+        final int numberOfIterations = LARGE_QUANTITY_NUMBER;
         Runnable write = new Runnable() {
             public void run() {
                     FieldHolder fh = new FieldHolder();

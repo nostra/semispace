@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TakeUniquenessTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(TakeUniquenessTest.class);
-    private static final int ITERATIONS_TO_PERFORM = 10; // TODO Fails if large number
+    private static final int ITERATIONS_TO_PERFORM = 100; // For a more comprehensive test, use 20000
 
     public void testMultipleInsertAndTake()  {
         Thread[] threads = new Thread[6];
