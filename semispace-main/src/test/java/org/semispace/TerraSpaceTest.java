@@ -168,6 +168,8 @@ public class TerraSpaceTest extends TestCase {
     /**
      * Test illustrates that a large number of items could benefit from having an index. The
      * test is horrendously slow when having a large number of elements.
+     * NB: This test will fail when having a large (or large-ish) number of elements. This is
+     * a deficiency that will need indexes to be improved. 
      */
     public void testWhichIllustratesSlownessWithManyElements() {
         FieldHolder shouldBeNull = space.takeIfExists(new FieldHolder());
