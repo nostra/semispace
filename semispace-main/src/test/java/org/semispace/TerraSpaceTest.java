@@ -105,20 +105,21 @@ public class TerraSpaceTest extends TestCase {
         
         FieldHolder template = new FieldHolder();
         template.setFieldA(fh2.getFieldA());
-        Thread.sleep(250);
         assertNotNull("Existing element should be found", space.readIfExists(template));
 
         template.setFieldA("xx");
-        FieldHolder elem = (FieldHolder) space.takeIfExists(template);
+        FieldHolder elem = space.takeIfExists(template);
         assertNull("Non-existing element should not be found, but when querying with "+template+" I got: "+elem, elem);
         assertNotNull(space.takeIfExists(new FieldHolder()));
         assertNotNull(space.takeIfExists(new FieldHolder()));
+        assertNotNull("Last of written elements", space.takeIfExists(new FieldHolder()));
+        assertNull("All elements should be removed", space.takeIfExists(new FieldHolder()));
     }
     
     public void testQuantity() {
         FieldHolder templ = new FieldHolder();
+        assertNull("Should not start with elements present", space.takeIfExists(templ));
         templ.setFieldA("a");
-        assertNull("Should start with elements present", space.takeIfExists(templ));
 
         for ( int i=0 ; i < 1000 ; i++ ) {
             FieldHolder fh = new FieldHolder();
@@ -134,6 +135,8 @@ public class TerraSpaceTest extends TestCase {
     }
 
     public void testQuantity2() {
+        FieldHolder shouldBeNull = space.takeIfExists(new FieldHolder());
+        assertNull("Should not start with elements present: "+shouldBeNull, shouldBeNull);
         
         Runnable insert = new Runnable( ) {
             public void run() {
@@ -158,6 +161,26 @@ public class TerraSpaceTest extends TestCase {
             assertNotNull("Notice that this may be due to slow computer... Failed when tried to take element "+i+". Statistics: "+((SemiSpace)space).getStatistics(), space.take(templ,5000));
         }
         assertNull("Should not have any elements left", space.takeIfExists(templ));
+    }
+
+    public void testQuantity3() {
+        FieldHolder shouldBeNull = space.takeIfExists(new FieldHolder());
+        assertNull("Should not start with elements present: "+shouldBeNull, shouldBeNull);
+
+        for ( int i=0 ; i < 1000 ; i++ ) {
+            FieldHolder fh = new FieldHolder();
+            fh.setFieldA("a");
+            fh.setFieldB(""+i);
+
+            space.write(fh, 29999);
+        }
+        for ( int i=0 ; i < 1000 ; i++ ) {
+            FieldHolder templ = new FieldHolder();
+            templ.setFieldA("a");
+            templ.setFieldB(""+i);
+            assertNotNull("Notice that this may be due to slow computer... Missing element at "+i, space.takeIfExists(templ));
+        }
+        assertNull("Should not have any elements left", space.takeIfExists(new FieldHolder()));
     }
 
     public void testAlternateHolder() {
@@ -263,6 +286,89 @@ public class TerraSpaceTest extends TestCase {
         ah.fieldA = "a";
         assertNull("Should have consumed all of the elements. Still have some alternate versions.", space.readIfExists(ah));
         assertNull(problem, problem );
+    }
+
+
+    public void testAsyncWithFourThreadsAndId() throws InterruptedException {
+        final int numberOfIterations = 100; // TODO Seems to fail if numIt > 1000
+        Runnable write = new Runnable() {
+            public void run() {
+                    FieldHolder fh = new FieldHolder();
+                    fh.setFieldA("a");
+                for ( int i=0 ; i < numberOfIterations ; i++ ) {
+                    fh.setFieldB("b"+i);
+                    space.write(fh, SemiSpace.ONE_DAY);
+                }
+                log.debug("Writer thread 1 finished");
+            }
+        };
+        Runnable write2 = new Runnable() {
+            public void run() {
+                FieldHolder fh = new FieldHolder();
+                fh.setFieldB("b");
+                for ( int i=0 ; i < numberOfIterations ; i++ ) {
+                    fh.setFieldA("a"+i);
+                    space.write(fh, SemiSpace.ONE_DAY);
+                }
+                log.debug("Writer thread 2 finished");
+            }
+        };
+        Runnable read = new Runnable() {
+            public void run() {
+                FieldHolder fh = new FieldHolder();
+                fh.setFieldA("a");
+
+                for ( int i=0 ; i < numberOfIterations ; i++ ) {
+                    fh.setFieldB("b"+i);
+                    if (problem == null ) {
+                        FieldHolder r= space.take(fh, 19500);
+                        if (  r == null ) {
+                            problem = "Got null when taking element b"+i;
+                        } else if ( !r.getFieldA().equals(fh.getFieldA()) ||
+                                !r.getFieldB().equals(fh.getFieldB())) {
+                            problem = "Rather disturbing. When querying for "+fh+" the result was: "+r;
+                        }
+                    }
+                }
+            }
+        };
+        Runnable read2 = new Runnable() {
+            @SuppressWarnings("synthetic-access")
+            public void run() {
+                FieldHolder fh = new FieldHolder();
+                fh.setFieldB("b");
+                for ( int i=0 ; i < numberOfIterations ; i++ ) {
+                    fh.setFieldA("a"+i);
+                    if (problem == null ) {
+                        FieldHolder r= space.take(fh, 19500);
+                        if (  r == null ) {
+                            problem = "Got null when taking element b"+i;
+                        } else if ( !r.getFieldA().equals(fh.getFieldA()) ||
+                                !r.getFieldB().equals(fh.getFieldB())) {
+                            problem = "Rather disturbing. When querying for "+fh+" the result was: "+r;
+                        }
+                    }
+                }
+            }
+        };
+        Thread a = new Thread( null, write );
+        Thread b = new Thread( null, read );
+        Thread c = new Thread( null, write2 );
+        Thread d = new Thread( null, read2 );
+
+        a.start();
+        b.start();
+        c.start();
+        d.start();
+        a.join();
+        b.join();
+        c.join();
+        d.join();
+        assertNull(problem, problem );
+        FieldHolder fx = new FieldHolder();
+        fx.setFieldA("a");
+        fx = space.readIfExists(fx);
+        assertNull("Should have consumed all of the elements. Still have some: "+fx, fx);
     }
 
     
