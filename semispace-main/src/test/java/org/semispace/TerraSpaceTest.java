@@ -29,7 +29,8 @@ public class TerraSpaceTest extends TestCase {
     // Used in a test:
     private String problem=null;
     private SemiSpaceInterface space;
-    
+    private int globalCounter;
+
     protected SemiSpace getSpace() {
         return (SemiSpace)space;
     }
@@ -290,6 +291,7 @@ public class TerraSpaceTest extends TestCase {
 
 
     public void testAsyncWithFourThreadsAndId() throws InterruptedException {
+        globalCounter = 2;
         final int numberOfIterations = 100; // TODO Seems to fail if numIt > 1000
         Runnable write = new Runnable() {
             public void run() {
@@ -300,6 +302,7 @@ public class TerraSpaceTest extends TestCase {
                     space.write(fh, SemiSpace.ONE_DAY);
                 }
                 log.debug("Writer thread 1 finished");
+                globalCounter--;
             }
         };
         Runnable write2 = new Runnable() {
@@ -311,6 +314,7 @@ public class TerraSpaceTest extends TestCase {
                     space.write(fh, SemiSpace.ONE_DAY);
                 }
                 log.debug("Writer thread 2 finished");
+                globalCounter--;
             }
         };
         Runnable read = new Runnable() {
@@ -321,9 +325,10 @@ public class TerraSpaceTest extends TestCase {
                 for ( int i=0 ; i < numberOfIterations ; i++ ) {
                     fh.setFieldB("b"+i);
                     if (problem == null ) {
-                        FieldHolder r= space.take(fh, 19500);
+                        FieldHolder r= space.take(fh, 10+(globalCounter*9500));
                         if (  r == null ) {
-                            problem = "Got null when taking element b"+i;
+                            r= space.takeIfExists(fh);
+                            problem = "Got null when taking element b"+i+". Result when trying to re-take: "+r;
                         } else if ( !r.getFieldA().equals(fh.getFieldA()) ||
                                 !r.getFieldB().equals(fh.getFieldB())) {
                             problem = "Rather disturbing. When querying for "+fh+" the result was: "+r;
@@ -340,9 +345,10 @@ public class TerraSpaceTest extends TestCase {
                 for ( int i=0 ; i < numberOfIterations ; i++ ) {
                     fh.setFieldA("a"+i);
                     if (problem == null ) {
-                        FieldHolder r= space.take(fh, 19500);
+                        FieldHolder r= space.take(fh, 10+(globalCounter*9500));
                         if (  r == null ) {
-                            problem = "Got null when taking element b"+i;
+                            r= space.takeIfExists(fh);
+                            problem = "Got null when taking element a"+i+". Result when trying to re-take: "+r;
                         } else if ( !r.getFieldA().equals(fh.getFieldA()) ||
                                 !r.getFieldB().equals(fh.getFieldB())) {
                             problem = "Rather disturbing. When querying for "+fh+" the result was: "+r;
@@ -364,7 +370,7 @@ public class TerraSpaceTest extends TestCase {
         b.join();
         c.join();
         d.join();
-        assertNull(problem, problem );
+        assertNull("Number of writers not finished: "+globalCounter+". "+problem, problem );
         FieldHolder fx = new FieldHolder();
         fx.setFieldA("a");
         fx = space.readIfExists(fx);
