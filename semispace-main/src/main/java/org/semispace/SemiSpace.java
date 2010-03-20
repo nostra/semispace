@@ -45,7 +45,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -280,15 +279,16 @@ public class SemiSpace implements SemiSpaceInterface {
                 if ( xml.contains("<outer-class>")) {
                     checkedClassSet.add(entryClassName);
                     log.warn("It seems that "+entryClassName+" is an inner class. This is DISCOURAGED as it WILL serialize the outer " +
-                    		"class as well. If you did not intend this, note that what you store MAY be significantly larger than you " +
-                    		"expected. This warning is printed once for each class type.");
+                            "class as well. If you did not intend this, note that what you store MAY be significantly larger than you " +
+                            "expected. This warning is printed once for each class type.");
                 }
             }
+            // Need to add holder within lock. This indicates that HolderContainer has some thread safety issues
+            holder = new Holder(xml, admin.calculateTime() + leaseTimeMs, entryClassName, holderId, searchMap);
+            elements.addHolder(holder);
         } finally {
             rwl.writeLock().unlock();
         }
-        holder = new Holder(xml, admin.calculateTime() + leaseTimeMs, entryClassName, holderId, searchMap);
-        elements.addHolder(holder);
 
         SemiLease lease = new ElementLease(holder, this);
         statistics.increaseWrite();
@@ -381,9 +381,9 @@ public class SemiSpace implements SemiSpaceInterface {
         if ( templateSet.get(SemiSpace.ADMIN_GROUP_IS_FLAGGED) != null ) {
             className = InternalQuery.class.getName();
         }
-                
+
         HolderElement next = elements.next(className);
-        while ( found == null && next != null ) { 
+        while ( found == null && next != null ) {
             Holder elem = next.getHolder();
             if (elem.getLiveUntil() < admin.calculateTime()) {
                 toEvict.add(elem);
@@ -392,9 +392,7 @@ public class SemiSpace implements SemiSpaceInterface {
             if (elem != null && hasSubSet(elem.getSearchMap().entrySet(), templateSet)) {
                 found = elem;
             }
-
             next = next.next();
-
         }
 
         for (Holder evict : toEvict) {

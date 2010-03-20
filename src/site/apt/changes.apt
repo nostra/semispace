@@ -5,6 +5,24 @@
  Changes over the versions from version 1.0.0. The changes are grouped by the
  snapshot versions for which they were made.
 
+1.1.1-SNAPSHOT
+
+*----------------------------------+------------+
+|| Change or bug || Change
+*----------------------------------+------------+
+| A congested space would be prone to loose objects and / | Locking of holder object structure has been corrected. 
+| or return wrong object type                             |
+*----------------------------------+------------+
+
+
+*----------------------------------+------------+
+|| Change or bug || Change
+*----------------------------------+------------+
+| Listener block timeout error      | During read or take, the listener would always block for the length of the timeout,
+|                                   | even when it has been previously notified and the timeout should decrease proportionally.
+|                                   | Timeout now decreases correctly.
+*----------------------------------+------------+
+
 1.0.1-SNAPSHOT
 
 *----------------------------------+------------+
