@@ -21,11 +21,15 @@
             <id>en</id>
             <name>Erlend Nossum</name>
             <email>semispace@semispace.org</email>
+            <roles><role>Project lead</role></roles>
         </developer>
         <developer>
             <id>trygve</id>
             <name>Trygve Lie</name>
-            <email>semispace@semispace.org</email>
+        </developer>
+        <developer>
+            <id>chris</id>
+            <name>Chris Mcfarlen</name>
         </developer>
     </developers>
 
