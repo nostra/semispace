@@ -276,8 +276,8 @@ public class SemiSpace implements SemiSpaceInterface {
         try {
             holderId++;
             if ( !checkedClassSet.contains( entryClassName )) {
+                checkedClassSet.add(entryClassName);
                 if ( xml.contains("<outer-class>")) {
-                    checkedClassSet.add(entryClassName);
                     log.warn("It seems that "+entryClassName+" is an inner class. This is DISCOURAGED as it WILL serialize the outer " +
                             "class as well. If you did not intend this, note that what you store MAY be significantly larger than you " +
                             "expected. This warning is printed once for each class type.");
