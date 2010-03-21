@@ -91,7 +91,7 @@ public class DelayedId implements Delayed  {
      */
     @Override
     public boolean equals( Object obj ) {
-        if ( obj == null ) {
+        if ( obj == null || ! (obj instanceof DelayedId)) {
             return false;
         }
         DelayedId other = (DelayedId) obj;
