@@ -30,8 +30,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 
-public class ReadClientTest {
-    private static final Logger log = LoggerFactory.getLogger(ReadClientTest.class);
+public class ReadClientIntegrationTest {
+    private static final Logger log = LoggerFactory.getLogger(ReadClientIntegrationTest.class);
     private SemiSpaceCometProxy space;
 
     @Before

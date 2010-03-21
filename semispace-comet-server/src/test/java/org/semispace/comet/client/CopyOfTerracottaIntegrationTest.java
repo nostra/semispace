@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
  * Copy of terracotta test set, geared towards comet-space. Notice that the number of
  * elements that are inserted are typically quite fewer than in the terracotta test.
  */
-public class CopyOfTerracottaTest extends TestCase {
-    private static final Logger log = LoggerFactory.getLogger(CopyOfTerracottaTest.class);
+public class CopyOfTerracottaIntegrationTest extends TestCase {
+    private static final Logger log = LoggerFactory.getLogger(CopyOfTerracottaIntegrationTest.class);
 
     // Used in a test:
     private String problem=null;
