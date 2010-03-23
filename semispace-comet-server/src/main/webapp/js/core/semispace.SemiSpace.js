@@ -14,4 +14,32 @@
  * limitations under the License.
  */
 
-semispace.Comet = function(){ };
+semispace.SemiSpace = function(){
+    semispace.util.intface.implement(this,SemiSpaceInterface);
+    // Dummy at this point - Testing interface
+};
+
+semispace.SemiSpace.prototype.notify = function(){
+
+};
+
+semispace.SemiSpace.prototype.read = function(){
+
+};
+
+semispace.SemiSpace.prototype.readIfExists = function(){
+
+};
+
+semispace.SemiSpace.prototype.take = function(){
+
+};
+
+semispace.SemiSpace.prototype.takeIfExists = function(){
+
+};
+
+semispace.SemiSpace.prototype.write = function(){
+   
+};
+

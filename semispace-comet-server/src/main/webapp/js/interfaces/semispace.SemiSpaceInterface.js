@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-semispace.Comet = function(){ };
+var SemiSpaceInterface = new semispace.util.intface.Interface('SemiSpaceInterface',['notify','read','readIfExists','take','takeIfExists','write']);

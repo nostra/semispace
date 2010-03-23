@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-semispace.Comet = function(){ };
+semispace.util = { };
