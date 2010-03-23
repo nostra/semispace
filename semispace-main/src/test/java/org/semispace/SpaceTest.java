@@ -130,6 +130,31 @@ public class SpaceTest extends TestCase {
         assertNotNull( "Need to remove query for admin element", space.takeIfExists(iaq));
     }
 
+    public void testSameButDifferentObject() {
+        AlternateHolder onlyA = new AlternateHolder();
+        onlyA.fieldA = "a";
+        AlternateHolder onlyB = new AlternateHolder();
+        onlyA.fieldB = "b";
+
+        AlternateHolder both = new AlternateHolder();
+        both.fieldA = "a";
+        both.fieldB = "b";
+
+        space.write(onlyA, 1000);
+        space.write(onlyB, 1000);
+        space.write(both, 1000);
+
+        AlternateHolder query = new AlternateHolder();
+        query.fieldA = "a";
+
+        assertEquals("Due to the present nature of the holder structure, queries are LIFO. This test may fail " +
+                "if this changes, and then the test would need to be corrected.", "" + both, "" + space.takeIfExists(query));
+        assertEquals("" + onlyA, "" + space.takeIfExists(query));
+        assertEquals("null", "" + space.takeIfExists(query));
+        assertEquals("" + onlyB, "" + space.takeIfExists(onlyB));
+
+    }
+
     public void testAlmostEqualHolders() {
         AlternateHolder holder = new AlternateHolder();
         holder.fieldA = "a";
