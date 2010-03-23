@@ -32,7 +32,7 @@ public interface SemiSpaceInterface {
      * given in ms.
      * @param obj Object to be written into the space
      * @param duration Life time in milliseconds of the written object
-     * @return either the resulting lease, or null if an error occured 
+     * @return either the resulting lease, or null if an error occurred
      */
     public SemiLease write(Object obj, long duration);
 
