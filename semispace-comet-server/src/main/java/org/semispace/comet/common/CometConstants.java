@@ -26,6 +26,8 @@ public class CometConstants {
     public static final String TAKE_REPLY_CHANNEL = "/semispace/reply/take";
     public static final String WRITE_CALL_CHANNEL = "/semispace/call/write";
     public static final String WRITE_REPLY_CHANNEL = "/semispace/reply/write";
+    public static final String NOTIFICATION_CALL_CHANNEL = "/semispace/call/notify";
+    public static final String NOTIFICATION_REPLY_CHANNEL = "/semispace/reply/notify";
     /**
      * Need to translate internal class type identifier with object type key
      */

@@ -171,9 +171,28 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         return take( template, 0);  
     }
 
+    /**
+     * @return Always returning null, as lease is not supported.
+     */
     @Override
     public SemiEventRegistration notify(Object template, SemiEventListener listener, long duration) {
-        throw new RuntimeException("Notification not supported yet.");
+        // TODO Use different method for extracting properties.
+        final String xml = toXML(template);
+        Holder holder = retrievePropertiesFromXml(xml, duration);
+
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("searchMap", holder.getSearchMap());
+        //param.put("duration",""+duration);
+        param.put(CometConstants.PAYLOAD_MARKER, Xml2Json.transform(xml));
+        param.put(CometConstants.OBJECT_TYPE_KEY, holder.getClassName());
+
+        NotificationClient notification = new NotificationClient(myCallCounter.getAndIncrement());
+        try {
+            notification.doNotify(client, param, duration);
+        } catch ( Throwable t ) {
+            log.error("Unforeseen error occurred publishing.", t);
+        }
+        return null;
     }
 
 
