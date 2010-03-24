@@ -302,7 +302,7 @@ public class SemiSpace implements SemiSpaceInterface {
     public <T> T read(T tmpl, long timeout) {
         String found = null;
         if (tmpl != null) {
-            found = findOrWaitLeaseForTemplate(retrievePropertiesFromObject(tmpl), timeout, false);
+            found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, false);
         }
         return (T)xmlToObject(found);
     }
@@ -466,7 +466,7 @@ public class SemiSpace implements SemiSpaceInterface {
     public <T> T take(T tmpl, long timeout) {
         String found = null;
         if (tmpl != null) {
-            found = findOrWaitLeaseForTemplate(retrievePropertiesFromObject(tmpl), timeout, true);
+            found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, true);
         }
         return (T)xmlToObject(found);
     }
@@ -495,6 +495,56 @@ public class SemiSpace implements SemiSpaceInterface {
                     + "The XML was read as\n" + xml, e);
         }
         return result;
+    }
+
+    private static class PreprocessedTemplate {
+       Object object;
+       Map<String, String> cachedSet;
+       
+       public PreprocessedTemplate(Object object, Map<String, String> cachedSet) {
+          this.object = object;
+          this.cachedSet = cachedSet;
+       }
+       
+       public Map<String, String> getCachedSet() {
+          return cachedSet;
+       }
+       
+       public void setCachedSet(Map<String, String> cachedSet) {
+          this.cachedSet = cachedSet;
+       }
+       
+       public Object getObject() {
+          return object;
+       }
+       
+       public void setObject(Object object) {
+          this.object = object;
+       }
+    }
+
+    /**
+     * Create a pre-processed template object that can be used to reduce the amount of
+     * work required to match templates during a take.  Applications that take a lot of 
+     * objects using the same template instance, a noticable performance improvement
+     * can be had.
+     * 
+     * @param template The object to preprocess
+     * @return A pre-processed object that can be passed to read/take
+     */
+    public Object processTemplate(Object template) {
+       PreprocessedTemplate toReturn = null;
+       if (template != null) {
+          toReturn = new PreprocessedTemplate(template, retrievePropertiesFromObject(template));
+       }
+       return toReturn;
+    }
+
+    private Map<String, String> getPropertiesForObject(Object object) {
+       if (object instanceof PreprocessedTemplate) {
+          return ((PreprocessedTemplate)object).getCachedSet();
+       }
+       return retrievePropertiesFromObject(object);
     }
 
     /**
