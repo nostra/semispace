@@ -27,10 +27,13 @@
 package org.semispace;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HolderContainerTest extends TestCase {
+    private static final Logger log = LoggerFactory.getLogger(HolderContainerTest.class);
     private long id = 0;
-    
+
     public void testAlmostEmptyHolderContainer() {
         HolderContainer hc = HolderContainer.retrieveContainer();
         Holder a = createHolder();
@@ -123,7 +126,7 @@ public class HolderContainerTest extends TestCase {
     }
 
     private Holder createHolder() {
-        Holder holder = new Holder("<x>dummy-"+id+"</x>", System.currentTimeMillis()+(60*60*1000), "x", id, null);
+        Holder holder = new Holder("<x>dummy-"+id+"</x>", System.currentTimeMillis()+(60*60*1000), "junit", id, null);
         id++;
         return holder;
     }
@@ -154,4 +157,65 @@ public class HolderContainerTest extends TestCase {
         assertEquals(c.getId(), h.getId());
         assertEquals(orgsize, hc.size());
     }
+
+    public void testHavingFewElements() {
+        HolderContainer hc = HolderContainer.retrieveContainer();
+        assertEquals("This test requires that the other tests cleaned up after themselves.", 0, hc.size());
+        final int orgsize = hc.size(); // Using variable as it is cleaner
+        Holder a = createHolder();
+        Holder b = createHolder();
+        hc.addHolder(a);
+        hc.addHolder(b);
+        assertEquals(orgsize+2, hc.size());
+        Holder aRemoved = hc.removeHolderById(a.getId(), a.getClassName());
+        assertEquals(a.getId(), aRemoved.getId());
+        assertEquals(orgsize+1, hc.size());
+
+        // Re-add a
+        hc.addHolder(a);
+        assertEquals(orgsize+2, hc.size());
+        // ... and remove it again
+        aRemoved = hc.removeHolderById(a.getId(), a.getClassName());
+        assertEquals(a.getId(), aRemoved.getId());
+
+        Holder bRemoved = hc.removeHolderById(b.getId(), b.getClassName());
+        assertEquals(b.getId(), bRemoved.getId());
+        assertEquals(orgsize, hc.size());
+    }
+
+    /**
+     * Not expected to fail on insertion time, really. Just testing how many
+     * elements that can be inserted and removed. Note that I
+     * <b>do</b> test whether the same number was removed as inserted.
+     */
+    public void testInsertionRate() {
+        HolderContainer hc = HolderContainer.retrieveContainer();
+        final int orgsize = hc.size();
+        final long startingId = id;
+
+        log.debug("Started insertion");
+        int counter = 0;
+        long startTime = System.currentTimeMillis();
+
+        while ( startTime > System.currentTimeMillis() - 1000 ) {
+            hc.addHolder(createHolder());
+            counter++;
+        }
+
+        log.debug("Inserted "+counter+" elements");
+        assertEquals(counter, hc.size());
+
+        log.debug("Last element "+id);
+
+        int takenCounter = 0;
+        for ( long i=startingId ; i < id ; i++) {
+            assertNotNull("Expecting to be able to remove element "+i, hc.removeHolderById(i, "junit"));
+            takenCounter++;
+        }
+        log.debug("Total running time "+(System.currentTimeMillis() - startTime)+" ms, inserted (and hopefully took) "+counter+" items.");
+
+        assertEquals("Should be able to take as many elements as was inserted.", counter, takenCounter);
+        assertEquals(orgsize, hc.size());        
+    }
+
 }
