@@ -109,9 +109,9 @@ public class TakeClient implements ReadOrTake {
         private void deliverInternal( Client from, Client to, Message message) {
             if ((CometConstants.TAKE_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
                 //log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-                Map map = (Map) message.getData();
+                Map<String,String> map = (Map) message.getData();
                 if ( map != null ) {
-                    data = (String) map.get("result");
+                    data = map.get("result");
                 }
                 latch.countDown();
             } else {

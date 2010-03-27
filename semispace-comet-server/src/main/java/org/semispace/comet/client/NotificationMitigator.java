@@ -27,6 +27,8 @@ import org.semispace.event.SemiEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 /**
  * Maintain the client side of a notification.
  */
@@ -35,13 +37,11 @@ public class NotificationMitigator implements SemiLease {
     private MitigationListener mitigationListener;
     private String channel;
     private BayeuxClient client;
-    private SemiEventListener listener;
 
     public NotificationMitigator(BayeuxClient client, int callId, SemiEventListener listener) {
         this.client = client;
         this.mitigationListener = new MitigationListener(callId, listener);
         this.channel = CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId;
-        this.listener = listener;
     }
 
     protected void attach() {
@@ -81,7 +81,7 @@ public class NotificationMitigator implements SemiLease {
         private final int callId;
         private SemiEventListener listener;
 
-        public MitigationListener(int callId, SemiEventListener listener) {
+        private MitigationListener(int callId, SemiEventListener listener) {
             this.callId = callId;
             this.listener = listener;
         }
@@ -98,10 +98,12 @@ public class NotificationMitigator implements SemiLease {
         }
         private void deliverInternal(Client from, Client to, Message message) {
             if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
-                log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
+                log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId()+" "+message.getData());
+                Map<String,String> map = (Map) message.getData();
+                final String objectId = map.get("objectId");
                 SemiEvent fake = new SemiEvent(){
                     public long getId() {
-                        return -1;
+                        return Long.valueOf( objectId );
                     }
                 };
                 listener.notify(fake);

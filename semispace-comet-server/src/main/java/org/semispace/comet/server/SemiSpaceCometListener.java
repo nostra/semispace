@@ -69,7 +69,7 @@ public class SemiSpaceCometListener implements SemiEventListener {
             log.trace("Interesting event of type: {}",theEvent.getClass().getName());
 
             Map<String, String> output = new HashMap<String, String>();
-            // TODO Want something useful in return object??
+            output.put("objectId", ""+theEvent.getId());
             try {
                 service.deliver(outChannel, output, client);
             } catch ( Throwable t ) {
@@ -77,6 +77,6 @@ public class SemiSpaceCometListener implements SemiEventListener {
             } finally {
                 log.trace(">>>>>>> delivered NOTIFY on channel {} - done", outChannel);
             }            
-        } 
+        }
     }
 }
