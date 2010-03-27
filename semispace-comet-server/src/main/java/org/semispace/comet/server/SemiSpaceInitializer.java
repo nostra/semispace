@@ -29,6 +29,8 @@ public class SemiSpaceInitializer extends GenericServlet {
     private ReadService rs;
     private WriteService ws;
     private TakeService ts;
+    private NotificationService ns;
+
     @Override
     public void init() throws ServletException {
         SemiSpace space = (SemiSpace) SemiSpace.retrieveSpace();
@@ -40,6 +42,9 @@ public class SemiSpaceInitializer extends GenericServlet {
 
         ws = new WriteService(bayeux, space);
         ws.setSeeOwnPublishes(false);
+
+        ns = new NotificationService(bayeux, space);
+        ns.setSeeOwnPublishes(false);
     }
     
     @Override

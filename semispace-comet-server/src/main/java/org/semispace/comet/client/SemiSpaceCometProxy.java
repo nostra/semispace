@@ -182,7 +182,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("searchMap", holder.getSearchMap());
-        //param.put("duration",""+duration);
+        param.put("duration",""+duration);
         param.put(CometConstants.PAYLOAD_MARKER, Xml2Json.transform(xml));
         param.put(CometConstants.OBJECT_TYPE_KEY, holder.getClassName());
 

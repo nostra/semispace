@@ -64,8 +64,9 @@ public class SemiSpaceCometListener implements SemiEventListener {
 
     @Override
     public void notify(SemiEvent theEvent) {
-        if ( theEvent.getClass().isAssignableFrom(interestingClass) ) {
-            log.debug("Interesting event of type: "+theEvent.getClass().getName());
+        log.debug("Got incoming event of type: "+theEvent.getClass().getName());
+        if ( interestingClass.isAssignableFrom(theEvent.getClass()) ) {
+            log.trace("Interesting event of type: {}",theEvent.getClass().getName());
 
             Map<String, String> output = new HashMap<String, String>();
             // TODO Want something useful in return object??
@@ -74,9 +75,8 @@ public class SemiSpaceCometListener implements SemiEventListener {
             } catch ( Throwable t ) {
                 log.error("Got a problem delivering", t);
             } finally {
-                log.trace("======== delivered NOTIFY on channel {} - done", outChannel);
-            }
-            
-        }
+                log.trace(">>>>>>> delivered NOTIFY on channel {} - done", outChannel);
+            }            
+        } 
     }
 }

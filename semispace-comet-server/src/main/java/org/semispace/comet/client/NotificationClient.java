@@ -49,18 +49,19 @@ public class NotificationClient {
 
     private void detach(BayeuxClient client) {
         client.removeListener(notificationListener);
-        client.unsubscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);
+        client.unsubscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId);
     }
 
     public String doNotify(BayeuxClient client, Map<String, Object> map, long maxWaitMs ) {
         attach(client);
 
         try {
-            client.publish(CometConstants.READ_CALL_CHANNEL+"/"+callId, map, null );
-            log.debug("Awaiting..."+CometConstants.READ_REPLY_CHANNEL+"/"+callId+" map is: "+map);
-            boolean finishedOk = notificationListener.getLatch().await(maxWaitMs, TimeUnit.MILLISECONDS);
+            client.publish(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId, map, null );
+            log.debug("Awaiting..."+CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+" map is: "+map);
+            // TODO Change timeout if necessary
+            boolean finishedOk = notificationListener.getLatch().await(5, TimeUnit.SECONDS);
             if ( !finishedOk) {
-                log.warn("Did not receive callback on read. That is not to savory. Problem with connection?");
+                log.warn("Did not receive callback on notify. That is not to savory. Problem with connection?");
             }
             log.trace("... unlatched");
             return notificationListener.data;
@@ -101,9 +102,10 @@ public class NotificationClient {
 
         private void deliverInternal( Client to, Message message) {
             if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
-                //log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
+                log.debug("Notify - Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
                 if ( map != null ) {
+                    // TODO Not using data yet
                     data = (String) map.get("result");
                 }
                 latch.countDown();

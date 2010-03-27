@@ -27,6 +27,7 @@ import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -50,9 +51,18 @@ public class NotificationService extends BayeuxService {
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
         final String outChannel = message.getChannel().replace("/call/", "/reply/");
         searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
-        SemiEventListener listener = new SemiSpaceCometListener(createListenerType( message.getChannel() ), outChannel , remote, this);
+        // TODO Later consider use of createListenerType method instead of all
+        SemiEventListener listener = new SemiSpaceCometListener("all", outChannel, remote, this);
         SemiEventRegistration lease = space.notify(searchMap, listener, duration.longValue());
         // TODO Consider doing something useful with the lease.
+        Map<String, String> output = new HashMap<String, String>();
+        if ( lease != null ) {
+            output.put("leaseId", ""+lease.getId());
+        } else {
+            output.put("error", "Did not get lease");
+        }
+        remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
+
     }
 
     /**
