@@ -14,4 +14,60 @@
  * limitations under the License.
  */
 
-semispace.Comet = function(){ };
+semispace.Comet = function(connector, server){
+
+    var cometd = connector;
+    var connected = false;
+    var messenger = undefined;
+
+
+    var m = function(message){
+        if(typeof messenger  !== undefined){
+            messenger(message);
+        }
+    };
+
+
+    var metaConnect = function(message){
+        var wasConnected = connected;
+        connected = message.successful === true;
+        if(!wasConnected && connected){
+            m('Connected');
+        }else if (wasConnected && !connected){
+            m('Not connected');
+        }
+    };
+
+    var metaUnsuccessful = function(message){
+        m('Connection was unsuccessful');
+    };
+
+
+    var init = function(){
+
+        // Set configuration
+        cometd.configure({
+            url: server,
+            logLevel: 'debug'
+        });
+
+        // Set meta channel listeners
+        cometd.addListener('/meta/connect', metaConnect);
+        cometd.addListener('/meta/unsuccessful', metaUnsuccessful);
+
+        cometd.handshake();
+    }();
+
+
+    this.isConnected = function(){
+        return connected;
+    };
+
+
+    this.setMessenger = function(fn){
+        messenger = fn;
+    };
+
+
+};
+
