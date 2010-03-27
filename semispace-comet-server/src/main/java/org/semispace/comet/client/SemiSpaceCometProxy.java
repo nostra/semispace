@@ -188,7 +188,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
         NotificationClient notification = new NotificationClient(myCallCounter.getAndIncrement());
         try {
-            notification.doNotify(client, param, duration);
+            return notification.doNotify(client, param, duration);
         } catch ( Throwable t ) {
             log.error("Unforeseen error occurred publishing.", t);
         }

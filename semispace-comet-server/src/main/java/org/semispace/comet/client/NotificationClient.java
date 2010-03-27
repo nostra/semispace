@@ -20,6 +20,7 @@ import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.MessageListener;
 import org.cometd.client.BayeuxClient;
+import org.semispace.SemiEventRegistration;
 import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,25 +35,26 @@ import java.util.concurrent.TimeUnit;
 public class NotificationClient {
     private static final Logger log = LoggerFactory.getLogger(NotificationClient.class);
 
-    private final NotificationListener notificationListener;
+    private NotificationRegistrationListener notificationListener;
     private final int callId;
 
     public NotificationClient(int callId) {
         this.callId = callId;
-        notificationListener = new NotificationListener(callId);
     }
 
     private void attach(BayeuxClient client) {
+        notificationListener = new NotificationRegistrationListener(callId, client);
         client.addListener(notificationListener);
-        client.subscribe(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId);
+        client.subscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId);
     }
 
     private void detach(BayeuxClient client) {
         client.removeListener(notificationListener);
         client.unsubscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId);
+        notificationListener = null;
     }
 
-    public String doNotify(BayeuxClient client, Map<String, Object> map, long maxWaitMs ) {
+    public SemiEventRegistration doNotify(BayeuxClient client, Map<String, Object> map, long maxWaitMs ) {
         attach(client);
 
         try {
@@ -64,7 +66,9 @@ public class NotificationClient {
                 log.warn("Did not receive callback on notify. That is not to savory. Problem with connection?");
             }
             log.trace("... unlatched");
+
             return notificationListener.data;
+
         } catch (InterruptedException e) {
             log.warn("Got InterruptedException - returning null. Masked: "+e);
             return null;
@@ -77,18 +81,20 @@ public class NotificationClient {
     }
 
 
-    private static class NotificationListener implements MessageListener {
+    private static class NotificationRegistrationListener implements MessageListener {
         private final CountDownLatch latch;
         private final int callId;
-        private String data;
+        private SemiEventRegistration data;
+        private BayeuxClient client;
 
         public CountDownLatch getLatch() {
             return latch;
         }
 
-        private NotificationListener(int callId) {
+        private NotificationRegistrationListener(int callId, BayeuxClient client) {
             this.latch = new CountDownLatch(1);
             this.callId = callId;
+            this.client = client;
         }
         @Override
         public void deliver(Client from, Client to, Message message) {
@@ -105,13 +111,18 @@ public class NotificationClient {
                 log.debug("Notify - Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
                 if ( map != null ) {
-                    // TODO Not using data yet
-                    data = (String) map.get("result");
+                    // data = (String) map.get("leaseId");
+                    NotificationMitigator mitigator = new NotificationMitigator(client, callId);
+                    SemiEventRegistration registration = new SemiEventRegistration( Long.valueOf((String) map.get("leaseId")), mitigator );
+                    mitigator.attach();
+                    data = registration;
                 }
                 latch.countDown();
+            } else {
+                // TODO log.warn("Unexpected channel "+message.getChannel());
             }
         }
-        public Object getData() {
+        public SemiEventRegistration getData() {
             return data;
         }
     }

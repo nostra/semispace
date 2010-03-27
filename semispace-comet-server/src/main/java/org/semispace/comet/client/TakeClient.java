@@ -114,6 +114,8 @@ public class TakeClient implements ReadOrTake {
                     data = (String) map.get("result");
                 }
                 latch.countDown();
+            } else {
+                // TODO log.warn("Unexpected channel "+message.getChannel());
             }
         }
         public Object getData() {
