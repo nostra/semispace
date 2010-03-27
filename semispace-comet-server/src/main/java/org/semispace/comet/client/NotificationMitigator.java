@@ -20,8 +20,10 @@ import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.MessageListener;
 import org.cometd.client.BayeuxClient;
+import org.semispace.SemiEventListener;
 import org.semispace.SemiLease;
 import org.semispace.comet.common.CometConstants;
+import org.semispace.event.SemiEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,11 +35,13 @@ public class NotificationMitigator implements SemiLease {
     private MitigationListener mitigationListener;
     private String channel;
     private BayeuxClient client;
+    private SemiEventListener listener;
 
-    public NotificationMitigator( BayeuxClient client, int callId ) {
+    public NotificationMitigator(BayeuxClient client, int callId, SemiEventListener listener) {
         this.client = client;
-        this.mitigationListener = new MitigationListener(callId);
+        this.mitigationListener = new MitigationListener(callId, listener);
         this.channel = CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId;
+        this.listener = listener;
     }
 
     protected void attach() {
@@ -75,9 +79,11 @@ public class NotificationMitigator implements SemiLease {
 
     private static class MitigationListener implements MessageListener {
         private final int callId;
+        private SemiEventListener listener;
 
-        public MitigationListener(int callId) {
+        public MitigationListener(int callId, SemiEventListener listener) {
             this.callId = callId;
+            this.listener = listener;
         }
 
         @Override
@@ -93,6 +99,12 @@ public class NotificationMitigator implements SemiLease {
         private void deliverInternal(Client from, Client to, Message message) {
             if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
+                SemiEvent fake = new SemiEvent(){
+                    public long getId() {
+                        return -1;
+                    }
+                };
+                listener.notify(fake);
             } else {
                 // TODO log.warn("Unexpected channel "+message.getChannel());
             }

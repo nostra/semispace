@@ -20,6 +20,7 @@ import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.MessageListener;
 import org.cometd.client.BayeuxClient;
+import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
@@ -37,13 +38,15 @@ public class NotificationClient {
 
     private NotificationRegistrationListener notificationListener;
     private final int callId;
+    private SemiEventListener listener;
 
-    public NotificationClient(int callId) {
+    public NotificationClient(int callId, SemiEventListener listener) {
         this.callId = callId;
+        this.listener = listener;
     }
 
     private void attach(BayeuxClient client) {
-        notificationListener = new NotificationRegistrationListener(callId, client);
+        notificationListener = new NotificationRegistrationListener(callId, client, listener );
         client.addListener(notificationListener);
         client.subscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId);
     }
@@ -86,15 +89,18 @@ public class NotificationClient {
         private final int callId;
         private SemiEventRegistration data;
         private BayeuxClient client;
+        // TODO Chain of call creating the listener is way too long
+        private SemiEventListener listener;
 
         public CountDownLatch getLatch() {
             return latch;
         }
 
-        private NotificationRegistrationListener(int callId, BayeuxClient client) {
+        private NotificationRegistrationListener(int callId, BayeuxClient client, SemiEventListener listener) {
             this.latch = new CountDownLatch(1);
             this.callId = callId;
             this.client = client;
+            this.listener = listener;
         }
         @Override
         public void deliver(Client from, Client to, Message message) {
@@ -112,7 +118,7 @@ public class NotificationClient {
                 Map map = (Map) message.getData();
                 if ( map != null ) {
                     // data = (String) map.get("leaseId");
-                    NotificationMitigator mitigator = new NotificationMitigator(client, callId);
+                    NotificationMitigator mitigator = new NotificationMitigator(client, callId, listener);
                     SemiEventRegistration registration = new SemiEventRegistration( Long.valueOf((String) map.get("leaseId")), mitigator );
                     mitigator.attach();
                     data = registration;

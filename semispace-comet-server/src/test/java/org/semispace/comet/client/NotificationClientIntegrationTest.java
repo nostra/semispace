@@ -77,7 +77,7 @@ public class NotificationClientIntegrationTest {
                 log.debug("Got taken renewal event id "+renewalEvent.getId());
 
             } else {
-                log.error("Not expected at all.");
+                log.error("Not expected at all: Got id "+theEvent.getId()+" event class "+theEvent.getClass().getName());
             }
         }
     }

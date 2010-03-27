@@ -172,31 +172,6 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     }
 
     /**
-     * @return Always returning null, as lease is not supported.
-     */
-    @Override
-    public SemiEventRegistration notify(Object template, SemiEventListener listener, long duration) {
-        // TODO Use different method for extracting properties.
-        final String xml = toXML(template);
-        Holder holder = retrievePropertiesFromXml(xml, duration);
-
-        Map<String, Object> param = new HashMap<String, Object>();
-        param.put("searchMap", holder.getSearchMap());
-        param.put("duration",""+duration);
-        param.put(CometConstants.PAYLOAD_MARKER, Xml2Json.transform(xml));
-        param.put(CometConstants.OBJECT_TYPE_KEY, holder.getClassName());
-
-        NotificationClient notification = new NotificationClient(myCallCounter.getAndIncrement());
-        try {
-            return notification.doNotify(client, param, duration);
-        } catch ( Throwable t ) {
-            log.error("Unforeseen error occurred publishing.", t);
-        }
-        return null;
-    }
-
-
-    /**
      * TODO Presently duplicated from WsSpaceImpl
      * Protected for the benefit of junit test(s)
      * @return A <b>temporary</b> holder object containing the relevant elements found in the source.
@@ -237,7 +212,32 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         return holder;
     }
 
-    
+
+    /**
+     * @return Always returning null, as lease is not supported.
+     */
+    @Override
+    public SemiEventRegistration notify(Object template, SemiEventListener listener, long duration) {
+        // TODO Use different method for extracting properties.
+        final String xml = toXML(template);
+        Holder holder = retrievePropertiesFromXml(xml, duration);
+
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("searchMap", holder.getSearchMap());
+        param.put("duration",""+duration);
+        param.put(CometConstants.PAYLOAD_MARKER, Xml2Json.transform(xml));
+        param.put(CometConstants.OBJECT_TYPE_KEY, holder.getClassName());
+
+        NotificationClient notification = new NotificationClient(myCallCounter.getAndIncrement(), listener);
+        try {
+            return notification.doNotify(client, param, duration);
+        } catch ( Throwable t ) {
+            log.error("Unforeseen error occurred publishing.", t);
+        }
+        return null;
+    }
+
+
     private static class ProxyLifeCycle implements LifeCycle.Listener {
         @Override
         public void lifeCycleStarting(LifeCycle event) {
