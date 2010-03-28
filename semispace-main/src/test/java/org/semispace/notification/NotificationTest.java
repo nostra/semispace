@@ -35,7 +35,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class NotificationTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(NotificationTest.class);
@@ -88,11 +90,26 @@ public class NotificationTest extends TestCase {
         assertEquals( numinserts, b.getNotified());
         assertEquals( numinserts, c.getNotified());
 
-        while ( space.takeIfExists(new NoticeA()) != null ||
-                space.takeIfExists(new NoticeB()) != null ||
-                space.takeIfExists(new NoticeC()) != null) {
-            // Just cleaning away objects from space
-        }
+        NoticeA aTaken;
+        NoticeB bTaken;
+        NoticeC cTaken;
+        Set<String> noDups = new HashSet<String>();
+        do {
+            aTaken = space.takeIfExists(new NoticeA());
+            bTaken = space.takeIfExists(new NoticeB());
+            cTaken = space.takeIfExists(new NoticeC());
+            if ( aTaken != null ) {
+                assertTrue(noDups.add(aTaken.getField()) );
+            }
+            if ( bTaken != null ) {
+                assertTrue(noDups.add(bTaken.getField()) );
+            }
+            if ( cTaken != null ) {
+                assertTrue(noDups.add(cTaken.getField()) );
+            }
+
+        } while (aTaken != null || bTaken != null || bTaken != null);
+        assertEquals(3*NUMBER_OF_ELEMENTS_OR_LISTENERS,noDups.size());
     }
 
     /**
@@ -126,11 +143,21 @@ public class NotificationTest extends TestCase {
         log.debug("Lease cancelled");
         assertEquals(numinserts, a[0].getNotified());
         assertEquals(numinserts, b[b.length-1].getNotified());
-        while ( space.takeIfExists(new NoticeA()) != null ||
-                space.takeIfExists(new NoticeB()) != null ||
-                space.takeIfExists(new NoticeC()) != null) {
-            // Just cleaning away objects from space
-        }
+        NoticeA aTaken;
+        NoticeB bTaken;
+        Set<String> noDups = new HashSet<String>();
+        do {
+            aTaken = space.takeIfExists(new NoticeA());
+            bTaken = space.takeIfExists(new NoticeB());
+            if ( aTaken != null ) {
+                assertTrue(noDups.add(aTaken.getField()) );
+            }
+            if ( bTaken != null ) {
+                assertTrue(noDups.add(bTaken.getField()) );
+            }
+
+        } while (aTaken != null || bTaken != null);
+        assertEquals(2*numinserts,noDups.size());
     }
 
     /**
@@ -163,14 +190,14 @@ public class NotificationTest extends TestCase {
     private void insertIntoSpace(SemiSpaceInterface space, int i) {
         NoticeA na = new NoticeA();
         na.setField("a "+i);
-        space.write(na, 1000);
+        space.write(na, NUMBER_OF_ELEMENTS_OR_LISTENERS * 100);
         
         NoticeB nb = new NoticeB();
         nb.setField("b "+i);
-        space.write(nb, 1000);
+        space.write(nb, NUMBER_OF_ELEMENTS_OR_LISTENERS * 100);
         
         NoticeC nc = new NoticeC();
         nc.setField("c "+i);
-        space.write(nc, 1000);
+        space.write(nc, NUMBER_OF_ELEMENTS_OR_LISTENERS * 100);
     }
 }
