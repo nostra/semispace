@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.semispace.comet.client;
+package org.semispace.comet.client.notification;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
+import org.semispace.comet.client.FieldHolder;
+import org.semispace.comet.client.SemiSpaceCometProxy;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
 import org.semispace.event.SemiExpirationEvent;
