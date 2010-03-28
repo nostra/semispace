@@ -41,25 +41,12 @@ public class NotificationMitigator implements SemiLease {
     public NotificationMitigator(BayeuxClient client, int callId, SemiEventListener listener) {
         this.client = client;
         this.mitigationListener = new MitigationListener(callId, listener);
-        this.channel = CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId;
+        this.channel = CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId;
     }
 
     protected void attach() {
         log.debug("Attaching "+channel);
         client.addListener(mitigationListener);
-        //client.subscribe(channel+"/*");
-        log.debug("Listening on "+channel+"/*");
-        /*
-        client.subscribe(channel+"/all");
-        log.debug("Listening on "+channel+"/all");
-        client.subscribe(channel+"/take");
-        log.debug("Listening on "+channel+"/take");
-        client.subscribe(channel+"/expiration");
-        log.debug("Listening on "+channel+"/expiration");
-        client.subscribe(channel+"/renew");
-        log.debug("Listening on "+channel+"/renew");
-        //
-        */
     }
 
     /**
@@ -109,7 +96,7 @@ public class NotificationMitigator implements SemiLease {
             }
         }
         private void deliverInternal(Client from, Client to, Message message) {
-            if (message.getChannel().startsWith(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId)) {
+            if (message.getChannel().startsWith(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId)) {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId()+" "+message.getData());
                 Map<String,String> map = (Map) message.getData();
                 final String objectId = map.get("objectId");

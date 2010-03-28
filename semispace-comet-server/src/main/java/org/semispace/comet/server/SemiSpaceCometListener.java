@@ -18,6 +18,7 @@ package org.semispace.comet.server;
 
 import org.cometd.Client;
 import org.semispace.SemiEventListener;
+import org.semispace.comet.common.CometConstants;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
 import org.semispace.event.SemiExpirationEvent;
@@ -36,16 +37,16 @@ public class SemiSpaceCometListener implements SemiEventListener {
     private static final Logger log = LoggerFactory.getLogger(SemiSpaceCometListener.class);
     private final Class interestingClass;
     private final NotificationService service;
-    private final String outChannel;
     private final Client client;
     private String listenerType;
+    private String callId;
 
-    public SemiSpaceCometListener(String listenerType, String outChannel, Client remote, NotificationService notificationService) {
+    public SemiSpaceCometListener(String listenerType, String callId, Client remote, NotificationService notificationService) {
         this.interestingClass = mapListenerType( listenerType );
         // TODO Consider making listenertype part of outChannel - as it is a part of outchannel...
         this.listenerType = listenerType;
         this.service = notificationService;
-        this.outChannel = outChannel;
+        this.callId = callId;
         this.client = remote;
     }
 
@@ -73,12 +74,14 @@ public class SemiSpaceCometListener implements SemiEventListener {
 
             Map<String, String> output = new HashMap<String, String>();
             output.put("objectId", ""+theEvent.getId());
+            final String outChannel = CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/"+listenerType;
             try {
-                service.deliver(outChannel+"/"+listenerType, output, client);
+                // TODO +"/"+listenerType is presently part of outchannel
+                service.deliver(outChannel, output, client);
             } catch ( Throwable t ) {
                 log.error("Got a problem delivering", t);
             } finally {
-                log.trace(">>>>>>> delivered NOTIFY on channel {} - done", outChannel+"/"+listenerType);
+                log.trace(">>>>>>> delivered NOTIFY on channel {} - done", outChannel);
             }            
         }
     }

@@ -48,12 +48,12 @@ public class NotificationClient {
     private void attach(BayeuxClient client) {
         notificationListener = new NotificationRegistrationListener(callId, client, listener );
         client.addListener(notificationListener);
-        client.subscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId);
+        client.subscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all");
     }
 
     private void detach(BayeuxClient client) {
         client.removeListener(notificationListener);
-        client.unsubscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId);
+        client.unsubscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all");
         notificationListener = null;
     }
 
@@ -61,7 +61,7 @@ public class NotificationClient {
         attach(client);
 
         try {
-            client.publish(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId, map, null );
+            client.publish(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId+"/all", map, null );
             log.debug("Awaiting..."+CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+" map is: "+map);
             // TODO Change timeout if necessary
             boolean finishedOk = notificationListener.getLatch().await(5, TimeUnit.SECONDS);
@@ -113,7 +113,7 @@ public class NotificationClient {
         }
 
         private void deliverInternal( Client to, Message message) {
-            if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
+            if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all").equals(message.getChannel())) {
                 log.debug("Notify - Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
                 if ( map != null ) {

@@ -39,7 +39,7 @@ public class NotificationService extends BayeuxService {
 
     public NotificationService(Bayeux bayeux, SemiSpace space ) {
         super(bayeux, "notification");
-        subscribe(CometConstants.NOTIFICATION_CALL_CHANNEL+"/*", "semispaceNotify");
+        subscribe(CometConstants.NOTIFICATION_CALL_CHANNEL+"/**", "semispaceNotify");
         this.space = space;
     }
 
@@ -51,8 +51,12 @@ public class NotificationService extends BayeuxService {
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
         final String outChannel = message.getChannel().replace("/call/", "/reply/");
         searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
-        // TODO Later consider use of createListenerType method instead of all
-        SemiEventListener listener = new SemiSpaceCometListener("all", outChannel, remote, this);
+        // TODO Move method into listener.
+        String listenerType = createListenerType(outChannel);
+        String callId = createCallId( outChannel, listenerType);
+        log.debug("------- Constructed type: "+listenerType+", callId: "+callId+" out of "+outChannel);
+
+        SemiEventListener listener = new SemiSpaceCometListener(listenerType, callId, remote, this);
         SemiEventRegistration lease = space.notify(searchMap, listener, duration.longValue());
         // TODO Consider doing something useful with the lease.
         Map<String, String> output = new HashMap<String, String>();
@@ -65,18 +69,24 @@ public class NotificationService extends BayeuxService {
 
     }
 
+    private String createCallId(String outChannel, String listenerType) {
+        String basis = outChannel.substring(0, outChannel.length()-listenerType.length()-1);
+
+        return basis.substring(basis.lastIndexOf("/")+1);
+    }
+
     /**
      * Extract the channel listen type: all, write, take, expired
      * @return Type as it is found within the slashes. The content is checked elsewhere.
      */
     private String createListenerType(String channel) {
-        String beginning = channel.substring(CometConstants.NOTIFICATION_CALL_CHANNEL.length()+1);
-        int firstSlash = beginning.indexOf("/");
-        if ( firstSlash == -1 ) {
+        int lastSlash = channel.lastIndexOf("/");
+        if ( lastSlash == -1 ) {
             throw new RuntimeException("Problematic channel determination. Given channel was: "+channel);
         }
 
-        return beginning.substring(0, firstSlash);
+        String type = channel.substring(lastSlash+1);
+        return type;
     }
 
     public void deliver(String outChannel, Map<String, String> output, Client remote) {
