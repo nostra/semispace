@@ -39,14 +39,10 @@ public class ToBeNotified implements SemiEventListener {
     public ToBeNotified(boolean toCancelLease) {
         this.toCancelLease = toCancelLease;
     }
-    
-    
-    
+
     public int getNotified() {
         return this.notified;
     }
-
-
 
     /**
      * synchronized in order to avoid it being called twice (as it may be removed)
