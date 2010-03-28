@@ -86,7 +86,7 @@ public class SemiSpaceTest extends TestCase {
         space.setAdmin(new SemiSpaceAdmin(space));
 
         assertNull( "If this test actually returns an object, an issue has been CORRECTED. As of now " +
-                "null is errenously returned. Probably due to calculations on lease time.", space.takeIfExists(fh));
+                "null is erroneously returned. Probably due to calculations on lease time.", space.takeIfExists(fh));
     }
 
     public void testRetrievalOfHolderById() throws InterruptedException {
