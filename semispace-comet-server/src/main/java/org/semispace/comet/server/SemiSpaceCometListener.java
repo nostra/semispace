@@ -38,28 +38,30 @@ public class SemiSpaceCometListener implements SemiEventListener {
     private final Class interestingClass;
     private final NotificationService service;
     private final Client client;
-    private String listenerType;
     private String callId;
+    public static final String EVENT_EXPIRATION = "expiration";
+    public static final String EVENT_AVAILABILITY = "availability";
+    public static final String EVENT_TAKEN = "taken";
+    public static final String EVENT_RENEW = "renewal";
+    public static final String EVENT_ALL = "all";
 
     public SemiSpaceCometListener(String listenerType, String callId, Client remote, NotificationService notificationService) {
         this.interestingClass = mapListenerType( listenerType );
-        // TODO Consider making listenertype part of outChannel - as it is a part of outchannel...
-        this.listenerType = listenerType;
         this.service = notificationService;
         this.callId = callId;
         this.client = remote;
     }
 
     private Class mapListenerType(String listenerType) {
-        if ( "availability".equals( listenerType )) {
+        if ( EVENT_AVAILABILITY.equals( listenerType )) {
             return SemiAvailabilityEvent.class;
-        } else if ( "taken".equals( listenerType )) {
+        } else if ( EVENT_TAKEN.equals( listenerType )) {
             return SemiTakenEvent.class;
-        } else if ( "expiration".equals( listenerType )) {
+        } else if ( EVENT_EXPIRATION.equals( listenerType )) {
             return SemiExpirationEvent.class;
-        } else if ( "renewal".equals( listenerType )) {
+        } else if ( EVENT_RENEW.equals( listenerType )) {
             return SemiRenewalEvent.class;
-        } else if ( "all".equals( listenerType )) {
+        } else if ( EVENT_ALL.equals( listenerType )) {
             return Object.class;
         } else {
             throw new RuntimeException("Erroneous listener type given: "+listenerType);
@@ -74,9 +76,8 @@ public class SemiSpaceCometListener implements SemiEventListener {
 
             Map<String, String> output = new HashMap<String, String>();
             output.put("objectId", ""+theEvent.getId());
-            final String outChannel = CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/"+listenerType;
+            final String outChannel = CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/"+mapEventToListenerType(theEvent);
             try {
-                // TODO +"/"+listenerType is presently part of outchannel
                 service.deliver(outChannel, output, client);
             } catch ( Throwable t ) {
                 log.error("Got a problem delivering", t);
@@ -84,5 +85,18 @@ public class SemiSpaceCometListener implements SemiEventListener {
                 log.trace(">>>>>>> delivered NOTIFY on channel {} - done", outChannel);
             }            
         }
+    }
+    private String mapEventToListenerType(SemiEvent event ) {
+        if ( event instanceof SemiExpirationEvent ) {
+            return EVENT_EXPIRATION;
+        } else if ( event instanceof SemiAvailabilityEvent) {
+            return EVENT_AVAILABILITY;
+        } if ( event instanceof SemiTakenEvent) {
+            return EVENT_TAKEN;
+        } if ( event instanceof SemiRenewalEvent) {
+            return EVENT_RENEW;
+        } else {
+            throw new RuntimeException("Sanity problem. Unexpected event type "+event.getClass().getName());
+        }        
     }
 }

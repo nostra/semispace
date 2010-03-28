@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.semispace.SemiEventListener;
+import org.semispace.SemiEventRegistration;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
 import org.semispace.event.SemiExpirationEvent;
@@ -47,37 +48,55 @@ public class NotificationClientIntegrationTest {
 
     @Test
     public void testSimpleNotify() {
-        space.notify(new FieldHolder(), new NotificationTestListener(), 1000);
+        NotificationTestListener listener = new NotificationTestListener();
+        SemiEventRegistration lease = space.notify(new FieldHolder(), listener, 1000);
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("A");
         fh.setFieldB("B");
         space.write(fh, 900);
+        space.write(new FieldHolder(), 50);
+        space.write(new FieldHolder(), 50);
         Assert.assertNotNull( space.read(fh, 900));
-        Assert.assertNotNull( space.take(fh, 400));
+        Assert.assertNotNull( space.take(fh, 900));
+        Assert.assertNull( "Just using some time in order to get space elements notified properly", space.take(fh, 200));
+        Assert.assertEquals(3, listener.availability);
+        Assert.assertEquals(1, listener.taken);
+        Assert.assertEquals(2, listener.expiration);
+        Assert.assertEquals(0, listener.renewal);
+
+        Assert.assertNull( "Space should now be empty", space.read(fh, 50));
+        lease.getLease().cancel();
     }
 
     private class NotificationTestListener implements SemiEventListener {
+        private int expiration;
+        private int availability;
+        private int taken;
+        private int renewal;
+
         @Override
         public void notify(SemiEvent theEvent) {
-            log.debug("Incoming event id: "+theEvent.getId());
             if ( theEvent instanceof SemiExpirationEvent ) {
                 SemiExpirationEvent expirationEvent = (SemiExpirationEvent) theEvent;
+                expiration++;
                 log.debug("Got expiration event id "+expirationEvent.getId());
 
             } else if ( theEvent instanceof SemiAvailabilityEvent) {
                 SemiAvailabilityEvent availabilityEvent = (SemiAvailabilityEvent) theEvent;
+                availability++;
                 log.debug("Got availability event id "+availabilityEvent.getId());
 
-            } if ( theEvent instanceof SemiTakenEvent) {
+            } else if ( theEvent instanceof SemiTakenEvent) {
                 SemiTakenEvent takenEvent = (SemiTakenEvent) theEvent;
+                taken++;
                 log.debug("Got taken event id "+takenEvent.getId());
 
-            } if ( theEvent instanceof SemiRenewalEvent) {
+            } else if ( theEvent instanceof SemiRenewalEvent) {
                 SemiRenewalEvent renewalEvent = (SemiRenewalEvent) theEvent;
+                renewal++;
                 log.debug("Got taken renewal event id "+renewalEvent.getId());
-
             } else {
-                log.error("Not expected at all: Got id "+theEvent.getId()+" event class "+theEvent.getClass().getName());
+                log.error("Not expected at all: Got id "+theEvent.getId()+", event class "+theEvent.getClass().getName());
             }
         }
     }

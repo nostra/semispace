@@ -23,7 +23,12 @@ import org.cometd.client.BayeuxClient;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiLease;
 import org.semispace.comet.common.CometConstants;
+import org.semispace.comet.server.SemiSpaceCometListener;
+import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
+import org.semispace.event.SemiExpirationEvent;
+import org.semispace.event.SemiRenewalEvent;
+import org.semispace.event.SemiTakenEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,14 +105,25 @@ public class NotificationMitigator implements SemiLease {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId()+" "+message.getData());
                 Map<String,String> map = (Map) message.getData();
                 final String objectId = map.get("objectId");
-                SemiEvent fake = new SemiEvent(){
-                    public long getId() {
-                        return Long.valueOf( objectId );
-                    }
-                };
-                listener.notify(fake);
+                SemiEvent event = createEvent(message.getChannel().substring(message.getChannel().lastIndexOf("/")+1), Long.valueOf( objectId ));
+                listener.notify(event);
             } else {
                 // TODO log.warn("Unexpected channel "+message.getChannel());
+            }
+        }
+
+        private SemiEvent createEvent(String type, Long objectId) {
+            if ( type.equals(SemiSpaceCometListener.EVENT_AVAILABILITY)) {
+                return new SemiAvailabilityEvent(objectId);
+            } else if ( type.equals(SemiSpaceCometListener.EVENT_TAKEN)) {
+                return new SemiTakenEvent(objectId);
+            }  else if ( type.equals(SemiSpaceCometListener.EVENT_EXPIRATION)) {
+                return new SemiExpirationEvent(objectId);
+            } else if (  type.equals(SemiSpaceCometListener.EVENT_RENEW)) {
+                // TODO Duration is wrong
+                return new SemiRenewalEvent(objectId, 1000);
+            } else {
+                throw new RuntimeException("Unexpected event type: "+type);
             }
         }
     }
