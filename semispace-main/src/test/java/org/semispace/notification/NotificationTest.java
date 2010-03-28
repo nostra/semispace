@@ -173,7 +173,7 @@ public class NotificationTest extends TestCase {
         assertNull( "Forcing notification object time out", space.take(new NoticeA(),160));
         insertIntoSpace(space, 101010);
         assertNotNull("Recently inserted element should not be null", space.takeIfExists(new NoticeA()) );
-        assertFalse("When cancelling a timed out lease, the result should be null", notifyA.getLease().cancel());
+        assertFalse("When cancelling a timed out lease, the result should be false", notifyA.getLease().cancel());
     }
 
     /**

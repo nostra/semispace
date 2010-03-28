@@ -42,32 +42,44 @@ public class NotificationMitigator implements SemiLease {
     private MitigationListener mitigationListener;
     private String channel;
     private BayeuxClient client;
+    private boolean isAttached;
 
     public NotificationMitigator(BayeuxClient client, int callId, SemiEventListener listener) {
         this.client = client;
         this.mitigationListener = new MitigationListener(callId, listener);
         this.channel = CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId;
+        isAttached = false;
     }
 
     protected void attach() {
-        log.debug("Attaching "+channel);
-        client.addListener(mitigationListener);
+        if ( ! isAttached ) {
+            log.debug("Attaching "+channel);
+            client.addListener(mitigationListener);
+            isAttached = true;
+        } else {
+            throw new RuntimeException("Usage error - already attached.");
+        }
     }
 
     /**
      * TODO Error in logic: As of now, the listener will only be detached if it
      * is done by the cancel method...
      */
-    private void detach() {
-        log.debug("Detaching");
-        client.removeListener(mitigationListener);
-        client.unsubscribe(channel);
+    private boolean detach() {
+        if (  isAttached ) {
+            log.debug("Detaching");
+            client.removeListener(mitigationListener);
+            client.unsubscribe(channel);
+            isAttached = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public boolean cancel() {
-        detach();
-        return true;
+        return detach();
     }
 
     @Override
