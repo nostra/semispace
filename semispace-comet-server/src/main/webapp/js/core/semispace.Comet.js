@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2010 Trygve Lie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,35 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 
 semispace.Comet = function(connector, server){
 
     var cometd = connector;
     var connected = false;
-    var messenger = undefined;
-
-
-    var m = function(message){
-        if(typeof messenger  !== undefined){
-            messenger(message);
-        }
-    };
-
-
-    var metaConnect = function(message){
-        var wasConnected = connected;
-        connected = message.successful === true;
-        if(!wasConnected && connected){
-            m('Connected');
-        }else if (wasConnected && !connected){
-            m('Not connected');
-        }
-    };
-
-    var metaUnsuccessful = function(message){
-        m('Connection was unsuccessful');
-    };
+    var metaListener = undefined;
 
 
     var init = function(){
@@ -51,23 +29,56 @@ semispace.Comet = function(connector, server){
             logLevel: 'debug'
         });
 
-        // Set meta channel listeners
-        cometd.addListener('/meta/connect', metaConnect);
-        cometd.addListener('/meta/unsuccessful', metaUnsuccessful);
+        cometd.addListener('/meta/handshake', function(message){
+            metaListener(1, message);
+        });
 
-        cometd.handshake();
+        cometd.addListener('/meta/connect', function(message){
+
+            var wasConnected = connected;
+            connected = message.successful;
+            if (!wasConnected && connected){
+                metaListener(2, message);       // Connected - Server is up
+            }else if (wasConnected && !connected){
+                metaListener(3, message);       // Not connected - Server is down
+            }
+
+        });
+
+        cometd.addListener('/meta/disconnect', function(message){
+            metaListener(4, message);
+        });
+
+        cometd.addListener('/meta/subscribe', function(message){
+            metaListener(5, message);
+        });
+
+        cometd.addListener('/meta/unsubscribe', function(message){
+            metaListener(6, message);
+        });
+
+        cometd.addListener('/meta/publish', function(message){
+            metaListener(7, message);
+        });
+
+        cometd.addListener('/meta/unsuccessful', function(message){
+            metaListener(8, message);
+        });
+
     }();
 
 
-    this.isConnected = function(){
-        return connected;
+    this.addMetaListener = function(fn){
+        metaListener = fn;
     };
 
-
-    this.setMessenger = function(fn){
-        messenger = fn;
+    this.connect = function(){
+        cometd.handshake();
     };
 
+    this.disconnect = function(){
+        cometd.disconnect();
+    };
 
 };
 

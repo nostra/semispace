@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Semispace Comet Demo</title>
+    <!--
+        /**
+         * Copyright 2010 Trygve Lie
+         *
+         * Licensed under the Apache License, Version 2.0 (the "License");
+         * you may not use this file except in compliance with the License.
+         * You may obtain a copy of the License at
+         *
+         *   http://www.apache.org/licenses/LICENSE-2.0
+         *
+         * Unless required by applicable law or agreed to in writing, software
+         * distributed under the License is distributed on an "AS IS" BASIS,
+         * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+         * See the License for the specific language governing permissions and
+         * limitations under the License.
+         **/
+    -->
+
+    <script type="text/javascript" src="/semispace-comet-server/dojo/dojo.js.uncompressed.js"> </script>
+    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/semispace.js"> </script>
+    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/core/semispace.Comet.js"> </script>
+    <script type="text/javascript">
+
+        // Log function
+        var logger = function(status, message){
+
+            // Get debug container
+            var log = document.getElementById('log');
+
+            // Remove items at the end of the list
+            if(log.childNodes.length > 26){
+                log.removeChild(log.childNodes[25]);
+            }
+
+            // Append new debug message
+            var logItem = document.createElement('li');
+            logItem.innerHTML = status + ' - ' + message.successful;
+            log.insertBefore(logItem, log.firstChild);
+        };
+
+
+        // Where the server is
+        var server = location.protocol + '//' + location.host + '/semispace-comet-server/cometd';
+
+        // Get DOJO cometd library
+        dojo.require("dojox.cometd");
+        var com = dojox.cometd;
+
+
+
+
+        var myApp;
+        var init = function(){
+            myApp = new semispace.Comet(com, server);
+            // myApp.setMessenger(logger);
+            myApp.addMetaListener(logger);
+        };
+
+        var start = function(){
+            myApp.connect();
+        };
+
+        var stop = function(){
+            myApp.disconnect();
+        };
+
+    </script>
+
+</head>
+<body onload="init();">
+    <h1>Welcome Semispace User</h1>
+    <div id="result"><a href="javascript:;" onclick="start();">Connect to server</a> | <a href="javascript:;" onclick="stop();">Disconnect from server</a></div>
+    <ul id="log"> </ul>
+</body>
+</html>
