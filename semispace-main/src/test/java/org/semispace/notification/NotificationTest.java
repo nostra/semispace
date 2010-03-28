@@ -27,6 +27,7 @@
 package org.semispace.notification;
 
 import junit.framework.TestCase;
+import org.semispace.AlternateButEqual;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiSpace;
 import org.semispace.SemiSpaceInterface;
@@ -38,6 +39,7 @@ import java.util.List;
 
 public class NotificationTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(NotificationTest.class);
+    private static final int NUMBER_OF_ELEMENTS_OR_LISTENERS = 5000;
 
     /**
      * Few listeners and a larger number of inserts.
@@ -55,26 +57,31 @@ public class NotificationTest extends TestCase {
         SemiEventRegistration notifyC = space.notify(new NoticeC(), c, 10000);
         c.setNotify( notifyC );
 
-        final int numinserts = 5000;
+        final int numinserts = NUMBER_OF_ELEMENTS_OR_LISTENERS;
         log.debug("Before inserting {} elements into space", Integer.valueOf(numinserts));
         for ( int i=0 ; i < numinserts ; i++ ) {
             insertIntoSpace(space, i);            
         }
         log.debug("Active threads "+Thread.activeCount());
-        // May experience slight lag due to asynchronious operations.
+        // May experience slight lag due to asynchronous operations.
         boolean isOk = false;
         int count = 35;
         while ( !isOk && count-- > 0 ) {
             if ( a.getNotified() != numinserts || b.getNotified() != numinserts ||
                     c.getNotified() != numinserts) {
                 log.debug("Sleeping slightly due to async operation");
-                Thread.sleep(50);
+                // Pausing:
+                space.read(new AlternateButEqual(), 200);
             } else {
                 isOk = true;
             }
         }
 
         log.debug("Insertion finished. ");
+        assertTrue(notifyA.getLease().cancel());
+        assertTrue(notifyB.getLease().cancel());
+        assertTrue(notifyC.getLease().cancel());
+        assertFalse(notifyA.getLease().cancel());
 
         log.debug(a.getNotified()+" "+b.getNotified()+" "+c.getNotified());
         assertEquals( numinserts, a.getNotified());
@@ -92,16 +99,16 @@ public class NotificationTest extends TestCase {
      * A large number of listeners, and a smaller number of inserts
      */
     public void testQuantityOfNotification() throws InterruptedException {
-        final int numberOfListeners = 5000;
-        ToBeNotified a[] = new ToBeNotified[numberOfListeners];
-        ToBeNotified b[] = new ToBeNotified[numberOfListeners];
+        final int numberOfListeners = NUMBER_OF_ELEMENTS_OR_LISTENERS;
+        ToBeNotified[] a = new ToBeNotified[numberOfListeners];
+        ToBeNotified[] b = new ToBeNotified[numberOfListeners];
         SemiSpaceInterface space = SemiSpace.retrieveSpace();
         List<SemiEventRegistration> regs = new ArrayList<SemiEventRegistration>();
         for ( int i=0 ; i < numberOfListeners ; i++ ) {
             a[i] = new ToBeNotified(false);
             b[i] = new ToBeNotified(false);
-            regs.add( space.notify(new NoticeA(), a[i], 10000));
-            regs.add( space.notify(new NoticeB(), b[i], 10000));
+            regs.add( space.notify(new NoticeA(), a[i], 90000));
+            regs.add( space.notify(new NoticeB(), b[i], 90000));
         }
         final int numinserts = 50;
         log.debug("Before insertion of {} elements", Integer.valueOf(numinserts));
@@ -110,9 +117,9 @@ public class NotificationTest extends TestCase {
         }
         log.debug("Active threads "+Thread.activeCount());
         log.debug("Insertion finished, sleeping 200ms");
-        Thread.sleep(200);
+        space.read(new AlternateButEqual(), 200);
         log.debug("Active threads "+Thread.activeCount());
-        log.debug("Cancelling leases");
+        log.debug("Cancelling "+regs.size()+" leases");
         for ( SemiEventRegistration er : regs ) {
             er.getLease().cancel();
         }
@@ -127,10 +134,25 @@ public class NotificationTest extends TestCase {
     }
 
     /**
-     * Repetition test in order to examine stress slightly better.
-     * @throws InterruptedException
+     * Expiration of listener
      */
-    public void deactivate___testRepeatedTest() throws InterruptedException {
+    public void testListenerExpiration() throws InterruptedException {
+        ToBeNotified a = new ToBeNotified(false);
+
+        SemiSpaceInterface space = SemiSpace.retrieveSpace();
+        SemiEventRegistration notifyA = space.notify(new NoticeA(), a, 150);
+        a.setNotify( notifyA );
+
+        assertNull( "Forcing notification object time out", space.take(new NoticeA(),160));
+        insertIntoSpace(space, 101010);
+        assertNotNull("Recently inserted element should not be null", space.takeIfExists(new NoticeA()) );
+        assertFalse("When cancelling a timed out lease, the result should be null", notifyA.getLease().cancel());
+    }
+
+    /**
+     * Repetition test in order to examine stress slightly better.
+     */
+    public void deactivated___testRepeatedTest() throws InterruptedException {
         testQuantityOfNotification();
         testQuantityOfNotification();
         for ( int i=0 ; i < 20 ; i++ ) {
