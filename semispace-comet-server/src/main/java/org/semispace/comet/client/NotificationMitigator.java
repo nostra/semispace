@@ -45,9 +45,21 @@ public class NotificationMitigator implements SemiLease {
     }
 
     protected void attach() {
-        log.debug("Attaching");
+        log.debug("Attaching "+channel);
         client.addListener(mitigationListener);
-        client.subscribe(channel);
+        //client.subscribe(channel+"/*");
+        log.debug("Listening on "+channel+"/*");
+        /*
+        client.subscribe(channel+"/all");
+        log.debug("Listening on "+channel+"/all");
+        client.subscribe(channel+"/take");
+        log.debug("Listening on "+channel+"/take");
+        client.subscribe(channel+"/expiration");
+        log.debug("Listening on "+channel+"/expiration");
+        client.subscribe(channel+"/renew");
+        log.debug("Listening on "+channel+"/renew");
+        //
+        */
     }
 
     /**
@@ -97,7 +109,7 @@ public class NotificationMitigator implements SemiLease {
             }
         }
         private void deliverInternal(Client from, Client to, Message message) {
-            if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
+            if (message.getChannel().startsWith(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId)) {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId()+" "+message.getData());
                 Map<String,String> map = (Map) message.getData();
                 final String objectId = map.get("objectId");

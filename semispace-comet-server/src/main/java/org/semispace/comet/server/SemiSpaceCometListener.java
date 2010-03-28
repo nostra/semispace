@@ -38,9 +38,12 @@ public class SemiSpaceCometListener implements SemiEventListener {
     private final NotificationService service;
     private final String outChannel;
     private final Client client;
+    private String listenerType;
 
     public SemiSpaceCometListener(String listenerType, String outChannel, Client remote, NotificationService notificationService) {
         this.interestingClass = mapListenerType( listenerType );
+        // TODO Consider making listenertype part of outChannel - as it is a part of outchannel...
+        this.listenerType = listenerType;
         this.service = notificationService;
         this.outChannel = outChannel;
         this.client = remote;
@@ -71,11 +74,11 @@ public class SemiSpaceCometListener implements SemiEventListener {
             Map<String, String> output = new HashMap<String, String>();
             output.put("objectId", ""+theEvent.getId());
             try {
-                service.deliver(outChannel, output, client);
+                service.deliver(outChannel+"/"+listenerType, output, client);
             } catch ( Throwable t ) {
                 log.error("Got a problem delivering", t);
             } finally {
-                log.trace(">>>>>>> delivered NOTIFY on channel {} - done", outChannel);
+                log.trace(">>>>>>> delivered NOTIFY on channel {} - done", outChannel+"/"+listenerType);
             }            
         }
     }
