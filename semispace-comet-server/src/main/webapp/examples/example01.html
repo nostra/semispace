@@ -1,5 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>Semispace Comet Demo</title>
     <!--
@@ -20,28 +21,50 @@
          **/
     -->
 
+    <link href="resources/style.css" type="text/css" rel="stylesheet" media="all" title="Example styling" />
+
+    <!-- Semispace Comet Scripts -->
     <script type="text/javascript" src="/semispace-comet-server/dojo/dojo.js.uncompressed.js"> </script>
     <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/semispace.js"> </script>
     <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/core/semispace.Comet.js"> </script>
+
+    <!-- Example -->
+    <script type="text/javascript" src="resources/helpers.js"> </script>
     <script type="text/javascript">
 
-        // Log function
-        var logger = function(status, message){
-
-            // Get debug container
-            var log = document.getElementById('log');
-
-            // Remove items at the end of the list
-            if(log.childNodes.length > 26){
-                log.removeChild(log.childNodes[25]);
+        // Set local logger
+        var localLog = function(status, message){
+            var msg = 'Status is: ' + status;
+            switch(status){
+                case 1:
+                    msg = msg + ' - Handshake is done';
+                    break;
+                case 2:
+                    msg = msg + ' - Got connection to server';
+                    break;
+                case 3:
+                    msg = msg + ' - No connection to server';
+                    break;
+                case 4:
+                    msg = msg + ' - Is disconnected';
+                    break;
+                case 5:
+                    msg = msg + ' - Subscribed to channel';
+                    break;
+                case 6:
+                    msg = msg + ' - Unsubscribed to channel';
+                    break;
+                case 7:
+                    msg = msg + ' - A publish is performed';
+                    break;
+                case 8:
+                    msg = msg + ' - Unsuccessful to communicate with server';
+                    break;
+                default:
+                    msg = msg + ' Unknown!';
             }
-
-            // Append new debug message
-            var logItem = document.createElement('li');
-            logItem.innerHTML = status + ' - ' + message.successful;
-            log.insertBefore(logItem, log.firstChild);
+            logger('log', msg);
         };
-
 
         // Where the server is
         var server = location.protocol + '//' + location.host + '/semispace-comet-server/cometd';
@@ -50,14 +73,10 @@
         dojo.require("dojox.cometd");
         var com = dojox.cometd;
 
-
-
-
         var myApp;
         var init = function(){
             myApp = new semispace.Comet(com, server);
-            // myApp.setMessenger(logger);
-            myApp.addMetaListener(logger);
+            myApp.addMetaListener(localLog);
         };
 
         var start = function(){
@@ -69,11 +88,14 @@
         };
 
     </script>
-
 </head>
 <body onload="init();">
-    <h1>Welcome Semispace User</h1>
+    <h1>Example 01</h1>
+    <p>
+        This example tests the different messages which goes over the Comet meta channel. Please try to take the server
+        up and down to see the effect.
+    </p>
     <div id="result"><a href="javascript:;" onclick="start();">Connect to server</a> | <a href="javascript:;" onclick="stop();">Disconnect from server</a></div>
-    <ul id="log"> </ul>
+    <div id="log"> </div>
 </body>
 </html>
