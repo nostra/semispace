@@ -1,9 +1,9 @@
 package org.semispace;
 
 import junit.framework.TestCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Starvation test. Thanks to <b>Chris Mcfarlen</b> of Yahoo for providing the
@@ -15,6 +15,8 @@ import java.util.logging.Logger;
  * </p>
  */
 public class ListenerStarvationTest extends TestCase {
+    private static final Logger log = LoggerFactory.getLogger(ListenerStarvationTest.class);
+
 	private SemiSpaceInterface space;
     private boolean hasError;
     private StringBuilder output;
@@ -96,7 +98,7 @@ public class ListenerStarvationTest extends TestCase {
 						// simulate work
 						Thread.sleep(25);
 					} catch (InterruptedException ex) {
-						Logger.getLogger(ListenerStarvationTest.class.getName()).log(Level.SEVERE, null, ex);
+						log.warn("Inconsequential, but unexpected.", ex);
 					}
 
 				}
@@ -117,7 +119,7 @@ public class ListenerStarvationTest extends TestCase {
 							// simulate update time
 							Thread.sleep(25);
 						} catch (InterruptedException ex) {
-							Logger.getLogger(ListenerStarvationTest.class.getName()).log(Level.SEVERE, null, ex);
+							log.error("Exception", ex);
 						}
 						output.append("("+n+") writing " + obj.getB()+"  "+((SemiSpace)space).getStatistics()+"\n");
 						space.write(obj, 5000);
@@ -125,7 +127,7 @@ public class ListenerStarvationTest extends TestCase {
 						try {
 							Thread.sleep(10);
 						} catch (InterruptedException ex) {
-							Logger.getLogger(ListenerStarvationTest.class.getName()).log(Level.SEVERE, null, ex);
+							log.error("Exception", ex);
 						}
 					} else {
                         hasError = true;
@@ -179,16 +181,17 @@ public class ListenerStarvationTest extends TestCase {
             r5.join();
             r6.join();
 		} catch (InterruptedException ex) {
-			Logger.getLogger(ListenerStarvationTest.class.getName()).log(Level.SEVERE, null, ex);
+			log.error("Unexpected", ex);
 		}
         if ( hasError ) {
-            System.out.println(output);
-            System.out.println("Statistics:\n"+((SemiSpace)space).getStatistics());
+            log.error(output.toString());
+            log.error("Statistics:\n"+((SemiSpace)space).getStatistics());
         }
         assertFalse("State of starvation has been achieved. This does not really indicate an error " +
                 "as the behaviour for this to happen is intrinsically correct: The timeout values " +
                 "(in milliseconds) have stabilized into the same value. This test is basically made " +
                 "for caching if this happens more often than should be expected. It may happen sporadically " +
                 "when building with tests, particularly (I expect) when having a quick computer.\n"+output, hasError );
+        assertNotNull("Presumed the template to be present in space at end of test", space.takeIfExists(tmpl));
 	}
 }

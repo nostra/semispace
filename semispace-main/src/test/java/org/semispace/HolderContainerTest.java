@@ -30,12 +30,15 @@ import junit.framework.TestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 public class HolderContainerTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(HolderContainerTest.class);
     private long id = 0;
 
     public void testAlmostEmptyHolderContainer() {
         HolderContainer hc = HolderContainer.retrieveContainer();
+        assertEquals("This test requires that the other tests cleaned up after themselves. Types: "+ Arrays.asList(hc.retrieveGroupNames()), 0, hc.size());
         Holder a = createHolder();
         final int orgsize = hc.size();
         hc.addHolder(a);
@@ -51,6 +54,7 @@ public class HolderContainerTest extends TestCase {
 
     public void testHolderContainerWith2Elements() {
         HolderContainer hc = HolderContainer.retrieveContainer();
+        assertEquals("This test requires that the other tests cleaned up after themselves.", 0, hc.size());
         Holder a = createHolder();
         Holder b = createHolder();
         final int orgsize = hc.size();
@@ -133,6 +137,7 @@ public class HolderContainerTest extends TestCase {
 
     public void testIdentityOfRemovedElement() {
         HolderContainer hc = HolderContainer.retrieveContainer();
+        assertEquals("This test requires that the other tests cleaned up after themselves.", 0, hc.size());
         Holder a = createHolder();
         Holder b = createHolder();
         Holder c = createHolder();
@@ -160,6 +165,7 @@ public class HolderContainerTest extends TestCase {
 
     public void testHavingFewElements() {
         HolderContainer hc = HolderContainer.retrieveContainer();
+        assertEquals("This test requires that the other tests cleaned up after themselves.", 0, hc.size());
         // TODO Check: assertEquals("This test requires that the other tests cleaned up after themselves.", 0, hc.size());
         final int orgsize = hc.size(); // Using variable as it is cleaner
         Holder a = createHolder();
@@ -188,8 +194,7 @@ public class HolderContainerTest extends TestCase {
      * elements that can be inserted and removed. Note that I
      * <b>do</b> test whether the same number was removed as inserted.
      */
-    // TODO Seems to be failing when running stand alone. Need to look into why.
-    public void failing___testInsertionRate() {
+    public void testInsertionRate() {
         HolderContainer hc = HolderContainer.retrieveContainer();
         final int orgsize = hc.size();
         final long startingId = id;
@@ -199,7 +204,7 @@ public class HolderContainerTest extends TestCase {
         long startTime = System.currentTimeMillis();
 
         // TODO Increase time to wait later. The old holder has an abysmal time development. 
-        while ( startTime > System.currentTimeMillis() - 5 ) {
+        while ( startTime > System.currentTimeMillis() - 50 ) {
             hc.addHolder(createHolder());
             counter++;
         }

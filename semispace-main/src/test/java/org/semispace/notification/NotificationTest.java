@@ -42,6 +42,23 @@ import java.util.Set;
 public class NotificationTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(NotificationTest.class);
     private static final int NUMBER_OF_ELEMENTS_OR_LISTENERS = 5000;
+    private SemiSpaceInterface space;
+
+    @Override
+    protected void setUp() {
+        space = SemiSpace.retrieveSpace();
+    }
+
+    @Override
+    protected void tearDown()  {
+        // Just remove any superfluous elements. Not really testing the data
+        // type - it is the notification which is interesting here
+        while ( space.takeIfExists(new NoticeA()) != null ||
+                space.takeIfExists(new NoticeB()) != null ||
+                space.takeIfExists(new NoticeC()) != null) {
+            // Nada
+        }
+    }
 
     /**
      * Few listeners and a larger number of inserts.
