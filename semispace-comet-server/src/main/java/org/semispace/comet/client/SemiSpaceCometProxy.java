@@ -214,7 +214,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
 
     /**
-     * @return Always returning null, as lease is not supported.
+     * @return The resulting lease, or null if lease were not obtained
      */
     @Override
     public SemiEventRegistration notify(Object template, SemiEventListener listener, long duration) {

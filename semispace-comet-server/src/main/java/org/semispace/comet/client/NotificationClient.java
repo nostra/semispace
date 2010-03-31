@@ -64,12 +64,12 @@ public class NotificationClient {
         try {
             client.publish(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId+"/"+ SemiSpaceCometListener.EVENT_ALL, map, null );
             log.debug("Awaiting..."+CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+" map is: "+map);
-            // TODO Change timeout if necessary
             boolean finishedOk = notificationListener.getLatch().await(5, TimeUnit.SECONDS);
-            if ( !finishedOk) {
-                log.warn("Did not receive callback on notify. That is not to savory. Problem with connection?");
-            }
             log.trace("... unlatched");
+            if ( !finishedOk) {
+                log.warn("Did not receive callback on notify. That is not to savory. Problem with connection? Returning null for lease");
+                return null;
+            }
 
             return notificationListener.data;
 
@@ -90,7 +90,6 @@ public class NotificationClient {
         private final int callId;
         private SemiEventRegistration data;
         private BayeuxClient client;
-        // TODO Chain of call creating the listener is way too long
         private SemiEventListener listener;
 
         public CountDownLatch getLatch() {

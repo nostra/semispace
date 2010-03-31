@@ -32,7 +32,7 @@ import java.util.Set;
 
 public class CopyOfNotificationIntegrationTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(CopyOfNotificationIntegrationTest.class);
-    private static final int NUMBER_OF_ELEMENTS_OR_LISTENERS = 5;
+    private static final int NUMBER_OF_ELEMENTS_OR_LISTENERS = 15;
     private SemiSpaceCometProxy space;
 
     @Before
@@ -211,8 +211,8 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         assertNull( "Forcing notification object time out", space.take(new NoticeA(),160));
         insertIntoSpace(space, 101010);
         assertNotNull("Recently inserted element should not be null", space.takeIfExists(new NoticeA()) );
-        // TODO Fix test
-        //assertFalse("When cancelling a timed out lease, the result should be false", notifyA.getLease().cancel());
+        assertEquals("As the listener has expired, I expected the notification number to be zero.", 0, a.getNotified());
+        assertFalse("When cancelling a timed out lease, the result should be false", notifyA.getLease().cancel());
     }
 
     private void insertIntoSpace(SemiSpaceInterface space, int i) {
