@@ -157,9 +157,11 @@ public class NotificationTest extends TestCase {
         for ( SemiEventRegistration er : regs ) {
             er.getLease().cancel();
         }
-        log.debug("Lease cancelled");
-        assertEquals(numinserts, a[0].getNotified());
-        assertEquals(numinserts, b[b.length-1].getNotified());
+        log.debug("Leases cancelled");
+        for ( int i=0 ; i < a.length ; i++ ) {
+            assertEquals("At element a"+i+" notified number had a discrepancy. Element b, incidentally, was "+b[i].getNotified(), numinserts, a[i].getNotified());
+            assertEquals("At element b"+i+" notified number had a discrepancy. Element a, incidentally, was "+a[i].getNotified(), numinserts, b[i].getNotified());
+        }
         NoticeA aTaken;
         NoticeB bTaken;
         Set<String> noDups = new HashSet<String>();
