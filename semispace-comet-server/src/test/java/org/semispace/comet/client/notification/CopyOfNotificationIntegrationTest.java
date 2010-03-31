@@ -115,8 +115,7 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
     /**
      * A large number of listeners, and a smaller number of inserts
      */
-    // TODO Correct
-    public void failing_____testQuantityOfNotification() throws InterruptedException {
+    public void testQuantityOfNotification() throws InterruptedException {
         final int numberOfListeners = NUMBER_OF_ELEMENTS_OR_LISTENERS;
         ToBeNotified[] a = new ToBeNotified[numberOfListeners];
         ToBeNotified[] b = new ToBeNotified[numberOfListeners];
@@ -133,16 +132,18 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
             insertIntoSpace(space, i);
         }
         log.debug("Active threads "+Thread.activeCount());
-        log.debug("Insertion finished, sleeping 2000ms");
-        space.read(new AlternateButEqual(), 2000);
+        log.debug("Insertion finished, sleeping 10000ms");
+        space.read(new AlternateButEqual(), 10000);
         log.debug("Active threads "+Thread.activeCount());
         log.debug("Cancelling "+regs.size()+" leases");
         for ( SemiEventRegistration er : regs ) {
             er.getLease().cancel();
         }
-        log.debug("Lease cancelled");
-        assertEquals(numinserts, a[0].getNotified());
-        assertEquals(numinserts, b[b.length-1].getNotified());
+        log.debug("Leases cancelled");
+        for ( int i=0 ; i < a.length ; i++ ) {
+            assertEquals("At element a"+i+" notified number had a discrepancy. Element b, incidentally, was "+b[i].getNotified()+".", numinserts, a[i].getNotified());
+            assertEquals("At element b"+i+" notified number had a discrepancy. Element a, incidentally, was "+a[i].getNotified()+".", numinserts, b[i].getNotified());
+        }
         NoticeA aTaken;
         NoticeB bTaken;
         Set<String> noDups = new HashSet<String>();
@@ -159,6 +160,44 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         } while (aTaken != null || bTaken != null);
         assertEquals(2*numinserts,noDups.size());
     }
+
+    public void testNotificationProblem() {
+        final int numberOfListeners = NUMBER_OF_ELEMENTS_OR_LISTENERS;
+        ToBeNotified[] a = new ToBeNotified[numberOfListeners];
+        List<SemiEventRegistration> regs = new ArrayList<SemiEventRegistration>();
+        for ( int i=0 ; i < numberOfListeners ; i++ ) {
+            a[i] = new ToBeNotified(false);
+            regs.add( space.notify(new NoticeA(), a[i], 90000));
+        }
+        final int numinserts = 50; // TODO Should be larger, i.e. 50
+        log.debug("Before insertion of {} elements", Integer.valueOf(numinserts));
+        for ( int i=0 ; i < numinserts ; i++ ) {
+            insertIntoSpace(space, i);
+        }
+        log.debug("Active threads "+Thread.activeCount());
+        log.debug("Insertion finished, sleeping 10000ms");
+        space.read(new AlternateButEqual(), 10000);
+        log.debug("Active threads "+Thread.activeCount());
+        log.debug("Cancelling "+regs.size()+" leases");
+        for ( SemiEventRegistration er : regs ) {
+            er.getLease().cancel();
+        }
+        log.debug("Leases cancelled");
+        for ( int i=0 ; i < a.length ; i++ ) {
+            assertEquals("At element a"+i+" notified number had a discrepancy.", numinserts, a[i].getNotified());
+        }
+        NoticeA aTaken;
+        Set<String> noDups = new HashSet<String>();
+        do {
+            aTaken = space.takeIfExists(new NoticeA());
+            if ( aTaken != null ) {
+                assertTrue(noDups.add(aTaken.getField()) );
+            }
+
+        } while (aTaken != null );
+        assertEquals(numinserts,noDups.size());
+    }
+
 
     /**
      * Expiration of listener
@@ -179,14 +218,14 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
     private void insertIntoSpace(SemiSpaceInterface space, int i) {
         NoticeA na = new NoticeA();
         na.setField("a "+i);
-        space.write(na, NUMBER_OF_ELEMENTS_OR_LISTENERS * 1000);
+        space.write(na, NUMBER_OF_ELEMENTS_OR_LISTENERS * 10000);
 
         NoticeB nb = new NoticeB();
         nb.setField("b "+i);
-        space.write(nb, NUMBER_OF_ELEMENTS_OR_LISTENERS * 1000);
+        space.write(nb, NUMBER_OF_ELEMENTS_OR_LISTENERS * 10000);
 
         NoticeC nc = new NoticeC();
         nc.setField("c "+i);
-        space.write(nc, NUMBER_OF_ELEMENTS_OR_LISTENERS * 1000);
+        space.write(nc, NUMBER_OF_ELEMENTS_OR_LISTENERS * 10000);
     }
 }

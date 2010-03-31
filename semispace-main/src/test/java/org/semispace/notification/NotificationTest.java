@@ -159,8 +159,8 @@ public class NotificationTest extends TestCase {
         }
         log.debug("Leases cancelled");
         for ( int i=0 ; i < a.length ; i++ ) {
-            assertEquals("At element a"+i+" notified number had a discrepancy. Element b, incidentally, was "+b[i].getNotified(), numinserts, a[i].getNotified());
-            assertEquals("At element b"+i+" notified number had a discrepancy. Element a, incidentally, was "+a[i].getNotified(), numinserts, b[i].getNotified());
+            assertEquals("At element a"+i+" notified number had a discrepancy. Element b, incidentally, was "+b[i].getNotified()+".", numinserts, a[i].getNotified());
+            assertEquals("At element b"+i+" notified number had a discrepancy. Element a, incidentally, was "+a[i].getNotified()+".", numinserts, b[i].getNotified());
         }
         NoticeA aTaken;
         NoticeB bTaken;

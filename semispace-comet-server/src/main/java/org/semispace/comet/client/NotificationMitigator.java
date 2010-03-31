@@ -113,7 +113,7 @@ public class NotificationMitigator implements SemiLease {
             }
         }
         private void deliverInternal(Client from, Client to, Message message) {
-            if (message.getChannel().startsWith(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId)) {
+            if (message.getChannel().startsWith(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/")) {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId()+" "+message.getData());
                 Map<String,String> map = (Map) message.getData();
                 final String objectId = map.get("objectId");
