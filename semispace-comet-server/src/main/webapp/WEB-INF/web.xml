@@ -7,6 +7,17 @@
     <servlet>
         <servlet-name>cometd</servlet-name>
         <servlet-class>org.cometd.server.continuation.ContinuationCometdServlet</servlet-class>
+        <!-- http://cometd.org/documentation/cometd-java/server/configuration -->
+        <init-param>
+            <description>The log level; 0 = warn, 1 = info, 2 = debug</description>
+            <param-name>logLevel</param-name>
+            <param-value>2</param-value>
+        </init-param>
+        <init-param>
+            <description>Whether or not the full JSON input should be kept for debugging purposes</description>
+            <param-name>jsonDebug</param-name>
+            <param-value>false</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
