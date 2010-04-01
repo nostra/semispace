@@ -46,18 +46,21 @@
                     msg = msg + ' - No connection to server';
                     break;
                 case 4:
-                    msg = msg + ' - Is disconnected';
+                    msg = msg + ' - Comunicating with server';
                     break;
                 case 5:
-                    msg = msg + ' - Subscribed to channel';
+                    msg = msg + ' - Is disconnected';
                     break;
                 case 6:
-                    msg = msg + ' - Unsubscribed to channel';
+                    msg = msg + ' - Subscribed to channel';
                     break;
                 case 7:
-                    msg = msg + ' - A publish is performed';
+                    msg = msg + ' - Unsubscribed to channel';
                     break;
                 case 8:
+                    msg = msg + ' - A publish is performed';
+                    break;
+                case 9:
                     msg = msg + ' - Unsuccessful to communicate with server';
                     break;
                 default:

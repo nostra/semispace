@@ -41,28 +41,30 @@ semispace.Comet = function(connector, server){
                 metaListener(2, message);       // Connected - Server is up
             }else if (wasConnected && !connected){
                 metaListener(3, message);       // Not connected - Server is down
+            }else{
+                metaListener(4, message);       // Communicationg with server
             }
 
         });
 
         cometd.addListener('/meta/disconnect', function(message){
-            metaListener(4, message);
-        });
-
-        cometd.addListener('/meta/subscribe', function(message){
             metaListener(5, message);
         });
 
-        cometd.addListener('/meta/unsubscribe', function(message){
+        cometd.addListener('/meta/subscribe', function(message){
             metaListener(6, message);
         });
 
-        cometd.addListener('/meta/publish', function(message){
+        cometd.addListener('/meta/unsubscribe', function(message){
             metaListener(7, message);
         });
 
-        cometd.addListener('/meta/unsuccessful', function(message){
+        cometd.addListener('/meta/publish', function(message){
             metaListener(8, message);
+        });
+
+        cometd.addListener('/meta/unsuccessful', function(message){
+            metaListener(9, message);
         });
 
     }();
