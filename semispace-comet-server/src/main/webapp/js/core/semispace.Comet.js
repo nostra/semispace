@@ -134,7 +134,7 @@ semispace.Comet = function(connector, server){
 
 
         var m = JSON.stringify({fieldA:'InsertServlet'});
-        cometd.publish('/semispace/call/write/1', {timeToLiveMs: '600000', searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}, json: m });
+        cometd.publish('/semispace/call/write/1', {timeToLiveMs: '600000', searchMap: {}, semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder', json: m });
         //alert('hello');
     };
 
