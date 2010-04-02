@@ -20,7 +20,6 @@ import org.cometd.Bayeux;
 import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.server.BayeuxService;
-import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiSpace;
 import org.semispace.comet.common.CometConstants;
@@ -56,12 +55,13 @@ public class NotificationService extends BayeuxService {
         String callId = createCallId( outChannel, listenerType);
         log.debug("------- Constructed type: "+listenerType+", callId: "+callId+" out of "+outChannel);
 
-        SemiEventListener listener = new SemiSpaceCometListener(listenerType, callId, remote, this);
+        SemiSpaceCometListener listener = new SemiSpaceCometListener(listenerType, callId, remote, this);
         SemiEventRegistration lease = space.notify(searchMap, listener, duration.longValue());
-        // TODO Consider doing something useful with the lease.
         Map<String, String> output = new HashMap<String, String>();
         if ( lease != null ) {
             output.put("leaseId", ""+lease.getId());
+            // TODO Create surveillance of listener in order to remove it if it is expired
+            LeaseCancellationService.registerCancelableLease( callId, lease.getLease());
         } else {
             output.put("error", "Did not get lease");
         }
@@ -91,7 +91,11 @@ public class NotificationService extends BayeuxService {
 
     public void deliver(String outChannel, Map<String, String> output, Client remote) {
         log.debug("Delivering notification...");
-        remote.deliver(getClient(), outChannel, output, null);
+        try {
+            remote.deliver(getClient(), outChannel, output, null);
+        } catch (Throwable t ) {
+            log.error("Could not deliver message to client.", t);
+        }
         log.debug("... delivery done");
     }
 }

@@ -40,20 +40,20 @@ import java.util.Map;
 public class NotificationMitigator implements SemiLease {
     private static final Logger log = LoggerFactory.getLogger(NotificationMitigator.class);
     private MitigationListener mitigationListener;
-    private String channel;
     private BayeuxClient client;
     private boolean isAttached;
+    private int callId;
 
     public NotificationMitigator(BayeuxClient client, int callId, SemiEventListener listener) {
         this.client = client;
         this.mitigationListener = new MitigationListener(callId, listener);
-        this.channel = CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId;
+        this.callId = callId;
         isAttached = false;
     }
 
     protected void attach() {
         if ( ! isAttached ) {
-            log.debug("Attaching "+channel);
+            log.debug("Attaching "+CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);
             client.addListener(mitigationListener);
             isAttached = true;
         } else {
@@ -67,14 +67,25 @@ public class NotificationMitigator implements SemiLease {
      */
     private boolean detach() {
         if (  isAttached ) {
-            log.debug("Detaching");
+            log.debug("... Detaching");
+            sendCancelListener();
             client.removeListener(mitigationListener);
-            client.unsubscribe(channel);
+            client.unsubscribe(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);
             isAttached = false;
             return true;
         } else {
             return false;
         }
+    }
+
+    private void sendCancelListener() {
+        try {
+            log.debug("Publishing cancellation of lease with channel id "+callId);
+            client.publish(CometConstants.NOTIFICATION_CANCEL_LEASE_CHANNEL+"/"+callId, null, null );
+        } catch (Throwable t ) {
+            log.error("Could not cancel listener", t);
+        }
+
     }
 
     @Override

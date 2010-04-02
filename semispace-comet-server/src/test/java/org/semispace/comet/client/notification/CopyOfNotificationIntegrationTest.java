@@ -45,6 +45,20 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         //space = SemiSpaceProxy.retrieveSpace("http://localhost:8080/semispace-war/services/space");
     }
 
+    public void testSimpleNotification() throws InterruptedException {
+        ToBeNotified a = new ToBeNotified(false);
+
+        SemiEventRegistration notifyA = space.notify(new NoticeA(), a, 1000);
+        a.setNotify( notifyA );
+        insertIntoSpace(space, 101010);
+        space.read(new AlternateButEqual(), 200);
+
+        log.debug("Insertion finished. ");
+        assertNotNull( notifyA.getLease() );
+        assertTrue(notifyA.getLease().cancel());
+        //clearSpaceForNotifications();
+    }
+
     /**
      * Few listeners and a larger number of inserts.
      */

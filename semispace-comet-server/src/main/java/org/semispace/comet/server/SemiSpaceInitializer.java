@@ -30,6 +30,7 @@ public class SemiSpaceInitializer extends GenericServlet {
     private WriteService ws;
     private TakeService ts;
     private NotificationService ns;
+    private LeaseCancellationService lcs;
 
     @Override
     public void init() throws ServletException {
@@ -45,6 +46,9 @@ public class SemiSpaceInitializer extends GenericServlet {
 
         ns = new NotificationService(bayeux, space);
         ns.setSeeOwnPublishes(false);
+
+        lcs = new LeaseCancellationService(bayeux);
+        lcs.setSeeOwnPublishes(false);
     }
     
     @Override

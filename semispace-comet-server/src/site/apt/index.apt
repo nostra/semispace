@@ -37,6 +37,8 @@ Communication channel overview
 *-------------------------------------+---------------
 |/semispace/event/notify/<number>/<type> | Attached is a notification event. |
 *-------------------------------------+---------------
+|/semispace/event/leasecancel/<number> | Cancel lease attached to channel <number> |
+*-------------------------------------+---------------
 
  Channel parameters are:
 
@@ -50,3 +52,5 @@ Communication channel overview
 
  []
  
+ It does not matter if several different clients use the same channel numbers. The communication to
+ the client is based on the client ID, and has nothing to do with the channel number.
