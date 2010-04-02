@@ -133,8 +133,8 @@ semispace.Comet = function(connector, server){
         // cometd.publish('/semispace/call/write', {duration: '600000', searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
 
 
-        var m = JSON.stringify({"org_semispace_comet_demo_FieldHolder":{"fieldA":"InsertServlet","fieldB":"demo"}});
-        cometd.publish('/semispace/call/write/1', {timeToLiveMs: '600000', searchMap: {}, semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder', json:m});
+        var m = JSON.stringify({"org_semispace_comet_demo_FieldHolder":{"fieldA":"InsertServlet","fieldB":"js side"}});
+        cometd.publish('/semispace/call/write/1', {timeToLiveMs: '600000', searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}, semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder', json:m});
         //alert('hello');
     };
 
