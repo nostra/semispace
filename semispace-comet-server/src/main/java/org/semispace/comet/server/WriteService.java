@@ -45,8 +45,8 @@ public class WriteService extends BayeuxService {
 
     public void semispaceWrite(Client remote, Message message) {
         final Map<String, Object> data = (Map<String, Object>) message.getData();
-        final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
-        final Long timeToLiveMs = Long.valueOf(""+data.get("timeToLiveMs"));
+        final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap"); // TODO Create searchmap server side
+        final Long timeToLiveMs = Long.valueOf(""+data.get("timeToLiveMs")); // TODO Change to duration
         final String json = (String) data.get(CometConstants.PAYLOAD_MARKER);
         final String xml = Json2Xml.transform(json);
         final String className = (String) data.get(CometConstants.OBJECT_TYPE_KEY);
