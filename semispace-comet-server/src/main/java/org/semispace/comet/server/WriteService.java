@@ -49,7 +49,7 @@ public class WriteService extends BayeuxService {
         final Long timeToLiveMs = Long.valueOf(""+data.get("timeToLiveMs")); // TODO Change to duration
         final String json = (String) data.get(CometConstants.PAYLOAD_MARKER); // TODO Change name to payload
         final String xml = Json2Xml.transform(json);
-        final String className = (String) data.get(CometConstants.OBJECT_TYPE_KEY);
+        final String className = (String) data.get(CometConstants.OBJECT_TYPE_KEY); // TODO Need to check and fix where the OBJECT_TYPE_KEY is retrieved from. Something is a bit fishy in the use. 
         searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
         log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" class "+className+" xml:\n"+xml);
 

@@ -52,7 +52,7 @@ public class TakeService extends BayeuxService {
         final Long duration = Long.valueOf((String) data.get("duration"));
         final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
         final String outChannel = message.getChannel().replace("/call/", "/reply/");
-        searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
+        searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY)); // TODO Need to move OBJECT_TYPE_KEY to outer layer.
 
         Runnable takeResult = new Runnable() {
             @Override
