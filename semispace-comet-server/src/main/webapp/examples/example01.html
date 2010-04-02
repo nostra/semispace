@@ -58,7 +58,7 @@
                     msg = msg + ' - Unsubscribed to channel';
                     break;
                 case 8:
-                    msg = msg + ' - A publish is performed';
+                    msg = msg + ' - A publish is performed ' + message.id;
                     break;
                 case 9:
                     msg = msg + ' - Unsuccessful to communicate with server';
@@ -90,6 +90,14 @@
             myApp.disconnect();
         };
 
+        var jalla = function(){
+            //alert('kkkkkkkkkk');
+            myApp.doWrite();
+        };
+        var balla = function(){
+            //alert('kkkkkkkkkk');
+            myApp.doTake();
+        };
     </script>
 </head>
 <body onload="init();">
@@ -98,7 +106,7 @@
         This example tests the different messages which goes over the Comet meta channel. Please try to take the server
         up and down to see the effect.
     </p>
-    <div id="result"><a href="javascript:;" onclick="start();">Connect to server</a> | <a href="javascript:;" onclick="stop();">Disconnect from server</a></div>
+    <div id="result"><a href="javascript:;" onclick="start();">Connect to server</a> | <a href="javascript:;" onclick="stop();">Disconnect from server</a> | <a href="javascript:;" onclick="jalla();">Write</a> | <a href="javascript:;" onclick="balla();">Read</a></div>
     <div id="log"> </div>
 </body>
 </html>
