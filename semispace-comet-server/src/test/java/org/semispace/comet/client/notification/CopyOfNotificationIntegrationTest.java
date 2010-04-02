@@ -56,7 +56,7 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         log.debug("Insertion finished. ");
         assertNotNull( notifyA.getLease() );
         assertTrue(notifyA.getLease().cancel());
-        //clearSpaceForNotifications();
+        clearSpaceForNotifications();
     }
 
     /**
