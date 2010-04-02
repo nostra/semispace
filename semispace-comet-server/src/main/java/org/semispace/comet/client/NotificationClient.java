@@ -63,7 +63,7 @@ public class NotificationClient {
 
         try {
             client.publish(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId+"/"+ SemiSpaceCometListener.EVENT_ALL, map, null );
-            log.debug("Awaiting..."+CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+" map is: "+map);
+            log.debug("Awaiting..."+CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all map is: "+map);
             boolean finishedOk = notificationListener.getLatch().await(5, TimeUnit.SECONDS);
             log.trace("... unlatched");
             if ( !finishedOk) {
@@ -119,7 +119,7 @@ public class NotificationClient {
                 if ( map != null ) {
                     // data = (String) map.get("leaseId");
                     NotificationMitigator mitigator = new NotificationMitigator(client, callId, listener);
-                    SemiEventRegistration registration = new SemiEventRegistration( Long.valueOf((String) map.get("leaseId")), mitigator );
+                    SemiEventRegistration registration = new SemiEventRegistration(Long.valueOf((String) map.get("leaseId")).longValue(), mitigator );
                     mitigator.attach();
                     data = registration;
                 }

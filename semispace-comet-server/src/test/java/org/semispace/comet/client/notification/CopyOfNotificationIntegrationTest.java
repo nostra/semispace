@@ -35,6 +35,7 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
     private static final int NUMBER_OF_ELEMENTS_OR_LISTENERS = 15;
     private SemiSpaceCometProxy space;
 
+    @Override
     @Before
     public void setUp() {
         log.warn("\n\n\n\nNOT SUPPORTING NORMAL BUILD TESTS YET\nUse\n  mvn -Denv=dev clean install\nwhen building this module\n\n\n");
@@ -108,7 +109,7 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
                 assertTrue(noDups.add(cTaken.getField()) );
             }
 
-        } while (aTaken != null || bTaken != null || bTaken != null);
+        } while (aTaken != null || bTaken != null || cTaken != null);
         assertEquals(3*NUMBER_OF_ELEMENTS_OR_LISTENERS,noDups.size());
     }
 
@@ -169,7 +170,7 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
             a[i] = new ToBeNotified(false);
             regs.add( space.notify(new NoticeA(), a[i], 90000));
         }
-        final int numinserts = 50; // TODO Should be larger, i.e. 50
+        final int numinserts = 50;
         log.debug("Before insertion of {} elements", Integer.valueOf(numinserts));
         for ( int i=0 ; i < numinserts ; i++ ) {
             insertIntoSpace(space, i);
@@ -214,6 +215,7 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         assertEquals("As the listener has expired, I expected the notification number to be zero.", 0, a.getNotified());
         // TODO Fix test
         assertTrue("WHEN THIS TEST FAILS, an error has been corrected.... When cancelling a timed out lease, the result should be false", notifyA.getLease().cancel());
+        clearSpaceForNotifications();
     }
 
     private void insertIntoSpace(SemiSpaceInterface space, int i) {
@@ -228,5 +230,21 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         NoticeC nc = new NoticeC();
         nc.setField("c "+i);
         space.write(nc, NUMBER_OF_ELEMENTS_OR_LISTENERS * 10000);
+    }
+
+    /**
+     * Helper method for clearing the space for notification elements when it does
+     * not really matter that any already exist.
+     */
+    private void clearSpaceForNotifications() {
+        NoticeA aTaken;
+        NoticeB bTaken;
+        NoticeC cTaken;
+        do {
+            aTaken = space.takeIfExists(new NoticeA());
+            bTaken = space.takeIfExists(new NoticeB());
+            cTaken = space.takeIfExists(new NoticeC());
+        } while (aTaken != null || bTaken != null || cTaken != null);
+
     }
 }

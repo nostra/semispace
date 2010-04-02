@@ -1,0 +1,52 @@
+        -----
+        semispace-comet-server
+        -----
+
+ Please see the {{{../semispace-main/semispace-book}semispace-book}} for in-depth
+ information about installation and usage.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Communication channel overview
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ The communication between the comet client and java webapp
+ comet server is asynchronous. The communication is initiated
+ with a <call>, and returned with a <reply> (except in the
+ case of notify, which is a special case).
+
+ The communication channels are as follows:
+
+*-------------------------------------+---------------+
+|| Channel                  || purpose ||
+*-------------------------------------+---------------
+| /semispace/call/read/<number>  |  Initiate a read request. |
+*-------------------------------------+---------------
+| /semispace/reply/read/<number> | Reply of a read, with the payload being the result if it was obtained. |
+*-------------------------------------+---------------
+|/semispace/call/take/<number>    | Initiate a take request.|
+*-------------------------------------+---------------
+|/semispace/reply/take/<number>   | Result of take. |
+*-------------------------------------+---------------
+|/semispace/call/write/<number>   | Insert an object into the space. This is a <<synchronous>> operation when using the comet java client.|
+*-------------------------------------+---------------
+|/semispace/reply/write/<number>  | Acknowledge that the element has been written.|
+*-------------------------------------+---------------
+|/semispace/call/notify/<number>/<type>  | Register a notification.  This is a <<synchronous>> operation when using the comet java client.|
+*-------------------------------------+---------------
+|/semispace/reply/notify/<number>/<type> | Acknowledge that the notification has been registered. |
+*-------------------------------------+---------------
+|/semispace/event/notify/<number>/<type> | Attached is a notification event. |
+*-------------------------------------+---------------
+
+ Channel parameters are:
+
+ [number] Channel number. When having, for example, two simultaneous read operations,
+ this number must be different for the two operation. The easiest is to have a client
+ side sequence number, which is just incremented for each call.
+
+ [Notification type] The type is one of <<<available>>>, <<<expired>>>, <<<taken>>>, <<<renewal>>> and
+ <<<all>>>. The Java client only uses <all>, and the proxy will translate this into the correct response
+ object. This is as the Java client does not know in beforehand what kind of notification that is registered.
+
+ []
+ 
