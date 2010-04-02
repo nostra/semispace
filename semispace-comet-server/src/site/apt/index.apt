@@ -54,3 +54,29 @@ Communication channel overview
  
  It does not matter if several different clients use the same channel numbers. The communication to
  the client is based on the client ID, and has nothing to do with the channel number.
+
+~~~~~~~~~~~~~~~~~~
+Parameter overview
+~~~~~~~~~~~~~~~~~~
+
+ The parameters sent over the channel are packed JSON style. Then the control elements
+ are extracted. The following is an overview:
+
+*--------------------------+--------------------+---+
+|| Operation               || Parameter || Significance ||
+*--------------------------+--------------------+---+
+| read                     | duration  | How long to wait for an object if it is not in the space. |
+|                          | searchMap | First level elements to match. (I.e. in a person object with firstname, lastname, it would be firstname=xxx)|
+|                          | semispaceObjectTypeKey | Identifier of "object" type. It can be anything in a strictly JSON setting. In a mixed (Java) setting, it is the full Java package type with underscore for dots. |
+*--------------------------+--------------------+---+
+|  take                    |  ... | Same parameters as read |
+*--------------------------+--------------------+---+
+| write                    | searchMap | What that is matched in a search. TODO Shall be moved to server side extraction. |
+|                          | timeToLiveMs | How long the object shall live in the space TODO Shall change to duration |
+|                          | json | Payload. This is the String representation of the client side JSON object. TODO Shall change to duration |
+|                          | semispaceObjectTypeKey | Same as for read. |
+*--------------------------+--------------------+---+
+|  notify                 || duration  | How long the notification registration shall exist. |
+|                          | searchMap | As for read |
+|                          | semispaceObjectTypeKey | As for read |
+*--------------------------+--------------------+---+
