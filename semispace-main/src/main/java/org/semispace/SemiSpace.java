@@ -61,7 +61,8 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * A tuple space implementation which can be distributed with terracotta.
+ * A tuple space implementation which can be distributed with terracotta. This is
+ * the main class from which the SemiSpace interface is obtained.
  */
 public class SemiSpace implements SemiSpaceInterface {
 
@@ -526,7 +527,7 @@ public class SemiSpace implements SemiSpaceInterface {
     /**
      * Create a pre-processed template object that can be used to reduce the amount of
      * work required to match templates during a take.  Applications that take a lot of 
-     * objects using the same template instance, a noticable performance improvement
+     * objects using the same template instance, a noticeable performance improvement
      * can be had.
      * 
      * @param template The object to preprocess
