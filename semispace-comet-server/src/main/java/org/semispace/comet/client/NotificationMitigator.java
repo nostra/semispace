@@ -32,6 +32,7 @@ import org.semispace.event.SemiTakenEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -81,7 +82,7 @@ public class NotificationMitigator implements SemiLease {
     private void sendCancelListener() {
         try {
             log.debug("Publishing cancellation of lease with channel id "+callId);
-            client.publish(CometConstants.NOTIFICATION_CANCEL_LEASE_CHANNEL+"/"+callId, null, null );
+            client.publish(CometConstants.NOTIFICATION_CANCEL_LEASE_CHANNEL+"/"+callId, new HashMap<String, Object>(), null );
         } catch (Throwable t ) {
             log.error("Could not cancel listener", t);
         }
