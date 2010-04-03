@@ -17,6 +17,7 @@
 package org.semispace.comet.client.notification;
 
 import junit.framework.TestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiSpaceInterface;
@@ -43,6 +44,11 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         space.init("http://localhost:8080/semispace-comet-server/cometd/");
         // If running within eclipse, you will have this on your classpath
         //space = SemiSpaceProxy.retrieveSpace("http://localhost:8080/semispace-war/services/space");
+    }
+
+    @After
+    public void tearDown() {
+        space.destroy();
     }
 
     public void testSimpleNotification() throws InterruptedException {
