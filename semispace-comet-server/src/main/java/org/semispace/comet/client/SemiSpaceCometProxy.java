@@ -92,7 +92,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     }
 
     /**
-     * @return null TODO Presently always returning null, as lease is not yet supported.
+     * @return null Always returning null, as lease is not supported for written objects.
      */
     @Override
     public SemiLease write(Object obj, long timeToLiveMs) {
@@ -230,7 +230,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
         NotificationClient notification = new NotificationClient(myCallCounter.getAndIncrement(), listener);
         try {
-            return notification.doNotify(client, param, duration);
+            return notification.doNotify(client, param);
         } catch ( Throwable t ) {
             log.error("Unforeseen error occurred publishing.", t);
         }

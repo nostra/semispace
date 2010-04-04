@@ -240,8 +240,7 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         insertIntoSpace(space, 101010);
         assertNotNull("Recently inserted element should not be null", space.takeIfExists(new NoticeA()) );
         assertEquals("As the listener has expired, I expected the notification number to be zero.", 0, a.getNotified());
-        // TODO Fix test
-        assertTrue("WHEN THIS TEST FAILS, an error has been corrected.... When cancelling a timed out lease, the result should be false", notifyA.getLease().cancel());
+        assertFalse("When cancelling a timed out lease, the result should be false", notifyA.getLease().cancel());
         clearSpaceForNotifications();
     }
 

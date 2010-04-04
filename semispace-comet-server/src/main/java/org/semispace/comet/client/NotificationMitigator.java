@@ -35,6 +35,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -46,17 +48,26 @@ public class NotificationMitigator implements SemiLease {
     private BayeuxClient client;
     private boolean isAttached;
     private int callId;
+    private long timeOutInMs;
+    private TimeOutSurveillance timeOutSurveillance;
+    /**
+     * Consider getting the threadpool created somewhere else
+     */
+    private static ExecutorService threadPool = Executors.newCachedThreadPool();
 
-    public NotificationMitigator(BayeuxClient client, int callId, SemiEventListener listener) {
+    public NotificationMitigator(BayeuxClient client, int callId, SemiEventListener listener, long timeOutInMs) {
         this.client = client;
         this.mitigationListener = new MitigationListener(callId, listener);
         this.callId = callId;
+        this.timeOutInMs = timeOutInMs;
         isAttached = false;
     }
 
     protected void attach() {
         if ( ! isAttached ) {
             log.debug("Attaching "+CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);
+            timeOutSurveillance = new TimeOutSurveillance( timeOutInMs, this );
+            threadPool.submit(timeOutSurveillance);
             client.addListener(mitigationListener);
             isAttached = true;
         } else {
@@ -64,14 +75,11 @@ public class NotificationMitigator implements SemiLease {
         }
     }
 
-    /**
-     * TODO Error in logic: As of now, the listener will only be detached if it
-     * is done by the cancel method... Need timeout thread
-     */
     private boolean detach() {
         if (  isAttached ) {
             log.debug("... Detaching");
             boolean cancelResult = sendCancelListener();
+            timeOutSurveillance.cancelSurveillance();
             client.removeListener(mitigationListener);
             client.unsubscribe(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);
             isAttached = false;
@@ -111,7 +119,7 @@ public class NotificationMitigator implements SemiLease {
 
     @Override
     public boolean renew(long duration) {
-        log.debug("Never renewing notification mitigator.");
+        log.warn("Never renewing notification mitigator. Please establish a now listener, and renew the old one.");
         return false;
     }
 
@@ -153,30 +161,30 @@ public class NotificationMitigator implements SemiLease {
 
         private SemiEvent createEvent(String type, Long objectId) {
             if ( type.equals(SemiSpaceCometListener.EVENT_AVAILABILITY)) {
-                return new SemiAvailabilityEvent(objectId);
+                return new SemiAvailabilityEvent(objectId.longValue());
             } else if ( type.equals(SemiSpaceCometListener.EVENT_TAKEN)) {
-                return new SemiTakenEvent(objectId);
+                return new SemiTakenEvent(objectId.longValue());
             }  else if ( type.equals(SemiSpaceCometListener.EVENT_EXPIRATION)) {
-                return new SemiExpirationEvent(objectId);
+                return new SemiExpirationEvent(objectId.longValue());
             } else if (  type.equals(SemiSpaceCometListener.EVENT_RENEW)) {
                 // TODO Duration is wrong
-                return new SemiRenewalEvent(objectId, 1000);
+                return new SemiRenewalEvent(objectId.longValue(), 1000);
             } else {
                 throw new RuntimeException("Unexpected event type: "+type);
             }
         }
     }
 
-    private class CancelResultListener implements MessageListener {
+    private static class CancelResultListener implements MessageListener {
         private final CountDownLatch latch;
         private final int callId;
 
-        public CancelResultListener(int callId) {
+        private CancelResultListener(int callId) {
             this.callId = callId;
             this.latch = new CountDownLatch(1);
         }
 
-        public CountDownLatch getLatch() {
+        private CountDownLatch getLatch() {
             return latch;
         }
 
@@ -196,6 +204,46 @@ public class NotificationMitigator implements SemiLease {
                 latch.countDown();
             } else {
                 // TODO log.warn("Unexpected channel "+message.getChannel());
+            }
+        }
+    }
+
+    private static class TimeOutSurveillance implements Runnable {
+        private final CountDownLatch latch;
+        private long timeOutInMs;
+        private boolean cancelled = false;
+        private NotificationMitigator notificationMitigator;
+
+        private TimeOutSurveillance(long timeOutInMs, NotificationMitigator notificationMitigator) {
+            this.timeOutInMs = timeOutInMs;
+            this.latch = new CountDownLatch(1);
+            this.notificationMitigator = notificationMitigator;
+        }
+
+        private void cancelSurveillance() {
+            cancelled = true;
+            latch.countDown();
+        }
+
+        @Override
+        public void run() {
+            awaitInGuardedLoop();
+            if ( !cancelled) {
+                log.trace("Cancelling notification as it has timed out.");
+                notificationMitigator.cancel();
+                cancelSurveillance();
+                log.trace("Cancellation performed.");
+            }
+        }
+
+        private void awaitInGuardedLoop() {
+            long until = System.currentTimeMillis() + timeOutInMs;
+            while ( !cancelled && System.currentTimeMillis()  < until ) {
+                try {
+                    latch.await(timeOutInMs, TimeUnit.MILLISECONDS);
+                } catch (InterruptedException ignored) {
+                    // Ignore
+                }
             }
         }
     }

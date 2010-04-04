@@ -58,7 +58,7 @@ public class NotificationClient {
         notificationListener = null;
     }
 
-    public SemiEventRegistration doNotify(BayeuxClient client, Map<String, Object> map, long maxWaitMs ) {
+    public SemiEventRegistration doNotify(BayeuxClient client, Map<String, Object> map) {
         attach(client);
 
         try {
@@ -70,7 +70,6 @@ public class NotificationClient {
                 log.warn("Did not receive callback on notify. That is not to savory. Problem with connection? Returning null for lease");
                 return null;
             }
-
             return notificationListener.data;
 
         } catch (InterruptedException e) {
@@ -117,8 +116,9 @@ public class NotificationClient {
                 log.debug("Notify - Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
                 if ( map != null ) {
-                    // data = (String) map.get("leaseId");
-                    NotificationMitigator mitigator = new NotificationMitigator(client, callId, listener);
+                    // Timeout value is a roundtrip parameter
+                    String timeOutInMs = (String) map.get("duration");
+                    NotificationMitigator mitigator = new NotificationMitigator(client, callId, listener, Long.valueOf(timeOutInMs));
                     SemiEventRegistration registration = new SemiEventRegistration(Long.valueOf((String) map.get("leaseId")).longValue(), mitigator );
                     mitigator.attach();
                     data = registration;

@@ -58,6 +58,7 @@ public class NotificationService extends BayeuxService {
         SemiSpaceCometListener listener = new SemiSpaceCometListener(listenerType, callId, remote, this);
         SemiEventRegistration lease = space.notify(searchMap, listener, duration.longValue());
         Map<String, String> output = new HashMap<String, String>();
+        output.put( "duration", ""+duration);
         if ( lease != null ) {
             output.put("leaseId", ""+lease.getId());
             // TODO Create surveillance of listener in order to remove it if it is expired
