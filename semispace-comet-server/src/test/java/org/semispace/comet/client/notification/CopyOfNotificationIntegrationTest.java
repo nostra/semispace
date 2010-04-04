@@ -51,6 +51,13 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         space.destroy();
     }
 
+    public void testSimpleCancellation() throws InterruptedException {
+        ToBeNotified a = new ToBeNotified(false);
+        SemiEventRegistration notifyA = space.notify(new NoticeA(), a, 150);
+        a.setNotify( notifyA );
+        assertTrue(notifyA.getLease().cancel());
+    }
+
     public void testSimpleNotification() throws InterruptedException {
         ToBeNotified a = new ToBeNotified(false);
 

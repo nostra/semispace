@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Maintain the client side of a notification.
@@ -82,7 +84,19 @@ public class NotificationMitigator implements SemiLease {
     private void sendCancelListener() {
         try {
             log.debug("Publishing cancellation of lease with channel id "+callId);
-            client.publish(CometConstants.NOTIFICATION_CANCEL_LEASE_CHANNEL+"/"+callId, new HashMap<String, Object>(), null );
+            final CancelResultListener cancelListener = new CancelResultListener( callId );
+            client.addListener( cancelListener );
+            Map map = new HashMap<String, String>();
+            map.put( "callId", ""+callId );
+            log.trace("Awaiting...");
+            // Should be able to write an element within 5 seconds
+            client.publish(CometConstants.NOTIFICATION_CALL_CANCEL_LEASE_CHANNEL+"/"+callId, map, null );
+            boolean finishedOk = cancelListener.getLatch().await(5, TimeUnit.SECONDS);
+            if ( !finishedOk) {
+                log.warn("Could not write element within 5 seconds. That is not to savory. Problem with connection?");
+            }
+            log.trace("... unlatched");
+            client.removeListener(cancelListener);
         } catch (Throwable t ) {
             log.error("Could not cancel listener", t);
         }
@@ -152,4 +166,36 @@ public class NotificationMitigator implements SemiLease {
         }
     }
 
+    private class CancelResultListener implements MessageListener {
+        private final CountDownLatch latch;
+        private final int callId;
+
+        public CancelResultListener(int callId) {
+            this.callId = callId;
+            this.latch = new CountDownLatch(1);
+        }
+
+        public CountDownLatch getLatch() {
+            return latch;
+        }
+
+        @Override
+        public void deliver(Client from, Client to, Message message) {
+            try {
+                deliverInternal(from, to, message);
+            } catch (Throwable t ) {
+                log.error("Got an unexpected exception treating message.", t);
+                throw new RuntimeException("Unexpected exception", t);
+            }
+        }
+
+        private void deliverInternal(Client from, Client to, Message message) {
+            if ((CometConstants.NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL+"/"+callId).equals(message.getChannel())) {
+                log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
+                latch.countDown();
+            } else {
+                // TODO log.warn("Unexpected channel "+message.getChannel());
+            }
+        }
+    }
 }

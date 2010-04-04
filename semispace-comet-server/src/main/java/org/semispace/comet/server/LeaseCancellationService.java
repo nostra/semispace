@@ -43,23 +43,29 @@ public class LeaseCancellationService extends BayeuxService {
             log.error("Already have cancellation service. Need to cancel all elements.");
         }
         leaseCancellationService = this;
-        subscribe( CometConstants.NOTIFICATION_CANCEL_LEASE_CHANNEL+"/*", "semispaceCancelLease");
+        subscribe( CometConstants.NOTIFICATION_CALL_CANCEL_LEASE_CHANNEL +"/*", "semispaceCancelLease");
     }
 
     public void semispaceCancelLease(final Client remote, final Message message) {
         log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-        String holderId = message.getChannel().substring(CometConstants.NOTIFICATION_CANCEL_LEASE_CHANNEL.length()+1);
+        String holderId = ((Map<String,String>)message.getData()).get("callId");
         SemiLease sl = leases.get( holderId );
+        Boolean result = Boolean.FALSE;
         if ( sl != null ) {
             log.trace("Cancelling lease with holder id "+sl.getHolderId());
             if ( sl.cancel()) {
                 log.trace("Cancelling of lease successful");
+                result = Boolean.TRUE;
             } else {
                 log.trace("Lease could not be cancelled.");
             }
         } else {
             log.warn("No lease with holder id "+sl.getHolderId());
         }
+        // Not putting this in separate thead as it is expected to perform reasonably quickly
+        Map<String, String> output = new HashMap<String, String>();
+        output.put("cancelledOk", result.toString());
+        remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
     }
 
     public static void registerCancelableLease(String callId, SemiLease lease) {
