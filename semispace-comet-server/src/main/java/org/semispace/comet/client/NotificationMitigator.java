@@ -66,22 +66,22 @@ public class NotificationMitigator implements SemiLease {
 
     /**
      * TODO Error in logic: As of now, the listener will only be detached if it
-     * is done by the cancel method...
+     * is done by the cancel method... Need timeout thread
      */
     private boolean detach() {
         if (  isAttached ) {
             log.debug("... Detaching");
-            sendCancelListener();
+            boolean cancelResult = sendCancelListener();
             client.removeListener(mitigationListener);
             client.unsubscribe(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);
             isAttached = false;
-            return true;
+            return cancelResult;
         } else {
             return false;
         }
     }
 
-    private void sendCancelListener() {
+    private boolean sendCancelListener() {
         try {
             log.debug("Publishing cancellation of lease with channel id "+callId);
             final CancelResultListener cancelListener = new CancelResultListener( callId );
@@ -97,10 +97,11 @@ public class NotificationMitigator implements SemiLease {
             }
             log.trace("... unlatched");
             client.removeListener(cancelListener);
+            return true;
         } catch (Throwable t ) {
             log.error("Could not cancel listener", t);
         }
-
+        return false;
     }
 
     @Override
