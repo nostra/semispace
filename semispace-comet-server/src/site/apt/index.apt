@@ -37,7 +37,9 @@ Communication channel overview
 *-------------------------------------+---------------
 |/semispace/event/notify/<number>/<type> | Attached is a notification event. |
 *-------------------------------------+---------------
-|/semispace/event/leasecancel/<number> | Cancel lease attached to channel <number> |
+|/semispace/call/leasecancel/<number>  | Cancel lease with callId as mapped parameter |
+*-------------------------------------+---------------
+|/semispace/reply/leasecancel/<number>  | Acknowledge of listener cancellation |
 *-------------------------------------+---------------
 
  Channel parameters are:
@@ -76,7 +78,9 @@ Parameter overview
 |                          | json | Payload. This is the String representation of the client side JSON object. TODO Shall change to duration |
 |                          | semispaceObjectTypeKey | Same as for read. |
 *--------------------------+--------------------+---+
-|  notify                 || duration  | How long the notification registration shall exist. |
+|  notify                  | duration  | How long the notification registration shall exist. |
 |                          | searchMap | As for read |
 |                          | semispaceObjectTypeKey | As for read |
+*--------------------------+--------------------+---+
+| lease cancel             | callId | The caller id the notification lease is registered to. |
 *--------------------------+--------------------+---+

@@ -62,7 +62,7 @@ public class NotificationService extends BayeuxService {
         if ( lease != null ) {
             output.put("leaseId", ""+lease.getId());
             // TODO Create surveillance of listener in order to remove it if it is expired
-            LeaseCancellationService.registerCancelableLease( callId, lease.getLease());
+            LeaseCancellationService.registerCancelableLease( callId, lease.getLease(), message.getClientId());
         } else {
             output.put("error", "Did not get lease");
         }
