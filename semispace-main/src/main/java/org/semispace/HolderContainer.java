@@ -49,7 +49,7 @@ public class HolderContainer {
         heads = new HashMap<String, HolderElement>();
     }
 
-    public synchronized static HolderContainer retrieveContainer() {
+    public static synchronized HolderContainer retrieveContainer() {
         if ( instance == null ) {
             instance = new HolderContainer();
         }
@@ -74,22 +74,11 @@ public class HolderContainer {
             if ( head == null ) {
                 return null;
             }
-            
-            if (head.getHolder().getId() == id) {
-                // First element shall be removed
-                toReturn = head.getHolder();
-                head = head.next();
-                // Reset head entry in map
-                if ( head == null ) {
-                    heads.remove(className);
-                } else {
-                    heads.put(className, head);
-                }
-            } else {
-                // Possibly removing one in chain
-                toReturn = head.removeHolderById(id);
+            toReturn = head.removeHolderById(id);
+            if ( head.size() < 1 ) {
+                heads.remove(className);
             }
-                
+
         } finally {
             rwl.writeLock().unlock();
         }
@@ -101,17 +90,13 @@ public class HolderContainer {
 
         try {
             HolderElement n = heads.get(className);
-            while (n != null) {
-                Holder found = n.findById(id);
-                if ( found != null ) {
-                    return n.getHolder();
-                }
-                n = n.next();
+            if ( n == null ) {
+                return null;
             }
+            return n.findById(id);
         } finally {
             rwl.readLock().unlock();
         }
-        return null;
     }
 
     public void addHolder(Holder add) {
@@ -125,7 +110,7 @@ public class HolderContainer {
             }
             HolderElement head = heads.get( add.getClassName() );
             if (head == null) {
-                head = new HolderElement(add);
+                head = HolderElement.createNewCollection(add);
                 heads.put( add.getClassName(), head);
             } else {
                 head.addHolder(add);
@@ -147,11 +132,7 @@ public class HolderContainer {
             int size = 0;
             
             for ( HolderElement head : heads.values() ) {
-                HolderElement c = head;
-                while (c != null) {
-                    size++;
-                    c = c.next();
-                }
+                size += head.size();
             }
             return size;
         } finally {
@@ -175,13 +156,9 @@ public class HolderContainer {
         String[] cnames = retrieveClassNames();
         for (String lookup : cnames ) {
             HolderElement next = next(lookup);
-            while ( next != null ) { 
-                Holder elem = next.getHolder();
-                if (id == elem.getId()  ) {
-                    return elem;
-                }
-
-                next = next.next();
+            Holder toReturn = next.findById(id);
+            if ( toReturn != null ) {
+                return toReturn;
             }
         }
         return null;
@@ -197,10 +174,14 @@ public class HolderContainer {
         String[] cnames = retrieveClassNames();
         for (String lookup : cnames ) {
             HolderElement next = next(lookup);
-            while ( next != null ) { 
-                Holder elem = next.getHolder();
-                allIds.add(Long.valueOf( elem.getId() ));
-                next = next.next();
+            rwl.readLock().lock();
+            try {
+                for ( Holder elem : next.toArray()) {
+                    allIds.add(Long.valueOf( elem.getId() ));
+                }
+
+            } finally {
+                rwl.readLock().unlock();
             }
         }
         return allIds.toArray(new Long[0]);

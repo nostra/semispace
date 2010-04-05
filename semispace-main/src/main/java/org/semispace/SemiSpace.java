@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -384,16 +385,25 @@ public class SemiSpace implements SemiSpaceInterface {
         }
 
         HolderElement next = elements.next(className);
-        while ( found == null && next != null ) {
-            Holder elem = next.getHolder();
-            if (elem.getLiveUntil() < admin.calculateTime()) {
-                toEvict.add(elem);
-                elem = null;
+        // TODO Presently locking structure whilst searching for match
+        rwl.writeLock().lock();
+        try {
+            if ( next != null ) {
+                Iterator<Holder> it = next.iterator();
+                while ( found == null && it.hasNext()) {
+                    Holder elem = it.next();
+                    if (elem.getLiveUntil() < admin.calculateTime()) {
+                        toEvict.add(elem);
+                        elem = null;
+                    }
+                    if (elem != null && hasSubSet(elem.getSearchMap().entrySet(), templateSet)) {
+                        found = elem;
+                    }
+                }
             }
-            if (elem != null && hasSubSet(elem.getSearchMap().entrySet(), templateSet)) {
-                found = elem;
-            }
-            next = next.next();
+
+        } finally {
+            rwl.writeLock().unlock();
         }
 
         for (Holder evict : toEvict) {
@@ -700,13 +710,11 @@ public class SemiSpace implements SemiSpaceInterface {
             String[] groups = elements.retrieveGroupNames();
             for ( String group : groups ) {
                 int evictSize = beforeEvict.size();
-                HolderElement next = elements.next(group);
-                while ( next != null ) {
-                    Holder elem = next.getHolder();
+                HolderElement hc = elements.next(group);
+                for (Holder elem : hc) {
                     if (elem.getLiveUntil() < admin.calculateTime()) {
                         beforeEvict.add(elem);
                     }
-                    next = next.next();
                 }
                 long afterSize = beforeEvict.size() - evictSize ;
                 if ( afterSize > 0 ) {

@@ -18,6 +18,7 @@ package org.semispace.take;
 
 import junit.framework.TestCase;
 import org.semispace.SemiSpace;
+import org.semispace.StressTestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,14 +28,13 @@ import org.slf4j.LoggerFactory;
  */
 public class TakeUniquenessTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(TakeUniquenessTest.class);
-    private static final int ITERATIONS_TO_PERFORM = 100; // For a more comprehensive test, use 20000
 
     public void testMultipleInsertAndTake()  {
         Thread[] threads = new Thread[6];
 
         log.debug("Starting up " + threads.length + " workers.");
         for (int t = 0; t < threads.length; t++) {
-            threads[t] = new Thread(new UniqueWorker(5, ITERATIONS_TO_PERFORM));
+            threads[t] = new Thread(new UniqueWorker(5, StressTestConstants.ITERATIONS_TO_PERFORM));
             threads[t].start();
         }
 
@@ -45,7 +45,8 @@ public class TakeUniquenessTest extends TestCase {
                 throw new RuntimeException("Error", e);
             }
         }
-        assertNull( "Expecting all elements to have been removed from space", SemiSpace.retrieveSpace().takeIfExists( new Item()) );
+        Item result = SemiSpace.retrieveSpace().takeIfExists( new Item());
+        assertNull( "Expecting all elements to have been removed from space, but had: "+result, result );
         log.debug("All threads joined!");
         assertEquals("Not expecting any residual items. Collected errors: "+Storage.getInstance().getErrors(), 0, Storage.getInstance().dumpItems());
         assertEquals("Not expecting errors", "", Storage.getInstance().getErrors());

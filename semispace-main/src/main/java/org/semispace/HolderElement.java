@@ -26,72 +26,55 @@
 
 package org.semispace;
 
-public class HolderElement {
-    private Holder holder;
-    private HolderElement next;
-    
-    public HolderElement( Holder holder ) {
-        this.holder = holder;
-    }
-    
-    public  HolderElement next() {
-        return next;
-    }
-    
-    public  Holder getHolder() {
-        return holder;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class HolderElement implements Iterable<Holder>{
+    private Map<Long, Holder> elements = new ConcurrentHashMap<Long, Holder>();
+
+    public synchronized int size() {
+        return elements.size();
     }
 
-    /**
-     * Iterating until able to remove <b>next</b> element, which
-     * implies that the holder container is responsible for removing
-     * head. 
-     */
-    public  Holder removeHolderById( long id ) {
-        HolderElement found = null;
-        HolderElement n = this; 
-        while ( n != null && found == null && n.next != null ) {
-            if ( n.next.holder.getId() == id ) {
-                found = n.next;
-                n.next = found.next;
-            } else {
-                n = n.next;
-            }
-        }
-        if ( found != null ) {
-            return found.getHolder();
-        }
-        return null; 
+    public static synchronized HolderElement createNewCollection(Holder holder) {
+        HolderElement hc = new HolderElement();
+        hc.addHolder(holder);
+        return hc;
+    }
+
+    public synchronized Holder removeHolderById( long id ) {
+        Holder found = elements.remove(Long.valueOf(id));
+        return found;
     }
 
     /**
      * Searching for holder elements with given ID
-     */    
-    public  Holder findById(long id) {
-        HolderElement found = null;
-        HolderElement n = this; 
-        while ( n != null && found == null ) {
-            if ( n.holder != null && n.holder.getId() == id ) {
-                found = n;
-            }
-            n = n.next;
-        }
-        if ( found != null ) {
-            return found.holder;
-        }
-        return null;
+     */
+    public synchronized Holder findById(long id) {
+        Holder found = elements.get(Long.valueOf(id));
+        return found;
     }
 
-    public  void addHolder(Holder add ) {
-        addAsNext( add );        
+    public synchronized void addHolder(Holder add ) {
+        Holder old = elements.put( Long.valueOf(add.getId()), add);
+        if ( old != null ) {
+            throw new RuntimeException("Unexpected duplication id IDs. Found twice: "+old.getId());
+        }
     }
 
-    private void addAsNext(Holder add) {
-        if ( add == null ) {
-            throw new RuntimeException("Illegal to add null");
-        }
-        HolderElement oldnext = next;
-        next = new HolderElement(add);
-        next.next = oldnext;
+    public synchronized Holder[] toArray() {
+        return elements.values().toArray( new Holder[0]);
+    }
+
+    @Override
+    public synchronized Iterator<Holder> iterator() {
+        // TODO Will this be thread safe?
+        /*
+        List<Holder> defensive = new ArrayList();
+        defensive.addAll(elements.values());
+        return defensive.iterator();
+        */
+        return elements.values().iterator();
     }
 }

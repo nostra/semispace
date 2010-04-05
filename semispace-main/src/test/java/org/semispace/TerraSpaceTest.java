@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
  */
 public class TerraSpaceTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(TerraSpaceTest.class);
-    private static final int LARGE_QUANTITY_NUMBER=100; // For a more comprehensive tests, use 20000
 
     // Used in a test:
     private String problem=null;
@@ -67,6 +66,11 @@ public class TerraSpaceTest extends TestCase {
         assertNotNull(space.takeIfExists(fh));
         Thread.sleep(110);
         assertNull(space.takeIfExists(fh));
+    }
+
+    public void testHolderIdArray() {
+        Long[] holderIds = ((SemiSpace)space).findAllHolderIds();
+        assertNotNull( holderIds );
     }
 
     public void testAsync() throws InterruptedException {
@@ -123,14 +127,14 @@ public class TerraSpaceTest extends TestCase {
         assertNull("Should not start with elements present", space.takeIfExists(templ));
         templ.setFieldA("a");
 
-        for ( int i=0 ; i < LARGE_QUANTITY_NUMBER ; i++ ) {
+        for ( int i=0 ; i < StressTestConstants.LARGE_QUANTITY_NUMBER ; i++ ) {
             FieldHolder fh = new FieldHolder();
             fh.setFieldA("a");
             fh.setFieldB("b");
             
             space.write(fh, 29999);
         }
-        for ( int i=0 ; i < LARGE_QUANTITY_NUMBER ; i++ ) {
+        for ( int i=0 ; i < StressTestConstants.LARGE_QUANTITY_NUMBER ; i++ ) {
             assertNotNull("Notice that this may be due to slow computer... Missing element at "+i, space.takeIfExists(templ));
         }
         assertNull("Should not have any elements left", space.takeIfExists(templ));
@@ -175,7 +179,7 @@ public class TerraSpaceTest extends TestCase {
         FieldHolder shouldBeNull = space.takeIfExists(new FieldHolder());
         assertNull("Should not start with elements present: "+shouldBeNull, shouldBeNull);
         log.debug("Statistics before start: "+((SemiSpace)space).getStatistics());
-        for ( int i=0 ; i < LARGE_QUANTITY_NUMBER ; i++ ) {
+        for ( int i=0 ; i < StressTestConstants.LARGE_QUANTITY_NUMBER ; i++ ) {
             FieldHolder fh = new FieldHolder();
             fh.setFieldA("a");
             fh.setFieldB(""+i);
@@ -184,7 +188,7 @@ public class TerraSpaceTest extends TestCase {
         }
         log.debug("Statistics after write loop: "+((SemiSpace)space).getStatistics());
         long stopAt = System.currentTimeMillis()+25500;
-        for ( int i=0 ; System.currentTimeMillis() < stopAt && i < LARGE_QUANTITY_NUMBER ; i++ ) {
+        for ( int i=0 ; System.currentTimeMillis() < stopAt && i < StressTestConstants.LARGE_QUANTITY_NUMBER ; i++ ) {
             if( i % 1000 == 0 ) {
                 log.debug("Within read loop: "+((SemiSpace)space).getStatistics());                
             }
@@ -315,7 +319,7 @@ public class TerraSpaceTest extends TestCase {
 
     public void testAsyncWithFourThreadsAndId() throws InterruptedException {
         globalCounter = 2;
-        final int numberOfIterations = LARGE_QUANTITY_NUMBER;
+        final int numberOfIterations = StressTestConstants.LARGE_QUANTITY_NUMBER;
         Runnable write = new Runnable() {
             public void run() {
                     FieldHolder fh = new FieldHolder();
@@ -415,7 +419,7 @@ public class TerraSpaceTest extends TestCase {
         int counter = 0;
         long startTime = System.currentTimeMillis();
         while ( startTime > System.currentTimeMillis() - 1000 ) {
-            space.write(nvq, 10000);
+            space.write(nvq, 20000);
             counter++;
         }
         log.debug("Inserted "+counter+" elements");

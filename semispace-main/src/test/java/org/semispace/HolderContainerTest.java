@@ -73,7 +73,7 @@ public class HolderContainerTest extends TestCase {
         assertNotNull( hc.removeHolderById(a.getId(), a.getClassName()) );
         assertEquals(orgsize+1, hc.size());
         assertTrue("Size 1 indicates that next is present.", hc.next(b.getClassName()) != null);
-        assertEquals(b.getId(), hc.next(b.getClassName()).getHolder().getId());
+        assertEquals(b.getId(), hc.readHolderWithId(b.getId()).getId());
         assertNotNull( hc.removeHolderById(b.getId(), b.getClassName()) );
         assertTrue(hc.next(b.getClassName()) == null );
         assertEquals(orgsize, hc.size());
@@ -204,7 +204,7 @@ public class HolderContainerTest extends TestCase {
         long startTime = System.currentTimeMillis();
 
         // TODO Increase time to wait later. The old holder has an abysmal time development. 
-        while ( startTime > System.currentTimeMillis() - 50 ) {
+        while ( startTime > System.currentTimeMillis() - 250 ) {
             hc.addHolder(createHolder());
             counter++;
         }

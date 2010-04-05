@@ -31,6 +31,7 @@ import org.semispace.AlternateButEqual;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiSpace;
 import org.semispace.SemiSpaceInterface;
+import org.semispace.StressTestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +42,6 @@ import java.util.Set;
 
 public class NotificationTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(NotificationTest.class);
-    private static final int NUMBER_OF_ELEMENTS_OR_LISTENERS = 5000;
     private SemiSpaceInterface space;
 
     @Override
@@ -76,7 +76,7 @@ public class NotificationTest extends TestCase {
         SemiEventRegistration notifyC = space.notify(new NoticeC(), c, 10000);
         c.setNotify( notifyC );
 
-        final int numinserts = NUMBER_OF_ELEMENTS_OR_LISTENERS;
+        final int numinserts = StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS;
         log.debug("Before inserting {} elements into space", Integer.valueOf(numinserts));
         for ( int i=0 ; i < numinserts ; i++ ) {
             insertIntoSpace(space, i);            
@@ -126,14 +126,14 @@ public class NotificationTest extends TestCase {
             }
 
         } while (aTaken != null || bTaken != null || bTaken != null);
-        assertEquals(3*NUMBER_OF_ELEMENTS_OR_LISTENERS,noDups.size());
+        assertEquals(3* StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS,noDups.size());
     }
 
     /**
      * A large number of listeners, and a smaller number of inserts
      */
     public void testQuantityOfNotification() throws InterruptedException {
-        final int numberOfListeners = NUMBER_OF_ELEMENTS_OR_LISTENERS;
+        final int numberOfListeners = StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS;
         ToBeNotified[] a = new ToBeNotified[numberOfListeners];
         ToBeNotified[] b = new ToBeNotified[numberOfListeners];
         SemiSpaceInterface space = SemiSpace.retrieveSpace();
@@ -209,14 +209,14 @@ public class NotificationTest extends TestCase {
     private void insertIntoSpace(SemiSpaceInterface space, int i) {
         NoticeA na = new NoticeA();
         na.setField("a "+i);
-        space.write(na, NUMBER_OF_ELEMENTS_OR_LISTENERS * 100);
+        space.write(na, StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS * 100);
         
         NoticeB nb = new NoticeB();
         nb.setField("b "+i);
-        space.write(nb, NUMBER_OF_ELEMENTS_OR_LISTENERS * 100);
+        space.write(nb, StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS * 100);
         
         NoticeC nc = new NoticeC();
         nc.setField("c "+i);
-        space.write(nc, NUMBER_OF_ELEMENTS_OR_LISTENERS * 100);
+        space.write(nc, StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS * 100);
     }
 }
