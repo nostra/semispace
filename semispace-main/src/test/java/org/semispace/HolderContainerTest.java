@@ -203,8 +203,7 @@ public class HolderContainerTest extends TestCase {
         int counter = 0;
         long startTime = System.currentTimeMillis();
 
-        // TODO Increase time to wait later. The old holder has an abysmal time development. 
-        while ( startTime > System.currentTimeMillis() - 250 ) {
+        while ( startTime > System.currentTimeMillis() - 1000 ) {
             hc.addHolder(createHolder());
             counter++;
         }
