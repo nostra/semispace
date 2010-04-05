@@ -113,7 +113,7 @@ public class NotificationClient {
 
         private void deliverInternal( Client to, Message message) {
             if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/"+SemiSpaceCometListener.EVENT_ALL).equals(message.getChannel())) {
-                log.debug("Notify - Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
+                log.trace("Notify - Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
                 if ( map != null ) {
                     // Timeout value is a roundtrip parameter

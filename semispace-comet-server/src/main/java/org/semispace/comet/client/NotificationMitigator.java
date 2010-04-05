@@ -91,7 +91,7 @@ public class NotificationMitigator implements SemiLease {
 
     private boolean sendCancelListener() {
         try {
-            log.debug("Publishing cancellation of lease with channel id "+callId);
+            log.trace("Publishing cancellation of lease with channel id "+callId);
             final CancelResultListener cancelListener = new CancelResultListener( callId );
             client.addListener( cancelListener );
             Map map = new HashMap<String, String>();

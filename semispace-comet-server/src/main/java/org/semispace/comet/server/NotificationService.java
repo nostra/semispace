@@ -53,7 +53,7 @@ public class NotificationService extends BayeuxService {
         // TODO Move method into listener.
         String listenerType = createListenerType(outChannel);
         String callId = createCallId( outChannel, listenerType);
-        log.debug("------- Constructed type: "+listenerType+", callId: "+callId+" out of "+outChannel);
+        log.trace("------- Constructed type: "+listenerType+", callId: "+callId+" out of "+outChannel);
 
         SemiSpaceCometListener listener = new SemiSpaceCometListener(listenerType, callId, remote, this);
         SemiEventRegistration lease = space.notify(searchMap, listener, duration.longValue());
@@ -91,12 +91,12 @@ public class NotificationService extends BayeuxService {
     }
 
     public void deliver(String outChannel, Map<String, String> output, Client remote) {
-        log.debug("Delivering notification...");
+        log.trace("Delivering notification...");
         try {
             remote.deliver(getClient(), outChannel, output, null);
         } catch (Throwable t ) {
             log.error("Could not deliver message to client.", t);
         }
-        log.debug("... delivery done");
+        log.trace("... delivery done");
     }
 }
