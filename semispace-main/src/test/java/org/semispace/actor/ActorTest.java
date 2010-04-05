@@ -73,7 +73,8 @@ public class ActorTest extends TestCase {
 		PongActor pongActor = new PongActor(space);
 		assertEquals(listenerNum + 4, space.numberOfNumberOfListeners());
 		pingActor.fireItUp();
-		Thread.sleep(350);
+		// TODO Terracotta test will fail if not this amount of sleep. Analyze later.
+		Thread.sleep(750);
 		
 		assertEquals(listenerNum, space.numberOfNumberOfListeners());
 		assertEquals(10, pongActor.getPongCount());
