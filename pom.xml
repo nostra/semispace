@@ -44,9 +44,9 @@
     </ciManagement>-->
 
     <properties>
-        <springframework.version>3.0.1.RELEASE</springframework.version>
+        <springframework.version>3.0.2.RELEASE</springframework.version>
         <cxf.version>2.2.7</cxf.version>
-        <jetty.version>6.1.22</jetty.version>
+        <jetty.version>6.1.23</jetty.version>
         <slf4j.version>1.5.11</slf4j.version>
         <cometd.version>1.0.1</cometd.version>
     </properties>

@@ -10,7 +10,9 @@
 *----------------------------------+------------+
 || Change or bug || Change
 *----------------------------------+------------+
-| A congested space would be prone to loose objects and / | Locking of holder object structure has been corrected. 
+| Holder structure changed | Internal holder structure is changed, making lookup faster and more stable  |
+*----------------------------------+------------+
+| A congested space would be prone to loose objects and / | Locking of holder object structure has been corrected.|
 | or return wrong object type                             |
 *----------------------------------+------------+
 

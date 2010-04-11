@@ -70,7 +70,7 @@ public class SemiSpaceCometListener implements SemiEventListener {
 
     @Override
     public void notify(SemiEvent theEvent) {
-        log.debug("Got incoming event of type: "+theEvent.getClass().getName());
+        log.trace("Got incoming event of type: {}",theEvent.getClass().getName());
         if ( interestingClass.isAssignableFrom(theEvent.getClass()) ) {
             log.trace("Interesting event of type: {}",theEvent.getClass().getName());
 
