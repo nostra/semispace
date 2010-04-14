@@ -50,6 +50,7 @@ public class NotificationMitigator implements SemiLease {
     private int callId;
     private long timeOutInMs;
     private TimeOutSurveillance timeOutSurveillance;
+
     /**
      * Consider getting the threadpool created somewhere else
      */
@@ -152,10 +153,16 @@ public class NotificationMitigator implements SemiLease {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId()+" "+message.getData());
                 Map<String,String> map = (Map) message.getData();
                 final String objectId = map.get("objectId");
-                SemiEvent event = createEvent(message.getChannel().substring(message.getChannel().lastIndexOf("/")+1), Long.valueOf( objectId ));
-                listener.notify(event);
+                final SemiEvent event = createEvent(message.getChannel().substring(message.getChannel().lastIndexOf("/")+1), Long.valueOf( objectId ));
+                Runnable notify = new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.notify(event);
+                    }
+                };
+                threadPool.submit(notify);
             } else {
-                // TODO log.warn("Unexpected channel "+message.getChannel());
+                log.warn("Unexpected channel "+message.getChannel());
             }
         }
 
@@ -203,7 +210,7 @@ public class NotificationMitigator implements SemiLease {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             } else {
-                // TODO log.warn("Unexpected channel "+message.getChannel());
+                log.warn("Unexpected channel "+message.getChannel());
             }
         }
     }
