@@ -26,7 +26,11 @@
     <!-- Semispace Comet Scripts -->
     <script type="text/javascript" src="/semispace-comet-server/dojo/dojo.js.uncompressed.js"> </script>
     <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/semispace.js"> </script>
+    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/util/semispace.util.js"> </script>
+    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/util/semispace.util.interface.js"> </script>
+    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/interfaces/semispace.SemiSpaceInterface.js"> </script>
     <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/core/semispace.Comet.js"> </script>
+    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/core/semispace.SemiSpace.js"> </script>
 
     <!-- Example -->
     <script type="text/javascript" src="resources/helpers.js"> </script>
@@ -58,7 +62,7 @@
                     msg = msg + ' - Unsubscribed to channel';
                     break;
                 case 8:
-                    msg = msg + ' - A publish is performed ' + message.id;
+                    msg = msg + ' - A publish is performed';
                     break;
                 case 9:
                     msg = msg + ' - Unsuccessful to communicate with server';
@@ -77,36 +81,66 @@
         var com = dojox.cometd;
 
         var myApp;
+        var semiApp;
         var init = function(){
             myApp = new semispace.Comet(com, server);
             myApp.addMetaListener(localLog);
+            semiApp = new semispace.SemiSpace(myApp.getConnection());
         };
 
         var start = function(){
             myApp.connect();
+
         };
 
         var stop = function(){
             myApp.disconnect();
         };
 
-        var jalla = function(){
-            //alert('kkkkkkkkkk');
-            myApp.doWrite();
+
+        var wrte = function(){
+            var jsonString = JSON.stringify({"org_semispace_comet_demo_FieldHolder":{"fieldA":"InsertServlet","fieldB":"js side ho ho"}});
+            semiApp.write(jsonString, '6000');
         };
-        var balla = function(){
-            //alert('kkkkkkkkkk');
-            myApp.doTake();
+        var read = function(){
+            semiApp.read(null, '6000');
+        };
+
+        var take = function(){
+            semiApp.take(null, '6000');
+        };
+
+        var notify = function(){
+            semiApp.notify(null, null, '6000');
+        };
+
+        var batch = function(){
+            /*
+            myApp.batch(function(){
+                myApp.rSubscribe();
+                myApp.wSubscribe();
+            });
+            */
+
         };
     </script>
 </head>
 <body onload="init();">
-    <h1>Example 01</h1>
+    <h1>Example 04</h1>
     <p>
         This example tests the different messages which goes over the Comet meta channel. Please try to take the server
         up and down to see the effect.
     </p>
-    <div id="result"><a href="javascript:;" onclick="start();">Connect to server</a> | <a href="javascript:;" onclick="stop();">Disconnect from server</a> | <a href="javascript:;" onclick="jalla();">Write</a> | <a href="javascript:;" onclick="balla();">Read</a></div>
+    <div id="result">
+        <a href="javascript:;" onclick="start();">Connect to server</a> |
+        <a href="javascript:;" onclick="stop();">Disconnect from server</a> |
+        <a href="javascript:;" onclick="wrte();">Write</a> |
+        <a href="javascript:;" onclick="read();">Read</a> |
+        <a href="javascript:;" onclick="take();">Take</a> |
+        <a href="javascript:;" onclick="notify();">Notify</a> |
+        <a href="javascript:;" onclick="batch();">testBatch</a> |
+
+    </div>
     <div id="log"> </div>
 </body>
 </html>

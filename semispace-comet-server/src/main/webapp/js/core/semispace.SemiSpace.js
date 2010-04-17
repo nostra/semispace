@@ -14,32 +14,126 @@
  * limitations under the License.
  */
 
-semispace.SemiSpace = function(){
-    semispace.util.intface.implement(this,SemiSpaceInterface);
+semispace.SemiSpace = function(com){
+//    semispace.util.intface.implement(this,SemiSpaceInterface);
     // Dummy at this point - Testing interface
+
+    // TODO: if time is number, call against space throws exception serverside. Add support for string convertion
+
+
+    var cometd = com;
+    var channel = 0;
+
+
+    this.notify = function(template, listener, duration){
+
+        var subscription = undefined;
+
+        if(subscription){
+            cometd.unsubscribe(subscription);
+        }
+
+        subscription = cometd.subscribe('/semispace/reply/notify/' + channel, function(message){
+            var data;
+            if(message && message.data && message.data.result){
+                data =  message.data.result;
+            } else {
+                data = "No response from server";
+            }
+            alert('Notify performed - Data is: ' + data);
+        });
+
+        // NB: semispaceObjectTypeKey er det vi skriver og tar et objekt på
+        cometd.publish('/semispace/call/notify/' + channel, {duration: duration, searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+
+        channel++;
+
+    };
+
+
+    this.read = function(template, timeout){
+
+        var subscription = undefined;
+
+        if(subscription){
+            cometd.unsubscribe(subscription);
+        }
+
+        subscription = cometd.subscribe('/semispace/reply/read/' + channel, function(message){
+            var data;
+            if(message && message.data && message.data.result){
+                data =  message.data.result;
+            } else {
+                data = "No response from server";
+            }
+            alert('Read performed - Data is: ' + data);
+        });
+
+        // NB: semispaceObjectTypeKey er det vi skriver og tar et objekt på
+        cometd.publish('/semispace/call/read/' + channel, {duration: timeout, searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+
+        channel++;
+
+    };
+
+
+    this.readIfExists = function(){
+
+    };
+
+
+    this.write = function(obj, lifeTimeInMs){
+
+        var subscription = undefined;
+
+        if(subscription){
+            cometd.unsubscribe(subscription);
+        }
+
+        subscription = cometd.subscribe('/semispace/reply/write/' + channel, function(message){
+            var data;
+            if(message && message.data && message.data.result){
+                data =  message.data.result;
+            } else {
+                data = "No response from server";
+            }
+
+        });
+
+        cometd.publish('/semispace/call/write/' + channel, {timeToLiveMs: lifeTimeInMs, searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}, semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder', json:obj});
+
+        channel++;
+
+    };
+
+
+    this.take = function(template, timeout){
+
+        var subscription = undefined;
+
+        if(subscription){
+            cometd.unsubscribe(subscription);
+        }
+
+        subscription = cometd.subscribe('/semispace/reply/take/' + channel, function(message){
+            var data;
+            if(message && message.data && message.data.result){
+                data =  message.data.result;
+            } else {
+                data = "No response from server";
+            }
+            alert('Take performed - Data is: ' + data);
+        });
+
+        // NB: semispaceObjectTypeKey er det vi skriver og tar et objekt på
+        cometd.publish('/semispace/call/take/' + channel, {duration: timeout, searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+
+        channel++;
+
+    };
+
+    this.takeIfExists = function(){
+
+    };
+
 };
-
-semispace.SemiSpace.prototype.notify = function(){
-
-};
-
-semispace.SemiSpace.prototype.read = function(){
-
-};
-
-semispace.SemiSpace.prototype.readIfExists = function(){
-
-};
-
-semispace.SemiSpace.prototype.take = function(){
-
-};
-
-semispace.SemiSpace.prototype.takeIfExists = function(){
-
-};
-
-semispace.SemiSpace.prototype.write = function(){
-   
-};
-
