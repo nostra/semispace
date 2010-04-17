@@ -26,6 +26,16 @@
 
 package org.semispace.admin;
 
+import com.thoughtworks.xstream.XStream;
+import org.semispace.EventDistributor;
+import org.semispace.Holder;
+import org.semispace.NameValueQuery;
+import org.semispace.SemiSpace;
+import org.semispace.SemiSpaceInterface;
+import org.semispace.event.SemiAvailabilityEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,17 +45,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.semispace.EventDistributor;
-import org.semispace.Holder;
-import org.semispace.NameValueQuery;
-import org.semispace.SemiSpace;
-import org.semispace.SemiSpaceInterface;
-import org.semispace.event.SemiAvailabilityEvent;
-
-import com.thoughtworks.xstream.XStream;
 
 public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     private static final Logger log = LoggerFactory.getLogger(SemiSpaceAdmin.class);
@@ -95,34 +94,27 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         return space;
     }
 
+    @Override
     public ExecutorService getThreadPool() {
         return pool;
     }
 
-    /**
-     * @see org.semispace.admin.SemiSpaceAdminInterface#hasBeenInitialized()
-     */
+    @Override
     public boolean hasBeenInitialized() {
         return this.beenInitialized;
     }
 
-    /**
-     * @see org.semispace.admin.SemiSpaceAdminInterface#isMaster()
-     */
+    @Override
     public boolean isMaster() {
         return this.master;
     }
 
-    /**
-     * @see org.semispace.admin.SemiSpaceAdminInterface#calculateTime()
-     */
+    @Override
     public long calculateTime() {
         return System.currentTimeMillis() - clockSkew;
     }
 
-    /**
-     * @see org.semispace.admin.SemiSpaceAdminInterface#performInitialization()
-     */
+    @Override
     public void performInitialization() {
         if (beenInitialized) {
             log.warn("Initialization called more than once.");
@@ -131,6 +123,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         beenInitialized = true;
         
         Runnable hook = new Runnable() {
+            @Override
             @SuppressWarnings("synthetic-access")
             public void run() {
                 log.info("Shutdown hook shutting down semispace.");
@@ -181,7 +174,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         IdentifyAdminQuery masterFound = null;
         IdentifyAdminQuery answer = null;
         do {
-            answer = (IdentifyAdminQuery) space.take(iaq, 750);
+            answer = space.take(iaq, 750);
             if (answer != null) {
                 admins.add(answer);
                 if (Boolean.TRUE.equals(answer.amIAdmin)) {
@@ -194,6 +187,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
 
         } while (answer != null);
         Collections.sort(admins, new Comparator<IdentifyAdminQuery>() {
+            @Override
             public int compare(IdentifyAdminQuery a1, IdentifyAdminQuery a2) {
                 if (a1.id == null) {
                     return 1;
@@ -204,7 +198,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
             }
         });
         int foundId = 1;
-        if (admins.size() > 0) {
+        if (!admins.isEmpty()) {
             // Collection is sorted, and therefore the admin should increase
             IdentifyAdminQuery admin = admins.get(0);
             if (admin.id != null) {
@@ -216,7 +210,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         if (masterFound == null) {
             log.info("I am master, as no other master was identified.");
             master = true;
-            if (admins.size() > 0) {
+            if (!admins.isEmpty()) {
                 log.info("Informing other masters of system time.");
                 TimeAnswer ta = new TimeAnswer();
                 ta.masterId = getSpaceId();
@@ -243,7 +237,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         if (nvq == null) {
             throw new AssertionError("Unable to retrieve query which is designed to kickstart space.");
         }
-        long timed = (System.currentTimeMillis() - bench);
+        long timed = System.currentTimeMillis() - bench;
         return timed;
     }
 
@@ -336,6 +330,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         }
     }
 
+    @Override
     public void notifyAboutEvent(EventDistributor event) {
         if (event.getEvent() instanceof SemiAvailabilityEvent) {
             if (InternalQuery.class.getName().equals(event.getHolderClassName()) && space instanceof SemiSpace ) {
@@ -364,10 +359,11 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
             if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
                 pool.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
-                if (!pool.awaitTermination(60, TimeUnit.SECONDS))
+                if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
                     log.warn("Pool did not terminate");
+                }
             }
-        } catch (InterruptedException ie) {
+        } catch (InterruptedException ignored) {
             // (Re-)Cancel if current thread also interrupted
             pool.shutdownNow();
             // Preserve interrupt status

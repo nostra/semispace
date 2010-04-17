@@ -26,15 +26,15 @@
 
 package org.semispace.admin;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import org.semispace.SemiSpace;
+import org.semispace.SemiSpaceInterface;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import org.semispace.SemiSpace;
-import org.semispace.SemiSpaceInterface;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Harvest objects periodically if this instance of semispace is 
@@ -72,7 +72,7 @@ public class PeriodicHarvest {
                     
             }
         };
-        handle = scheduler.scheduleAtFixedRate(harvester, 120, 60, SECONDS);
+        handle = scheduler.scheduleAtFixedRate(harvester, 60, 15, SECONDS);
         
     }
     
