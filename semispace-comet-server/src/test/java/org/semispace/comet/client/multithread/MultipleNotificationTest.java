@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Trying to simulate simultaneous clients.
  */
-public class MultipleWriteTakeTest {
-    private static final Logger log = LoggerFactory.getLogger(MultipleWriteTakeTest.class);
-    private static final int NUMBER_OF_CLIENTS = 1;
+public class MultipleNotificationTest {
+    private static final Logger log = LoggerFactory.getLogger(MultipleNotificationTest.class);
+    private static final int NUMBER_OF_CLIENTS = 100;
 
     private SemiSpaceCometProxy space;
     private NotifyAndReadClient clients[];
@@ -63,12 +63,14 @@ public class MultipleWriteTakeTest {
         }
         JustATestElement jate = new JustATestElement();
         jate.setSomefield("This is some field");
-        
+
+        // Let listeners catch up
+        //Thread.sleep( 100 );
         space.write( jate, 36000);
-        Thread.sleep( 100 );
+        Thread.sleep( 1000 );
         for ( NotifyAndReadClient client : clients ) {
             Assert.assertEquals("Presuming to be able to get the same field that was written.", jate.getSomefield(), client.getReadField());
         }
-
+        Assert.assertNotNull( space.takeIfExists(jate));
     }
 }

@@ -162,7 +162,7 @@ public class NotificationMitigator implements SemiLease {
                 };
                 threadPool.submit(notify);
             } else {
-                log.warn("Unexpected channel "+message.getChannel());
+                //log.warn("Unexpected channel "+message.getChannel()+" - was expecting "+CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/");
             }
         }
 
@@ -210,7 +210,7 @@ public class NotificationMitigator implements SemiLease {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             } else {
-                log.warn("Unexpected channel "+message.getChannel());
+                //log.warn("Unexpected channel "+message.getChannel()+" Expected "+CometConstants.NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL+"/"+callId);
             }
         }
     }

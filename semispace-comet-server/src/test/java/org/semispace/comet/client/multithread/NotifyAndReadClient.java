@@ -44,8 +44,11 @@ public class NotifyAndReadClient implements SemiEventListener {
     }
 
     public void destroy() {
-        lease.getLease().cancel();
-        //space.destroy();        
+        if ( lease != null ) {
+            lease.getLease().cancel();
+            lease = null;
+        }
+        //space.destroy();
     }
 
     public void activate() {

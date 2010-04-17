@@ -110,7 +110,7 @@ public class ReadClient implements ReadOrTake {
                 }
                 latch.countDown();
             } else {
-                // TODO log.warn("Unexpected channel "+message.getChannel());
+                //log.warn("Unexpected channel "+message.getChannel()+" Expected: "+CometConstants.READ_REPLY_CHANNEL+"/"+callId);
             }
         }
         public Object getData() {

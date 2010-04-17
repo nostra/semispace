@@ -103,7 +103,7 @@ public class WriteClient {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             } else {
-                // TODO log.warn("Unexpected channel "+message.getChannel());
+                //log.warn("Unexpected channel "+message.getChannel()+" Expected: "+CometConstants.WRITE_REPLY_CHANNEL+"/"+callId);
             }
         }
     }

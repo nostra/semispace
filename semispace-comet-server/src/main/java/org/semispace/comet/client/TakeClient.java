@@ -115,7 +115,7 @@ public class TakeClient implements ReadOrTake {
                 }
                 latch.countDown();
             } else {
-                // TODO log.warn("Unexpected channel "+message.getChannel());
+                //log.warn("Unexpected channel "+message.getChannel()+" Expected: "+CometConstants.TAKE_REPLY_CHANNEL+"/"+callId);                
             }
         }
         public Object getData() {
