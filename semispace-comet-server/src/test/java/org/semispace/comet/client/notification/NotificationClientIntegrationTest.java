@@ -49,24 +49,26 @@ public class NotificationClientIntegrationTest {
     }
 
     @Test
-    public void testSimpleNotify() {
+    public void testSimpleNotify() throws InterruptedException {
         NotificationTestListener listener = new NotificationTestListener();
         SemiEventRegistration lease = space.notify(new FieldHolder(), listener, 1000);
-        FieldHolder fh = new FieldHolder();
-        fh.setFieldA("A");
-        fh.setFieldB("B");
-        space.write(fh, 900);
-        space.write(new FieldHolder(), 50);
-        space.write(new FieldHolder(), 50);
-        Assert.assertNotNull( space.read(fh, 900));
-        Assert.assertNotNull( space.take(fh, 900));
-        Assert.assertNull( "Just using some time in order to get space elements notified properly", space.take(fh, 200));
+        FieldHolder onlyOne = new FieldHolder();
+        onlyOne.setFieldA("A");
+        onlyOne.setFieldB("B");
+        space.write(onlyOne, 900);
+        space.write(new FieldHolder(), 50); // Any
+        space.write(new FieldHolder(), 50); // Any
+        Assert.assertNotNull( space.read(onlyOne, 900)); // Reading the one
+        Assert.assertNotNull( space.take(onlyOne, 900)); // Taking the one
+        Assert.assertNull( "Just using some time in order to get space elements notified properly", space.take(onlyOne, 300));
         Assert.assertEquals(3, listener.availability);
         Assert.assertEquals(1, listener.taken);
-        Assert.assertEquals(2, listener.expiration);
+        // Cannot test listener expiration, as it depends on the sequence of objects in the space, which now
+        // is unordered
+        // Assert.assertEquals("0, 1 or 2 objects tend to be expired.", 2, listener.expiration);
         Assert.assertEquals(0, listener.renewal);
 
-        Assert.assertNull( "Space should now be empty", space.read(fh, 50));
+        Assert.assertNull( "Space should now be empty", space.read(onlyOne, 50));
         lease.getLease().cancel();
     }
 
