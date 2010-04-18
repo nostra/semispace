@@ -27,7 +27,7 @@ All tools provided in this package are shipped unmodified and with there represe
 
     <!-- Load properties -->
     <loadfile property="local.file" srcFile="local.properties" failonerror="false"/>
-    <property file="local.properties" />
+    <!--property file="local.properties" /-->
     <property file="tools/build.properties" />
 
 
