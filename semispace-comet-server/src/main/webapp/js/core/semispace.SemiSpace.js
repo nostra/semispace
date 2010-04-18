@@ -24,7 +24,7 @@ semispace.SemiSpace = function(com){
 
     var version = '1.0.1';
     var cometd = com;
-    var channel = 0;
+    var incrementedChannel = 0;
 
     var responseHandler = function(message){
         var data;
@@ -45,18 +45,18 @@ semispace.SemiSpace = function(com){
         if(subscriptionReply){
             cometd.unsubscribe(subscriptionReply);
         }
-        subscriptionReply = cometd.subscribe('/semispace/reply/notify/' + channel + '/' + listener, responseHandler);
+        subscriptionReply = cometd.subscribe('/semispace/reply/notify/' + incrementedChannel + '/' + listener, responseHandler);
 
 
         if(subscriptionEvent){
             cometd.unsubscribe(subscriptionEvent);
         }
-        subscriptionEvent = cometd.subscribe('/semispace/event/notify/' + channel + '/' + listener, responseHandler);
+        subscriptionEvent = cometd.subscribe('/semispace/event/notify/' + incrementedChannel + '/' + listener, responseHandler);
 
 
-        cometd.publish('/semispace/call/notify/' + channel + '/' + listener, {duration: duration.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+        cometd.publish('/semispace/call/notify/' + incrementedChannel + '/' + listener, {duration: duration.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
 
-        channel++;
+        incrementedChannel++;
 
         return this;
     };
@@ -69,11 +69,11 @@ semispace.SemiSpace = function(com){
         if(subscription){
             cometd.unsubscribe(subscription);
         }
-        subscription = cometd.subscribe('/semispace/reply/read/' + channel, responseHandler);
+        subscription = cometd.subscribe('/semispace/reply/read/' + incrementedChannel, responseHandler);
 
-        cometd.publish('/semispace/call/read/' + channel, {duration: timeout.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+        cometd.publish('/semispace/call/read/' + incrementedChannel, {duration: timeout.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
 
-        channel++;
+        incrementedChannel++;
 
         return this;
     };
@@ -92,11 +92,11 @@ semispace.SemiSpace = function(com){
         if(subscription){
             cometd.unsubscribe(subscription);
         }
-        subscription = cometd.subscribe('/semispace/reply/write/' + channel, responseHandler);
+        subscription = cometd.subscribe('/semispace/reply/write/' + incrementedChannel, responseHandler);
 
-        cometd.publish('/semispace/call/write/' + channel, {timeToLiveMs: lifeTimeInMs.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}, semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder', json:obj});
+        cometd.publish('/semispace/call/write/' + incrementedChannel, {timeToLiveMs: lifeTimeInMs.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}, semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder', json:obj});
 
-        channel++;
+        incrementedChannel++;
 
         return this;
     };
@@ -109,11 +109,11 @@ semispace.SemiSpace = function(com){
         if(subscription){
             cometd.unsubscribe(subscription);
         }
-        subscription = cometd.subscribe('/semispace/reply/take/' + channel, responseHandler);
+        subscription = cometd.subscribe('/semispace/reply/take/' + incrementedChannel, responseHandler);
 
-        cometd.publish('/semispace/call/take/' + channel, {duration: timeout.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+        cometd.publish('/semispace/call/take/' + incrementedChannel, {duration: timeout.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
 
-        channel++;
+        incrementedChannel++;
 
         return this;
     };
