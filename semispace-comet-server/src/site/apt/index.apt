@@ -48,7 +48,7 @@ Communication channel overview
  this number must be different for the two operation. The easiest is to have a client
  side sequence number, which is just incremented for each call.
 
- [Notification type] The type is one of <<<available>>>, <<<expired>>>, <<<taken>>>, <<<renewal>>> and
+ [Notification type] The type is one of <<<availability>>>, <<<expiration>>>, <<<taken>>>, <<<renewal>>> and
  <<<all>>>. The Java client only uses <all>, and the proxy will translate this into the correct response
  object. This is as the Java client does not know in beforehand what kind of notification that is registered.
 
