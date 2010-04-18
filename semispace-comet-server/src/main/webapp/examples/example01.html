@@ -73,12 +73,17 @@
             logger('log', msg);
         };
 
+
+
         // Where the server is
         var server = location.protocol + '//' + location.host + '/semispace-comet-server/cometd';
 
         // Get DOJO cometd library
         dojo.require("dojox.cometd");
         var com = dojox.cometd;
+
+        var jsonString = JSON.stringify({"org_semispace_comet_demo_FieldHolder":{"firstName":"John","lastName":"Doe"}});
+        // var jsonString = JSON.stringify({"firstName":"John","lastName":"Doe"});
 
         var myApp;
         var semiApp;
@@ -99,20 +104,33 @@
 
 
         var wrte = function(){
-            var jsonString = JSON.stringify({"org_semispace_comet_demo_FieldHolder":{"fieldA":"InsertServlet","fieldB":"js side ho ho"}});
-            semiApp.write(jsonString, '6000');
+            semiApp.write(jsonString, 60000);
         };
+
         var read = function(){
-            semiApp.read(null, '6000');
+            semiApp.read(null, 60000);
+        };
+
+        var readIfExists = function(){
+            semiApp.readIfExists(null);
         };
 
         var take = function(){
-            semiApp.take(null, '6000');
+            semiApp.take(null, 60000);
+        };
+
+        var takeIfExists = function(){
+            semiApp.takeIfExists(null);
         };
 
         var notify = function(){
-            semiApp.notify(null, null, '6000');
+            semiApp.notify(null, 'availability', 60000);
         };
+
+        var chaining = function(){
+            semiApp.read(null, 60000).write(jsonString, 60000);
+        };
+
 
         var batch = function(){
             /*
@@ -126,20 +144,17 @@
     </script>
 </head>
 <body onload="init();">
-    <h1>Example 04</h1>
-    <p>
-        This example tests the different messages which goes over the Comet meta channel. Please try to take the server
-        up and down to see the effect.
-    </p>
+    <h1>SemiSpace CometD - Example 01</h1>
     <div id="result">
         <a href="javascript:;" onclick="start();">Connect to server</a> |
         <a href="javascript:;" onclick="stop();">Disconnect from server</a> |
         <a href="javascript:;" onclick="wrte();">Write</a> |
         <a href="javascript:;" onclick="read();">Read</a> |
+        <a href="javascript:;" onclick="readIfExists();">Read If Exists</a> |
         <a href="javascript:;" onclick="take();">Take</a> |
+        <a href="javascript:;" onclick="takeIfExists();">Take If Exists</a> |
         <a href="javascript:;" onclick="notify();">Notify</a> |
-        <a href="javascript:;" onclick="batch();">testBatch</a> |
-
+        <a href="javascript:;" onclick="chaining();">Chaining</a>
     </div>
     <div id="log"> </div>
 </body>

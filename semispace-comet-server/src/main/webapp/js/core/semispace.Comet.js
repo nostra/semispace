@@ -19,11 +19,11 @@
 semispace.Comet = function(connector, server){
 
     // TODO: Introduce json config
+    var version = '1.0.1';
     var cometd = connector;
     var connected = false;
     var metaListener = undefined;
 
-    
     var defaultOnConnect = function(){
         // TODO: set some defaults when connection to server
     };
@@ -88,8 +88,9 @@ semispace.Comet = function(connector, server){
 
 
     this.disconnect = function(){
-        // TODO: Clean out all listeners when disconnecting
+        // TODO: Clean out all listeners when disconnecting - removeListener()
         // TODO: Add option for keeping connection when page reloads - see cometd doc!
+
         cometd.disconnect();
         connected = false;
     };

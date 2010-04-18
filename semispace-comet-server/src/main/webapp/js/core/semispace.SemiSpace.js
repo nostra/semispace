@@ -15,39 +15,50 @@
  */
 
 semispace.SemiSpace = function(com){
-//    semispace.util.intface.implement(this,SemiSpaceInterface);
-    // Dummy at this point - Testing interface
 
-    // TODO: if time is number, call against space throws exception serverside. Add support for string convertion
+    // TODO: Plan how to handle semispaceObjectTypeKey in a nice way for json objects
+    // TODO: Add leasecancel on notify
+    // TODO: Add check on all input metod parameters to see if they have values - Maby add defaults (time???)
+    // TODO: Add check to see if there is a connection to the server
+    // TODO: Add handling of callbacks
 
-
+    var version = '1.0.1';
     var cometd = com;
     var channel = 0;
+
+    var responseHandler = function(message){
+        var data;
+        if(message && message.data && message.data.result){
+            data =  message.data.result;
+            alert('Response - Data is: ' + data);
+        } else {
+            // data = "No response from server";
+        }
+    };
 
 
     this.notify = function(template, listener, duration){
 
-        var subscription = undefined;
+        var subscriptionReply = undefined;
+        var subscriptionEvent = undefined;
 
-        if(subscription){
-            cometd.unsubscribe(subscription);
+        if(subscriptionReply){
+            cometd.unsubscribe(subscriptionReply);
         }
+        subscriptionReply = cometd.subscribe('/semispace/reply/notify/' + channel + '/' + listener, responseHandler);
 
-        subscription = cometd.subscribe('/semispace/reply/notify/' + channel, function(message){
-            var data;
-            if(message && message.data && message.data.result){
-                data =  message.data.result;
-            } else {
-                data = "No response from server";
-            }
-            alert('Notify performed - Data is: ' + data);
-        });
 
-        // NB: semispaceObjectTypeKey er det vi skriver og tar et objekt på
-        cometd.publish('/semispace/call/notify/' + channel, {duration: duration, searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+        if(subscriptionEvent){
+            cometd.unsubscribe(subscriptionEvent);
+        }
+        subscriptionEvent = cometd.subscribe('/semispace/event/notify/' + channel + '/' + listener, responseHandler);
+
+
+        cometd.publish('/semispace/call/notify/' + channel + '/' + listener, {duration: duration.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
 
         channel++;
 
+        return this;
     };
 
 
@@ -58,27 +69,19 @@ semispace.SemiSpace = function(com){
         if(subscription){
             cometd.unsubscribe(subscription);
         }
+        subscription = cometd.subscribe('/semispace/reply/read/' + channel, responseHandler);
 
-        subscription = cometd.subscribe('/semispace/reply/read/' + channel, function(message){
-            var data;
-            if(message && message.data && message.data.result){
-                data =  message.data.result;
-            } else {
-                data = "No response from server";
-            }
-            alert('Read performed - Data is: ' + data);
-        });
-
-        // NB: semispaceObjectTypeKey er det vi skriver og tar et objekt på
-        cometd.publish('/semispace/call/read/' + channel, {duration: timeout, searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+        cometd.publish('/semispace/call/read/' + channel, {duration: timeout.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
 
         channel++;
 
+        return this;
     };
 
 
-    this.readIfExists = function(){
-
+    this.readIfExists = function(template){
+        this.read(template, 0);
+        return this;
     };
 
 
@@ -89,21 +92,13 @@ semispace.SemiSpace = function(com){
         if(subscription){
             cometd.unsubscribe(subscription);
         }
+        subscription = cometd.subscribe('/semispace/reply/write/' + channel, responseHandler);
 
-        subscription = cometd.subscribe('/semispace/reply/write/' + channel, function(message){
-            var data;
-            if(message && message.data && message.data.result){
-                data =  message.data.result;
-            } else {
-                data = "No response from server";
-            }
-
-        });
-
-        cometd.publish('/semispace/call/write/' + channel, {timeToLiveMs: lifeTimeInMs, searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}, semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder', json:obj});
+        cometd.publish('/semispace/call/write/' + channel, {timeToLiveMs: lifeTimeInMs.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}, semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder', json:obj});
 
         channel++;
 
+        return this;
     };
 
 
@@ -114,26 +109,19 @@ semispace.SemiSpace = function(com){
         if(subscription){
             cometd.unsubscribe(subscription);
         }
+        subscription = cometd.subscribe('/semispace/reply/take/' + channel, responseHandler);
 
-        subscription = cometd.subscribe('/semispace/reply/take/' + channel, function(message){
-            var data;
-            if(message && message.data && message.data.result){
-                data =  message.data.result;
-            } else {
-                data = "No response from server";
-            }
-            alert('Take performed - Data is: ' + data);
-        });
-
-        // NB: semispaceObjectTypeKey er det vi skriver og tar et objekt på
-        cometd.publish('/semispace/call/take/' + channel, {duration: timeout, searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+        cometd.publish('/semispace/call/take/' + channel, {duration: timeout.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
 
         channel++;
 
+        return this;
     };
 
-    this.takeIfExists = function(){
 
+    this.takeIfExists = function(template){
+        this.take(template, 0);
+        return this;
     };
 
 };
