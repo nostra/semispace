@@ -95,7 +95,6 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, timeToLiveMs);
 
         Map<String, Object> param = new HashMap<String, Object>();
-        param.put("searchMap", holder.getSearchMap());
         param.put("timeToLiveMs",""+timeToLiveMs);
         param.put(CometConstants.PAYLOAD_MARKER, Xml2Json.transform(xml));
 
