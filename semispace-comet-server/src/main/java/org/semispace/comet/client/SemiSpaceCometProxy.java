@@ -29,15 +29,10 @@ import org.semispace.SemiSpaceInterface;
 import org.semispace.comet.common.CometConstants;
 import org.semispace.comet.common.Json2Xml;
 import org.semispace.comet.common.Xml2Json;
+import org.semispace.comet.common.XmlManipulation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -96,15 +91,13 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
      */
     @Override
     public SemiLease write(Object obj, long timeToLiveMs) {
-        // TODO Use different method for extracting properties.
         final String xml = toXML(obj);
-        Holder holder = retrievePropertiesFromXml(xml, timeToLiveMs);
+        Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, timeToLiveMs);
 
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("searchMap", holder.getSearchMap());
         param.put("timeToLiveMs",""+timeToLiveMs);
         param.put(CometConstants.PAYLOAD_MARKER, Xml2Json.transform(xml));
-        param.put(CometConstants.OBJECT_TYPE_KEY, holder.getClassName());
 
         WriteClient write = new WriteClient(myCallCounter.getAndIncrement());
         try {
@@ -140,7 +133,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
             }
 
             // TODO Use different method for extracting properties.
-            Holder holder = retrievePropertiesFromXml(toXML(template), duration);
+            Holder holder = XmlManipulation.retrievePropertiesFromXml(toXML(template), duration);
 
             Map<String, Object> param = new HashMap<String, Object>();
             param.put("searchMap", holder.getSearchMap());
@@ -171,47 +164,6 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         return take( template, 0);  
     }
 
-    /**
-     * TODO Presently duplicated from WsSpaceImpl
-     * Protected for the benefit of junit test(s)
-     * @return A <b>temporary</b> holder object containing the relevant elements found in the source.
-     */
-    protected Holder retrievePropertiesFromXml(String xmlsource, long duration) {
-        // InputStream is = new StringConverterBufferedInputStream( new FileInputStream( tmpfile ) );
-        InputSource is = new InputSource( new StringReader(xmlsource));
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-        Document doc = null;
-        try {
-            doc = factory.newDocumentBuilder().parse( is );
-        } catch (Exception e) {
-            log.error("Returning null, due to exception parsing xml: "+xmlsource, e);
-            return null;
-        }
-        String doctype = doc.getDocumentElement().getNodeName();
-
-        Map<String, String> map = new HashMap<String, String>();
-
-        NodeList children = doc.getDocumentElement().getChildNodes();
-        for ( int i=0 ; i < children.getLength() ; i++) {
-            Node node = children.item( i );
-            //log.info("Got node "+node.getNodeName()+" which contains "+node.getNodeValue());
-
-            if ( node.getNodeType() == Node.ELEMENT_NODE && node.getChildNodes().getLength() > 0) {
-                String name = node.getNodeName();
-                String value = node.getChildNodes().item(0).getNodeValue();
-                //log.info("This is an element node with "+node.getChildNodes().getLength()+" children which is "+value);
-                if( value != null ) {
-                    map.put(name,value);
-                }
-            }
-        }
-        map.put(CometConstants.OBJECT_TYPE_KEY, doctype);
-
-        Holder holder = new Holder(xmlsource, duration, doctype, -1, map );
-        return holder;
-    }
-
 
     /**
      * @return The resulting lease, or null if lease were not obtained
@@ -220,7 +172,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     public SemiEventRegistration notify(Object template, SemiEventListener listener, long duration) {
         // TODO Use different method for extracting properties.
         final String xml = toXML(template);
-        Holder holder = retrievePropertiesFromXml(xml, duration);
+        Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, duration);
 
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("searchMap", holder.getSearchMap());

@@ -20,10 +20,12 @@ import org.cometd.Bayeux;
 import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.server.BayeuxService;
+import org.semispace.Holder;
 import org.semispace.SemiLease;
 import org.semispace.SemiSpace;
 import org.semispace.comet.common.CometConstants;
 import org.semispace.comet.common.Json2Xml;
+import org.semispace.comet.common.XmlManipulation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,17 +47,20 @@ public class WriteService extends BayeuxService {
 
     public void semispaceWrite(Client remote, Message message) {
         final Map<String, Object> data = (Map<String, Object>) message.getData();
-        // TODO Remove use of searchmap - generate it.
-        final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap"); // TODO Create searchmap server side
+
         final Long timeToLiveMs = Long.valueOf(""+data.get("timeToLiveMs")); // TODO Change to duration
         final String json = (String) data.get(CometConstants.PAYLOAD_MARKER); // TODO Change name to payload
         final String xml = Json2Xml.transform(json);
-        final String className = (String) data.get(CometConstants.OBJECT_TYPE_KEY); // TODO Need to check and fix where the OBJECT_TYPE_KEY is retrieved from. Something is a bit fishy in the use. 
-        searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
-        log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" class "+className+" xml:\n"+xml);
+        Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, timeToLiveMs);
+        holder.getSearchMap().put("class", holder.getSearchMap().get(CometConstants.OBJECT_TYPE_KEY));
+                        
+        log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" class "+holder.getClassName()+" xml:\n"+xml);
+        log.trace("Holder searchmap: "+holder.getSearchMap());
+        log.trace("Parameter searchmap: "+data.get("searchMap"));
+
 
         // Not putting this operation into separate thread, as it is expected to perform reasonably quickly
-        SemiLease lease = space.writeToElements(className, timeToLiveMs.longValue(), xml, searchMap);
+        SemiLease lease = space.writeToElements(holder.getClassName(), timeToLiveMs.longValue(), xml, holder.getSearchMap());
 
         Map<String, String> output = new HashMap<String, String>();
         if ( lease != null ) {
