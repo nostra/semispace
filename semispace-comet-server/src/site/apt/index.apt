@@ -68,19 +68,15 @@ Parameter overview
 || Operation               || Parameter || Significance ||
 *--------------------------+--------------------+---+
 | read                     | duration  | How long to wait for an object if it is not in the space. |
-|                          | searchMap | First level elements to match. (I.e. in a person object with firstname, lastname, it would be firstname=xxx)|
-|                          | semispaceObjectTypeKey | Identifier of "object" type. It can be anything in a strictly JSON setting. In a mixed (Java) setting, it is the full Java package type with underscore for dots. |
+|                          | json      | Payload to match. First level is object type, the second level are elements to match. (I.e. in a person object with firstname, lastname, it would be firstname=xxx). You cannot have 2 levels.|
 *--------------------------+--------------------+---+
 |  take                    |  ... | Same parameters as read |
 *--------------------------+--------------------+---+
-| write                    | searchMap | What that is matched in a search. TODO Shall be moved to server side extraction. |
-|                          | timeToLiveMs | How long the object shall live in the space TODO Shall change to duration |
-|                          | json | Payload. This is the String representation of the client side JSON object. TODO Shall change to duration |
-|                          | semispaceObjectTypeKey | Same as for read. |
+| write                    | timeToLiveMs | How long the object shall live in the space TODO Shall change to duration |
+|                          | json | Payload. This is the String representation of the client side JSON object.
 *--------------------------+--------------------+---+
 |  notify                  | duration  | How long the notification registration shall exist. |
-|                          | searchMap | As for read |
-|                          | semispaceObjectTypeKey | As for read |
+|                          | json | As for read |
 *--------------------------+--------------------+---+
 | lease cancel             | callId | The caller id the notification lease is registered to. |
 *--------------------------+--------------------+---+
