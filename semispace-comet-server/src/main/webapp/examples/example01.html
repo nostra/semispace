@@ -82,8 +82,9 @@
         dojo.require("dojox.cometd");
         var com = dojox.cometd;
 
-        var jsonString = JSON.stringify({"org_semispace_comet_demo_FieldHolder":{"firstName":"John","lastName":"Doe"}});
-        // var jsonString = JSON.stringify({"firstName":"John","lastName":"Doe"});
+        var jsonString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
+        var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
+
 
         var myApp;
         var semiApp;
@@ -108,27 +109,27 @@
         };
 
         var read = function(){
-            semiApp.read(null, 60000);
+            semiApp.read(jsonTemplate, 60000);
         };
 
         var readIfExists = function(){
-            semiApp.readIfExists(null);
+            semiApp.readIfExists(jsonTemplate);
         };
 
         var take = function(){
-            semiApp.take(null, 60000);
+            semiApp.take(jsonTemplate, 60000);
         };
 
         var takeIfExists = function(){
-            semiApp.takeIfExists(null);
+            semiApp.takeIfExists(jsonTemplate);
         };
 
         var notify = function(){
-            semiApp.notify(null, 'availability', 60000);
+            semiApp.notify(jsonTemplate, 'availability', 60000);
         };
 
         var chaining = function(){
-            semiApp.read(null, 60000).write(jsonString, 60000);
+            semiApp.read(jsonTemplate, 60000).write(jsonString, 60000);
         };
 
 

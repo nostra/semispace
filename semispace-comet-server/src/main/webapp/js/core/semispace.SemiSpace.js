@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2010 Trygve Lie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *
+ *
+ * @fileOverview    SemiSpace JavaScript Client
+ *
+ * @version         1.0.1
+ *
+ * @description
+ * Some description...
+ *
+ * @constructor
+ *
+ * @param   com     {Object}    Comet connection to work on
  */
-
 semispace.SemiSpace = function(com){
 
-    // TODO: Plan how to handle semispaceObjectTypeKey in a nice way for json objects
     // TODO: Add leasecancel on notify
     // TODO: Add check on all input metod parameters to see if they have values - Maby add defaults (time???)
     // TODO: Add check to see if there is a connection to the server
     // TODO: Add handling of callbacks
 
-    var version = '1.0.1';
     var cometd = com;
     var incrementedChannel = 0;
 
@@ -33,7 +43,9 @@ semispace.SemiSpace = function(com){
             alert('Response - Data is: ' + data);
         } else {
             // data = "No response from server";
+            // TODO: Notify will not match on the above if - add handling of notify
         }
+
     };
 
 
@@ -53,8 +65,7 @@ semispace.SemiSpace = function(com){
         }
         subscriptionEvent = cometd.subscribe('/semispace/event/notify/' + incrementedChannel + '/' + listener, responseHandler);
 
-
-        cometd.publish('/semispace/call/notify/' + incrementedChannel + '/' + listener, {duration: duration.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+        cometd.publish('/semispace/call/notify/' + incrementedChannel + '/' + listener, {duration: duration.toString(), json: template});
 
         incrementedChannel++;
 
@@ -71,7 +82,7 @@ semispace.SemiSpace = function(com){
         }
         subscription = cometd.subscribe('/semispace/reply/read/' + incrementedChannel, responseHandler);
 
-        cometd.publish('/semispace/call/read/' + incrementedChannel, {duration: timeout.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+        cometd.publish('/semispace/call/read/' + incrementedChannel, {duration: timeout.toString(), json: template});
 
         incrementedChannel++;
 
@@ -94,7 +105,7 @@ semispace.SemiSpace = function(com){
         }
         subscription = cometd.subscribe('/semispace/reply/write/' + incrementedChannel, responseHandler);
 
-        cometd.publish('/semispace/call/write/' + incrementedChannel, {timeToLiveMs: lifeTimeInMs.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}, semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder', json:obj});
+        cometd.publish('/semispace/call/write/' + incrementedChannel, {timeToLiveMs: lifeTimeInMs.toString(), json:obj});
 
         incrementedChannel++;
 
@@ -111,7 +122,7 @@ semispace.SemiSpace = function(com){
         }
         subscription = cometd.subscribe('/semispace/reply/take/' + incrementedChannel, responseHandler);
 
-        cometd.publish('/semispace/call/take/' + incrementedChannel, {duration: timeout.toString(), searchMap: {semispaceObjectTypeKey: 'org.semispace.comet.demo.FieldHolder'}});
+        cometd.publish('/semispace/call/take/' + incrementedChannel, {duration: timeout.toString(), json: template});
 
         incrementedChannel++;
 

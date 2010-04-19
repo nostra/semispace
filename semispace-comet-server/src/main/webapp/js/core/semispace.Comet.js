@@ -19,7 +19,6 @@
 semispace.Comet = function(connector, server){
 
     // TODO: Introduce json config
-    var version = '1.0.1';
     var cometd = connector;
     var connected = false;
     var metaListener = undefined;
