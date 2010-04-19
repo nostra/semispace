@@ -130,12 +130,9 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
             } else {
                 readOrTake = new ReadClient( myCallCounter.getAndIncrement());
             }
-
-            // TODO Use different method for extracting properties.
-            Holder holder = XmlManipulation.retrievePropertiesFromXml(toXML(template), duration);
-
+            final String xml = toXML(template);
             Map<String, Object> param = new HashMap<String, Object>();
-            param.put("searchMap", holder.getSearchMap());
+            param.put(CometConstants.PAYLOAD_MARKER, Xml2Json.transform(xml));
             param.put("duration", ""+duration);
             String json = readOrTake.doReadOrTake(client, param, duration );
             if ( json != null ) {

@@ -20,9 +20,12 @@ import org.cometd.Bayeux;
 import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.server.BayeuxService;
+import org.semispace.Holder;
 import org.semispace.SemiSpace;
 import org.semispace.comet.common.CometConstants;
+import org.semispace.comet.common.Json2Xml;
 import org.semispace.comet.common.Xml2Json;
+import org.semispace.comet.common.XmlManipulation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,14 +53,17 @@ public class ReadService extends BayeuxService {
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();
         final Long duration = Long.valueOf((String) data.get("duration"));
-        final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
+        final String json = (String) data.get(CometConstants.PAYLOAD_MARKER); // TODO Change name to payload
+        final String xml = Json2Xml.transform(json);
+        final Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, duration);
+
         final String outChannel = message.getChannel().replace("/call/", "/reply/");
-        searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
+        holder.getSearchMap().put("class", holder.getSearchMap().get(CometConstants.OBJECT_TYPE_KEY));
 
         Runnable queryResult = new Runnable() {
             @Override
             public void run() {
-                String xml = space.findOrWaitLeaseForTemplate(searchMap, duration.longValue(), false);
+                String xml = space.findOrWaitLeaseForTemplate(holder.getSearchMap(), duration.longValue(), false);
                 // log.debug("Did "+(result == null?"NOT":"")+" get a result: "+result);
 
                 Map<String, String> output = new HashMap<String, String>();
