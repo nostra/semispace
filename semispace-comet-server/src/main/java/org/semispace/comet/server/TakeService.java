@@ -58,7 +58,6 @@ public class TakeService extends BayeuxService {
         final Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, duration);
 
         final String outChannel = message.getChannel().replace("/call/", "/reply/");
-        holder.getSearchMap().put("class", holder.getSearchMap().get(CometConstants.OBJECT_TYPE_KEY));
 
         Runnable takeResult = new Runnable() {
             @Override

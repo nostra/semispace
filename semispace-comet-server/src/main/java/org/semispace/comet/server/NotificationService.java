@@ -20,9 +20,12 @@ import org.cometd.Bayeux;
 import org.cometd.Client;
 import org.cometd.Message;
 import org.cometd.server.BayeuxService;
+import org.semispace.Holder;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiSpace;
 import org.semispace.comet.common.CometConstants;
+import org.semispace.comet.common.Json2Xml;
+import org.semispace.comet.common.XmlManipulation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,16 +50,19 @@ public class NotificationService extends BayeuxService {
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();
         final Long duration = Long.valueOf((String) data.get("duration"));
-        final Map<String, String> searchMap = (Map<String, String>) data.get("searchMap");
+        final String json = (String) data.get(CometConstants.PAYLOAD_MARKER); // TODO Change name to payload
+        final String xml = Json2Xml.transform(json);
+        final Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, duration);
+
         final String outChannel = message.getChannel().replace("/call/", "/reply/");
-        searchMap.put("class", searchMap.remove(CometConstants.OBJECT_TYPE_KEY));
+
         // TODO Move method into listener.
         String listenerType = createListenerType(outChannel);
         String callId = createCallId( outChannel, listenerType);
         log.trace("------- Constructed type: "+listenerType+", callId: "+callId+" out of "+outChannel);
 
         SemiSpaceCometListener listener = new SemiSpaceCometListener(listenerType, callId, remote, this);
-        SemiEventRegistration lease = space.notify(searchMap, listener, duration.longValue());
+        SemiEventRegistration lease = space.notify(holder.getSearchMap(), listener, duration.longValue());
         Map<String, String> output = new HashMap<String, String>();
         output.put( "duration", ""+duration);
         if ( lease != null ) {

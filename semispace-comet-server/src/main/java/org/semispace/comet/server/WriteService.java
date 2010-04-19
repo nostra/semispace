@@ -52,7 +52,6 @@ public class WriteService extends BayeuxService {
         final String json = (String) data.get(CometConstants.PAYLOAD_MARKER); // TODO Change name to payload
         final String xml = Json2Xml.transform(json);
         Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, timeToLiveMs);
-        holder.getSearchMap().put("class", holder.getSearchMap().get(CometConstants.OBJECT_TYPE_KEY));
                         
         log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" class "+holder.getClassName()+" xml:\n"+xml);
 

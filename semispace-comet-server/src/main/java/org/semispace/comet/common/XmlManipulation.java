@@ -69,7 +69,7 @@ public class XmlManipulation {
                 }
             }
         }
-        map.put(CometConstants.OBJECT_TYPE_KEY, doctype);
+        map.put("class", doctype);
 
         Holder holder = new Holder(xmlsource, duration, doctype, -1, map );
         return holder;
