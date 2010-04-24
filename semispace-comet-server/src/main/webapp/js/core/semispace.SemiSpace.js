@@ -28,7 +28,8 @@
  */
 semispace.SemiSpace = function(com){
 
-    // TODO: Add leasecancel on notify
+    // TODO: Test leasecancel
+    // TODO: Handle callback better on notify and leasecancel 
     // TODO: Add check on all input metod parameters to see if they have values - Maby add defaults (time???)
     // TODO: Add check to see if there is a connection to the server
 
@@ -45,8 +46,6 @@ semispace.SemiSpace = function(com){
 
 
     this.notify = function(template, listener, duration, callback){
-
-        // TODO: leasecancel -> return "leasecancel" on creation of notify, then user can be stored at creator and later be fired to cancel
 
         var subscriptionReply = undefined;
         var subscriptionEvent = undefined;
