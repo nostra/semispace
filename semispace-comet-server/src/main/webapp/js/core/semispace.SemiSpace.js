@@ -26,18 +26,19 @@
  *
  * @param   com     {Object}    Comet connection to work on
  */
-semispace.SemiSpace = function(com){
+semispace.SemiSpace = function(connection){
 
     // TODO: Test leasecancel
     // TODO: Handle callback better on notify and leasecancel 
     // TODO: Add check on all input metod parameters to see if they have values - Maby add defaults (time???)
     // TODO: Add check to see if there is a connection to the server
 
-    var cometd = com;
+    var cometd = connection;
     var incrementedChannel = 0;
 
     var callbackHandler = function(message, callback){
-        var data = null;
+        // TODO: Handle "undefined" - If no callback is added by the implementor
+        var data = undefined;
         if(message && message.data && message.data.result){
             data =  message.data.result;
         }
