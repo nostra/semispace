@@ -48,4 +48,16 @@ public class Json2XmlTest {
         Assert.assertEquals(ah.fieldA, trans.fieldA);
         Assert.assertEquals(ah.fieldB, trans.fieldB);
     }
+
+    @Test
+    public void testPotentialArrayConversionTrouble() {
+        String originalJson = "{\"page\" : {\"locks\" : [{\"id\" : \"edit1\",\"user\" : \"Trygve\"}]}}";
+
+        String xml = Json2Xml.transform(originalJson);
+        log.debug("Json transformed into xml:\n"+xml+"\n");
+        String toJson = Xml2Json.transform(xml);
+        log.debug("Xml transformed back into originalJson:\n"+toJson);
+        // TODO This test fails Assert.assertEquals(originalJson, toJson);
+    }
+
 }
