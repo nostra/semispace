@@ -37,6 +37,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Exchanging dots in package names with underscore (_) - which again
@@ -51,7 +52,7 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
     private final MappedNamespaceConvention convention;
 
     public SemiSpaceJettisonDriver() {
-        final HashMap nstjsons = new HashMap();
+        final Map nstjsons = new HashMap();
         final Configuration config = new Configuration(nstjsons);
         mof = new MappedXMLOutputFactory(config);
         mif = new MappedXMLInputFactory(config);
