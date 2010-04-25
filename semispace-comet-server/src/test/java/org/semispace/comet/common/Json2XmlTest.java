@@ -24,6 +24,9 @@ import org.semispace.comet.client.AlternateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Testing json to xml conversion
  */
@@ -31,7 +34,7 @@ public class Json2XmlTest {
     private static final Logger log = LoggerFactory.getLogger(Json2XmlTest.class);
     @Test
     public void testTransform() {
-        XStream jsonstream = new XStream(new JettisonMappedXmlDriver());
+        XStream jsonstream = new XStream(new SemiSpaceJettisonDriver());
         jsonstream.setMode(XStream.NO_REFERENCES);
         AlternateHolder ah = new AlternateHolder();
         ah.fieldA = "a";
@@ -42,7 +45,6 @@ public class Json2XmlTest {
         log.debug("Got xml:\n"+xml);
 
         XStream xstream = new XStream();
-        //log.debug("XStream would like something similar to:\n"+xstream.toXML(ah));
 
         AlternateHolder trans = (AlternateHolder) xstream.fromXML(xml);
         Assert.assertEquals(ah.fieldA, trans.fieldA);
@@ -59,21 +61,23 @@ public class Json2XmlTest {
         log.debug("Xml transformed back into originalJson:\n"+toJson);
         // TODO This test fails
         //Assert.assertEquals(originalJson, toJson);
+        Assert.assertTrue("When this test fails, an error has been corrected", !originalJson.equals(toJson));
     }
 
 
     @Test
     public void testArrayProblemWithJavaObjects() {
-        XStream jsonstream = new XStream(new JettisonMappedXmlDriver());
+        XStream jsonstream = new XStream(new SemiSpaceJettisonDriver());
         jsonstream.setMode(XStream.NO_REFERENCES);
-        PageLock locks[] = new PageLock[1];
-        locks[0] = new PageLock();
-        locks[0].setId("edit1");
-        locks[0].setUser("Erlend");
+        List<PageLock> locks = new ArrayList<PageLock>();
+        PageLock lock = new PageLock();
+        lock.setId("edit1");
+        lock.setUser("Erlend");
+        locks.add( lock );
         Page page = new Page();
         page.setLocks(locks);
 
-        String json = jsonstream.toXML(page).replace(".","_");
+        String json = jsonstream.toXML(page);
         log.debug("Got json:\n"+json);
         String xml = Json2Xml.transform(json);
         log.debug("Got xml:\n"+xml);
@@ -82,15 +86,35 @@ public class Json2XmlTest {
         log.debug("Xml converted back to json: "+xmlBack2Json);
 
         // TODO The following fails
-/*
-        Assert.assertEquals(json, xmlBack2Json);
+        //Assert.assertEquals(json, xmlBack2Json);
+        Assert.assertTrue("When this test fails, an error has been corrected", !json.equals(xmlBack2Json));
 
         XStream xstream = new XStream();
         Page trans = (Page) xstream.fromXML(xml);
-        Assert.assertEquals(1, trans.getLocks().length);
-        Assert.assertEquals(locks[0].getId(), trans.getLocks()[0].getId());
-        Assert.assertEquals(locks[0].getUser(), trans.getLocks()[0].getUser());
-        */
+        Assert.assertEquals(1, trans.getLocks().size());
+        Assert.assertEquals(locks.get(0).getId(), trans.getLocks().get(0).getId());
+        Assert.assertEquals(locks.get(0).getUser(), trans.getLocks().get(0).getUser());
+    }
+
+
+    @Test
+    public void testDifferenceBetweenDrivers() {
+        XStream semispaceDriver = new XStream(new SemiSpaceJettisonDriver());
+        XStream jettisonDriver = new XStream(new JettisonMappedXmlDriver());
+        jettisonDriver.setMode(XStream.NO_REFERENCES);
+        List<PageLock> locks = new ArrayList<PageLock>();
+        PageLock lock = new PageLock();
+        lock = new PageLock();
+        lock.setId("edit1");
+        lock.setUser("Erlend");
+        Page page = new Page();
+        page.setLocks(locks);
+
+        String semispaceJson = semispaceDriver.toXML(page);
+        String jettisonJson = jettisonDriver.toXML(page).replace(".","_");
+        log.debug("Produced JSON:\n"+semispaceJson);
+        Assert.assertEquals("SemiSpace jettison driver shall behave identically to the JettisonMappedXmlDriver with the exception of .-treatment.",
+                jettisonJson, semispaceJson);
     }
 
 

@@ -16,17 +16,19 @@
 
 package org.semispace.comet.common;
 
+import java.util.List;
+
 /**
  * Example holder
  */
 public class Page {
-    private PageLock locks[];
+    private List<PageLock> locks;
 
-    public PageLock[] getLocks() {
+    public List<PageLock> getLocks() {
         return locks;
     }
 
-    public void setLocks(PageLock[] locks) {
+    public void setLocks(List<PageLock> locks) {
         this.locks = locks;
     }
 }
