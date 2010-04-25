@@ -578,6 +578,6 @@
         <module>semispace-persistence</module>
         <module>semispace-tutorials</module>
         <module>semispace-tim</module>
-        <module>semispace-comet-server</module>
+        <!-- Temporarily commented out: module>semispace-comet-server</module -->
   </modules>
 </project>
