@@ -4,11 +4,11 @@
     <parent>
         <artifactId>semispace</artifactId>
         <groupId>org.semispace</groupId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>1.1.1</version>
     </parent>
     <groupId>org.semispace</groupId>
     <artifactId>semispace-tim</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1</version>
     <name>semispace-tim</name>
     <description>Terracotta integration module for semispace</description>
     <!--
