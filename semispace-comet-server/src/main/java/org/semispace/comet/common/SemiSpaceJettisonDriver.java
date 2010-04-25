@@ -22,6 +22,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.ReaderWrapper;
 import com.thoughtworks.xstream.io.StreamException;
 import com.thoughtworks.xstream.io.WriterWrapper;
+import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.json.JettisonStaxWriter;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxReader;
@@ -44,7 +45,7 @@ import java.util.Map;
  * is transformed by XStream into double underscores (__)
  *
  * Code adapted from com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver
- * @see com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver
+ * @see JettisonMappedXmlDriver
  */
 public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
     private final MappedXMLOutputFactory mof;
@@ -59,13 +60,15 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
         convention = new MappedNamespaceConvention(config);
     }
 
+    @Override
     public HierarchicalStreamReader createReader(final Reader reader) {
         try {
             return new ReaderWrapper(
                 new StaxReader(new QNameMap(), mif.createXMLStreamReader(reader),
                         new XmlFriendlyReplacer("$","_"))) {
+                    @Override
                     public String getNodeName() {
-                        return wrapped.getNodeName().replace('_', '.');
+                        return super.getNodeName().replace('_', '.');
                     }
                 };
         } catch (final XMLStreamException e) {
@@ -73,6 +76,7 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
         }
     }
 
+    @Override
     public HierarchicalStreamReader createReader(final InputStream input) {
         try {
             return new StaxReader(new QNameMap(), mif.createXMLStreamReader(input), new XmlFriendlyReplacer("$","_"));
@@ -81,6 +85,7 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
         }
     }
 
+    @Override
     public HierarchicalStreamWriter createWriter(final Writer writer) {
         try {
             return new WriterWrapper(new JettisonStaxWriter(new QNameMap(), mof.createXMLStreamWriter(writer),
@@ -99,6 +104,7 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
         }
     }
 
+    @Override
     public HierarchicalStreamWriter createWriter(final OutputStream output) {
         try {
             return new JettisonStaxWriter(new QNameMap(), mof.createXMLStreamWriter(output), 
