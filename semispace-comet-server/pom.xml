@@ -6,13 +6,13 @@
 	<parent>
 		<groupId>org.semispace</groupId>
 		<artifactId>semispace</artifactId>
-		<version>1.1.1-SNAPSHOT</version>
+		<version>1.1.2-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
     <groupId>org.semispace.comet</groupId>
     <artifactId>semispace-comet-server</artifactId>
     <packaging>war</packaging>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.2-SNAPSHOT</version>
     <name>semispace-comet-server</name>
     <build>
         <defaultGoal>install</defaultGoal>
