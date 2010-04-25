@@ -33,253 +33,118 @@
     <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/core/semispace.SemiSpace.js"> </script>
 
     <!-- Example -->
-    <script type="text/javascript">
-
-        /*
-            How:
-             - On Load
-                X Check space for data
-                    X If data; read data
-                        X update local storage
-                        X update page
-                            - keep local editeble element
-                            - lock foreign elements
-                    X If no data; do nothing
-                - Attach to notify
-
-            - On notify
-                - read data
-                    - update local storage
-                    - update page
-                        - keep local editeble element
-                        - lock foreign elements
-
-            - On edit
-                - apply element to local storage
-                    - add current element to array
-                - take data from space
-                - write data to space
-
-            - On save
-                - remove element to local storage
-                    - remove current element from array
-                - take data from space
-                - write data to space
-
-        */
-
-        var example = {
-
-            user:Math.floor(Math.random()*24),
-
-            pageTemplate:{
-                "page" : {
-                    "id" : "someid"
-                }
-            },
-
-/*
-            pageLock:{
-                "page" : {
-                    "id" : "someid",
-                    "locks" : [
-                        {
-                            "id" : "edit1",
-                            "status" : "open",
-                            "user" : "open"
-                        },
-                        {
-                            "id" : "edit2",
-                            "status" : "open",
-                            "user" : "open"
-                        }
-                    ]
-                }
-            },
-*/
-
-
-            pageLock:{
-                "page" : {
-                    "id" : "someid",
-                    "locks" : [
-                        {
-                            "id" : "hack",
-                            "user" : "hack"
-                        },
-                        {
-                            "id" : "hack",
-                            "user" : "hack"
-                        }
-                    ]
-                }
-            },
-
-
-            comet:undefined,
-
-            init:function(){
-                dojo.require("dojox.cometd");
-                this.comet = dojox.cometd;
-                example.dom.parseDomAndSetEditFunctions();
-                example.server.load();
-                //example.dom.lock();
-            }
-        };
-
-        example.dom = {
-
-            parseDomAndSetEditFunctions:function(){
-                var elements = document.getElementsByTagName('a');
-                var i = elements.length;
-                while(i--){
-                    elements[i].onclick = function(){
-                        example.dom.doEdit(this);
-                    };
-                }
-            },
-
-            doEdit:function(el){
-                var sibling = el.parentNode.parentNode;
-                el.innerHTML = '[save]';
-                sibling.className = 'editing';
-
-                el.onclick = function(){
-                    example.dom.doSave(this);
-                };
-
-                //example.pageLock.page.locks.push({"id" : sibling.id, "user" : example.user});
-                example.pageLock.page.locks.push({"id" : sibling.id, "user" : example.user});
-
-                var pageTemplateAsString = JSON.stringify(example.pageTemplate);
-                example.server.Lock.takeIfExists(pageTemplateAsString, function(){
-                    // Do nothing
-                });
-
-                var pageLockAsString = JSON.stringify(example.pageLock);
-                example.server.Lock.write(pageLockAsString, 6000000, function(){
-                    // Do nothing
-                });
-
-            },
-
-            doSave:function(el){
-                var sibling = el.parentNode.parentNode;
-                sibling.className = '';
-                el.innerHTML = '[edit]';
-
-                el.onclick = function(){
-                    example.dom.doEdit(this);
-                };
-
-
-
-            },
-
-            lock:function(){
-                var i = example.pageLock.page.locks.length;
-                while(i--){
-                    var obj = example.pageLock.page.locks[i];
-                    // Exclude hack to avoid one element array bug
-                    if(obj.id !== 'hack'){
-                        var el = document.getElementById(obj.id);
-                        if(obj.user === example.user){
-                            el.className = 'editing'; // TODO: Set own for in edit mode by same user!!
-                        }else{
-                            el.className = 'locked';
-                        }
-                    }
-                }
-
-            }
-        };
-
-        example.server = {
-
-            Connection:undefined,
-            Lock:undefined,
-
-            load:function(){
-                //var g = JSON.stringify(example.pageLock);
-                //var k = JSON.parse(g);
-                //example.pageLock.page.locks.push('jalla');
-                //alert(example.pageLock.page.locks.length);
-
-                var host = location.protocol + '//' + location.host + '/semispace-comet-server/cometd';
-                this.Connection = new semispace.Comet(example.comet,host);
-                this.Lock = new semispace.SemiSpace(this.Connection.getConnection());
-
-                this.Connection.connect();
-
-                var pageTemplateAsString = JSON.stringify(example.pageTemplate);
-                example.server.Lock.readIfExists(pageTemplateAsString, example.server.jalla);
-            },
-
-            jalla:function(JSONAsString){
-                if(JSONAsString){
-                    example.pageLock = JSON.parse(JSONAsString);
-                    example.dom.lock();
-                }
-            }
-
-        };
-
-    </script>
+    <script type="text/javascript" src="locking.js"> </script>
 </head>
 <body onload="example.init();">
 
 <div class="page">
 
     <div class="row d_100">
-        <div class="col d_100"><div class="el c3"> </div></div>
+        <div class="col d_100"><!-- Header --></div>
+
+        <div class="separator"> </div>
+
         <div class="col d_25">
-            <div id="edit1" class="el c1">
-                <div><a href="javascript:;">[edit]</a></div>
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Lorem ipsum dolor sit amet</h2>
+                <p>
+                    Suspendisse rutrum porta aliquet. Pellentesque est velit, gravida vel cursus id, venenatis quis ante. Cras mi diam, fringilla nec blandit sed, malesuada ac orci.
+                </p>
             </div>
         </div>
         <div class="col d_25">
-            <div id="edit2" class="el c2">
-                <div><a href="javascript:;">[edit]</a></div>
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Nulla vitae metus at tortor</h2>
+                <p>
+                    Suspendisse potenti. Fusce pellentesque, nunc in porta elementum, diam enim blandit velit
+                </p>
             </div>
         </div>
-        <div class="col d_25"><div class="el c5"> </div></div>
-        <div class="col d_25"><div class="el c6"> </div></div>
+        <div class="col d_25">
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Duis ut ligula urna</h2>
+                <p>
+                    Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque tincidunt sem et lectus vulputate et varius enim ultricies.
+                </p>
+            </div>
+        </div>
+        <div class="col d_25">
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Nunc erat felis, tincidunt sit</h2>
+                <p>
+                    Morbi tempor, sem et feugiat vulputate, dolor nisi lacinia mauris. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.
+                </p>
+            </div>
+        </div>
 
-        <div class="col d_100"><div class="el c4"> </div></div>
-        <div class="col d_50"><div class="el c7"> </div></div>
-        <div class="col d_50"><div class="el c8"> </div></div>
+        <div class="separator"> </div>
+
+        <div class="col d_50">
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Cras est odio, pulvinar nec lacinia vel, venenatis ut.</h2>
+                <p>
+                    Nullam vitae tortor vitae lorem scelerisque faucibus. Nam rhoncus, arcu viverra blandit viverra, tellus nisl feugiat lectus, id auctor purus diam dapibus enim. Duis pretium consectetur nisl sit amet sollicitudin. Suspendisse varius congue dui, a rhoncus est tincidunt sit amet. Morbi vitae mauris nec enim sodales pulvinar nec et justo.
+                </p>
+            </div>
+        </div>
+        <div class="col d_50">
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Duis ut ligula urna. Aenean porta, lectus vel venenatis.</h2>
+                <p>
+                    Sed quis diam et elit facilisis pulvinar non vel dolor. Pellentesque faucibus nunc ac magna imperdiet pretium sodales nec lectus. Nunc erat felis, tincidunt sit amet sagittis ut, dictum eget sem. Suspendisse id est placerat erat ultrices faucibus.
+                </p>
+            </div>
+        </div>
+
+        <div class="separator"> </div>
+
+        <div class="col d_25">
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Aliquam ullamcorper sem</h2>
+                <p>
+                    Morbi vitae mauris nec enim sodales pulvinar nec et justo. Morbi justo sem, posuere nec bibendum lacinia, bibendum sit amet tortor.
+                </p>
+            </div>
+        </div>
+        <div class="col d_25">
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Suspendisse ut posuere felis</h2>
+                <p>
+                    Pellentesque tincidunt sem et lectus vulputate et varius enim ultricies. Suspendisse ut posuere felis. Donec malesuada pharetra elit non mollis. 
+                </p>
+            </div>
+        </div>
+        <div class="col d_25">
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Donec malesuada pharetra</h2>
+                <p>
+                    Ut quis nulla nulla, eget commodo erat. Aliquam tincidunt lobortis tellus sit amet euismod. Mauris consectetur, felis et ullamcorper porttitor.
+                </p>
+            </div>
+        </div>
+        <div class="col d_25">
+            <div class="el">
+                <div class="editBar"><a href="javascript:;">[edit]</a></div>
+                <h2>Fusce dignissim consectetur diam</h2>
+                <p>
+                    Aliquam laoreet enim congue ante luctus consequat. Nulla vitae dolor nec sem blandit dignissim ut eget turpis.
+                </p>
+            </div>
+        </div>
+
+        <div class="separator"> </div>
+
+        <div class="col d_100"><!-- Footer --></div>
     </div>
-
-    <div class="row d_50">
-        <div class="col d_100"><div class="el c1"> </div></div>
-
-        <div class="col d_50"><div class="el c2"> </div></div>
-        <div class="col d_50"><div class="el c3"> </div></div>
-        <div class="col d_40"><div class="el c4"> </div></div>
-        <div class="col d_20"><div class="el c5"> </div></div>
-        <div class="col d_40"><div class="el c6"> </div></div>
-    </div>
-
-    <div class="row d_50">
-        <div class="col d_100"><div class="el c1"> </div></div>
-        <div class="col d_30"><div class="el c2"> </div></div>
-        <div class="col d_40"><div class="el c3"> </div></div>
-        <div class="col d_30"><div class="el c4"> </div></div>
-        <div class="col d_80"><div class="el c5"> </div></div>
-
-        <div class="col d_20"><div class="el c6"> </div></div>
-    </div>
-
-    <div class="row d_100">
-        <div class="col d_100"><div class="el c1"> </div></div>
-        <div class="col d_30"><div class="el c2"> </div></div>
-        <div class="col d_70"><div class="el c3"> </div></div>
-
-        <div class="col d_40"><div class="el c4"> </div></div>
-        <div class="col d_20"><div class="el c5"> </div></div>
-        <div class="col d_40"><div class="el c6"> </div></div>
-    </div>
-
 </div>
 
 </body>

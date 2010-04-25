@@ -52,32 +52,38 @@
 body{padding: 10px 10px 10px 10px;}
 .page{width: 800px;}
 .row{margin-bottom: 10px;}
-.el{
-    height: 60px;
-    border: solid 2px #efefef;
-    background-color: #efefef;
+
+.separator{
+    clear:both;
+    height: 30px;
 }
-.el:hover{
-    border: solid 2px #ff0000;
+
+.el{
+    margin: 5px 5px 5px 5px;
 }
 
 .locked{
-    background-color: #ffa500;
+    background-color: #cc3300;
 }
+.locked h2, .locked p{
+    opacity: 0.3;
+}
+
 
 .editing{
-    background-color: #00cc33;
+    margin: 5px 5px 5px 5px;
+    background-color: #009933;
 }
 
-/*
-.c1{background-color: #010D07;}
-.c2{background-color: #042212;}
-.c3{background-color: #074324;}
-.c4{background-color: #0B6536;}
-.c5{background-color: #0C723D;}
-.c6{background-color: #0E8648;}
-.c7{background-color: #4BA576;}
-.c8{background-color: #87C3A4;}
-.c9{background-color: #C3E1D1;}
-.c10{background-color: #E7F3ED;}
-*/
+.editBar{
+    overflow: hidden;
+    background-color: #cccccc;
+}
+
+.editBar a{
+    float: right;
+    margin: 2px 2px 2px 2px;
+    text-decoration: none;
+    color: #000;
+    font-size: 10px;
+}
