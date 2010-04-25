@@ -60,4 +60,13 @@ public class Json2XmlTest {
         // TODO This test fails Assert.assertEquals(originalJson, toJson);
     }
 
+    @Test
+    public void testXmlWithArrayMark() {
+        String originalXml = "<page><id>someid</id><ARRAY><locks><id>edit2</id><user>Trygve</user></locks></ARRAY></page>";
+        String toJson = Xml2Json.transform(originalXml);
+        String xml = Json2Xml.transform(toJson);
+        log.debug("Xml transformed into json:\n"+toJson+"\n");
+        log.debug("Json transformed back into xml:\n"+xml);
+        Assert.assertEquals(originalXml, xml);
+    }
 }
