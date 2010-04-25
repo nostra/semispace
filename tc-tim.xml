@@ -80,7 +80,7 @@
         <!-- You only need jetty module if you are actually using jetty -->
         <module name="tim-jetty-6.1" version="2.1.0"/>
         <repository>%(user.home)/.m2/repository</repository>
-        <module name="semispace-tim" version="1.1.0" group-id="org.semispace"/>
+        <module name="semispace-tim" version="1.1.1" group-id="org.semispace"/>
 	</modules>
 <!--END SNIPPET: semispaceTimReference-->
       <!--
