@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -45,7 +46,7 @@ public class Json2Xml {
      */
     public static final String transform( String json ) {
         HierarchicalStreamDriver driver = new SemiSpaceJettisonDriver();
-        StringReader reader = new StringReader(json);
+        Reader reader = new StringReader(json);
         HierarchicalStreamReader hsr = driver.createReader(reader);
         StringWriter writer = new StringWriter();
         //  new XmlFriendlyReplacer("_-", "_"))
