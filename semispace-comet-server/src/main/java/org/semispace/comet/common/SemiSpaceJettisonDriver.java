@@ -89,6 +89,10 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
                 public void startNode(String name, Class clazz) {
                     super.startNode(name.replace('.', '_'), clazz);
                 }
+                @Override
+                public void startNode(String name) {
+                    super.startNode(name.replace('.', '_'));
+                }
             };
         } catch (final XMLStreamException e) {
             throw new StreamException(e);
