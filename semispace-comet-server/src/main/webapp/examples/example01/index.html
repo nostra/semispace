@@ -22,6 +22,19 @@
     -->
 
     <link href="resources/style.css" type="text/css" rel="stylesheet" media="all" title="Example styling" />
+    <style type="text/css">
+        #page{
+            width: 100%;
+        }
+        #menu{
+            width: 100%;
+            background-color: #efefef;
+        }
+        #writer, #reader{
+            width: 50%;
+            float: left;
+        }
+    </style>
 
     <!-- Semispace Comet Scripts -->
     <script type="text/javascript" src="/semispace-comet-server/dojo/dojo.js.uncompressed.js"> </script>
@@ -73,17 +86,7 @@
             logger('log', msg);
         };
 
-        var callbackRead = function(message){
-            alert('Hello read: ' + message);
-        };
 
-        var callbackWrite = function(message){
-            alert('Hello write: ' + message);
-        };
-
-        var callbackGeneric = function(message){
-            alert('Hello Generic: ' +  message);
-        };
 
         // Where the server is
         var server = location.protocol + '//' + location.host + '/semispace-comet-server/cometd';
@@ -92,10 +95,9 @@
         dojo.require("dojox.cometd");
         var com = dojox.cometd;
 
-        var jsonString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
-        var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
+        var jsonString = JSON.stringify({"org_semispace_comet_demo_FieldHolder":{"firstName":"John","lastName":"Doe"}});
+        // var jsonString = JSON.stringify({"firstName":"John","lastName":"Doe"});
 
-        var leaseFunction;
         var myApp;
         var semiApp;
         var init = function(){
@@ -115,63 +117,85 @@
 
 
         var wrte = function(){
-            semiApp.write(jsonString, 60000, callbackWrite);
+            semiApp.write(jsonString, 60000);
         };
 
         var read = function(){
-            semiApp.read(jsonTemplate, 60000, callbackRead);
+            semiApp.read(null, 60000);
         };
 
         var readIfExists = function(){
-            semiApp.readIfExists(jsonTemplate, callbackRead);
+            semiApp.readIfExists(null);
         };
 
         var take = function(){
-            semiApp.take(jsonTemplate, 60000,callbackGeneric);
+            semiApp.take(null, 60000);
         };
 
         var takeIfExists = function(){
-            semiApp.takeIfExists(jsonTemplate, callbackGeneric);
+            semiApp.takeIfExists(null);
         };
 
         var notify = function(){
-            leaseFunction = semiApp.notify(jsonTemplate, 'availability', 60000, callbackGeneric);
-        };
-
-        var lease = function(){
-            leaseFunction();
+            semiApp.notify(null, 'availability', 60000);
         };
 
         var chaining = function(){
-            semiApp.read(jsonTemplate, 60000).write(jsonString, 60000, callbackGeneric);
+            semiApp.read(null, 60000).write(jsonString, 60000);
         };
 
-
-        var batch = function(){
-            /*
-            myApp.batch(function(){
-                myApp.rSubscribe();
-                myApp.wSubscribe();
-            });
-            */
-
-        };
     </script>
 </head>
 <body onload="init();">
-    <h1>SemiSpace CometD - Example 01</h1>
-    <div id="result">
-        <a href="javascript:;" onclick="start();">Connect to server</a> |
-        <a href="javascript:;" onclick="stop();">Disconnect from server</a> |
-        <a href="javascript:;" onclick="wrte();">Write</a> |
-        <a href="javascript:;" onclick="read();">Read</a> |
-        <a href="javascript:;" onclick="readIfExists();">Read If Exists</a> |
-        <a href="javascript:;" onclick="take();">Take</a> |
-        <a href="javascript:;" onclick="takeIfExists();">Take If Exists</a> |
-        <a href="javascript:;" onclick="notify();">Notify</a> |
-        <a href="javascript:;" onclick="lease();">Lease Cancel</a> |
-        <a href="javascript:;" onclick="chaining();">Chaining</a>
+
+    <div id="page">
+
+        <h1>Example 01</h1>
+
+        <div id="menu">
+            <a href="javascript:;" onclick="start();">Connect to server</a> |
+            <a href="javascript:;" onclick="stop();">Disconnect from server</a> |
+            <a href="javascript:;" onclick="wrte();">Write</a> |
+            <a href="javascript:;" onclick="read();">Read</a> |
+            <a href="javascript:;" onclick="readIfExists();">Read If Exists</a> |
+            <a href="javascript:;" onclick="take();">Take</a> |
+            <a href="javascript:;" onclick="takeIfExists();">Take If Exists</a> |
+            <a href="javascript:;" onclick="notify();">Notify</a> |
+        </div>
+
+        <div id="reader">
+            <form action="javascript:;">
+                <input type="text" value="person"><br>
+                <textarea rows="20" cols="50">
+{
+    "firstName":"John"
+}
+                </textarea><br>
+                <input type="text" value="60000">
+                <input type="button" value="Read">
+                <input type="button" value="Read If Exists">
+                <input type="button" value="Take">
+                <input type="button" value="Take If Exists">
+            </form>
+        </div>
+
+        <div id="writer">
+            <form action="javascript:;">
+                <input type="text" value="person"><br>
+                <textarea rows="20" cols="50">
+{
+    "firstName":"John",
+    "lastName":"Doe"
+}
+                </textarea><br>
+                <input type="text" value="60000">
+                <input type="button" value="Write">
+            </form>
+        </div>
+
+        <div id="log"> </div>
+
     </div>
-    <div id="log"> </div>
+
 </body>
 </html>

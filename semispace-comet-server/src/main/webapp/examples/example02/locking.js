@@ -16,15 +16,14 @@
 
 var example = {
 
-    //user:Math.floor(Math.random()*24),
-    user:navigator.userAgent,
+    user:undefined,
 
     comet:undefined,
     Connection:undefined,
     Space:undefined,
 
-    timeoutNotify:30000,
-    timeoutWrite:30000,
+    timeoutNotify:1200000,
+    timeoutWrite:1200000,
 
 /*
     pageElements:{
@@ -67,9 +66,15 @@ var example = {
 
     init:function(){
         example.pageElementsTemplatAsString = JSON.stringify(example.pageElementsTemplat);
+        example.getUser();
         example.setDefaultEventHandlersInDOM();
         example.connectToServer();
         example.addPageElementsListener();
+    },
+
+
+    getUser:function(){
+        example.user = window.prompt("Please enter a username");
     },
 
 
@@ -146,15 +151,17 @@ var example = {
             };
             link[0].innerHTML = '[save]';
             el.className = 'editing';
+            el.title = '';
 
         }else if(locked  && (user !== example.user)){
 
             // Edited by foreign user
             link[0].onclick = function(){
-                example.isLocked();
+                example.isLocked(user);
             };
             link[0].innerHTML = '[locked]';
             el.className = 'locked';
+            el.title = user + ' is editing this element';
 
         }else{
 
@@ -164,6 +171,7 @@ var example = {
             };
             link[0].innerHTML = '[edit]';
             el.className = 'el';
+            el.title = '';
         }
     },
 
@@ -204,9 +212,8 @@ var example = {
     },
 
 
-    isLocked:function(){
-        alert('This element is loced - You can not work on this element!');
+    isLocked:function(name){
+        alert('This element is loced by ' + name + '.\nYou can not edit this element.');
     }
-
 
 };
