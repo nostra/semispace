@@ -83,16 +83,11 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
 
     public HierarchicalStreamWriter createWriter(final Writer writer) {
         try {
-            // return new JettisonStaxWriter(new QNameMap(), mof.createXMLStreamWriter(writer), convention);
             return new WriterWrapper(new JettisonStaxWriter(new QNameMap(), mof.createXMLStreamWriter(writer),
                     true, true, new XmlFriendlyReplacer("$","_"), convention)) {
                 @Override
-                public void startNode(String name) {
-                    startNode(name, null);
-                }
-                @Override
                 public void startNode(String name, Class clazz) {
-                    wrapped.startNode(name.replace('.', '_'));
+                    super.startNode(name.replace('.', '_'), clazz);
                 }
             };
         } catch (final XMLStreamException e) {
