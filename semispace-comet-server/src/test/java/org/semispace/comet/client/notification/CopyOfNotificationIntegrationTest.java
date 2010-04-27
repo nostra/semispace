@@ -18,6 +18,7 @@ package org.semispace.comet.client.notification;
 
 import junit.framework.TestCase;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiSpaceInterface;
@@ -54,6 +55,7 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
     public void testSimpleCancellation() throws InterruptedException {
         ToBeNotified a = new ToBeNotified(false);
         SemiEventRegistration notifyA = space.notify(new NoticeA(), a, 150);
+        Assert.assertNotNull( notifyA );
         a.setNotify( notifyA );
         assertTrue(notifyA.getLease().cancel());
     }
