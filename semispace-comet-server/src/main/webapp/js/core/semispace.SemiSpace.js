@@ -84,31 +84,23 @@ semispace.SemiSpace = function(connection){
     };
 
 
-    this.read = function(template, timeout, callback){
 
-        var subscription = undefined;
-
-        if(subscription){
-            cometd.unsubscribe(subscription);
-        }
-        subscription = cometd.subscribe('/semispace/reply/read/' + incrementedChannel, function(message){
-            callbackHandler(message, callback);
-        });
-
-        cometd.publish('/semispace/call/read/' + incrementedChannel, {duration:timeout.toString(), json:template});
-
-        incrementedChannel++;
-
-        return this;
-    };
-
-
-    this.readIfExists = function(template, callback){
-        this.read(template, 0, callback);
-        return this;
-    };
-
-
+    /**
+     * @description
+     * Write an object into the space.
+     *
+     * @example
+     * var jsonAsString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
+     * space.write(jsonAsString, 6000, function(data){
+     *      alert(data);
+     * });
+     *
+     * @param   {object}    obj             Object to be written into the space.
+     * @param   {number}    lifeTimeInMs    How long the object should live in the space. Given in milliseconds.
+     * @param   {function}  callback        A callback function to be executed when the write operation is completed. The response, if any, of the write operation will be passed on as a function variable to the callback function.
+     *
+     * @returns {object}    this            For chaining purposes. 
+     */
     this.write = function(obj, lifeTimeInMs, callback){
 
         var subscription = undefined;
@@ -128,6 +120,72 @@ semispace.SemiSpace = function(connection){
     };
 
 
+
+    /**
+     * @description
+     * Read an object from the space, which has matching fields with the template.
+     *
+     * @example
+     * var templateAsString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
+     * space.read(templateAsString, 6000, function(data){
+     *      alert(data);
+     * });
+     *
+     * @param   {object}    template    Object (JSON as string) of exactly the same type as what is wanted as return value, with zero or more none-null fields.
+     * @param   {number}    timeout     How long you are willing to wait for an answer / match. Given in milliseconds.
+     * @param   {function}  callback    A callback function to be executed when the read operation is completed. The response of the read operation will be passed on as a function variable to the callback function.
+     *
+     * @returns {object}    this        For chaining purposes.
+     */
+    this.read = function(template, timeout, callback){
+
+        var subscription = undefined;
+
+        if(subscription){
+            cometd.unsubscribe(subscription);
+        }
+        subscription = cometd.subscribe('/semispace/reply/read/' + incrementedChannel, function(message){
+            callbackHandler(message, callback);
+        });
+
+        cometd.publish('/semispace/call/read/' + incrementedChannel, {duration:timeout.toString(), json:template});
+
+        incrementedChannel++;
+
+        return this;
+    };
+
+
+
+    /**
+     * @description
+     * Same as read, with duration 0.
+     *
+     * @see read
+     */
+    this.readIfExists = function(template, callback){
+        this.read(template, 0, callback);
+        return this;
+    };
+
+
+
+    /**
+     * @description
+     * Same as read, except that the object is removed from the space.
+     *
+     * @example
+     * var templateAsString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
+     * space.take(templateAsString, 6000, function(data){
+     *      alert(data);
+     * });
+     *
+     * @param   {object}    template    Object (JSON as string) of exactly the same type as what is wanted as return value, with zero or more none-null fields.
+     * @param   {number}    timeout     How long you are willing to wait for an answer / match. Given in milliseconds.
+     * @param   {function}  callback    A callback function to be executed when the take operation is completed. The response of the take operation will be passed on as a function variable to the callback function.
+     *
+     * @returns {object}    this        For chaining purposes.
+     */
     this.take = function(template, timeout, callback){
 
         var subscription = undefined;
@@ -147,6 +205,13 @@ semispace.SemiSpace = function(connection){
     };
 
 
+
+    /**
+     * @description
+     * Same as take, with duration 0.
+     *
+     * @see take
+     */
     this.takeIfExists = function(template, callback){
         this.take(template, 0, callback);
         return this;
