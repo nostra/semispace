@@ -31,8 +31,6 @@ semispace.SemiSpace = function(connection){
 
     // TODO: Test leasecancel
     // TODO: Handle callback better on notify and leasecancel 
-    // TODO: Add check on all input metod parameters to see if they have values - Maby add defaults (time???)
-    // TODO: Add check to see if there is a connection to the server
 
     var cometd = connection;
     var incrementedChannel = 0;
@@ -49,12 +47,13 @@ semispace.SemiSpace = function(connection){
      * @param {function}    callback    Callback function to be executed when a event occur.
      */
     var callbackHandler = function(message, callback){
-        // TODO: Handle "undefined" - If no callback is added by the implementor
-        var data = undefined;
-        if(message && message.data && message.data.result){
-            data =  message.data.result;
+        if(callback){
+            var data = undefined;
+            if(message && message.data && message.data.result){
+                data =  message.data.result;
+            }
+            callback(data);
         }
-        callback(data);
     };
 
 
