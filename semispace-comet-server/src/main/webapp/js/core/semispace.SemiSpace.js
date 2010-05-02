@@ -15,16 +15,17 @@
  *
  *
  *
- * @fileOverview    SemiSpace JavaScript Client
- *
- * @version         1.0.1
- *
- * @description
- * Some description...
- *
  * @constructor
  *
- * @param   com     {Object}    Comet connection to work on
+ * @description
+ * Operations possible to perform on the tuple space.
+ *
+ * @example
+ * var connection = new semispace.Comet(cometImpl,serverUrl);
+ * connection.connect();
+ * var space = new semispace.SemiSpace(connection.getConnection());
+ *
+ * @param   connection     {Object}    Comet connection to work on
  */
 semispace.SemiSpace = function(connection){
 
@@ -36,6 +37,17 @@ semispace.SemiSpace = function(connection){
     var cometd = connection;
     var incrementedChannel = 0;
 
+
+
+    /**
+     * @private
+     *
+     * @description
+     * Helper to filter the data passed on to the callback function.
+     *
+     * @param {Object}      message     The data object / response from the server.
+     * @param {function}    callback    Callback function to be executed when a event occur.
+     */
     var callbackHandler = function(message, callback){
         // TODO: Handle "undefined" - If no callback is added by the implementor
         var data = undefined;
@@ -46,6 +58,25 @@ semispace.SemiSpace = function(connection){
     };
 
 
+
+    /**
+     *
+     * @description
+     * Register a listener for a particular template search.
+     *  
+     * @example
+     * var templateAsString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
+     * space.notify(templateAsString, 'availability', 6000, function(data){
+     *          alert(data);
+     * });
+     *
+     * @param   {Object}    template    Template to be matched.
+     * @param   {String}    listener    Listener to be notified when JSON object with a matching template is found.
+     * @param   {number}    duration    How long this particular listener is valid.
+     * @param   {function}  callback    A callback function to be executed when a match occur. The response, if any, of the notify operation will be passed on as a function variable to the callback function.
+     *
+     * @returns {function}  lease       A lease function to cancel the notification.
+     */
     this.notify = function(template, listener, duration, callback){
 
         var subscriptionReply = undefined;
@@ -87,19 +118,21 @@ semispace.SemiSpace = function(connection){
 
     /**
      * @description
-     * Write an object into the space.
+     * Write JSON object into tuple space, with a life time given in ms.
      *
      * @example
      * var jsonAsString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
      * space.write(jsonAsString, 6000, function(data){
-     *      alert(data);
+     *      if(data){
+     *          alert(data);
+     *      }
      * });
      *
-     * @param   {object}    obj             Object to be written into the space.
+     * @param   {Object}    obj             Object to be written into the space.
      * @param   {number}    lifeTimeInMs    How long the object should live in the space. Given in milliseconds.
      * @param   {function}  callback        A callback function to be executed when the write operation is completed. The response, if any, of the write operation will be passed on as a function variable to the callback function.
      *
-     * @returns {object}    this            For chaining purposes. 
+     * @returns {Object}    this            For chaining purposes.
      */
     this.write = function(obj, lifeTimeInMs, callback){
 
@@ -123,19 +156,21 @@ semispace.SemiSpace = function(connection){
 
     /**
      * @description
-     * Read an object from the space, which has matching fields with the template.
+     * Read an JSON object from the space, which has matching fields with the template.
      *
      * @example
      * var templateAsString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
      * space.read(templateAsString, 6000, function(data){
-     *      alert(data);
+     *      if(data){
+     *          alert(data);
+     *      }
      * });
      *
-     * @param   {object}    template    Object (JSON as string) of exactly the same type as what is wanted as return value, with zero or more none-null fields.
+     * @param   {Object}    template    Object (JSON as string) of exactly the same type as what is wanted as return value, with zero or more none-null fields.
      * @param   {number}    timeout     How long you are willing to wait for an answer / match. Given in milliseconds.
      * @param   {function}  callback    A callback function to be executed when the read operation is completed. The response of the read operation will be passed on as a function variable to the callback function.
      *
-     * @returns {object}    this        For chaining purposes.
+     * @returns {Object}    this        For chaining purposes.
      */
     this.read = function(template, timeout, callback){
 
@@ -161,7 +196,7 @@ semispace.SemiSpace = function(connection){
      * @description
      * Same as read, with duration 0.
      *
-     * @see read
+     * @see semispace.SemiSpace.read
      */
     this.readIfExists = function(template, callback){
         this.read(template, 0, callback);
@@ -172,19 +207,21 @@ semispace.SemiSpace = function(connection){
 
     /**
      * @description
-     * Same as read, except that the object is removed from the space.
+     * Same as read, except that the JSON object is removed from the space.
      *
      * @example
      * var templateAsString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
      * space.take(templateAsString, 6000, function(data){
-     *      alert(data);
+     *      if(data){
+     *          alert(data);
+     *      }
      * });
      *
-     * @param   {object}    template    Object (JSON as string) of exactly the same type as what is wanted as return value, with zero or more none-null fields.
+     * @param   {Object}    template    Object (JSON as string) of exactly the same type as what is wanted as return value, with zero or more none-null fields.
      * @param   {number}    timeout     How long you are willing to wait for an answer / match. Given in milliseconds.
      * @param   {function}  callback    A callback function to be executed when the take operation is completed. The response of the take operation will be passed on as a function variable to the callback function.
      *
-     * @returns {object}    this        For chaining purposes.
+     * @returns {Object}    this        For chaining purposes.
      */
     this.take = function(template, timeout, callback){
 
@@ -210,7 +247,7 @@ semispace.SemiSpace = function(connection){
      * @description
      * Same as take, with duration 0.
      *
-     * @see take
+     * @see semispace.SemiSpace.take
      */
     this.takeIfExists = function(template, callback){
         this.take(template, 0, callback);
