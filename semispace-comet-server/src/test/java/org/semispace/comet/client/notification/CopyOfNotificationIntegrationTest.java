@@ -69,6 +69,7 @@ public class CopyOfNotificationIntegrationTest extends TestCase {
         space.read(new AlternateButEqual(), 200);
 
         log.debug("Insertion finished. ");
+        assertEquals(1, a.getNotified());
         assertNotNull( notifyA.getLease() );
         assertTrue(notifyA.getLease().cancel());
         clearSpaceForNotifications();
