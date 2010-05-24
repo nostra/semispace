@@ -45,10 +45,10 @@
 
     <properties>
         <springframework.version>3.0.2.RELEASE</springframework.version>
-        <cxf.version>2.2.7</cxf.version>
+        <cxf.version>2.2.8</cxf.version>
         <jetty.version>6.1.24</jetty.version>
-        <slf4j.version>1.5.11</slf4j.version>
-        <cometd.version>1.1.0</cometd.version>
+        <slf4j.version>1.6.0</slf4j.version>
+        <cometd.version>1.1.1</cometd.version>
     </properties>
 
     <!--
