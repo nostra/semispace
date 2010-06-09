@@ -16,7 +16,7 @@
 Overview of semispace-comet
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- The semispace-comet part of semispace consists of 4 parts:
+ The semispace-comet module of SemiSpace consists of 4 parts:
 
 *--------------+----------+
 | semispace-comet-server | The webapp which will answer the JavaScript queries |
@@ -25,5 +25,12 @@ Overview of semispace-comet
 *--------------+----------+
 | semispace-comet-common | Transport objects and functionality shared between the client and server implementation  |
 *--------------+----------+
-| JavaScript | The web client functionality resides in javascript which is simply downloaded and used.  |
+| JavaScript | The web client functionality resides in JavaScript which is simply downloaded and used. |
 *--------------+----------+
+
+~~~~~~~~~~~~
+Installation
+~~~~~~~~~~~~
+
+ When using semispace-comet, you need to install / prepare the server side and the JavaScript side.
+ On the server side is a matter of setting up the   
