@@ -23,12 +23,11 @@
 
     <link href="resources/style.css" type="text/css" rel="stylesheet" media="all" title="Example styling" />
 
-    <!-- Semispace Comet Scripts -->
-    <script type="text/javascript" src="/semispace-comet-server/dojo/dojo.js.uncompressed.js"> </script>
+    <!-- DOJO kit -->
+    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/lib/dojo/dojo/dojo.js.uncompressed.js"> </script>
+
+    <!-- SemiSpace -->
     <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/semispace.js"> </script>
-    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/util/semispace.util.js"> </script>
-    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/util/semispace.util.interface.js"> </script>
-    <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/interfaces/semispace.SemiSpaceInterface.js"> </script>
     <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/core/semispace.Comet.js"> </script>
     <script type="text/javascript" src="http://localhost:8080/semispace-comet-server/js/core/semispace.SemiSpace.js"> </script>
 
@@ -83,6 +82,10 @@
 
         var callbackGeneric = function(message){
             alert('Hello Generic: ' +  message);
+        };
+
+        var callbackNotify = function(message){
+            alert('Hello from Notify');
         };
 
         // Where the server is
@@ -142,11 +145,20 @@
         };
 
         var notify = function(){
-            leaseFunction = semiApp.notify(jsonTemplate, 'availability', 60000, callbackGeneric);
+            leaseFunction = semiApp.notify(jsonTemplate, 'availability', 600000, callbackNotify);
+            //leaseFunction = semiApp.notify(jsonTemplate, 'all', 600000, callbackGeneric);
+            //console.log('Impl Notify: ' + leaseFunction);
+        };
+
+        var tuddelu = function(){
+            alert('kidding');
         };
 
         var lease = function(){
             leaseFunction();
+            //alert(leaseFunction);
+            //console.log('Impl Lease: ' + leaseFunction);
+            //semiApp.jalla(leaseFunction);
         };
 
         var chaining = function(){
