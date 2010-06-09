@@ -63,9 +63,12 @@
         <id>comet</id>
         <title>SemiSpace and Cometd</title>
         <sections>
-          <section>
-            <id>comet</id>
-          </section>
+            <section>
+              <id>comet</id>
+            </section>
+            <section>
+              <id>ctechnical</id>
+            </section>
         </sections>
       </chapter>
 
