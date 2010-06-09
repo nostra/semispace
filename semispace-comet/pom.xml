@@ -21,6 +21,7 @@
     -->
     <modules>
         <module>semispace-comet-common</module>
+        <module>semispace-comet-server</module>
         <module>semispace-comet-client</module>
     </modules>
 </project>
