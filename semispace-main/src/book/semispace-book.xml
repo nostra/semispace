@@ -37,27 +37,37 @@
       </sections>
     </chapter>
     
-    <chapter>
-      <id>tutorials</id>
-      <title>Tutorials</title>
-      <sections>
-        <section>
-          <id>tutintro</id>
-        </section>
-        <section>
-          <id>coding</id>
-        </section>
-        <section>
-          <id>simple</id>
-        </section>
-        <section>
-          <id>google</id>
-        </section>
-        <section>
-          <id>terragoogle</id>
-        </section>
-      </sections>
-    </chapter>
+      <chapter>
+        <id>tutorials</id>
+        <title>Tutorials</title>
+        <sections>
+          <section>
+            <id>tutintro</id>
+          </section>
+          <section>
+            <id>coding</id>
+          </section>
+          <section>
+            <id>simple</id>
+          </section>
+          <section>
+            <id>google</id>
+          </section>
+          <section>
+            <id>terragoogle</id>
+          </section>
+        </sections>
+      </chapter>
+
+      <chapter>
+        <id>comet</id>
+        <title>SemiSpace and Cometd</title>
+        <sections>
+          <section>
+            <id>comet</id>
+          </section>
+        </sections>
+      </chapter>
 
     <chapter>
       <id>usage</id>

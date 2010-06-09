@@ -1,0 +1,29 @@
+                    -------
+                    semispace-comet
+                    -------
+
+ SemiSpace has a module which allows JavaScript to communicate to an
+ {{{http://www.cometd.org/}cometd}}-enabled webserver. The javascript interface
+ mimics the {{{../apidocs/org/semispace/SemiSpaceInterface.html}Java interface}}
+ as closely as possible.
+
+ Presently, cometd-1.x is used. This will later be migrated to cometd-2.x.
+ Cometd has a page with {{{http://cometd.org/node/87}overview over the migration
+ path of classes and packages}}. At a time where it is stable and sufficiently
+ wide spread, websocket is going to be the main target.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Overview of semispace-comet
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ The semispace-comet part of semispace consists of 4 parts:
+
+*--------------+----------+
+| semispace-comet-server | The webapp which will answer the JavaScript queries |
+*--------------+----------+
+| semispace-comet-client | An emulation of the JavaScript client behaviour. Can be used for emulating a client for test purposes, or for bridging two server implementations |
+*--------------+----------+
+| semispace-comet-common | Transport objects and functionality shared between the client and server implementation  |
+*--------------+----------+
+| JavaScript | The web client functionality resides in javascript which is simply downloaded and used.  |
+*--------------+----------+
