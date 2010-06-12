@@ -39,7 +39,7 @@
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <webAppConfig>
-                        <contextPath>/semispace-comet-webapp</contextPath>
+                        <contextPath>/semispace-comet-server</contextPath>
                     </webAppConfig>
                     <systemProperties>
                      <systemProperty>
@@ -66,8 +66,8 @@
 
     <dependencies>
         <dependency>
-             <groupId>org.semispace</groupId>
-             <artifactId>semispace-main</artifactId>
+            <groupId>org.semispace.comet</groupId>
+            <artifactId>semispace-comet-server</artifactId>
          </dependency>
         <dependency>
             <groupId>org.codehaus.jettison</groupId>
