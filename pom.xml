@@ -102,7 +102,17 @@
             <artifactId>semispace-comet-server</artifactId>
             <version>${version}</version>
          </dependency>
-            
+        <dependency>
+            <groupId>org.semispace.comet</groupId>
+            <artifactId>semispace-comet-client</artifactId>
+            <version>${version}</version>
+         </dependency>
+        <dependency>
+            <groupId>org.semispace.comet</groupId>
+            <artifactId>semispace-comet-common</artifactId>
+            <version>${version}</version>
+         </dependency>
+
         <dependency>
             <groupId>org.cometd.javascript</groupId>
             <artifactId>cometd-javascript-dojo</artifactId>

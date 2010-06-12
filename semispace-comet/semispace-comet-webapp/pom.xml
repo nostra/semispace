@@ -70,6 +70,10 @@
             <artifactId>semispace-comet-server</artifactId>
          </dependency>
         <dependency>
+            <groupId>org.semispace.comet</groupId>
+            <artifactId>semispace-comet-client</artifactId>
+         </dependency>
+        <dependency>
             <groupId>org.codehaus.jettison</groupId>
             <artifactId>jettison</artifactId>
         </dependency>

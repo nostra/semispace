@@ -14,11 +14,12 @@
     <packaging>jar</packaging>
     <version>1.1.2-SNAPSHOT</version>
     <name>semispace-comet-client</name>
+    <description>Java client for SemiSpace comet connection. Useful for bridging two SemiSpace instances, or for testing semispace-comet-server</description>
 
     <dependencies>
         <dependency>
-             <groupId>org.semispace</groupId>
-             <artifactId>semispace-main</artifactId>
+            <groupId>org.semispace.comet</groupId>
+            <artifactId>semispace-comet-common</artifactId>
          </dependency>
         <dependency>
             <groupId>org.codehaus.jettison</groupId>

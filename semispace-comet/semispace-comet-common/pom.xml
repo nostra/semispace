@@ -15,4 +15,14 @@
     <version>1.1.2-SNAPSHOT</version>
     <name>semispace-comet-common</name>
 
+    <dependencies>
+        <dependency>
+             <groupId>org.semispace</groupId>
+             <artifactId>semispace-main</artifactId>
+         </dependency>        
+        <dependency>
+            <groupId>org.codehaus.jettison</groupId>
+            <artifactId>jettison</artifactId>
+        </dependency>
+    </dependencies>
 </project>
