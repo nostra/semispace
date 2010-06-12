@@ -72,6 +72,23 @@ public class NotificationClientIntegrationTest {
         lease.getLease().cancel();
     }
 
+    @Test
+    public void testThatCancellationOfNotificationWorks() {
+        NotificationTestListener listener = new NotificationTestListener();
+        SemiEventRegistration lease = space.notify(new FieldHolder(), listener, 1000);
+        lease.getLease().cancel();
+        FieldHolder onlyOne = new FieldHolder();
+        onlyOne.setFieldA("A");
+        onlyOne.setFieldB("B");
+        space.write(onlyOne, 900);
+        Assert.assertNotNull(space.take(onlyOne, 100));
+        // Pausing for 300ms
+        Assert.assertNull(space.take(onlyOne, 300));
+        
+        Assert.assertEquals("As the listener was cancelled, I should not have been triggered.", 0, listener.availability);
+        Assert.assertEquals(0, listener.taken);
+    }
+
     private class NotificationTestListener implements SemiEventListener {
         private int expiration;
         private int availability;
