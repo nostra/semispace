@@ -82,9 +82,7 @@ public class NotificationClientIntegrationTest {
         onlyOne.setFieldB("B");
         space.write(onlyOne, 900);
         Assert.assertNotNull(space.take(onlyOne, 100));
-        // Pausing for 300ms
-        Assert.assertNull(space.take(onlyOne, 300));
-        
+
         Assert.assertEquals("As the listener was cancelled, I should not have been triggered.", 0, listener.availability);
         Assert.assertEquals(0, listener.taken);
     }
