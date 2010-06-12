@@ -23,7 +23,6 @@ import org.cometd.client.BayeuxClient;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.comet.common.CometConstants;
-import org.semispace.comet.server.SemiSpaceCometListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +61,7 @@ public class NotificationClient {
         attach(client);
 
         try {
-            client.publish(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId+"/"+ SemiSpaceCometListener.EVENT_ALL, map, null );
+            client.publish(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId+"/"+ CometConstants.EVENT_ALL, map, null );
             log.debug("Awaiting..."+CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all map is: "+map);
             boolean finishedOk = notificationListener.getLatch().await(5, TimeUnit.SECONDS);
             log.trace("... unlatched");
@@ -112,7 +111,7 @@ public class NotificationClient {
         }
 
         private void deliverInternal( Client to, Message message) {
-            if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/"+SemiSpaceCometListener.EVENT_ALL).equals(message.getChannel())) {
+            if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/"+CometConstants.EVENT_ALL).equals(message.getChannel())) {
                 log.trace("Notify - Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
                 if ( map != null ) {

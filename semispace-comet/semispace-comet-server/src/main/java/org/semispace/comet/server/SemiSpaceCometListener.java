@@ -39,11 +39,6 @@ public class SemiSpaceCometListener implements SemiEventListener {
     private final NotificationService service;
     private final Client client;
     private String callId;
-    public static final String EVENT_EXPIRATION = "expiration";
-    public static final String EVENT_AVAILABILITY = "availability";
-    public static final String EVENT_TAKEN = "taken";
-    public static final String EVENT_RENEW = "renewal";
-    public static final String EVENT_ALL = "all";
 
     public SemiSpaceCometListener(String listenerType, String callId, Client remote, NotificationService notificationService) {
         this.interestingClass = mapListenerType( listenerType );
@@ -53,15 +48,15 @@ public class SemiSpaceCometListener implements SemiEventListener {
     }
 
     private Class mapListenerType(String listenerType) {
-        if ( EVENT_AVAILABILITY.equals( listenerType )) {
+        if ( CometConstants.EVENT_AVAILABILITY.equals( listenerType )) {
             return SemiAvailabilityEvent.class;
-        } else if ( EVENT_TAKEN.equals( listenerType )) {
+        } else if ( CometConstants.EVENT_TAKEN.equals( listenerType )) {
             return SemiTakenEvent.class;
-        } else if ( EVENT_EXPIRATION.equals( listenerType )) {
+        } else if ( CometConstants.EVENT_EXPIRATION.equals( listenerType )) {
             return SemiExpirationEvent.class;
-        } else if ( EVENT_RENEW.equals( listenerType )) {
+        } else if ( CometConstants.EVENT_RENEW.equals( listenerType )) {
             return SemiRenewalEvent.class;
-        } else if ( EVENT_ALL.equals( listenerType )) {
+        } else if ( CometConstants.EVENT_ALL.equals( listenerType )) {
             return Object.class;
         } else {
             throw new RuntimeException("Erroneous listener type given: "+listenerType);
@@ -88,13 +83,13 @@ public class SemiSpaceCometListener implements SemiEventListener {
     }
     private String mapEventToListenerType(SemiEvent event ) {
         if ( event instanceof SemiExpirationEvent ) {
-            return EVENT_EXPIRATION;
+            return CometConstants.EVENT_EXPIRATION;
         } else if ( event instanceof SemiAvailabilityEvent) {
-            return EVENT_AVAILABILITY;
+            return CometConstants.EVENT_AVAILABILITY;
         } if ( event instanceof SemiTakenEvent) {
-            return EVENT_TAKEN;
+            return CometConstants.EVENT_TAKEN;
         } if ( event instanceof SemiRenewalEvent) {
-            return EVENT_RENEW;
+            return CometConstants.EVENT_RENEW;
         } else {
             throw new RuntimeException("Sanity problem. Unexpected event type "+event.getClass().getName());
         }        

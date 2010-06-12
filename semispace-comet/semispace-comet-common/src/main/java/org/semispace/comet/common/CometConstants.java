@@ -35,4 +35,9 @@ public class CometConstants {
      * Need to translate internal class type identifier with object type key
      */
     public static final String PAYLOAD_MARKER = "json";
+    public static final String EVENT_EXPIRATION = "expiration";
+    public static final String EVENT_AVAILABILITY = "availability";
+    public static final String EVENT_TAKEN = "taken";
+    public static final String EVENT_RENEW = "renewal";
+    public static final String EVENT_ALL = "all";
 }

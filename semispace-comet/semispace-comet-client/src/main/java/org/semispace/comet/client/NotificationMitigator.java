@@ -23,7 +23,6 @@ import org.cometd.client.BayeuxClient;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiLease;
 import org.semispace.comet.common.CometConstants;
-import org.semispace.comet.server.SemiSpaceCometListener;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
 import org.semispace.event.SemiExpirationEvent;
@@ -167,13 +166,13 @@ public class NotificationMitigator implements SemiLease {
         }
 
         private SemiEvent createEvent(String type, Long objectId) {
-            if ( type.equals(SemiSpaceCometListener.EVENT_AVAILABILITY)) {
+            if ( type.equals(CometConstants.EVENT_AVAILABILITY)) {
                 return new SemiAvailabilityEvent(objectId.longValue());
-            } else if ( type.equals(SemiSpaceCometListener.EVENT_TAKEN)) {
+            } else if ( type.equals(CometConstants.EVENT_TAKEN)) {
                 return new SemiTakenEvent(objectId.longValue());
-            }  else if ( type.equals(SemiSpaceCometListener.EVENT_EXPIRATION)) {
+            }  else if ( type.equals(CometConstants.EVENT_EXPIRATION)) {
                 return new SemiExpirationEvent(objectId.longValue());
-            } else if (  type.equals(SemiSpaceCometListener.EVENT_RENEW)) {
+            } else if (  type.equals(CometConstants.EVENT_RENEW)) {
                 // TODO Duration is wrong
                 return new SemiRenewalEvent(objectId.longValue(), 1000);
             } else {
