@@ -21,7 +21,6 @@ import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
 import org.junit.Assert;
 import org.junit.Test;
-import org.semispace.comet.client.AlternateHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
