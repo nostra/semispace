@@ -1,6 +1,6 @@
-semispace-comet
+semispace-comet-webapp
 
- Using cometd to interface SemiSpace from JavaScript.
+ War which includes the comet interface.
 
  Please see the {{{../semispace-main/semispace-book}semispace-book}} for in-depth
  information about installation and usage.
