@@ -1,2 +1,0 @@
-See regarding impl:
-http://www.extjs.com/forum/showthread.php?90989-Does-extjs-support-Bayeux-comet%EF%BC%9F
