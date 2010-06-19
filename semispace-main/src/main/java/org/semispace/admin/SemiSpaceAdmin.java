@@ -166,7 +166,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     private int figureOutSpaceId() {
         List<IdentifyAdminQuery> admins = new ArrayList<IdentifyAdminQuery>();
 
-        IdentifyAdminQuery masterFound = findListOfAllSpaces(admins);
+        IdentifyAdminQuery masterFound = populateListOfAllSpaces(admins);
 
         Collections.sort(admins, new Comparator<IdentifyAdminQuery>() {
             @Override
@@ -189,23 +189,28 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         }
         if (masterFound == null) {
             log.info("I am master, as no other master was identified.");
-            master = true;
-            if (!admins.isEmpty()) {
-                log.info("Informing other masters of system time.");
-                TimeAnswer ta = new TimeAnswer();
-                ta.masterId = getSpaceId();
-                ta.timeFromMaster = Long.valueOf(System.currentTimeMillis());
-                space.write(ta, 1000);
-            }
+            assumeAdminResponsibility(! admins.isEmpty());
         }
         return foundId;
     }
 
+    protected void assumeAdminResponsibility(boolean sendAdminInfoAboutSystemTime) {
+        master = true;
+        if (sendAdminInfoAboutSystemTime) {
+            log.info("Informing other masters of system time.");
+            TimeAnswer ta = new TimeAnswer();
+            ta.masterId = getSpaceId();
+            ta.timeFromMaster = Long.valueOf(System.currentTimeMillis());
+            space.write(ta, 1000);
+        }
+    }
+
     /**
+     * Protected as it is used every once in a while from periodic object reaper
      * @param admins List to fill with the admin processes found
      * @return List of identified SemiSpace admin classes
      */
-    private IdentifyAdminQuery findListOfAllSpaces(List<IdentifyAdminQuery> admins) {
+    protected IdentifyAdminQuery populateListOfAllSpaces(List<IdentifyAdminQuery> admins) {
         IdentifyAdminQuery identifyAdmin = new IdentifyAdminQuery();
         identifyAdmin.hasAnswered = Boolean.FALSE;
         space.write(identifyAdmin, SemiSpace.ONE_DAY);

@@ -26,9 +26,6 @@
 
 package org.semispace.admin;
 
-import org.semispace.SemiSpace;
-import org.semispace.SemiSpaceInterface;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -38,7 +35,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Harvest objects periodically if this instance of semispace is 
- * the master object.
+ * the master object. It will periodically check for presence of master in order
+ * to ensure one present.
  */
 public class PeriodicHarvest {
 //    private static final Logger log = LoggerFactory.getLogger(PeriodicHarvest.class);
@@ -60,18 +58,7 @@ public class PeriodicHarvest {
         if ( handle != null ) {
             cancelReaper();
         }
-        final Runnable harvester = new Runnable() {
-            @SuppressWarnings("synthetic-access")
-            public void run() {
-                SemiSpaceInterface space = semiSpaceAdmin.getSpace();
-                if ( semiSpaceAdmin.isMaster() && space instanceof SemiSpace ) {
-                    //log.debug("Harvesting - start - ...");
-                    ((SemiSpace)space).harvest();
-                    //log.debug("Harvesting - end - ...");
-                }
-                    
-            }
-        };
+        final Runnable harvester = new ScheduledSemiSpaceHarvester( semiSpaceAdmin ); 
         handle = scheduler.scheduleAtFixedRate(harvester, 60, 15, SECONDS);
         
     }
