@@ -50,7 +50,17 @@ public class SemiSpaceInitializer extends GenericServlet {
         lcs = new LeaseCancellationService(bayeux);
         lcs.setSeeOwnPublishes(false);
     }
-    
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        rs.getClient().disconnect();
+        ws.getClient().disconnect();
+        ts.getClient().disconnect();
+        ns.getClient().disconnect();
+        lcs.getClient().disconnect();
+    }
+
     @Override
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
         throw new ServletException(getClass().getName()+" does not support any services");
