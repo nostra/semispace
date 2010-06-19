@@ -164,28 +164,10 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     }
 
     private int figureOutSpaceId() {
-        IdentifyAdminQuery identifyAdmin = new IdentifyAdminQuery();
-        identifyAdmin.hasAnswered = Boolean.FALSE;
-        space.write(identifyAdmin, SemiSpace.ONE_DAY);
-        IdentifyAdminQuery iaq = new IdentifyAdminQuery();
-        iaq.hasAnswered = Boolean.TRUE;
-
         List<IdentifyAdminQuery> admins = new ArrayList<IdentifyAdminQuery>();
-        IdentifyAdminQuery masterFound = null;
-        IdentifyAdminQuery answer = null;
-        do {
-            answer = space.take(iaq, 750);
-            if (answer != null) {
-                admins.add(answer);
-                if (Boolean.TRUE.equals(answer.amIAdmin)) {
-                    if (masterFound != null) {
-                        log.error("More than one admin found, both " + masterFound.id + " and " + answer.id);
-                    }
-                    masterFound = answer;
-                }
-            }
 
-        } while (answer != null);
+        IdentifyAdminQuery masterFound = findListOfAllSpaces(admins);
+
         Collections.sort(admins, new Comparator<IdentifyAdminQuery>() {
             @Override
             public int compare(IdentifyAdminQuery a1, IdentifyAdminQuery a2) {
@@ -205,8 +187,6 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
                 foundId = admin.id.intValue() + 1;
             }
         }
-        // Remove query from space
-        space.takeIfExists(identifyAdmin);
         if (masterFound == null) {
             log.info("I am master, as no other master was identified.");
             master = true;
@@ -222,6 +202,43 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     }
 
     /**
+     * @param admins List to fill with the admin processes found
+     * @return List of identified SemiSpace admin classes
+     */
+    private IdentifyAdminQuery findListOfAllSpaces(List<IdentifyAdminQuery> admins) {
+        IdentifyAdminQuery identifyAdmin = new IdentifyAdminQuery();
+        identifyAdmin.hasAnswered = Boolean.FALSE;
+        space.write(identifyAdmin, SemiSpace.ONE_DAY);
+
+        IdentifyAdminQuery iaq = new IdentifyAdminQuery();
+        iaq.hasAnswered = Boolean.TRUE;
+
+        IdentifyAdminQuery masterFound = null;
+        IdentifyAdminQuery answer = null;
+        long waitFor = 750;
+        do {
+            answer = space.take(iaq, waitFor);
+            // When the first answer has arrived, the others, if any, should come close behind.
+            waitFor = 250;
+            if (answer != null) {
+                admins.add(answer);
+                if (Boolean.TRUE.equals(answer.amIAdmin)) {
+                    if (masterFound != null) {
+                        log.error("More than one admin found, both " + masterFound.id + " and " + answer.id);
+                    }
+                    masterFound = answer;
+                }
+            }
+            // Looping until we do not find any more admins
+        } while (answer != null);
+
+        // Remove identity query from space as we do not need it anymore. If more than one present, we have a race condition (not likely)
+        while ( space.takeIfExists(new IdentifyAdminQuery()) != null) { }
+
+        return masterFound;
+    }
+
+    /**
      * The very first query may take some time (when using terracotta), and it is therefore prudent to kick start the
      * connection.
      * 
@@ -233,7 +250,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         nvq.name = "Internal admin query";
         nvq.value = "Dummy-value in order to be (quite) unique [" + bench + "]";
         space.write(nvq, SemiSpace.ONE_DAY);
-        nvq = (NameValueQuery) space.take(nvq, 1000);
+        nvq = space.take(nvq, 1000);
         if (nvq == null) {
             throw new AssertionError("Unable to retrieve query which is designed to kickstart space.");
         }
@@ -315,7 +332,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         answer.amIAdmin = Boolean.valueOf(master);
         answer.hasAnswered = Boolean.TRUE;
         answer.id = Integer.valueOf(spaceId);
-        log.info("Giving identity answer for space " + spaceId + ", which is" + (master ? "" : " NOT") + " master.");
+        log.debug("Giving identity answer for space " + spaceId + ", which is" + (master ? "" : " NOT") + " master.");
         space.write(answer, SemiSpace.ONE_DAY);
     }
 
