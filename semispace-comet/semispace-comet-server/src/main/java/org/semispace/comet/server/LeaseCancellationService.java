@@ -47,8 +47,8 @@ public class LeaseCancellationService extends BayeuxService {
     }
 
     public void semispaceCancelLease(final Client remote, final Message message) {
-        log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-        String holderId = ((Map<String,String>)message.getData()).get("callId");
+        log.trace("Lease cancel: Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
+        Object holderId = ((Map)message.getData()).get("callId");
         SemiLease sl = leases.get( message.getClientId()+"_"+holderId );
         Boolean result = Boolean.FALSE;
         if ( sl != null ) {
@@ -62,10 +62,11 @@ public class LeaseCancellationService extends BayeuxService {
         } else {
             log.warn("No lease with holder id "+holderId);
         }
-        // Not putting this in separate thead as it is expected to perform reasonably quickly
+        // Not putting this in separate thread as it is expected to perform reasonably quickly
         Map<String, String> output = new HashMap<String, String>();
         output.put("cancelledOk", result.toString());
         remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
+        log.trace("========= delivered lease cancel reply");
     }
 
     public static void registerCancelableLease(String callId, SemiLease lease, String clientId) {
@@ -73,6 +74,8 @@ public class LeaseCancellationService extends BayeuxService {
     }
 
     private void performLeaseRegistration(String callId, SemiLease lease, String clientId) {
-        leases.put( clientId+"_"+callId, lease );
+        String key = clientId+"_"+callId;
+        log.trace("Registered lease cancellation element with key {}",key);
+        leases.put( key, lease );
     }
 }
