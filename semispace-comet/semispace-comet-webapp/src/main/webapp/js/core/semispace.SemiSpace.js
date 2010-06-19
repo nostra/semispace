@@ -86,8 +86,13 @@ semispace.SemiSpace = function(connection){
             if(subscriptionLease){
                 cometd.unsubscribe(subscriptionLease);
             }
-            subscriptionLease = cometd.subscribe('/semispace/reply/leasecancel/' + incrementedChannel, function(){/* Do something */});
-            cometd.publish('/semispace/call/leasecancel/' + incrementedChannel);
+            subscriptionLease = cometd.subscribe('/semispace/reply/leasecancel/' + incrementedChannel, function(){
+                //alert("lease cancelled");
+            });
+            // TODO (#1) {callId:(incrementedChannel-1)} should really be the same channel number as the notification registration
+            // Ie: {callId:(incrementedChannel-1) should be: {callId:channelUsedInNotification
+            // At the moment, this will only work if you choose notify, and then lease cancel immediately after:
+            cometd.publish('/semispace/call/leasecancel/' + incrementedChannel, {callId:(incrementedChannel-1)});
         };
 
 
@@ -95,6 +100,7 @@ semispace.SemiSpace = function(connection){
             cometd.unsubscribe(subscriptionReply);
         }
         subscriptionReply = cometd.subscribe('/semispace/reply/notify/' + incrementedChannel + '/' + listener, function(message){
+            // TODO Either register the lease cancel method with the value of incrementedChannel, or register the incrementedChannel value with a separate variable. See (#1)
             callbackHandler(message, callback);
         });
 
