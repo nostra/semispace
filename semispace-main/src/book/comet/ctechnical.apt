@@ -36,7 +36,7 @@ Communication channel overview
 *-------------------------------------+---------------
 |/semispace/event/notify/<number>/<type> | Attached is a notification event. |
 *-------------------------------------+---------------
-|/semispace/call/leasecancel/<number>  | Cancel lease with callId as mapped parameter |
+|/semispace/call/leasecancel/<number>  | Cancel lease with callId as mapped parameter. CallId is the <number> from the notify method|
 *-------------------------------------+---------------
 |/semispace/reply/leasecancel/<number>  | Acknowledge of listener cancellation |
 *-------------------------------------+---------------
