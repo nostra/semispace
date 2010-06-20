@@ -14,6 +14,7 @@
     <packaging>jar</packaging>
     <version>1.1.2-SNAPSHOT</version>
     <name>semispace-comet-common</name>
+    <description>Common functionality for the client and server Java side interface to SemiSpace</description>
 
     <dependencies>
         <dependency>

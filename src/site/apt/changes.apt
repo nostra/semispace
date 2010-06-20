@@ -5,6 +5,16 @@
  Changes over the versions from version 1.0.0. The changes are grouped by the
  snapshot versions for which they were made.
 
+1.1.2-SNAPSHOT
+
+*----------------------------------+------------+
+|| Change or bug || Change
+*----------------------------------+------------+
+| Added cometd | Added project elements, examples and implementation for Comet interface|
+*----------------------------------+------------+
+| Resynchronization when loosing admin | If the admin process disappears, a new admin gets elected |
+*----------------------------------+------------+
+
 1.1.1-SNAPSHOT
 
 *----------------------------------+------------+
