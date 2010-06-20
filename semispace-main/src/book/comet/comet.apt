@@ -25,7 +25,11 @@ Overview of semispace-comet
 *--------------+----------+
 | semispace-comet-common | Transport objects and functionality shared between the client and server implementation  |
 *--------------+----------+
-| JavaScript | The web client functionality resides in JavaScript which is simply downloaded and used. |
+| semispace-comet-webapp | An example webapp, which gives you inspiration of how to configure your own |
+*--------------+----------+
+| semispace-comet-app    | A standalone jetty server which you can easily run on the command line | 
+*--------------+----------+
+| JavaScript | The web client functionality resides in JavaScript which you simply downloaded and add to your webapp |
 *--------------+----------+
 
 ~~~~~~~~~~~~
@@ -33,4 +37,6 @@ Installation
 ~~~~~~~~~~~~
 
  When using semispace-comet, you need to install / prepare the server side and the JavaScript side.
- On the server side is a matter of setting up the   
+ On the server side is a matter of setting up the webapp with dependencies  in a manner similar
+ to semispace-comet-webapp (which indeed is an example). On the client side, you need to
+ copy down the JavaScript files, and put them in the correct directories.

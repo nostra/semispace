@@ -24,5 +24,6 @@
         <module>semispace-comet-server</module>
         <module>semispace-comet-client</module>
         <module>semispace-comet-webapp</module>
+        <module>semispace-comet-app</module>
     </modules>
 </project>
