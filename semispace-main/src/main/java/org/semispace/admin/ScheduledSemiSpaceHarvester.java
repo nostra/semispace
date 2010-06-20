@@ -41,7 +41,7 @@ public class ScheduledSemiSpaceHarvester implements Runnable {
             // Rather unlikely that this method has been called if current instance is master
             return;
         }
-        if ( lastCheck + MIN_CHECK_WAIT_MS < System.currentTimeMillis()) {
+        if ( lastCheck + MIN_CHECK_WAIT_MS > System.currentTimeMillis()) {
             // In order not to check too often
             return;
         }
