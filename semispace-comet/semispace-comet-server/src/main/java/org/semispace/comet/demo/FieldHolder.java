@@ -65,6 +65,18 @@ public class FieldHolder {
     }
 
     @Override
+    public int hashCode() {
+        int hash = -1;
+        if ( fieldA != null ) {
+            hash += fieldA.hashCode();
+        }
+        if ( fieldB != null ) {
+            hash += fieldB.hashCode();
+        }
+        return hash;
+    }
+
+    @Override
     public String toString() {
         return getClass().getName()+"[fieldA:"+fieldA+"]"+"[fieldB:"+fieldB+"]";
     }
