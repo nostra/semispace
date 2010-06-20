@@ -65,7 +65,7 @@
         if TIM support has not been installed. The module version
          may exist in different versions--> 
 	<modules>
-	    <module name="tim-jetty-6.1" version="2.1.0"/>
+	    <module name="tim-jetty-6.1" version="2.1.3"/>
         <!-- module name="semispace-tim" version="1.0.0" group-id="org.semispace"/ -->
 	</modules> 
   </clients>
@@ -176,7 +176,7 @@
       </jee-application>
     </spring>-->
   <!--END SNIPPET: springSpaceConfig-->
-    <!-- Not presently working: -->
+    <!-- Not presently working:
     <dso>
       <app-groups>
         <app-group name="webAndPojo">
@@ -185,7 +185,7 @@
         </app-group>
       </app-groups>
     </dso>
-
+    -->
   </application>
   
 </tc:tc-config>
