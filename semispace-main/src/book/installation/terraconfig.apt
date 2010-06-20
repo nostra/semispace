@@ -7,8 +7,19 @@
  use Terracotta right away.
 
  This explanation is aimed at
- {{{http://www.terracotta.org}Terracotta version 3.2.0.}}
+ {{{http://www.terracotta.org}Terracotta version 3.2.1_2.}}
 
+Problem with JVM > 1.6.0_18
+~~~~
+
+ Unless you run version 3.2.2 (which in the time of writing is not released),
+ Terracotta will not work with JVM-1.6.0_19 or later:
+
+ * {{https://jira.terracotta.org/jira/browse/CDV-1472}}
+
+ * {{http://forums.terracotta.org/forums/posts/list/3823.page}}
+
+ []
 
 ~~~~~~~~~~~~
 Configuration of Terracotta
@@ -29,7 +40,11 @@ Configuration of Terracotta
  more information about configuration.
 
  You want to set the environment variable <<<TC_INSTALL_DIR>>>
- pointing at the, surprise, installation directory of Terracotta.
+ pointing at the, surprise, installation directory of Terracotta:
+
++----
+export TC_INSTALL_DIR=<where you have exploded the terracotta-3.x.x.tar.gz file>
++----
   
 
 ~~~~~~~~~~~~
@@ -75,7 +90,7 @@ Configuration of Terracotta
  
 +--------
 $TC_INSTALL_DIR/bin/tim-get.sh list jetty  
-$TC_INSTALL_DIR/bin/tim-get.sh install tim-jetty-6.1 2.1.0 org.terracotta.modules
+$TC_INSTALL_DIR/bin/tim-get.sh install tim-jetty-6.1 2.1.3 org.terracotta.modules
 +--------
   
 ~~~~~~~~~~~~
