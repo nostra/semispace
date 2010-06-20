@@ -14,9 +14,13 @@ import java.util.ArrayList;
 public class ScheduledSemiSpaceHarvester implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(ScheduledSemiSpaceHarvester.class);
     private SemiSpaceAdmin semiSpaceAdmin;
+    private long lastCheck;
+    /** At least a 2 minute wait between checking for presence of master */
+    private static final long MIN_CHECK_WAIT_MS = 1000*60*2;
 
     public ScheduledSemiSpaceHarvester(SemiSpaceAdmin semiSpaceAdmin) {
         this.semiSpaceAdmin = semiSpaceAdmin;
+        this.lastCheck = System.currentTimeMillis();
     }
     public void run() {
         SemiSpaceInterface space = semiSpaceAdmin.getSpace();
@@ -37,6 +41,11 @@ public class ScheduledSemiSpaceHarvester implements Runnable {
             // Rather unlikely that this method has been called if current instance is master
             return;
         }
+        if ( lastCheck + MIN_CHECK_WAIT_MS < System.currentTimeMillis()) {
+            // In order not to check too often
+            return;
+        }
+        lastCheck = System.currentTimeMillis();
         IdentifyAdminQuery admin = semiSpaceAdmin.populateListOfAllSpaces(new ArrayList<IdentifyAdminQuery>());
         if ( admin == null ) {
             log.info("Assuming admin responsibility in current space, as admin instance was not found");
