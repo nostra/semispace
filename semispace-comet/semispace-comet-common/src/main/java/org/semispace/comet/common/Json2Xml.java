@@ -45,6 +45,10 @@ public class Json2Xml {
      * @return XML representation
      */
     public static final String transform( String json ) {
+        if ( json == null ) {
+            log.debug("Json-string to transform was null. Returning null");
+            return null;
+        }
         HierarchicalStreamDriver driver = new SemiSpaceJettisonDriver();
         Reader reader = new StringReader(json);
         HierarchicalStreamReader hsr = driver.createReader(reader);
