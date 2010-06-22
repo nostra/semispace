@@ -111,7 +111,6 @@ semispace.SemiSpace = function(connection){
             callbackHandler(message, callback);
         });
 
-        console.log('notify: ' + incrementedChannel);
 
         cometd.publish('/semispace/call/notify/' + incrementedChannel + '/' + listener, {duration:duration.toString(), json:template});
 
