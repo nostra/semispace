@@ -2,7 +2,7 @@
     <parent>
         <groupId>org.semispace.comet</groupId>
         <artifactId>semispace-comet</artifactId>
-        <version>1.2.0</version>
+        <version>1.2.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -10,7 +10,7 @@
     <groupId>org.semispace.comet</groupId>
     <artifactId>semispace-comet-app</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.0</version>
+    <version>1.2.1-SNAPSHOT</version>
     <name>semispace-comet-app</name>
     <description>semispace-comet-webapp packaged as a stand alone, easily deployable, application.</description>
     <url>http://www.semispace.org/semispace/semispace-comet/semispace-comet-app</url>
