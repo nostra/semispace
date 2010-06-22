@@ -40,3 +40,14 @@ Installation
  On the server side is a matter of setting up the webapp with dependencies  in a manner similar
  to semispace-comet-webapp (which indeed is an example). On the client side, you need to
  copy down the JavaScript files, and put them in the correct directories.
+
+ A good starting point is to examine the projects in semispace-comet, and semispace-comet-webapp in
+ particular. That sub project contains examples of use. 
+
+~~~~~~~~~~~~
+Instructions for use: TBA
+~~~~~~~~~~~~
+
+ We are on the way of consolidating and organizing the examples in a manner that
+ will suit a presentation like this better. However, we have not got around to do
+ it yet. Sorry.
