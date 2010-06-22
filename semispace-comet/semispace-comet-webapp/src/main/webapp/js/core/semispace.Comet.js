@@ -33,7 +33,7 @@ semispace.Comet = function(connector, server){
         // Set configuration
         cometd.configure({
             url: server,
-            logLevel: 'debug'
+            logLevel: 'error'
         });
 
         cometd.addListener('/meta/handshake', function(message){
