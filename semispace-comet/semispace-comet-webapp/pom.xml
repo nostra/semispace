@@ -19,18 +19,6 @@
         <defaultGoal>install</defaultGoal>
         <plugins>
             <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <overlays>
-                        <overlay />
-                        <overlay>
-                            <groupId>org.cometd.javascript</groupId>
-                            <artifactId>cometd-javascript-dojo</artifactId>
-                        </overlay>
-                    </overlays>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <!-- Seems like jetty7 works much better with comet, using 6.1.24, though-->
                 <!-- artifactId>maven-jetty-plugin</artifactId>
@@ -69,16 +57,11 @@
         <dependency>
             <groupId>org.semispace.comet</groupId>
             <artifactId>semispace-comet-server</artifactId>
-         </dependency>
+        </dependency>
         <dependency>
             <groupId>org.semispace.comet</groupId>
             <artifactId>semispace-comet-client</artifactId>
          </dependency>
-        <dependency>
-            <groupId>org.cometd.javascript</groupId>
-            <artifactId>cometd-javascript-dojo</artifactId>
-            <type>war</type>
-        </dependency>
     </dependencies>
 
 </project>
