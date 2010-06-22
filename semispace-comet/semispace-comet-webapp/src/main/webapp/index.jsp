@@ -4,11 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 </head>
 <body>
-<h1>semispace-comet</h1>
+<h1>Semispace Comet</h1>
 <ul>
-    <li><a href="insert?param=demo">Insert servlet</a></li>
-    <li><a href="app.jsp">App</a></li>
+    <li><a href="examples">Examples</a></li>
 </ul>
-
 </body>
 </html>
