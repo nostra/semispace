@@ -29,7 +29,6 @@
  */
 semispace.SemiSpace = function(connection){
 
-    // TODO: Test leasecancel
     // TODO: Handle callback better on notify and leasecancel 
 
     var cometd = connection;
@@ -81,18 +80,19 @@ semispace.SemiSpace = function(connection){
         var subscriptionReply = undefined;
         var subscriptionEvent = undefined;
 
+        var leaseCancelChannel = incrementedChannel;  // Break closure by putting incrementedChannel on local variable.
+
         var leasecancel = function(){
+
             var subscriptionLease = undefined;
             if(subscriptionLease){
                 cometd.unsubscribe(subscriptionLease);
             }
             subscriptionLease = cometd.subscribe('/semispace/reply/leasecancel/' + incrementedChannel, function(){
-                //alert("lease cancelled");
+                // Nothing to do...
             });
-            // TODO (#1) {callId:(incrementedChannel-1)} should really be the same channel number as the notification registration
-            // Ie: {callId:(incrementedChannel-1) should be: {callId:channelUsedInNotification
-            // At the moment, this will only work if you choose notify, and then lease cancel immediately after:
-            cometd.publish('/semispace/call/leasecancel/' + incrementedChannel, {callId:(incrementedChannel-1)});
+
+            cometd.publish('/semispace/call/leasecancel/' + incrementedChannel, {callId: leaseCancelChannel});
         };
 
 
@@ -100,7 +100,6 @@ semispace.SemiSpace = function(connection){
             cometd.unsubscribe(subscriptionReply);
         }
         subscriptionReply = cometd.subscribe('/semispace/reply/notify/' + incrementedChannel + '/' + listener, function(message){
-            // TODO Either register the lease cancel method with the value of incrementedChannel, or register the incrementedChannel value with a separate variable. See (#1)
             callbackHandler(message, callback);
         });
 
@@ -111,6 +110,8 @@ semispace.SemiSpace = function(connection){
         subscriptionEvent = cometd.subscribe('/semispace/event/notify/' + incrementedChannel + '/' + listener, function(message){
             callbackHandler(message, callback);
         });
+
+        console.log('notify: ' + incrementedChannel);
 
         cometd.publish('/semispace/call/notify/' + incrementedChannel + '/' + listener, {duration:duration.toString(), json:template});
 
