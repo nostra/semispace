@@ -1,0 +1,108 @@
+
+# Slide 1
+  - HTML - (H)yper(T)ext (M)arkup (L)anguage
+    - document-centric
+    - high latency due to full page loads only
+    - coarse-grained interactions with the server
+    - multi-user from the beginning
+
+# Slide 2
+  - AJAX - (A)synchronous (J)avaScript (A)nd (X)ML
+    - allowed fine-grained interactions from browser to server
+    - reduced latency for a lot of client-initiated interactions
+    - no need for full page load every time
+    - only pull data for and refresh the parts of the page that required update
+    - does not provide for server-initiated interactions
+    - modern browsers have a native AJAX support
+    - need to do scheduled requests to check for new data
+
+# Slide 3
+  - Comet 
+    - is a Ajax Push technology pattern
+    - allows full bi-directional, asynchronous communication between browser and server
+    - not "true" push, does long polling
+      - browser makes an Ajax-style request to the server
+      - request is kept open until the server has new data to send to the browser
+      - when server has data it is sent to the browser in a complete response
+      - when response is complete, browser initiates a new long polling request in order to obtain subsequent events
+    - removes the need for scheduled requests
+      - minimizes the amount of data transfered
+      - much faster respons when data is awailable on the server
+    - no native comet support in browser so must rely on a javascript implementation
+    - not a standard
+
+# Slide 4
+  - Others 
+    - Bosh - Bidirectional-streams Over Synchronous HTTP  
+      - Pretty much the same as Comet, mainly used by XMPP
+    - Reverse Ajax
+
+# Slide 5
+  - WebSockets - Enter the real time web (twitter is not real time web)
+    - full-duplex communications channel that operates over a single TCP socket
+      - bi-directional capabilities maintains two connections - one for upstream and one for downstream. 
+      - full-duplex offers transmission of data in two directions simultaneously
+      - compered to comet, websockets is suited for applications that have sub-500 millisecond latency
+    - exposed via a JavaScript interface in compliant browsers
+    - native implemented in browsers (so fare only in Chrome and Safari, FireFox to come soon)
+    - can extend any protocol to the browser (ex; remote desktop, telnet...)
+    - Can also handle binary (ajax / comet only handle text). JavaScript will probably get binary support
+    - WebSocket protocol is being standardized by the IETF
+    - The WebSockets API is being standardized by the W3C
+
+# Slide 6
+  - Old traditional implementation in the middle tier
+  - What is wrong here?
+    - A lot of work in the middle tier!
+
+# Slide 7
+  - With websockets protocols are piped trough the middle tier.
+  - reduces the need for implementing a "middle layer" on the middle tier (the "web server")
+    - Example: a webserver can only "pipe" a protocol trough. 
+               No need to convert the xmpp protocol on a backend server on the web server.
+# Slide 8
+  - Opens new possibilities
+
+# Slide 9
+  - What is SemiSpace?
+
+# Slide 10
+  - What is a space suited for?
+    - Backend server mumbling...
+
+# Slide 11
+  - Working with a space
+    - The Java object methods
+
+# Slide 12 -> 19
+  - Working with a space
+    - Example master / worker
+
+# Slide 20
+  - Distribuert JSON
+    - The observent viewer saw I used JSON as example
+
+# Slide 21
+  - This is what push has opend for
+
+# Slide 22
+  - The connection object
+
+# Slide 23
+  - The SemiSpace object
+    - Note that the methods are 100% simmilar to the JAVA methods
+
+# Slide 24
+  - DEMO!
+
+# Slide 25
+  - Future directions
+    - A security module:
+      - Implement the cometd security model
+      - Add a JSONschema-based configurable object filter
+  - Binding for JQuery
+  - Free the library of the necessity of bindings (DOJO / JQuery)
+  - Upgrade to cometd-2.0
+  - WebSocket support
+  - Add handy tools (compression tools, proxy, DB binding etc..)
+
