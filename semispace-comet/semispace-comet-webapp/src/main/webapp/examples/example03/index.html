@@ -3,75 +3,69 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Semispace Example 03</title>
-    <!--
-        /**
-         * Copyright 2010 Trygve Lie
-         *
-         * Licensed under the Apache License, Version 2.0 (the "License");
-         * you may not use this file except in compliance with the License.
-         * You may obtain a copy of the License at
-         *
-         *   http://www.apache.org/licenses/LICENSE-2.0
-         *
-         * Unless required by applicable law or agreed to in writing, software
-         * distributed under the License is distributed on an "AS IS" BASIS,
-         * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-         * See the License for the specific language governing permissions and
-         * limitations under the License.
-         **/
-    -->
-    <link href="style.css" type="text/css" rel="stylesheet" media="all" title="Example styling" />
 
-    <!-- Semispace Comet Scripts -->
-    <script type="text/javascript" src="/semispace-comet-server/dojo/dojo.js.uncompressed.js"> </script>
+    <!-- DOJO kit -->
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/dojo-release-1.4.2/dojo/dojo.js"> </script>
+
+    <!-- SemiSpace -->
     <script type="text/javascript" src="/semispace-comet-server/js/semispace.js"> </script>
-    <script type="text/javascript" src="/semispace-comet-server/js/util/semispace.util.js"> </script>
-    <script type="text/javascript" src="/semispace-comet-server/js/util/semispace.util.interface.js"> </script>
-    <script type="text/javascript" src="/semispace-comet-server/js/interfaces/semispace.SemiSpaceInterface.js"> </script>
     <script type="text/javascript" src="/semispace-comet-server/js/core/semispace.Comet.js"> </script>
     <script type="text/javascript" src="/semispace-comet-server/js/core/semispace.SemiSpace.js"> </script>
 
-    <!-- Example -->
-    <script type="text/javascript" src="video.js"> </script>
-
-
     <script type="text/javascript">
-        var video = {
+        var example = {
 
-            swapFile:function(video){
-                var playerElement = document.getElementById('player');
-                
+            communication:undefined,
+            space:undefined,
+            msgEl:undefined,
+
+            init:function(){
+                dojo.require("dojox.cometd");
+
+                communication = new semispace.Comet(dojox.cometd, location.protocol + '//' + location.host + '/semispace-comet-server/cometd');
+                communication.connect();
+
+                space = new semispace.SemiSpace(communication.getConnection());
+
+                msgEl = document.getElementById('status');
+            },
+
+            spaceWrite:function(){
+               var jsonString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
+               space.write(jsonString, 10000, function(data){
+                   // msgEl.innerHTML = 'Data written to space';
+               });
+            },
+
+            spaceRead:function(){
+                var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
+                space.read(jsonTemplate, 10000, function(data){
+                    if(data){
+                        msgEl.innerHTML = data;
+                    }
+                });
+            },
+
+            spaceNotify:function(){
+                var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
+                space.notify(jsonTemplate, 'availability', 10000, function(data){
+                    // msgEl.innerHTML = 'Notify work';
+                    example.spaceRead();
+                });
             }
 
         }
     </script>
-    <!-- http://flashingtwelve.brickfilms.com/Website/OperaDemo.html -->
 </head>
 <body onload="example.init();">
-    <div id="page">
-        <!--
-        <video src="http://www.flashingtwelve.brickfilms.com/TTC/data/Mirko_The_Artist-med.ogg" id="player" width="640" height="360" controls>
-            <p>Your browser does not support the HTML 5 video tag! Get a real browser!</p>
-        </video>
-        -->
 
-        <div id="list">
-            Select: <a href="javascript:;" onclick="example.selectVideo('video1')">Number 1</a> | <a href="javascript:;"  onclick="example.selectVideo('video2')">Number 2</a> | <a href="javascript:;"  onclick="example.selectVideo('video3')">Number 3</a><br/>
-            Selected: <span id="select"> </span><br/><br/><br/>
-        </div>
+    <a href="javascript:;" onclick="example.spaceWrite();">Write</a>
 
-        <div class="video">
-            <a href="javascript:;" onclick="example.pushCurrentPlayingToSpace('video1');">Update 1</a> <span id="video1"> </span>
-        </div>
+    <a href="javascript:;" onclick="example.spaceRead();">Read</a>
 
-        <div class="video">
-            <a href="javascript:;" onclick="example.pushCurrentPlayingToSpace('video2');">Update 2</a> <span id="video2"> </span>
-        </div>
+    <a href="javascript:;" onclick="example.spaceNotify();">Notify</a>
 
-        <div class="video">
-            <a href="javascript:;" onclick="example.pushCurrentPlayingToSpace('video3');">Update 3</a> <span id="video3"> </span>
-        </div>
+    <div id="status"> </div>
 
-    </div>
 </body>
 </html>
