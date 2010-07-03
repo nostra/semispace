@@ -34,6 +34,7 @@
                var jsonString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
                space.write(jsonString, 10000, function(data){
                    // msgEl.innerHTML = 'Data written to space';
+                   console.log('write: ' + data);
                });
             },
 
@@ -41,17 +42,16 @@
                 var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
                 space.read(jsonTemplate, 10000, function(data){
                     if(data){
-                        msgEl.innerHTML = data;
+                        // msgEl.innerHTML = data;
+                        console.log('read: ' + data);
                     }
                 });
             },
 
             spaceNotify:function(){
                 var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
-                space.notify(jsonTemplate, 'availability', 10000, function(data){
-                    // msgEl.innerHTML = 'Notify work';
-                    example.spaceRead();
-                });
+
+                var invalidate = space.notify(jsonTemplate, 'availability', 10000, example.spaceRead);
             }
 
         }
