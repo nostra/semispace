@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Semispace Example 03</title>
+
+    <!-- DOJO kit -->
+
+   <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/org/cometd.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/org/cometd/AckExtension.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/org/cometd/ReloadExtension.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.json-2.2.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.cometd.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.cometd-reload.js"></script>
+
+    <!-- SemiSpace -->
+    <script type="text/javascript" src="/semispace-comet-server/js/semispace.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/semispace.Comet.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/semispace.SemiSpace.js"> </script>
+
+    <script type="text/javascript">
+        var example = {
+
+            communication:undefined,
+            space:undefined,
+            msgEl:undefined,
+
+            init:function(){
+
+                communication = new semispace.Comet(jQuery.cometd, location.protocol + '//' + location.host + '/semispace-comet-server/cometd');
+                communication.connect();
+
+                space = new semispace.SemiSpace(communication.getConnection());
+
+                msgEl = document.getElementById('status');
+            },
+
+            spaceWrite:function(){
+               var jsonString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
+               space.write(jsonString, 10000, function(data){
+                   // msgEl.innerHTML = 'Data written to space';
+                   console.log('write: ' + data);
+               });
+            },
+
+            spaceRead:function(){
+                var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
+                space.read(jsonTemplate, 10000, function(data){
+                    if(data){
+                        // msgEl.innerHTML = data;
+                        console.log('read: ' + data);
+                    }
+                });
+            },
+
+            spaceNotify:function(){
+                var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
+
+                var invalidate = space.notify(jsonTemplate, 'availability', 10000, example.spaceRead);
+            }
+
+        }
+    </script>
+</head>
+<body onload="example.init();">
+
+    <a href="javascript:;" onclick="example.spaceWrite();">Write</a>
+
+    <a href="javascript:;" onclick="example.spaceRead();">Read</a>
+
+    <a href="javascript:;" onclick="example.spaceNotify();">Notify</a>
+
+    <div id="status"> </div>
+
+</body>
+</html>
