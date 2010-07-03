@@ -100,7 +100,7 @@ semispace.SemiSpace = function(connection){
             cometd.unsubscribe(subscriptionReply);
         }
         subscriptionReply = cometd.subscribe('/semispace/reply/notify/' + incrementedChannel + '/' + listener, function(message){
-            callbackHandler(message, callback);
+            // Nothing to do...
         });
 
 
