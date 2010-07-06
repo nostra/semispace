@@ -4,4 +4,7 @@ When upgrading Dojo / Dojox some parts of Dojox must be manually upgraded with f
 Please read the "The Non-Maven Way" chapter:
 http://www.cometd.org/documentation/howtos/primer
 
+Building DOJO:
+http://www.dojotoolkit.org/reference-guide/build/index.html
+
 Trygve 
