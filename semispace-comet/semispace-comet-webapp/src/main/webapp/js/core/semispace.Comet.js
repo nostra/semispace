@@ -30,16 +30,32 @@ semispace.Comet = function(connector, server){
 
     var init = function(){
 
+        var handshake = undefined;
+        var connect = undefined;
+        var disconnect = undefined;
+        var subscribe = undefined;
+        var unsubscribe = undefined;
+        var publish = undefined;
+        var unsuccessful = undefined;
+
         // Set configuration
         cometd.configure({
             url: server,
             logLevel: 'error'
         });
 
-        cometd.addListener('/meta/handshake', function(message){
+
+        if(handshake){
+            cometd.removeListener(handshake);
+        }
+        handshake = cometd.addListener('/meta/handshake', function(message){
             metaListener(1, message);
         });
 
+
+        if(connect){
+            cometd.removeListener(connect);
+        }
         cometd.addListener('/meta/connect', function(message){
             var wasConnected = connected;
             connected = message.successful;
@@ -53,22 +69,42 @@ semispace.Comet = function(connector, server){
             }
         });
 
+
+        if(disconnect){
+            cometd.removeListener(disconnect);
+        }
         cometd.addListener('/meta/disconnect', function(message){
             metaListener(5, message);
         });
 
+
+        if(subscribe){
+            cometd.removeListener(subscribe);
+        }
         cometd.addListener('/meta/subscribe', function(message){
             metaListener(6, message);
         });
 
+
+        if(unsubscribe){
+            cometd.removeListener(unsubscribe);
+        }
         cometd.addListener('/meta/unsubscribe', function(message){
             metaListener(7, message);
         });
 
+
+        if(publish){
+            cometd.removeListener(publish);
+        }
         cometd.addListener('/meta/publish', function(message){
             metaListener(8, message);
         });
 
+
+        if(unsuccessful){
+            cometd.removeListener(unsuccessful);
+        }
         cometd.addListener('/meta/unsuccessful', function(message){
             metaListener(9, message);
         });
@@ -87,12 +123,10 @@ semispace.Comet = function(connector, server){
 
 
     this.disconnect = function(){
-        // TODO: Clean out all listeners when disconnecting - removeListener()
-        // TODO: Add option for keeping connection when page reloads - see cometd doc!
-
         cometd.disconnect();
         connected = false;
     };
+
 
     this.getConnection = function(){
         return cometd;
