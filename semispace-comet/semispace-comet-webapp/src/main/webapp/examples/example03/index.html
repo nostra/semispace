@@ -23,9 +23,23 @@
                 dojo.require("dojox.cometd");
 
                 communication = new semispace.Comet(dojox.cometd, location.protocol + '//' + location.host + '/semispace-comet-server/cometd');
-                communication.connect();
-
-                space = new semispace.SemiSpace(communication.getConnection());
+                communication.addMetaListener(function logger(status, message){
+                    var msg = 'Status is: ' + status;
+                    switch(status){
+                        case 1:
+                            msg = msg + ' - Handshake is done';
+                            break;
+                        case 2:
+                            msg = msg + ' - Got connection to server';
+                            break;
+                        case 3:
+                            msg = msg + ' - No connection to server';
+                            break;
+                    }
+                    console.log(msg);
+                });
+                var connection = communication.connect();
+                space = new semispace.SemiSpace(connection);
 
                 msgEl = document.getElementById('status');
             },

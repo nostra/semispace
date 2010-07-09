@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * TODO: Add reload support: http://cometd.org/documentation/cometd/ext/reload
- **/
+ *
+ *
+ * @constructor
+ *
+ * @description
+ * Connector object for connecting with the tuple space.
+ *
+ * @example
+ * dojo.require("dojox.cometd");
+ * var connection = new semispace.Comet(dojox.cometd,serverUrl);
+ * connection.connect();
+ *
+ * @param   cometdImpl     {Object}    Which Cometd implementation to use
+ * @param   server         {String}    URL to the server
+ */
 
-semispace.Comet = function(connector, server){
+semispace.Comet = function(cometdImpl, server){
 
-    // TODO: Introduce json config
-    var cometd = connector;
+    var cometd = cometdImpl;
     var connected = false;
     var metaListener = undefined;
-
-    var defaultOnConnect = function(){
-        // TODO: set some defaults when connection to server
-    };
 
 
     var init = function(){
@@ -38,13 +46,15 @@ semispace.Comet = function(connector, server){
         var publish = undefined;
         var unsuccessful = undefined;
 
-        // Set configuration
+
+        // Configuration
         cometd.configure({
             url: server,
             logLevel: 'error'
         });
 
 
+        // Handshake messages
         if(handshake){
             cometd.removeListener(handshake);
         }
@@ -53,6 +63,7 @@ semispace.Comet = function(connector, server){
         });
 
 
+        // Conecction messages
         if(connect){
             cometd.removeListener(connect);
         }
@@ -61,7 +72,6 @@ semispace.Comet = function(connector, server){
             connected = message.successful;
             if (!wasConnected && connected){
                 metaListener(2, message);       // Connected - Server is up
-                defaultOnConnect();             // Load default on connect
             }else if (wasConnected && !connected){
                 metaListener(3, message);       // Not connected - Server is down
             }else{
@@ -70,6 +80,7 @@ semispace.Comet = function(connector, server){
         });
 
 
+        // Disconnect messages
         if(disconnect){
             cometd.removeListener(disconnect);
         }
@@ -78,6 +89,7 @@ semispace.Comet = function(connector, server){
         });
 
 
+        // Subscription messages
         if(subscribe){
             cometd.removeListener(subscribe);
         }
@@ -86,6 +98,7 @@ semispace.Comet = function(connector, server){
         });
 
 
+        // Unsubscribe messages
         if(unsubscribe){
             cometd.removeListener(unsubscribe);
         }
@@ -94,6 +107,7 @@ semispace.Comet = function(connector, server){
         });
 
 
+        // Publish messages
         if(publish){
             cometd.removeListener(publish);
         }
@@ -102,6 +116,7 @@ semispace.Comet = function(connector, server){
         });
 
 
+        //Unsuccessful communication messages
         if(unsuccessful){
             cometd.removeListener(unsuccessful);
         }
@@ -112,22 +127,77 @@ semispace.Comet = function(connector, server){
     }();
 
 
-    this.addMetaListener = function(fn){
-        metaListener = fn;
+    /**
+     * @description
+     * Ads a callback functions for execution on every meta channel message.<br/>
+     * The function added can be used to listen in on the communication between the client and the server. The function
+     * added must take two function variables where the first variable is a status code (int) and the second is the
+     * message (String) from the server.<br/>
+     * <br/>
+     * The status codes are:<br/>
+     * 1 - The client have done a handshake with the server<br/>
+     * 2 - The client have connected to the server - Server is up<br/>
+     * 3 - The client lost connection with the server - Server is down<br/>
+     * 4 - The client is communicating with the server - "Keep alive"<br/>
+     * 5 - The client disconnected from the server<br/>
+     * 6 - The client did subscribe to a channel<br/>
+     * 7 - The client did unsubscribe from a channel<br/>
+     * 8 - The client did a publish<br/>
+     * 9 - The client can not communicate with the server<br/>
+     *
+     * @example
+     * var connection = new semispace.Comet(dojox.cometd,serverUrl);
+     * connection.addMetaListener(function logger(status, message){
+     *    var msg = 'Status is: ' + status;
+     *    switch(status){
+     *        case 1:
+     *            msg = msg + ' - Handshake is done';
+     *            break;
+     *        case 2:
+     *            msg = msg + ' - Got connection to server';
+     *            break;
+     *        case 3:
+     *            msg = msg + ' - No connection to server';
+     *            break;
+     *    }
+     *    console.log(msg);
+     * });
+     *
+     * @param   {function}  callback        A callback function.
+     */
+    this.addMetaListener = function(callback){
+        metaListener = callback;
     };
 
 
+    /**
+     * @description
+     * Connects the client to the server
+     *
+     * @returns {Object}    connection      The cometd connection.
+     */
     this.connect = function(){
         cometd.handshake();
+        return cometd;
     };
 
 
+    /**
+     * @description
+     * Disconnects the client from the server
+     */
     this.disconnect = function(){
         cometd.disconnect();
         connected = false;
     };
 
 
+    /**
+     * @description
+     * Get the cometd connection
+     *
+     * @returns {Object}    connection        The cometd connection object.
+     */
     this.getConnection = function(){
         return cometd;
     };
