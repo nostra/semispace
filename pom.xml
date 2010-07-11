@@ -47,7 +47,7 @@
         <springframework.version>3.0.3.RELEASE</springframework.version>
         <cxf.version>2.2.9</cxf.version>
         <jetty.version>6.1.24</jetty.version>
-        <slf4j.version>1.6.0</slf4j.version>
+        <slf4j.version>1.6.1</slf4j.version>
         <cometd.version>1.1.2</cometd.version>
     </properties>
 
