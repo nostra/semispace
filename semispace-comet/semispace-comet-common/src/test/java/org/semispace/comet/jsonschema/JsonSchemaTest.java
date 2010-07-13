@@ -44,7 +44,6 @@ public class JsonSchemaTest {
 
     /**
      * Just checking how things get transformed
-     * @throws Exception
      */
     @Test
     public void implementationTesting() {
@@ -69,8 +68,8 @@ public class JsonSchemaTest {
         StringWriter writer = new StringWriter();
         xstream.marshal(sr, new CompactWriter(writer));
         String xml = writer.toString();
-        log.debug("Transformed xml: "+xml);
-        log.debug("Transformed json: "+ Xml2Json.transform(xml));
+        log.debug("Transformed xml:\n "+xml);
+        log.debug("Transformed json:\n "+ Xml2Json.transform(xml));
     }
 
 

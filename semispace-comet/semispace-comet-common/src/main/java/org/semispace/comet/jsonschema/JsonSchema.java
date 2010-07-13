@@ -43,6 +43,7 @@ public class JsonSchema {
         // Intentional - want to get invoked with factory
         xstream = new XStream();
         xstream.setMode(XStream.NO_REFERENCES);
+        xstream.addImplicitCollection(SchemaRoot.class, "properties");
         xstream.alias("root", SchemaRoot.class);
         //xstream.alias()
     }
