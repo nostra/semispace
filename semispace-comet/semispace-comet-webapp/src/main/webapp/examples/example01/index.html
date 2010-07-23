@@ -91,10 +91,6 @@
         // Where the server is
         var server = location.protocol + '//' + location.host + '/semispace-comet-server/cometd';
 
-        // Get DOJO cometd library
-        dojo.require("dojox.cometd");
-        var com = dojox.cometd;
-
         var jsonString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
         var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
 
@@ -102,7 +98,7 @@
         var myApp;
         var semiApp;
         var init = function(){
-            myApp = new semispace.Comet(com, server);
+            myApp = new semispace.Comet(server);
             myApp.addMetaListener(localLog);
             semiApp = new semispace.SemiSpace(myApp.getConnection());
         };

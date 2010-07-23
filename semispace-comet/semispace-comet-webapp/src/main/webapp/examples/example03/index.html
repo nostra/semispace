@@ -20,9 +20,8 @@
             msgEl:undefined,
 
             init:function(){
-                dojo.require("dojox.cometd");
 
-                communication = new semispace.Comet(dojox.cometd, location.protocol + '//' + location.host + '/semispace-comet-server/cometd');
+                communication = new semispace.Comet(location.protocol + '//' + location.host + '/semispace-comet-server/cometd');
                 communication.addMetaListener(function logger(status, message){
                     var msg = 'Status is: ' + status;
                     switch(status){

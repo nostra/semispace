@@ -18,7 +18,6 @@ var example = {
 
     user:undefined,
 
-    comet:undefined,
     Connection:undefined,
     Space:undefined,
 
@@ -80,11 +79,9 @@ var example = {
 
     // Esablish communication with the semispace server and creates a semispace object
     connectToServer:function(){
-        dojo.require("dojox.cometd");
-        example.comet = dojox.cometd;
 
         var host = location.protocol + '//' + location.host + '/semispace-comet-server/cometd';
-        example.Connection = new semispace.Comet(example.comet,host);
+        example.Connection = new semispace.Comet(host);
         example.Connection.connect();
 
         example.Space = new semispace.SemiSpace(example.Connection.getConnection());

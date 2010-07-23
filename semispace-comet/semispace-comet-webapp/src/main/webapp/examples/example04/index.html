@@ -29,7 +29,7 @@
 
             init:function(){
 
-                communication = new semispace.Comet(jQuery.cometd, location.protocol + '//' + location.host + '/semispace-comet-server/cometd');
+                communication = new semispace.Comet(location.protocol + '//' + location.host + '/semispace-comet-server/cometd');
                 communication.connect();
 
                 space = new semispace.SemiSpace(communication.getConnection());
@@ -57,7 +57,6 @@
 
             spaceNotify:function(){
                 var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
-
                 var invalidate = space.notify(jsonTemplate, 'availability', 10000, example.spaceRead);
             }
 

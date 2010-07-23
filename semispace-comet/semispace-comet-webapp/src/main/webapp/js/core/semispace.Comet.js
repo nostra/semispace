@@ -29,14 +29,14 @@
  * @param   server         {String}    URL to the server
  */
 
-semispace.Comet = function(cometdImpl, server){
+semispace.Comet = function(server) {
 
-    var cometd = cometdImpl;
+    var cometd = undefined;
     var connected = false;
     var metaListener = undefined;
 
 
-    var init = function(){
+    var init = function() {
 
         var handshake = undefined;
         var connect = undefined;
@@ -45,6 +45,17 @@ semispace.Comet = function(cometdImpl, server){
         var unsubscribe = undefined;
         var publish = undefined;
         var unsuccessful = undefined;
+
+        
+        // Detect framework in use
+        if (typeof dojo !== 'undefined') {
+            dojo.require("dojox.cometd");
+            cometd = dojox.cometd;
+        } else if (typeof jQuery !== 'undefined') {
+            cometd = jQuery.cometd;
+        } else {
+            return;
+        }
 
 
         // Configuration
