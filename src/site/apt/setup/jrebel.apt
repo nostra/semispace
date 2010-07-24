@@ -18,5 +18,5 @@ export MAVEN_OPTS='-Xms256m -Xmx712m -XX:PermSize=128m -XX:MaxPermSize=256m -XX:
  -Dfile.encoding=UTF-8 -noverify -javaagent:${HOME}/app/JRebel/jrebel.jar -Denv=dev -Dcom.sun.management.jmxremote'
 ----
 
- Add the JRebel plugin to eclipse, restart and adjust plugin settings.
+ Add the JRebel plugin to IntelliJ, restart and adjust plugin settings.
   
