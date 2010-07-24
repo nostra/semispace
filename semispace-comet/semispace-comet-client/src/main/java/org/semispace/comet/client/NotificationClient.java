@@ -16,9 +16,9 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.MessageListener;
+import org.cometd.bayeux.Channel;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
@@ -47,13 +47,19 @@ public class NotificationClient {
 
     private void attach(BayeuxClient client) {
         notificationListener = new NotificationRegistrationListener(callId, client, listener );
-        client.addListener(notificationListener);
-        client.subscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all");
+        /*client.addListener(notificationListener);
+        client.subscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all");*/
+        client.getChannel(Channel.META_SUBSCRIBE).addListener(notificationListener);
+        client.getChannel(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all").subscribe(notificationListener);
+        /*
+        client.getChannel(Channel.META_SUBSCRIBE).addListener(writeListener);
+        client.getChannel(CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).subscribe(writeListener);
+         */
     }
 
     private void detach(BayeuxClient client) {
-        client.removeListener(notificationListener);
-        client.unsubscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all");
+        client.getChannel(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all").unsubscribe(notificationListener);
+
         notificationListener = null;
     }
 
@@ -61,7 +67,7 @@ public class NotificationClient {
         attach(client);
 
         try {
-            client.publish(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId+"/"+ CometConstants.EVENT_ALL, map, null );
+            client.getChannel(CometConstants.NOTIFICATION_CALL_CHANNEL+"/"+callId+"/"+ CometConstants.EVENT_ALL).publish( map);
             log.debug("Awaiting..."+CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all map is: "+map);
             boolean finishedOk = notificationListener.getLatch().await(5, TimeUnit.SECONDS);
             log.trace("... unlatched");
@@ -83,7 +89,7 @@ public class NotificationClient {
     }
 
 
-    private static class NotificationRegistrationListener implements MessageListener {
+    private static class NotificationRegistrationListener implements ClientSessionChannel.MessageListener {
         private final CountDownLatch latch;
         private final int callId;
         private SemiEventRegistration data;
@@ -100,17 +106,8 @@ public class NotificationClient {
             this.client = client;
             this.listener = listener;
         }
-        @Override
-        public void deliver(Client from, Client to, Message message) {
-            try {
-                deliverInternal(to, message);
-            } catch (Throwable t ) {
-                log.error("Got an unexpected exception treating message.", t);
-                throw new RuntimeException("Unexpected exception", t);
-            }
-        }
 
-        private void deliverInternal( Client to, Message message) {
+        private void deliverInternal( ClientSessionChannel to, Message message) {
             if ((CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/"+CometConstants.EVENT_ALL).equals(message.getChannel())) {
                 log.trace("Notify - Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map map = (Map) message.getData();
@@ -129,6 +126,16 @@ public class NotificationClient {
         }
         public SemiEventRegistration getData() {
             return data;
+        }
+
+        @Override
+        public void onMessage(ClientSessionChannel channel, Message message) {
+            try {
+                deliverInternal(channel, message);
+            } catch (Throwable t ) {
+                log.error("Got an unexpected exception treating message.", t);
+                throw new RuntimeException("Unexpected exception", t);
+            }
         }
     }
 

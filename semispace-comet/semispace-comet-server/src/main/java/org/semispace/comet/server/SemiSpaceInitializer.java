@@ -16,8 +16,10 @@
 
 package org.semispace.comet.server;
 
-import org.cometd.Bayeux;
+import org.cometd.bayeux.server.BayeuxServer;
 import org.semispace.SemiSpace;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
@@ -26,6 +28,7 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 public class SemiSpaceInitializer extends GenericServlet {
+    private static final Logger log = LoggerFactory.getLogger(SemiSpaceInitializer.class);
     private ReadService rs;
     private WriteService ws;
     private TakeService ts;
@@ -35,11 +38,13 @@ public class SemiSpaceInitializer extends GenericServlet {
     @Override
     public void init() throws ServletException {
         SemiSpace space = (SemiSpace) SemiSpace.retrieveSpace();
-        Bayeux bayeux = (Bayeux)getServletContext().getAttribute(Bayeux.ATTRIBUTE);
+        BayeuxServer bayeux = (BayeuxServer)getServletContext().getAttribute(BayeuxServer.ATTRIBUTE);
+        ts = new TakeService(bayeux, space);
+        //new HelloService( bayeux );
+        //log.debug("Initialization done.");
+        ts.setSeeOwnPublishes(false);
         rs = new ReadService(bayeux, space);
         rs.setSeeOwnPublishes(false);
-        ts = new TakeService(bayeux, space);
-        ts.setSeeOwnPublishes(false);
 
         ws = new WriteService(bayeux, space);
         ws.setSeeOwnPublishes(false);
@@ -49,16 +54,20 @@ public class SemiSpaceInitializer extends GenericServlet {
 
         lcs = new LeaseCancellationService(bayeux);
         lcs.setSeeOwnPublishes(false);
+        //bayeux.addExtension(new TimesyncExtension());
+        //bayeux.addExtension(new AcknowledgedMessagesExtension());
     }
 
     @Override
     public void destroy() {
         super.destroy();
+        /* TODO Fix disconnect
         rs.getClient().disconnect();
         ws.getClient().disconnect();
         ts.getClient().disconnect();
         ns.getClient().disconnect();
         lcs.getClient().disconnect();
+        */
     }
 
     @Override

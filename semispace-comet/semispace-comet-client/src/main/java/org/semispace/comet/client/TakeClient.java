@@ -16,9 +16,9 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.MessageListener;
+import org.cometd.bayeux.Channel;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
 import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
@@ -43,14 +43,40 @@ public class TakeClient implements ReadOrTake {
     }
 
     private void attach(BayeuxClient client) {
-        client.addListener(takeListener);
+/*      client.addListener(takeListener);
         // Documentation says I have to subscribe to this channel, but it seems like I do not have to.
-        client.subscribe(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId);
+        client.subscribe(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId);*/
+
+        //client.getChannel(Channel.META_SUBSCRIBE).addListener(takeListener);
+        ClientSessionChannel channel = client.getChannel(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId);
+        if ( channel == null ) {
+            throw new RuntimeException("Could not obtain channel.");
+        }
+        
+        final CountDownLatch latch = new CountDownLatch(1);
+        client.getChannel(Channel.META_HANDSHAKE).addListener(new ClientSessionChannel.MessageListener()
+                {
+                    @Override
+                    public void onMessage(ClientSessionChannel channel, Message message)
+                    {
+                        latch.countDown();
+                    }
+                });
+
+        client.handshake();
+        try {
+            if ( !latch.await(10, TimeUnit.SECONDS)) {
+                throw new RuntimeException("Ops - no connection");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Not expected");
+        }
+        channel.subscribe(takeListener);
+
     }
 
     private void detach(BayeuxClient client) {
-        client.removeListener(takeListener);
-        client.unsubscribe(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId);
+        client.getChannel(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId).unsubscribe(takeListener);
     }
 
     public String doReadOrTake(BayeuxClient client, Map<String, Object> map, long maxWaitMs ) {
@@ -63,8 +89,9 @@ public class TakeClient implements ReadOrTake {
         }
         */
         try {
-            client.publish(CometConstants.TAKE_CALL_CHANNEL+"/"+callId, map, null );
-            log.debug("Awaiting..."+CometConstants.TAKE_REPLY_CHANNEL+"/"+callId+" map is: "+map);
+            client.waitFor(1000,BayeuxClient.State.CONNECTED);
+            client.getChannel(CometConstants.TAKE_CALL_CHANNEL+"/"+callId).publish( map);
+            log.trace("Awaiting..."+CometConstants.TAKE_REPLY_CHANNEL+"/"+callId+" map is: "+map);
             boolean finishedOk = takeListener.getLatch().await(maxWaitMs+ PRESUMED_NETWORK_LAG_MS, TimeUnit.MILLISECONDS);
             if ( !finishedOk) {
                 log.warn("Did not receive callback on take. That is not to savory. Problem with connection?");
@@ -83,7 +110,7 @@ public class TakeClient implements ReadOrTake {
     }
 
 
-    private static class TakeListener implements MessageListener {
+    private static class TakeListener implements ClientSessionChannel.MessageListener {
         private final CountDownLatch latch;
         private final int callId;
         private String data;
@@ -96,19 +123,10 @@ public class TakeClient implements ReadOrTake {
             this.latch = new CountDownLatch(1);
             this.callId = callId;
         }
-        @Override
-        public void deliver(Client from, Client to, Message message) {
-            try {
-                deliverInternal(from, to, message);
-            } catch (Throwable t ) {
-                log.error("Got an unexpected exception treating message.", t);
-                throw new RuntimeException("Unexpected exception", t);
-            }
-        }
 
-        private void deliverInternal( Client from, Client to, Message message) {
+        private void deliverInternal( ClientSessionChannel channel, Message message) {
+            log.debug("from.getId: "+(channel==null?"null":channel.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
             if ((CometConstants.TAKE_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
-                //log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map<String,String> map = (Map) message.getData();
                 if ( map != null ) {
                     data = map.get("result");
@@ -121,6 +139,17 @@ public class TakeClient implements ReadOrTake {
         public Object getData() {
             return data;
         }
+
+        @Override
+        public void onMessage(ClientSessionChannel channel, Message message) {
+            try {
+                deliverInternal(channel, message);
+            } catch (Throwable t ) {
+                log.error("Got an unexpected exception treating message.", t);
+                throw new RuntimeException("Unexpected exception", t);
+            }
+        }
+
     }
 
 }

@@ -19,6 +19,7 @@ package org.semispace.comet.client;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
 import org.cometd.client.BayeuxClient;
+import org.cometd.client.transport.LongPollingTransport;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.semispace.Holder;
@@ -65,10 +66,15 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     public void init(String endpoint) {
         httpClient = new HttpClient();
         try {
+            httpClient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
+            httpClient.setMaxConnectionsPerAddress(40000);
             httpClient.start();
-            client = new SemiSpaceBayeuxClient(httpClient, endpoint);
-            client.addLifeCycleListener(new ProxyLifeCycle());
-            client.start();
+            
+            LongPollingTransport lpt = LongPollingTransport.create(null, httpClient);
+            client = new BayeuxClient(endpoint, lpt);
+            client.handshake();
+            //client.addLifeCycleListener(new ProxyLifeCycle());
+            //client.start();
         } catch (Exception e) {
             throw new RuntimeException("Could not start client", e);
         }
@@ -76,6 +82,9 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
 
     public void destroy() {
         client.disconnect();
+        if ( !client.waitFor(1000,BayeuxClient.State.DISCONNECTED) ) {
+            log.warn("Waiting for state disconnected returned false. (This is ignored.)");
+        }
         if ( httpClient != null ) {
             try {
                 httpClient.stop();

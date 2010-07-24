@@ -16,9 +16,9 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.MessageListener;
+import org.cometd.bayeux.Channel;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
 import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
@@ -43,20 +43,19 @@ public class WriteClient {
     }
 
     private void attach(BayeuxClient client) {
-        client.addListener(writeListener);
-        client.subscribe(CometConstants.WRITE_REPLY_CHANNEL+"/"+callId);
+        client.getChannel(Channel.META_SUBSCRIBE).addListener(writeListener);
+        client.getChannel(CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).subscribe(writeListener);
     }
 
     private void detach(BayeuxClient client) {
-        client.removeListener(writeListener);
-        client.unsubscribe(CometConstants.WRITE_REPLY_CHANNEL+"/"+callId);
+        client.getChannel(CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).unsubscribe(writeListener);
     }
 
     public void doWrite(BayeuxClient client, Map<String, Object> map) {
         attach(client);
 
         try {
-            client.publish(CometConstants.WRITE_CALL_CHANNEL+"/"+callId, map, null );
+            client.getChannel(CometConstants.WRITE_CALL_CHANNEL+"/"+callId).publish( map);
             log.trace("Awaiting...");
             // Should be able to write an element within 5 seconds
             boolean finishedOk = writeListener.getLatch().await(5, TimeUnit.SECONDS);
@@ -75,7 +74,7 @@ public class WriteClient {
     }
 
 
-    private static class WriteListener implements MessageListener {
+    private static class WriteListener implements ClientSessionChannel.MessageListener{
         private final CountDownLatch latch;
         private final int callId;
 
@@ -88,22 +87,22 @@ public class WriteClient {
             return latch;
         }
 
-        @Override
-        public void deliver(Client from, Client to, Message message) {
-            try {
-                deliverInternal(from, to, message);
-            } catch (Throwable t ) {
-                log.error("Got an unexpected exception treating message.", t);
-                throw new RuntimeException("Unexpected exception", t);
-            }
-        }
-
-        private void deliverInternal(Client from, Client to, Message message) {
+        private void deliverInternal(ClientSessionChannel channel, Message message) {
             if ((CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             } else {
                 //log.warn("Unexpected channel "+message.getChannel()+" Expected: "+CometConstants.WRITE_REPLY_CHANNEL+"/"+callId);
+            }
+        }
+
+        @Override
+        public void onMessage(ClientSessionChannel channel, Message message) {
+            try {
+                deliverInternal(channel, message);
+            } catch (Throwable t ) {
+                log.error("Got an unexpected exception treating message.", t);
+                throw new RuntimeException("Unexpected exception", t);
             }
         }
     }

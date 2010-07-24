@@ -20,17 +20,17 @@ package org.semispace.comet.common;
  * Constants used in comet communication.
  */
 public class CometConstants {
-    public static final String READ_CALL_CHANNEL = "/semispace/call/read";
-    public static final String READ_REPLY_CHANNEL = "/semispace/reply/read";
-    public static final String TAKE_CALL_CHANNEL = "/semispace/call/take";
-    public static final String TAKE_REPLY_CHANNEL = "/semispace/reply/take";
-    public static final String WRITE_CALL_CHANNEL = "/semispace/call/write";
-    public static final String WRITE_REPLY_CHANNEL = "/semispace/reply/write";
-    public static final String NOTIFICATION_CALL_CHANNEL = "/semispace/call/notify";
-    public static final String NOTIFICATION_REPLY_CHANNEL = "/semispace/reply/notify";
-    public static final String NOTIFICATION_EVENT_CHANNEL = "/semispace/event/notify";
-    public static final String NOTIFICATION_CALL_CANCEL_LEASE_CHANNEL = "/semispace/call/leasecancel";
-    public static final String NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL = "/semispace/reply/leasecancel";
+    public static final String READ_CALL_CHANNEL = "/service/semispace/call/read";
+    public static final String READ_REPLY_CHANNEL = "/service/semispace/reply/read";
+    public static final String TAKE_CALL_CHANNEL = "/service/semispace/call/take";
+    public static final String TAKE_REPLY_CHANNEL = "/service/semispace/reply/take";
+    public static final String WRITE_CALL_CHANNEL = "/service/semispace/call/write";
+    public static final String WRITE_REPLY_CHANNEL = "/service/semispace/reply/write";
+    public static final String NOTIFICATION_CALL_CHANNEL = "/service/semispace/call/notify";
+    public static final String NOTIFICATION_REPLY_CHANNEL = "/service/semispace/reply/notify";
+    public static final String NOTIFICATION_EVENT_CHANNEL = "/service/semispace/event/notify";
+    public static final String NOTIFICATION_CALL_CANCEL_LEASE_CHANNEL = "/service/semispace/call/leasecancel";
+    public static final String NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL = "/service/semispace/reply/leasecancel";
     /**
      * Need to translate internal class type identifier with object type key
      */

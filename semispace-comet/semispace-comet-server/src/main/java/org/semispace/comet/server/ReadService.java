@@ -16,10 +16,10 @@
 
 package org.semispace.comet.server;
 
-import org.cometd.Bayeux;
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.server.BayeuxService;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerSession;
+import org.cometd.server.AbstractService;
 import org.semispace.Holder;
 import org.semispace.SemiSpace;
 import org.semispace.comet.common.CometConstants;
@@ -37,18 +37,18 @@ import java.util.concurrent.Executors;
 /**
  * Supporting semispace read.
  */
-public class ReadService extends BayeuxService {
+public class ReadService extends AbstractService {
     private static final Logger log = LoggerFactory.getLogger(ReadService.class);
     private final SemiSpace space;
     private ExecutorService threadPool = Executors.newCachedThreadPool();
     
-    public ReadService(Bayeux bayeux, SemiSpace space ) {
+    public ReadService(BayeuxServer bayeux, SemiSpace space ) {
         super(bayeux, "read");
-        subscribe(CometConstants.READ_CALL_CHANNEL+"/*", "semispaceRead");
+        addService(CometConstants.READ_CALL_CHANNEL+"/*", "semispaceRead");
         this.space = space;
     }
 
-    public void semispaceRead(final Client remote, final Message message) {
+    public void semispaceRead(final ServerSession remote, final Message message) {
         log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();
@@ -73,7 +73,8 @@ public class ReadService extends BayeuxService {
                     log.trace("read did not get a result");
                 }
                 try {
-                    remote.deliver(getClient(), outChannel, output, null);
+                    // TODO Check getClient exchanged with getServerSession
+                    remote.deliver(getServerSession(), outChannel, output, null);
                 } catch ( Throwable t ) {
                     log.error("Got a problem delivering", t);
                 } finally {

@@ -16,9 +16,9 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.MessageListener;
+import org.cometd.bayeux.Channel;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiLease;
@@ -68,7 +68,9 @@ public class NotificationMitigator implements SemiLease {
             log.debug("Attaching "+CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);
             timeOutSurveillance = new TimeOutSurveillance( timeOutInMs, this );
             threadPool.submit(timeOutSurveillance);
-            client.addListener(mitigationListener);
+
+            client.getChannel(Channel.META_SUBSCRIBE).addListener(mitigationListener);
+
             isAttached = true;
         } else {
             throw new RuntimeException("Usage error - already attached.");
@@ -80,8 +82,9 @@ public class NotificationMitigator implements SemiLease {
             log.debug("... Detaching");
             boolean cancelResult = sendCancelListener();
             timeOutSurveillance.cancelSurveillance();
-            client.removeListener(mitigationListener);
-            client.unsubscribe(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);
+            /*client.removeListener(mitigationListener);
+            client.unsubscribe(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);*/
+            client.getChannel(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId).unsubscribe(mitigationListener);
             isAttached = false;
             return cancelResult;
         } else {
@@ -93,18 +96,21 @@ public class NotificationMitigator implements SemiLease {
         try {
             log.trace("Publishing cancellation of lease with channel id "+callId);
             final CancelResultListener cancelListener = new CancelResultListener( callId );
-            client.addListener( cancelListener );
+            client.getChannel(Channel.META_SUBSCRIBE).addListener(cancelListener );
+            //client.addListener( cancelListener );
             Map map = new HashMap<String, String>();
             map.put( "callId", ""+callId );
             log.trace("Awaiting...");
             // Should be able to write an element within 5 seconds
-            client.publish(CometConstants.NOTIFICATION_CALL_CANCEL_LEASE_CHANNEL+"/"+callId, map, null );
+            client.getChannel(CometConstants.NOTIFICATION_CALL_CANCEL_LEASE_CHANNEL+"/"+callId).publish( map);
+            /*client. publish(CometConstants.NOTIFICATION_CALL_CANCEL_LEASE_CHANNEL+"/"+callId, map, null );*/
             boolean finishedOk = cancelListener.getLatch().await(5, TimeUnit.SECONDS);
             if ( !finishedOk) {
                 log.warn("Could not write element within 5 seconds. That is not to savory. Problem with connection?");
             }
             log.trace("... unlatched");
-            client.removeListener(cancelListener);
+            /*client.removeListener(cancelListener);*/
+            client.getChannel(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId).unsubscribe(cancelListener);
             return true;
         } catch (Throwable t ) {
             log.error("Could not cancel listener", t);
@@ -128,7 +134,7 @@ public class NotificationMitigator implements SemiLease {
         throw new RuntimeException("Not supported");
     }
 
-    private static class MitigationListener implements MessageListener {
+    private static class MitigationListener implements ClientSessionChannel.MessageListener {
         private final int callId;
         private SemiEventListener listener;
 
@@ -137,17 +143,8 @@ public class NotificationMitigator implements SemiLease {
             this.listener = listener;
         }
 
-        @Override
-        public void deliver(Client from, Client to, Message message) {
-            try {
-                //log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
-                deliverInternal(from, to, message);
-            } catch (Throwable t ) {
-                log.error("Got an unexpected exception treating message.", t);
-                throw new RuntimeException("Unexpected exception", t);
-            }
-        }
-        private void deliverInternal(Client from, Client to, Message message) {
+
+        private void deliverInternal(ClientSessionChannel channel, Message message) {
             if (message.getChannel().startsWith(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/")) {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId()+" "+message.getData());
                 Map<String,String> map = (Map) message.getData();
@@ -179,9 +176,20 @@ public class NotificationMitigator implements SemiLease {
                 throw new RuntimeException("Unexpected event type: "+type);
             }
         }
+
+        @Override
+        public void onMessage(ClientSessionChannel channel, Message message) {
+            try {
+                //log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
+                deliverInternal(channel, message);
+            } catch (Throwable t ) {
+                log.error("Got an unexpected exception treating message.", t);
+                throw new RuntimeException("Unexpected exception", t);
+            }
+        }
     }
 
-    private static class CancelResultListener implements MessageListener {
+    private static class CancelResultListener implements ClientSessionChannel.MessageListener {
         private final CountDownLatch latch;
         private final int callId;
 
@@ -194,22 +202,22 @@ public class NotificationMitigator implements SemiLease {
             return latch;
         }
 
-        @Override
-        public void deliver(Client from, Client to, Message message) {
-            try {
-                deliverInternal(from, to, message);
-            } catch (Throwable t ) {
-                log.error("Got an unexpected exception treating message.", t);
-                throw new RuntimeException("Unexpected exception", t);
-            }
-        }
-
-        private void deliverInternal(Client from, Client to, Message message) {
+        private void deliverInternal(ClientSessionChannel channel, Message message) {
             if ((CometConstants.NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL+"/"+callId).equals(message.getChannel())) {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             } else {
                 //log.warn("Unexpected channel "+message.getChannel()+" Expected "+CometConstants.NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL+"/"+callId);
+            }
+        }
+
+        @Override
+        public void onMessage(ClientSessionChannel channel, Message message) {
+            try {
+                deliverInternal(channel, message);
+            } catch (Throwable t ) {
+                log.error("Got an unexpected exception treating message.", t);
+                throw new RuntimeException("Unexpected exception", t);
             }
         }
     }

@@ -61,7 +61,7 @@ public class NotificationClientIntegrationTest {
         Assert.assertNotNull( space.read(onlyOne, 900)); // Reading the one
         Assert.assertNotNull( space.take(onlyOne, 900)); // Taking the one
         Assert.assertNull( "Just using some time in order to get space elements notified properly", space.take(onlyOne, 300));
-        Assert.assertEquals(3, listener.availability);
+        Assert.assertEquals("As 3 objects was written into space, 3 objects should have flagged availability", 3, listener.availability);
         Assert.assertEquals(1, listener.taken);
         // Cannot test listener expiration, as it depends on the sequence of objects in the space, which now
         // is unordered

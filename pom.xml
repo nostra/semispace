@@ -48,7 +48,7 @@
         <cxf.version>2.2.9</cxf.version>
         <jetty.version>6.1.24</jetty.version>
         <slf4j.version>1.6.1</slf4j.version>
-        <cometd.version>1.1.2</cometd.version>
+        <cometd.version>2.0.0</cometd.version>
     </properties>
 
     <!--
@@ -494,6 +494,34 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>javarebel-maven-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <id>generate-rebel-xml</id>
+                        <phase>process-resources</phase>
+                        <goals>
+
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <classpath>
+                        <fallback>default</fallback>
+                        <resources>
+                            <resource>
+                                <!--<directory>-core/target/classes</directory>-->
+                            </resource>
+                        </resources>
+                    </classpath>
+
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

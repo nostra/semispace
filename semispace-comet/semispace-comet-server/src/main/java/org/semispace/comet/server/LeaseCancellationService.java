@@ -16,10 +16,10 @@
 
 package org.semispace.comet.server;
 
-import org.cometd.Bayeux;
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.server.BayeuxService;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerSession;
+import org.cometd.server.AbstractService;
 import org.semispace.SemiLease;
 import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
@@ -31,22 +31,22 @@ import java.util.Map;
 /**
  * Listen for notifications to cancel lease
  */
-public class LeaseCancellationService extends BayeuxService {
+public class LeaseCancellationService extends AbstractService {
     private static final Logger log = LoggerFactory.getLogger(LeaseCancellationService.class);
     private Map<String,SemiLease> leases = new HashMap<String, SemiLease>();
     private static LeaseCancellationService leaseCancellationService = null;
 
-    public LeaseCancellationService(Bayeux bayeux) {
+    public LeaseCancellationService(BayeuxServer bayeux) {
         super(bayeux, "leasecancel");
         if ( leaseCancellationService != null ) {
             // TODO Fix later
             log.error("Already have cancellation service. Need to cancel all elements.");
         }
         leaseCancellationService = this;
-        subscribe( CometConstants.NOTIFICATION_CALL_CANCEL_LEASE_CHANNEL +"/*", "semispaceCancelLease");
+        addService( CometConstants.NOTIFICATION_CALL_CANCEL_LEASE_CHANNEL +"/*", "semispaceCancelLease");
     }
 
-    public void semispaceCancelLease(final Client remote, final Message message) {
+    public void semispaceCancelLease(final ServerSession remote, final Message message) {
         log.trace("Lease cancel: Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
         Object holderId = ((Map)message.getData()).get("callId");
         SemiLease sl = leases.get( message.getClientId()+"_"+holderId );
@@ -65,7 +65,7 @@ public class LeaseCancellationService extends BayeuxService {
         // Not putting this in separate thread as it is expected to perform reasonably quickly
         Map<String, String> output = new HashMap<String, String>();
         output.put("cancelledOk", result.toString());
-        remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
+        remote.deliver(remote, message.getChannel().replace("/call/", "/reply/"), output, message.getId());
         log.trace("========= delivered lease cancel reply");
     }
 

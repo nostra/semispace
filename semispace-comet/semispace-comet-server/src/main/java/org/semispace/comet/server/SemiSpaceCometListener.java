@@ -16,7 +16,7 @@
 
 package org.semispace.comet.server;
 
-import org.cometd.Client;
+import org.cometd.bayeux.server.ServerSession;
 import org.semispace.SemiEventListener;
 import org.semispace.comet.common.CometConstants;
 import org.semispace.event.SemiAvailabilityEvent;
@@ -37,10 +37,10 @@ public class SemiSpaceCometListener implements SemiEventListener {
     private static final Logger log = LoggerFactory.getLogger(SemiSpaceCometListener.class);
     private final Class interestingClass;
     private final NotificationService service;
-    private final Client client;
+    private final ServerSession client;
     private String callId;
 
-    public SemiSpaceCometListener(String listenerType, String callId, Client remote, NotificationService notificationService) {
+    public SemiSpaceCometListener(String listenerType, String callId, ServerSession remote, NotificationService notificationService) {
         this.interestingClass = mapListenerType( listenerType );
         this.service = notificationService;
         this.callId = callId;

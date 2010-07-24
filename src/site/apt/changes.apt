@@ -5,6 +5,15 @@
  Changes over the versions from version 1.0.0. The changes are grouped by the
  snapshot versions for which they were made.
 
+1.2.1-SNAPSHOT
+
+*----------------------------------+------------+
+|| Change or bug || Change
+*----------------------------------+------------+
+| Upgraded to cometd-2.0.0 | Upgraded to new cometd-release. Several changes to API and library use. |
+*----------------------------------+------------+
+
+
 1.1.2-SNAPSHOT
 
 *----------------------------------+------------+

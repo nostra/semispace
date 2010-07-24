@@ -16,9 +16,9 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.MessageListener;
+import org.cometd.bayeux.Channel;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
 import org.semispace.comet.common.CometConstants;
 import org.slf4j.Logger;
@@ -43,14 +43,18 @@ public class ReadClient implements ReadOrTake {
     }
 
     private void attach(BayeuxClient client) {
-        client.addListener(readListener);
+        /*client.addListener(readListener);
         // Documentation says I have to subscribe to this channel, but it seems like I do not have to.
-        client.subscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);
+        client.subscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);*/
+        client.getChannel(Channel.META_SUBSCRIBE).addListener(readListener);
+        client.getChannel(CometConstants.READ_REPLY_CHANNEL+"/"+callId).subscribe(readListener);
+
     }
 
     private void detach(BayeuxClient client) {
-        client.removeListener(readListener);
-        client.unsubscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);
+        client.getChannel(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId).unsubscribe(readListener);
+        /*client.removeListener(readListener);
+        client.unsubscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);*/
     }
 
     @Override
@@ -58,7 +62,7 @@ public class ReadClient implements ReadOrTake {
         attach(client);
 
         try {
-            client.publish(CometConstants.READ_CALL_CHANNEL+"/"+callId, map, null );
+            client.getChannel(CometConstants.READ_CALL_CHANNEL+"/"+callId).publish( map);
             log.debug("Awaiting..."+CometConstants.READ_REPLY_CHANNEL+"/"+callId+" map is: "+map);
             boolean finishedOk = readListener.getLatch().await(maxWaitMs+PRESUMED_NETWORK_LAG_MS, TimeUnit.MILLISECONDS);
             if ( !finishedOk) {
@@ -78,7 +82,7 @@ public class ReadClient implements ReadOrTake {
     }
 
 
-    private static class ReadListener implements MessageListener {
+    private static class ReadListener implements ClientSessionChannel.MessageListener {
         private final CountDownLatch latch;
         private final int callId;
         private String data;
@@ -91,17 +95,8 @@ public class ReadClient implements ReadOrTake {
             this.latch = new CountDownLatch(1);
             this.callId = callId;
         }
-        @Override
-        public void deliver(Client from, Client to, Message message) {
-            try {
-                deliverInternal(to, message);
-            } catch (Throwable t ) {
-                log.error("Got an unexpected exception treating message.", t);
-                throw new RuntimeException("Unexpected exception", t);
-            }
-        }
-
-        private void deliverInternal( Client to, Message message) {
+        
+        private void deliverInternal( ClientSessionChannel to, Message message) {
             if ((CometConstants.READ_REPLY_CHANNEL+"/"+callId).equals(message.getChannel())) {
                 //log.debug("from.getId: "+(from==null?"null":from.getId())+" Ch: "+message.getChannel()+" message.clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
                 Map<String,String> map = (Map) message.getData();
@@ -115,6 +110,16 @@ public class ReadClient implements ReadOrTake {
         }
         public Object getData() {
             return data;
+        }
+
+        @Override
+        public void onMessage(ClientSessionChannel channel, Message message) {
+            try {
+                deliverInternal(channel, message);
+            } catch (Throwable t ) {
+                log.error("Got an unexpected exception treating message.", t);
+                throw new RuntimeException("Unexpected exception", t);
+            }
         }
     }
 

@@ -16,10 +16,10 @@
 
 package org.semispace.comet.server;
 
-import org.cometd.Bayeux;
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.server.BayeuxService;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerSession;
+import org.cometd.server.AbstractService;
 import org.semispace.Holder;
 import org.semispace.SemiLease;
 import org.semispace.SemiSpace;
@@ -35,17 +35,17 @@ import java.util.Map;
 /**
  * Supporting semispace read.
  */
-public class WriteService extends BayeuxService {
+public class WriteService extends AbstractService {
     private static final Logger log = LoggerFactory.getLogger(WriteService.class);
     private final SemiSpace space;
 
-    public WriteService(Bayeux bayeux, SemiSpace space ) {
+    public WriteService(BayeuxServer bayeux, SemiSpace space ) {
         super(bayeux, "write");
-        subscribe(CometConstants.WRITE_CALL_CHANNEL+"/*", "semispaceWrite");
+        addService(CometConstants.WRITE_CALL_CHANNEL+"/*", "semispaceWrite");
         this.space = space;
     }
 
-    public void semispaceWrite(Client remote, Message message) {
+    public void semispaceWrite(ServerSession remote, Message message) {
         final Map<String, Object> data = (Map<String, Object>) message.getData();
 
         final Long timeToLiveMs = Long.valueOf(""+data.get("timeToLiveMs")); // TODO Change to duration
@@ -64,6 +64,6 @@ public class WriteService extends BayeuxService {
         } else {
             output.put("error", "Did not get lease");
         }
-        remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
+        remote.deliver(remote, message.getChannel().replace("/call/", "/reply/"), output, message.getId());
     }
 }

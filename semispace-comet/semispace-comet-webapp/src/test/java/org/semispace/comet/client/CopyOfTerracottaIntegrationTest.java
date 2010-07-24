@@ -161,7 +161,7 @@ public class CopyOfTerracottaIntegrationTest extends TestCase {
                     FieldHolder fh = new FieldHolder();
                     fh.setFieldA("a");
                     fh.setFieldB("b");
-                    space.write(fh, 5000);
+                    space.write(fh, 15000);
 /*
                     if ( i % 100 == 0 ) {
                         log.debug("Write statistics: "+((SemiSpace)space).getStatistics());
@@ -218,7 +218,7 @@ public class CopyOfTerracottaIntegrationTest extends TestCase {
 
 
     public void testAsyncWithFourThreads() throws InterruptedException {
-        final int numberOfItems = 100;
+        final int numberOfItems = 10; // TODO Scale up to 100 again later
         Runnable write = new Runnable() {
             public void run() {
                     FieldHolder fh = new FieldHolder();
@@ -301,19 +301,19 @@ public class CopyOfTerracottaIntegrationTest extends TestCase {
         nvq.name = "junit";
         nvq.value = "insertion time";
 
-        log.debug("Started insertion");
+        log.info("Started insertion");
         int counter = 0;
         long startTime = System.currentTimeMillis();
         while ( startTime > System.currentTimeMillis() - 1000 ) {
             space.write(nvq, 10000);
             counter++;
         }
-        log.debug("Inserted "+counter+" elements");
+        log.info("Inserted "+counter+" elements");
         int takenCounter = 0;
         while ( space.take( nvq, 200 ) != null ) {
             takenCounter++;
         }
-        log.debug("Total running time "+(System.currentTimeMillis() - startTime)+" ms, inserted (and hopefully took) "+counter+" items.");
+        log.info("Total running time "+(System.currentTimeMillis() - startTime)+" ms, inserted (and hopefully took) "+counter+" items.");
 
         assertEquals("Should be able to take as many elements as was inserted.", counter, takenCounter);
     }

@@ -16,10 +16,10 @@
 
 package org.semispace.comet.server;
 
-import org.cometd.Bayeux;
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.server.BayeuxService;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerSession;
+import org.cometd.server.AbstractService;
 import org.semispace.Holder;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiSpace;
@@ -35,17 +35,17 @@ import java.util.Map;
 /**
  *
  */
-public class NotificationService extends BayeuxService {
+public class NotificationService extends AbstractService {
     private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
     private final SemiSpace space;
 
-    public NotificationService(Bayeux bayeux, SemiSpace space ) {
+    public NotificationService(BayeuxServer bayeux, SemiSpace space ) {
         super(bayeux, "notification");
-        subscribe(CometConstants.NOTIFICATION_CALL_CHANNEL+"/**", "semispaceNotify");
+        addService(CometConstants.NOTIFICATION_CALL_CHANNEL+"/**", "semispaceNotify");
         this.space = space;
     }
 
-    public void semispaceNotify(final Client remote, final Message message) {
+    public void semispaceNotify(final ServerSession remote, final Message message) {
         log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();
@@ -72,7 +72,7 @@ public class NotificationService extends BayeuxService {
         } else {
             output.put("error", "Did not get lease");
         }
-        remote.deliver(getClient(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
+        remote.deliver(getServerSession(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
 
     }
 
@@ -96,10 +96,10 @@ public class NotificationService extends BayeuxService {
         return type;
     }
 
-    public void deliver(String outChannel, Map<String, String> output, Client remote) {
+    public void deliver(String outChannel, Map<String, String> output, ServerSession remote) {
         log.trace("Delivering notification...");
         try {
-            remote.deliver(getClient(), outChannel, output, null);
+            remote.deliver(remote, outChannel, output, null);
         } catch (Throwable t ) {
             log.error("Could not deliver message to client.", t);
         }

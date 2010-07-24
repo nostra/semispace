@@ -6,12 +6,12 @@
 
     <servlet>
         <servlet-name>cometd</servlet-name>
-        <servlet-class>org.cometd.server.continuation.ContinuationCometdServlet</servlet-class>
-        <!-- http://cometd.org/documentation/cometd-java/server/configuration -->
+        <servlet-class>org.cometd.server.CometdServlet</servlet-class>
+        <!-- http://cometd.org/documentation/cometd-java/server/configuration-->
         <init-param>
             <description>The log level; 0 = warn, 1 = info, 2 = debug</description>
             <param-name>logLevel</param-name>
-            <param-value>2</param-value>
+            <param-value>0</param-value>
         </init-param>
         <init-param>
             <description>Whether or not the full JSON input should be kept for debugging purposes</description>
@@ -39,7 +39,7 @@
         <servlet-class>org.semispace.comet.server.SemiSpaceInitializer</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
-    <!-- Need jetty7 in order to activate this filter
+    <!-- Need jetty7 in order to activate this filter -->
     <filter>
         <filter-name>cross-origin</filter-name>
         <filter-class>org.eclipse.jetty.servlets.CrossOriginFilter</filter-class>
@@ -48,15 +48,16 @@
         <filter-name>cross-origin</filter-name>
         <url-pattern>/cometd/*</url-pattern>
     </filter-mapping>
-    -->
     <!-- Continuation is built in jetty7 - but presently we use jetty6
-     -->
     <filter>
-        <filter-name>continuation</filter-name>
-        <filter-class>org.eclipse.jetty.continuation.ContinuationFilter</filter-class>
-    </filter>
+    <filter-name>continuation</filter-name>
+    <filter-class>org.eclipse.jetty.continuation.ContinuationFilter</filter-class>
+</filter>
     <filter-mapping>
-        <filter-name>continuation</filter-name>
-        <url-pattern>/cometd/*</url-pattern>
-    </filter-mapping>
+    <filter-name>continuation</filter-name>
+    <url-pattern>/cometd/*</url-pattern>
+</filter-mapping>
+     -->
+
+
 </web-app>

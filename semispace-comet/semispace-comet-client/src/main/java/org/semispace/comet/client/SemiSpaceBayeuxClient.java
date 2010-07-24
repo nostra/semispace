@@ -17,14 +17,13 @@
 package org.semispace.comet.client;
 
 import org.cometd.client.BayeuxClient;
-import org.eclipse.jetty.client.HttpClient;
+import org.cometd.client.transport.LongPollingTransport;
 
 /**
- *
+ * @deprecated not needed anymore
  */
 public class SemiSpaceBayeuxClient extends BayeuxClient {
-    public SemiSpaceBayeuxClient(HttpClient client, String url) {
-        super(client, url);
+    public SemiSpaceBayeuxClient(String endpoint, LongPollingTransport lpt) {
+        super(endpoint, lpt);
     }
-
 }

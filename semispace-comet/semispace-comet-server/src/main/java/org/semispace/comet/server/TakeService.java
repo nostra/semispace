@@ -16,10 +16,10 @@
 
 package org.semispace.comet.server;
 
-import org.cometd.Bayeux;
-import org.cometd.Client;
-import org.cometd.Message;
-import org.cometd.server.BayeuxService;
+import org.cometd.bayeux.Message;
+import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.ServerSession;
+import org.cometd.server.AbstractService;
 import org.semispace.Holder;
 import org.semispace.SemiSpace;
 import org.semispace.comet.common.CometConstants;
@@ -37,19 +37,23 @@ import java.util.concurrent.Executors;
 /**
  * Supporting semispace take.
  */
-public class TakeService extends BayeuxService {
+public class TakeService extends AbstractService {
     private static final Logger log = LoggerFactory.getLogger(TakeService.class);
     private final SemiSpace space;
     private ExecutorService threadPool = Executors.newCachedThreadPool();
 
-    public TakeService(Bayeux bayeux, SemiSpace space ) {
+    public TakeService(BayeuxServer bayeux, SemiSpace space ) {
         super(bayeux, "take");
-        subscribe(CometConstants.TAKE_CALL_CHANNEL+"/*", "semispaceTake");
+        log.debug("Adding service "+CometConstants.TAKE_CALL_CHANNEL+"/*");
+        //bayeux.addExtension(new AcknowledgedMessagesExtension());
+        addService(CometConstants.TAKE_CALL_CHANNEL+"/*", "semispaceTake");
+
         this.space = space;
     }
-
-    public void semispaceTake(final Client remote, final Message message) {
+    
+    public void semispaceTake(final ServerSession remote, final Message message) {
         log.trace("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
+        //System.err.println("Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
 
         final Map<String, Object> data = (Map<String, Object>) message.getData();
         final Long duration = Long.valueOf((String) data.get("duration"));
@@ -74,11 +78,11 @@ public class TakeService extends BayeuxService {
                 }
                 //log.debug("(take) Running deliver with "+remote.getClass().getName());
                 try {
-                    remote.deliver(getClient(), outChannel, output, null);
+                    remote.deliver(remote, outChannel, output, null);
                 } catch ( Throwable t ) {
                     log.error("Got a problem delivering", t);
                 } finally {
-                    log.trace("======== delivered TAKE on channel {} - done", outChannel);
+                    log.trace("delivered TAKE on channel {} - done", outChannel);
                 }
             }
         };

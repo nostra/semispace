@@ -50,7 +50,6 @@ public class ReadClientIntegrationTest {
     public void testRead() throws Exception {
         NameValueQuery nvq = space.take(new NameValueQuery(), 500);
         assertNull("Expecting not to be able to take something before something is present.", nvq);
-
         NameValueQuery q = new NameValueQuery();
         q.name = "somename";
         q.value = "some value";
