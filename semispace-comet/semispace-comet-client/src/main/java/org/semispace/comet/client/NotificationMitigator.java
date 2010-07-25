@@ -16,7 +16,6 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.bayeux.Channel;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
@@ -69,8 +68,9 @@ public class NotificationMitigator implements SemiLease {
             timeOutSurveillance = new TimeOutSurveillance( timeOutInMs, this );
             threadPool.submit(timeOutSurveillance);
 
-            client.getChannel(Channel.META_SUBSCRIBE).addListener(mitigationListener);
-            client.getChannel(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId).subscribe(mitigationListener);
+            //client.getChannel(Channel.META_SUBSCRIBE).addListener(mitigationListener);
+            client.getChannel(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/*").subscribe(mitigationListener);
+            //client.getChannel(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/availability").subscribe(mitigationListener);
 
             isAttached = true;
         } else {
@@ -97,7 +97,8 @@ public class NotificationMitigator implements SemiLease {
         try {
             log.trace("Publishing cancellation of lease with channel id "+callId);
             final CancelResultListener cancelListener = new CancelResultListener( callId );
-            client.getChannel(Channel.META_SUBSCRIBE).addListener(cancelListener );
+            //client.getChannel(Channel.META_SUBSCRIBE).addListener(cancelListener );
+            client.getChannel(CometConstants.NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL+"/"+callId).addListener(cancelListener );
             //client.addListener( cancelListener );
             Map map = new HashMap<String, String>();
             map.put( "callId", ""+callId );
@@ -111,7 +112,7 @@ public class NotificationMitigator implements SemiLease {
             }
             log.trace("... unlatched");
             /*client.removeListener(cancelListener);*/
-            client.getChannel(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId).unsubscribe(cancelListener);
+            client.getChannel(CometConstants.NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL+"/"+callId).unsubscribe(cancelListener);
             return true;
         } catch (Throwable t ) {
             log.error("Could not cancel listener", t);
@@ -160,6 +161,7 @@ public class NotificationMitigator implements SemiLease {
                 threadPool.submit(notify);
             } else if (message.getChannel().startsWith("/meta")) {
                 // Ignore
+                log.trace("... Meta message - channel: "+message.getChannel());
             } else {
                 log.warn("Unexpected channel "+message.getChannel()+" - was expecting "+CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/");
             }

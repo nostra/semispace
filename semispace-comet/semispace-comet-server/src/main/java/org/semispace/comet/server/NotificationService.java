@@ -97,7 +97,7 @@ public class NotificationService extends AbstractService {
     }
 
     public void deliver(String outChannel, Map<String, String> output, ServerSession remote) {
-        log.trace("Delivering notification... channel: "+ outChannel);
+        log.trace("Delivering notification... remote id: "+remote.getId()+" channel: "+ outChannel);
         try {
             remote.deliver(remote, outChannel, output, null);
         } catch (Throwable t ) {
