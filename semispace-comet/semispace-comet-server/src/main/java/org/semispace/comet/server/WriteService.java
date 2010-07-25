@@ -67,6 +67,6 @@ public class WriteService extends AbstractService {
         final String outChannel = message.getChannel().replace("/call/", "/reply/");
         remote.deliver(remote, outChannel, output, message.getId());
 
-        log.trace("======== delivered TAKE on channel {} - done", outChannel);
+        log.trace("======== delivered WRITE on channel {} - done", outChannel);
     }
 }
