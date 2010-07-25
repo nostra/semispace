@@ -64,6 +64,9 @@ public class WriteService extends AbstractService {
         } else {
             output.put("error", "Did not get lease");
         }
-        remote.deliver(remote, message.getChannel().replace("/call/", "/reply/"), output, message.getId());
+        final String outChannel = message.getChannel().replace("/call/", "/reply/");
+        remote.deliver(remote, outChannel, output, message.getId());
+
+        log.trace("======== delivered TAKE on channel {} - done", outChannel);
     }
 }

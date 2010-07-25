@@ -74,6 +74,9 @@ public class LeaseCancellationService extends AbstractService {
     }
 
     private void performLeaseRegistration(String callId, SemiLease lease, String clientId) {
+        if ( clientId == null ) {
+            throw new RuntimeException("Missing clientId.");
+        }
         String key = clientId+"_"+callId;
         log.trace("Registered lease cancellation element with key {}",key);
         leases.put( key, lease );

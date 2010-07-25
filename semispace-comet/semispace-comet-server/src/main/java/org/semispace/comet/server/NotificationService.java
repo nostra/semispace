@@ -68,12 +68,12 @@ public class NotificationService extends AbstractService {
         if ( lease != null ) {
             output.put("leaseId", ""+lease.getId());
             // TODO Create surveillance of listener in order to remove it if it is expired
-            LeaseCancellationService.registerCancelableLease( callId, lease.getLease(), message.getClientId());
+            LeaseCancellationService.registerCancelableLease( callId, lease.getLease(), remote.getId());
         } else {
             output.put("error", "Did not get lease");
         }
-        remote.deliver(getServerSession(), message.getChannel().replace("/call/", "/reply/"), output, message.getId());
-
+        remote.deliver(getServerSession(), outChannel, output, message.getId());
+        log.trace("======== delivered notify registration confirmation on channel {} - done", outChannel);
     }
 
     private String createCallId(String outChannel, String listenerType) {
@@ -97,7 +97,7 @@ public class NotificationService extends AbstractService {
     }
 
     public void deliver(String outChannel, Map<String, String> output, ServerSession remote) {
-        log.trace("Delivering notification...");
+        log.trace("Delivering notification... channel: "+ outChannel);
         try {
             remote.deliver(remote, outChannel, output, null);
         } catch (Throwable t ) {

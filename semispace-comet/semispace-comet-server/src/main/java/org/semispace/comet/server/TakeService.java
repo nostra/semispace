@@ -82,7 +82,7 @@ public class TakeService extends AbstractService {
                 } catch ( Throwable t ) {
                     log.error("Got a problem delivering", t);
                 } finally {
-                    log.trace("delivered TAKE on channel {} - done", outChannel);
+                    log.trace("======== delivered TAKE on channel {} - done", outChannel);
                 }
             }
         };

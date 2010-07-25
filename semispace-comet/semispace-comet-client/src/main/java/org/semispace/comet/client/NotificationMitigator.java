@@ -70,6 +70,7 @@ public class NotificationMitigator implements SemiLease {
             threadPool.submit(timeOutSurveillance);
 
             client.getChannel(Channel.META_SUBSCRIBE).addListener(mitigationListener);
+            client.getChannel(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId).subscribe(mitigationListener);
 
             isAttached = true;
         } else {
@@ -157,8 +158,10 @@ public class NotificationMitigator implements SemiLease {
                     }
                 };
                 threadPool.submit(notify);
+            } else if (message.getChannel().startsWith("/meta")) {
+                // Ignore
             } else {
-                //log.warn("Unexpected channel "+message.getChannel()+" - was expecting "+CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/");
+                log.warn("Unexpected channel "+message.getChannel()+" - was expecting "+CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/");
             }
         }
 
