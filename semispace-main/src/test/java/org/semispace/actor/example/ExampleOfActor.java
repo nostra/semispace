@@ -42,7 +42,7 @@ public class ExampleOfActor {
     private void doMojo() {
         SemiSpaceInterface space = SemiSpace.retrieveSpace();
         Actor pong = new PongActor(space);
-        //pong.register(space);
+        pong.register(space);
         
         PingActor ping = new PingActor(10000, space);
 
