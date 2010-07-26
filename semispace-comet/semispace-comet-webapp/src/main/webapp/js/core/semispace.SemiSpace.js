@@ -88,18 +88,18 @@ semispace.SemiSpace = function(connection){
             if(subscriptionLease){
                 cometd.unsubscribe(subscriptionLease);
             }
-            subscriptionLease = cometd.subscribe('/semispace/reply/leasecancel/' + incrementedChannel, function(){
+            subscriptionLease = cometd.subscribe('/service/semispace/reply/leasecancel/' + incrementedChannel, function(){
                 // Nothing to do...
             });
 
-            cometd.publish('/semispace/call/leasecancel/' + incrementedChannel, {callId: leaseCancelChannel});
+            cometd.publish('/service/semispace/call/leasecancel/' + incrementedChannel, {callId: leaseCancelChannel});
         };
 
 
         if(subscriptionReply){
             cometd.unsubscribe(subscriptionReply);
         }
-        subscriptionReply = cometd.subscribe('/semispace/reply/notify/' + incrementedChannel + '/' + listener, function(message){
+        subscriptionReply = cometd.subscribe('/service/semispace/reply/notify/' + incrementedChannel + '/' + listener, function(message){
             // Nothing to do...
         });
 
@@ -107,12 +107,12 @@ semispace.SemiSpace = function(connection){
         if(subscriptionEvent){
             cometd.unsubscribe(subscriptionEvent);
         }
-        subscriptionEvent = cometd.subscribe('/semispace/event/notify/' + incrementedChannel + '/' + listener, function(message){
+        subscriptionEvent = cometd.subscribe('/service/semispace/event/notify/' + incrementedChannel + '/' + listener, function(message){
             callbackHandler(message, callback);
         });
 
 
-        cometd.publish('/semispace/call/notify/' + incrementedChannel + '/' + listener, {duration:duration.toString(), json:template});
+        cometd.publish('/service/semispace/call/notify/' + incrementedChannel + '/' + listener, {duration:duration.toString(), json:template});
 
         incrementedChannel++;
 
@@ -146,11 +146,11 @@ semispace.SemiSpace = function(connection){
         if(subscription){
             cometd.unsubscribe(subscription);
         }
-        subscription = cometd.subscribe('/semispace/reply/write/' + incrementedChannel, function(message){
+        subscription = cometd.subscribe('/service/semispace/reply/write/' + incrementedChannel, function(message){
             callbackHandler(message, callback);
         });
 
-        cometd.publish('/semispace/call/write/' + incrementedChannel, {timeToLiveMs:lifeTimeInMs.toString(), json:obj});
+        cometd.publish('/service/semispace/call/write/' + incrementedChannel, {timeToLiveMs:lifeTimeInMs.toString(), json:obj});
 
         incrementedChannel++;
 
@@ -184,11 +184,11 @@ semispace.SemiSpace = function(connection){
         if(subscription){
             cometd.unsubscribe(subscription);
         }
-        subscription = cometd.subscribe('/semispace/reply/read/' + incrementedChannel, function(message){
+        subscription = cometd.subscribe('/service/semispace/reply/read/' + incrementedChannel, function(message){
             callbackHandler(message, callback);
         });
 
-        cometd.publish('/semispace/call/read/' + incrementedChannel, {duration:timeout.toString(), json:template});
+        cometd.publish('/service/semispace/call/read/' + incrementedChannel, {duration:timeout.toString(), json:template});
 
         incrementedChannel++;
 
@@ -235,11 +235,11 @@ semispace.SemiSpace = function(connection){
         if(subscription){
             cometd.unsubscribe(subscription);
         }
-        subscription = cometd.subscribe('/semispace/reply/take/' + incrementedChannel, function(message){
+        subscription = cometd.subscribe('/service/semispace/reply/take/' + incrementedChannel, function(message){
             callbackHandler(message, callback);
         });
 
-        cometd.publish('/semispace/call/take/' + incrementedChannel, {duration:timeout.toString(), json:template});
+        cometd.publish('/service/semispace/call/take/' + incrementedChannel, {duration:timeout.toString(), json:template});
 
         incrementedChannel++;
 
