@@ -54,6 +54,7 @@ public class SemiSpaceInitializer extends GenericServlet {
 
         lcs = new LeaseCancellationService(bayeux);
         lcs.setSeeOwnPublishes(false);
+        // Does not really seem like the extensions give anything I need
         //bayeux.addExtension(new TimesyncExtension());
         //bayeux.addExtension(new AcknowledgedMessagesExtension());
     }
@@ -61,13 +62,11 @@ public class SemiSpaceInitializer extends GenericServlet {
     @Override
     public void destroy() {
         super.destroy();
-        /* TODO Fix disconnect
-        rs.getClient().disconnect();
-        ws.getClient().disconnect();
-        ts.getClient().disconnect();
-        ns.getClient().disconnect();
-        lcs.getClient().disconnect();
-        */
+        rs.getServerSession().disconnect();
+        ws.getServerSession().disconnect();
+        ts.getServerSession().disconnect();
+        ns.getServerSession().disconnect();
+        lcs.getServerSession().disconnect();
     }
 
     @Override

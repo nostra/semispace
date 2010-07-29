@@ -22,6 +22,7 @@ import org.cometd.client.BayeuxClient;
 import org.cometd.client.transport.LongPollingTransport;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.util.component.LifeCycle;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.semispace.Holder;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
@@ -67,12 +68,21 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
         httpClient = new HttpClient();
         try {
             httpClient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
-            httpClient.setMaxConnectionsPerAddress(40000);
+            httpClient.setMaxConnectionsPerAddress(200);
+            QueuedThreadPool pool = new QueuedThreadPool();
+            pool.setMaxThreads(200);
+            pool.setMinThreads(50);
+            pool.setDaemon(true);
+            
+            httpClient.setThreadPool(pool);
             httpClient.start();
             
             LongPollingTransport lpt = LongPollingTransport.create(null, httpClient);
             client = new BayeuxClient(endpoint, lpt);
             client.handshake();
+            if ( !client.waitFor(1000,BayeuxClient.State.CONNECTED)) {
+                log.error("BayeuxClient did not return a connected state. This will introduce later errors, but is ignored here.");
+            }
             //client.addLifeCycleListener(new ProxyLifeCycle());
             //client.start();
         } catch (Exception e) {

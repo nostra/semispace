@@ -67,10 +67,7 @@ public class NotificationMitigator implements SemiLease {
             log.debug("Attaching "+CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);
             timeOutSurveillance = new TimeOutSurveillance( timeOutInMs, this );
             threadPool.submit(timeOutSurveillance);
-
-            //client.getChannel(Channel.META_SUBSCRIBE).addListener(mitigationListener);
             client.getChannel(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/*").subscribe(mitigationListener);
-            //client.getChannel(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId+"/availability").subscribe(mitigationListener);
 
             isAttached = true;
         } else {
@@ -83,8 +80,6 @@ public class NotificationMitigator implements SemiLease {
             log.debug("... Detaching");
             boolean cancelResult = sendCancelListener();
             timeOutSurveillance.cancelSurveillance();
-            /*client.removeListener(mitigationListener);
-            client.unsubscribe(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId);*/
             client.getChannel(CometConstants.NOTIFICATION_EVENT_CHANNEL+"/"+callId).unsubscribe(mitigationListener);
             isAttached = false;
             return cancelResult;
@@ -97,9 +92,7 @@ public class NotificationMitigator implements SemiLease {
         try {
             log.trace("Publishing cancellation of lease with channel id "+callId);
             final CancelResultListener cancelListener = new CancelResultListener( callId );
-            //client.getChannel(Channel.META_SUBSCRIBE).addListener(cancelListener );
             client.getChannel(CometConstants.NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL+"/"+callId).addListener(cancelListener );
-            //client.addListener( cancelListener );
             Map map = new HashMap<String, String>();
             map.put( "callId", ""+callId );
             log.trace("Awaiting...");

@@ -16,7 +16,6 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.bayeux.Channel;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
@@ -47,14 +46,7 @@ public class NotificationClient {
 
     private void attach(BayeuxClient client) {
         notificationListener = new NotificationRegistrationListener(callId, client, listener );
-        /*client.addListener(notificationListener);
-        client.subscribe(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all");*/
-        client.getChannel(Channel.META_SUBSCRIBE).addListener(notificationListener);
         client.getChannel(CometConstants.NOTIFICATION_REPLY_CHANNEL+"/"+callId+"/all").subscribe(notificationListener);
-        /*
-        client.getChannel(Channel.META_SUBSCRIBE).addListener(writeListener);
-        client.getChannel(CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).subscribe(writeListener);
-         */
     }
 
     private void detach(BayeuxClient client) {

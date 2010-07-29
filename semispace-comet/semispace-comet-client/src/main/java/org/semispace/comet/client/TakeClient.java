@@ -16,7 +16,6 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.bayeux.Channel;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
@@ -43,34 +42,7 @@ public class TakeClient implements ReadOrTake {
     }
 
     private void attach(BayeuxClient client) {
-/*      client.addListener(takeListener);
-        // Documentation says I have to subscribe to this channel, but it seems like I do not have to.
-        client.subscribe(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId);*/
-
-        //client.getChannel(Channel.META_SUBSCRIBE).addListener(takeListener);
         ClientSessionChannel channel = client.getChannel(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId);
-        if ( channel == null ) {
-            throw new RuntimeException("Could not obtain channel.");
-        }
-        
-        final CountDownLatch latch = new CountDownLatch(1);
-        client.getChannel(Channel.META_HANDSHAKE).addListener(new ClientSessionChannel.MessageListener()
-                {
-                    @Override
-                    public void onMessage(ClientSessionChannel channel, Message message)
-                    {
-                        latch.countDown();
-                    }
-                });
-
-        client.handshake();
-        try {
-            if ( !latch.await(10, TimeUnit.SECONDS)) {
-                throw new RuntimeException("Ops - no connection");
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Not expected");
-        }
         channel.subscribe(takeListener);
 
     }
@@ -81,15 +53,7 @@ public class TakeClient implements ReadOrTake {
 
     public String doReadOrTake(BayeuxClient client, Map<String, Object> map, long maxWaitMs ) {
         attach(client);
-        /*
-        Map sm = ((Map)map.get("searchMap"));
-        Set<Map.Entry<Object,Object>> es = sm.entrySet();
-        for ( Map.Entry x : es) {
-            log.debug(x.getKey()+"="+x.getValue()+": "+x.getValue().getClass().getName());
-        }
-        */
         try {
-            client.waitFor(1000,BayeuxClient.State.CONNECTED);
             client.getChannel(CometConstants.TAKE_CALL_CHANNEL+"/"+callId).publish( map);
             log.trace("Awaiting..."+CometConstants.TAKE_REPLY_CHANNEL+"/"+callId+" map is: "+map);
             boolean finishedOk = takeListener.getLatch().await(maxWaitMs+ PRESUMED_NETWORK_LAG_MS, TimeUnit.MILLISECONDS);

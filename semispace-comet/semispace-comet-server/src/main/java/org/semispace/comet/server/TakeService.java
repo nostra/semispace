@@ -45,7 +45,6 @@ public class TakeService extends AbstractService {
     public TakeService(BayeuxServer bayeux, SemiSpace space ) {
         super(bayeux, "take");
         log.debug("Adding service "+CometConstants.TAKE_CALL_CHANNEL+"/*");
-        //bayeux.addExtension(new AcknowledgedMessagesExtension());
         addService(CometConstants.TAKE_CALL_CHANNEL+"/*", "semispaceTake");
 
         this.space = space;

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
  * elements that are inserted are typically quite fewer than in the terracotta test.
  *
  * Before comet improvements: 76 sec for all tests, one failing: testAsyncWithFourThreads.
+ * After 31, no failures
  */
 public class CopyOfTerracottaIntegrationTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(CopyOfTerracottaIntegrationTest.class);

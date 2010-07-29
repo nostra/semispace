@@ -43,7 +43,6 @@ public class WriteClient {
     }
 
     private void attach(BayeuxClient client) {
-        client.getChannel(Channel.META_SUBSCRIBE).addListener(writeListener);
         client.getChannel(CometConstants.WRITE_REPLY_CHANNEL+"/"+callId).subscribe(writeListener);
     }
 

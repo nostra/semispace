@@ -34,6 +34,7 @@ import java.util.Set;
 
 /**
  * Before comet2 work: 40 sec no failures
+ * After: 76 s (!), no failures
  */
 public class CopyOfNotificationIntegrationTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(CopyOfNotificationIntegrationTest.class);

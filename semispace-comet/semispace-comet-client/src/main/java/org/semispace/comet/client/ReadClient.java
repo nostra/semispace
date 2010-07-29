@@ -16,7 +16,6 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.bayeux.Channel;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
@@ -43,18 +42,12 @@ public class ReadClient implements ReadOrTake {
     }
 
     private void attach(BayeuxClient client) {
-        /*client.addListener(readListener);
-        // Documentation says I have to subscribe to this channel, but it seems like I do not have to.
-        client.subscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);*/
-        client.getChannel(Channel.META_SUBSCRIBE).addListener(readListener);
         client.getChannel(CometConstants.READ_REPLY_CHANNEL+"/"+callId).subscribe(readListener);
 
     }
 
     private void detach(BayeuxClient client) {
         client.getChannel(CometConstants.TAKE_REPLY_CHANNEL+"/"+callId).unsubscribe(readListener);
-        /*client.removeListener(readListener);
-        client.unsubscribe(CometConstants.READ_REPLY_CHANNEL+"/"+callId);*/
     }
 
     @Override
