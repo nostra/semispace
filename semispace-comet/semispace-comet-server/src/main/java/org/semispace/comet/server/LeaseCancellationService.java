@@ -49,7 +49,7 @@ public class LeaseCancellationService extends AbstractService {
     public void semispaceCancelLease(final ServerSession remote, final Message message) {
         log.trace("Lease cancel: Remote id "+remote.getId()+" Ch: "+message.getChannel()+" clientId: "+message.getClientId()+" id: "+message.getId()+" data: "+message.getData());
         Object holderId = ((Map)message.getData()).get("callId");
-        SemiLease sl = leases.get( message.getClientId()+"_"+holderId );
+        SemiLease sl = leases.get( remote.getId()+"_"+holderId );
         Boolean result = Boolean.FALSE;
         if ( sl != null ) {
             log.trace("Cancelling lease with holder id "+sl.getHolderId());

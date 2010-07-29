@@ -32,6 +32,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Before comet2 work: 40 sec no failures
+ */
 public class CopyOfNotificationIntegrationTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(CopyOfNotificationIntegrationTest.class);
     private static final int NUMBER_OF_ELEMENTS_OR_LISTENERS = 15;

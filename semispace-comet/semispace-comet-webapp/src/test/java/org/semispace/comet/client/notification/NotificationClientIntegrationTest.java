@@ -76,7 +76,7 @@ public class NotificationClientIntegrationTest {
     public void testThatCancellationOfNotificationWorks() {
         NotificationTestListener listener = new NotificationTestListener();
         SemiEventRegistration lease = space.notify(new FieldHolder(), listener, 1000);
-        lease.getLease().cancel();
+        Assert.assertTrue( lease.getLease().cancel());
         FieldHolder onlyOne = new FieldHolder();
         onlyOne.setFieldA("A");
         onlyOne.setFieldB("B");
