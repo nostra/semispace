@@ -46,7 +46,7 @@
     <properties>
         <springframework.version>3.0.3.RELEASE</springframework.version>
         <cxf.version>2.2.9</cxf.version>
-        <jetty.version>6.1.24</jetty.version>
+        <jetty.version>6.1.25</jetty.version>
         <slf4j.version>1.6.1</slf4j.version>
         <cometd.version>2.0.0</cometd.version>
     </properties>
@@ -353,7 +353,7 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
+            <version>1.2.16</version>
         </dependency>
         <dependency>
             <groupId>asm</groupId>

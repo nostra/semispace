@@ -29,7 +29,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <comet-jetty-version>7.1.5.v20100705</comet-jetty-version>
+        <comet-jetty-version>7.1.6.v20100715</comet-jetty-version>
         <jetty-plugin-version>${comet-jetty-version}</jetty-plugin-version>
     </properties>
 
