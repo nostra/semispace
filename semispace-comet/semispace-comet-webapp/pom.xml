@@ -18,7 +18,7 @@
         <plugins>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
-                <!-- Seems like jetty7 works much better with comet, using 6.1.24, though-->
+                <!-- 6.1.24 version: -->
                 <!-- artifactId>maven-jetty-plugin</artifactId>
                 <version>${comet-jetty-version}</version-->
                 <artifactId>jetty-maven-plugin</artifactId>
