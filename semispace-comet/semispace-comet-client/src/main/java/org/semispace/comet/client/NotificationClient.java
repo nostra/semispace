@@ -113,7 +113,7 @@ public class NotificationClient {
                 }
                 latch.countDown();
             } else {
-                // TODO log.warn("Unexpected channel "+message.getChannel());
+                log.warn("Unexpected channel "+message.getChannel());
             }
         }
         public SemiEventRegistration getData() {

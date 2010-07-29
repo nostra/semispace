@@ -23,7 +23,6 @@ import org.cometd.client.transport.LongPollingTransport;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.semispace.Holder;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiLease;
@@ -31,7 +30,6 @@ import org.semispace.SemiSpaceInterface;
 import org.semispace.comet.common.CometConstants;
 import org.semispace.comet.common.Json2Xml;
 import org.semispace.comet.common.Xml2Json;
-import org.semispace.comet.common.XmlManipulation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,19 +46,16 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     private BayeuxClient client;
     private HttpClient httpClient;
     private XStream xstream;
-    // private XStream jsonstream;
+
     /**
      * The call counter is used for differentiating between different calls from the same VM. 
      */
     private AtomicInteger myCallCounter = new AtomicInteger(1);
 
     public SemiSpaceCometProxy() {
-        //JettisonMappedXmlDriver driver = new JettisonMappedXmlDriver();
         xstream = new XStream();
         // Conversion to / from JSON necessitates no references:
         xstream.setMode(XStream.NO_REFERENCES);
-        //jsonstream = new XStream(driver);
-        //jsonstream.setMode(XStream.NO_REFERENCES);
     }
 
     // "http://localhost:8080/semispace-comet-server/cometd/"
@@ -83,8 +78,6 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
             if ( !client.waitFor(1000,BayeuxClient.State.CONNECTED)) {
                 log.error("BayeuxClient did not return a connected state. This will introduce later errors, but is ignored here.");
             }
-            //client.addLifeCycleListener(new ProxyLifeCycle());
-            //client.start();
         } catch (Exception e) {
             throw new RuntimeException("Could not start client", e);
         }
@@ -111,7 +104,7 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     @Override
     public SemiLease write(Object obj, long timeToLiveMs) {
         final String xml = toXML(obj);
-        Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, timeToLiveMs);
+        //Holder holder = XmlManipulation.retrievePropertiesFromXml(xml, timeToLiveMs);
 
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("timeToLiveMs",""+timeToLiveMs);

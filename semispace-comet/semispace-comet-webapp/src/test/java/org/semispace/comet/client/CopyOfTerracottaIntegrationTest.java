@@ -310,7 +310,7 @@ public class CopyOfTerracottaIntegrationTest extends TestCase {
         int counter = 0;
         long startTime = System.currentTimeMillis();
         while ( startTime > System.currentTimeMillis() - 1000 ) {
-            space.write(nvq, 10000);
+            space.write(nvq, 50000);
             counter++;
         }
         log.info("Inserted "+counter+" elements");

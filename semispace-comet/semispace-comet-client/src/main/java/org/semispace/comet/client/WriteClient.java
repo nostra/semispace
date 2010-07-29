@@ -16,7 +16,6 @@
 
 package org.semispace.comet.client;
 
-import org.cometd.bayeux.Channel;
 import org.cometd.bayeux.Message;
 import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
@@ -91,7 +90,7 @@ public class WriteClient {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             } else {
-                //log.warn("Unexpected channel "+message.getChannel()+" Expected: "+CometConstants.WRITE_REPLY_CHANNEL+"/"+callId);
+                log.warn("Unexpected channel "+message.getChannel()+" Expected: "+CometConstants.WRITE_REPLY_CHANNEL+"/"+callId);
             }
         }
 

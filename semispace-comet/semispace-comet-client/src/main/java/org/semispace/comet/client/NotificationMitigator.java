@@ -205,7 +205,7 @@ public class NotificationMitigator implements SemiLease {
                 log.trace("Channel: "+message.getChannel()+" client id "+message.getClientId());
                 latch.countDown();
             } else {
-                //log.warn("Unexpected channel "+message.getChannel()+" Expected "+CometConstants.NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL+"/"+callId);
+                log.warn("Unexpected channel "+message.getChannel()+" Expected "+CometConstants.NOTIFICATION_REPLY_CANCEL_LEASE_CHANNEL+"/"+callId);
             }
         }
 
