@@ -62,11 +62,10 @@ public class SemiSpaceCometProxy implements SemiSpaceInterface {
     public void init(String endpoint) {
         httpClient = new HttpClient();
         try {
-            httpClient.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
             httpClient.setMaxConnectionsPerAddress(200);
             QueuedThreadPool pool = new QueuedThreadPool();
             pool.setMaxThreads(200);
-            pool.setMinThreads(50);
+            pool.setMinThreads(10);
             pool.setDaemon(true);
             
             httpClient.setThreadPool(pool);

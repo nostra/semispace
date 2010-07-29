@@ -32,4 +32,6 @@ Doc needed
  - Done upgrade spring dependencies
  - support more databases and operations in the persistence module
  - examine overhead when using statistics (should it be removed?)
- 
+ - update actor elements
+ - JSON schema implementation
+ - Warning when primitives in object

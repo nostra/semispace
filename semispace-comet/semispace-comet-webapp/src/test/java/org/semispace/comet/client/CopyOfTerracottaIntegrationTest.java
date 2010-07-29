@@ -141,7 +141,7 @@ public class CopyOfTerracottaIntegrationTest extends TestCase {
     public void testQuantity() {
         FieldHolder templ = new FieldHolder();
         templ.setFieldA("a");
-        assertNull("Should start with elements present", space.takeIfExists(templ));
+        assertNull("Should not start with any elements present", space.takeIfExists(templ));
 
         for ( int i=0 ; i < 100 ; i++ ) {
             FieldHolder fh = new FieldHolder();

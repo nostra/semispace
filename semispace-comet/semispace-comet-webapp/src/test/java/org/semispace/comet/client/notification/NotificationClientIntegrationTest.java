@@ -19,15 +19,9 @@ package org.semispace.comet.client.notification;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.comet.client.FieldHolder;
 import org.semispace.comet.client.SemiSpaceCometProxy;
-import org.semispace.event.SemiAvailabilityEvent;
-import org.semispace.event.SemiEvent;
-import org.semispace.event.SemiExpirationEvent;
-import org.semispace.event.SemiRenewalEvent;
-import org.semispace.event.SemiTakenEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +44,7 @@ public class NotificationClientIntegrationTest {
 
     @Test
     public void testSimpleNotify() throws InterruptedException {
-        NotificationTestListener listener = new NotificationTestListener();
+        NotificationClientIntegration listener = new NotificationClientIntegration();
         SemiEventRegistration lease = space.notify(new FieldHolder(), listener, 1000);
         FieldHolder onlyOne = new FieldHolder();
         onlyOne.setFieldA("A");
@@ -61,12 +55,12 @@ public class NotificationClientIntegrationTest {
         Assert.assertNotNull( space.read(onlyOne, 900)); // Reading the one
         Assert.assertNotNull( space.take(onlyOne, 900)); // Taking the one
         Assert.assertNull( "Just using some time in order to get space elements notified properly", space.take(onlyOne, 300));
-        Assert.assertEquals("As 3 objects was written into space, 3 objects should have flagged availability", 3, listener.availability);
-        Assert.assertEquals(1, listener.taken);
+        Assert.assertEquals("As 3 objects was written into space, 3 objects should have flagged availability", 3, listener.getAvailability());
+        Assert.assertEquals(1, listener.getTaken());
         // Cannot test listener expiration, as it depends on the sequence of objects in the space, which now
         // is unordered
         // Assert.assertEquals("0, 1 or 2 objects tend to be expired.", 2, listener.expiration);
-        Assert.assertEquals(0, listener.renewal);
+        Assert.assertEquals(0, listener.getRenewal());
 
         Assert.assertNull( "Space should now be empty", space.read(onlyOne, 50));
         lease.getLease().cancel();
@@ -74,7 +68,7 @@ public class NotificationClientIntegrationTest {
 
     @Test
     public void testThatCancellationOfNotificationWorks() {
-        NotificationTestListener listener = new NotificationTestListener();
+        NotificationClientIntegration listener = new NotificationClientIntegration();
         SemiEventRegistration lease = space.notify(new FieldHolder(), listener, 1000);
         Assert.assertTrue( lease.getLease().cancel());
         FieldHolder onlyOne = new FieldHolder();
@@ -83,40 +77,8 @@ public class NotificationClientIntegrationTest {
         space.write(onlyOne, 900);
         Assert.assertNotNull(space.take(onlyOne, 100));
 
-        Assert.assertEquals("As the listener was cancelled, I should not have been triggered.", 0, listener.availability);
-        Assert.assertEquals(0, listener.taken);
+        Assert.assertEquals("As the listener was cancelled, I should not have been triggered.", 0, listener.getAvailability());
+        Assert.assertEquals(0, listener.getTaken());
     }
 
-    private class NotificationTestListener implements SemiEventListener {
-        private int expiration;
-        private int availability;
-        private int taken;
-        private int renewal;
-
-        @Override
-        public void notify(SemiEvent theEvent) {
-            if ( theEvent instanceof SemiExpirationEvent ) {
-                SemiExpirationEvent expirationEvent = (SemiExpirationEvent) theEvent;
-                expiration++;
-                log.debug("Got expiration event id "+expirationEvent.getId());
-
-            } else if ( theEvent instanceof SemiAvailabilityEvent) {
-                SemiAvailabilityEvent availabilityEvent = (SemiAvailabilityEvent) theEvent;
-                availability++;
-                log.debug("Got availability event id "+availabilityEvent.getId());
-
-            } else if ( theEvent instanceof SemiTakenEvent) {
-                SemiTakenEvent takenEvent = (SemiTakenEvent) theEvent;
-                taken++;
-                log.debug("Got taken event id "+takenEvent.getId());
-
-            } else if ( theEvent instanceof SemiRenewalEvent) {
-                SemiRenewalEvent renewalEvent = (SemiRenewalEvent) theEvent;
-                renewal++;
-                log.debug("Got taken renewal event id "+renewalEvent.getId());
-            } else {
-                log.error("Not expected at all: Got id "+theEvent.getId()+", event class "+theEvent.getClass().getName());
-            }
-        }
-    }
 }
