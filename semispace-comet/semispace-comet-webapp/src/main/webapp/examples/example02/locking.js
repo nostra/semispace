@@ -18,9 +18,6 @@ var example = {
 
     user:undefined,
 
-    Connection:undefined,
-    Space:undefined,
-
     timeoutNotify:1200000,
     timeoutWrite:1200000,
 
@@ -48,22 +45,22 @@ var example = {
         }
     },
 */
-    pageElements:{
+    pageElements : {
         "page" : {
             "id" : "thispage",
             "elements" : []
         }
     },
 
-    pageElementsTemplat:{
+    pageElementsTemplat : {
         "page" : {
             "id" : "thispage"
         }
     },
-    pageElementsTemplatAsString:undefined,
+    pageElementsTemplatAsString : undefined,
 
 
-    init:function(){
+    init : function() {
         example.pageElementsTemplatAsString = JSON.stringify(example.pageElementsTemplat);
         example.getUser();
         example.setDefaultEventHandlersInDOM();
@@ -72,23 +69,20 @@ var example = {
     },
 
 
-    getUser:function(){
+    getUser : function() {
         example.user = window.prompt("Please enter a username");
     },
 
 
     // Esablish communication with the semispace server and creates a semispace object
-    connectToServer:function(){
 
-        var host = location.protocol + '//' + location.host + '/semispace-comet-server/cometd';
-        example.Connection = new semispace.Comet(host);
-        example.Connection.connect();
-
-        example.Space = new semispace.SemiSpace(example.Connection.getConnection());
+    connectToServer : function() {
+        semispace.connection.init();
+        semispace.connection.connect();
     },
 
 
-    setDefaultEventHandlersInDOM:function(){
+    setDefaultEventHandlersInDOM : function() {
         var elements = document.getElementsByClassName('el');
         var i = elements.length;
         while(i--){
@@ -115,13 +109,13 @@ var example = {
     },
 
 
-    addPageElementsListener:function(){
-        example.Space.notify(example.pageElementsTemplatAsString, 'availability', example.timeoutNotify, example.getPageElementsFromSpace);
+    addPageElementsListener : function() {
+        semispace.space.notify(example.pageElementsTemplatAsString, 'availability', example.timeoutNotify, example.getPageElementsFromSpace);
     },
 
 
-    getPageElementsFromSpace:function(data){
-        example.Space.readIfExists(example.pageElementsTemplatAsString, function(data){
+    getPageElementsFromSpace : function(data) {
+        semispace.space.readIfExists(example.pageElementsTemplatAsString, function(data){
             if(data){
                 example.pageElements = JSON.parse(data);
                 var i = example.pageElements.page.elements.length;
@@ -132,7 +126,7 @@ var example = {
         });
     },
 
-    updateLocking:function(index){
+    updateLocking : function(index) {
         var id = example.pageElements.page.elements[index].id;
         var locked = example.pageElements.page.elements[index].locked;
         var user = example.pageElements.page.elements[index].user;
@@ -173,19 +167,19 @@ var example = {
     },
 
 
-    pushPageElementsToSpace:function(){
-        example.Space.takeIfExists(example.pageElementsTemplatAsString, function(data){
+    pushPageElementsToSpace : function() {
+        semispace.space.takeIfExists(example.pageElementsTemplatAsString, function(data){
             // Do nothing
         });
 
         var pageElementsAsString = JSON.stringify(example.pageElements);
-        example.Space.write(pageElementsAsString, example.timeoutWrite, function(data){
+        semispace.space.write(pageElementsAsString, example.timeoutWrite, function(data){
             // Do nothing
         });
     },
 
 
-    doEdit:function(id){
+    doEdit : function(id) {
         var i = example.pageElements.page.elements.length;
         while(i--){
             if(example.pageElements.page.elements[i].id === id){
@@ -197,7 +191,7 @@ var example = {
     },
 
 
-    doSave:function(id){
+    doSave : function(id) {
         var i = example.pageElements.page.elements.length;
         while(i--){
             if(example.pageElements.page.elements[i].id === id){
@@ -209,7 +203,7 @@ var example = {
     },
 
 
-    isLocked:function(name){
+    isLocked : function(name) {
         alert('This element is loced by ' + name + '.\nYou can not edit this element.');
     }
 

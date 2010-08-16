@@ -8,63 +8,43 @@
     <script type="text/javascript" src="/semispace-comet-server/js/lib/dojo-release-1.5.0/dojo/dojo.js"> </script>
 
     <!-- SemiSpace -->
-    <script type="text/javascript" src="/semispace-comet-server/js/core/semispace.js"> </script>
-    <script type="text/javascript" src="/semispace-comet-server/js/core/semispace.Comet.js"> </script>
-    <script type="text/javascript" src="/semispace-comet-server/js/core/semispace.SemiSpace.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.utils.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.connection.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.space.js"> </script>
 
     <script type="text/javascript">
         var example = {
 
-            communication:undefined,
-            space:undefined,
-            msgEl:undefined,
+            msgEl : undefined,
 
-            init:function(){
+            init : function() {
 
-                communication = new semispace.Comet(location.protocol + '//' + location.host + '/semispace-comet-server/cometd');
-                communication.addMetaListener(function logger(status, message){
-                    var msg = 'Status is: ' + status;
-                    switch(status){
-                        case 1:
-                            msg = msg + ' - Handshake is done';
-                            break;
-                        case 2:
-                            msg = msg + ' - Got connection to server';
-                            break;
-                        case 3:
-                            msg = msg + ' - No connection to server';
-                            break;
-                    }
-                    console.log(msg);
-                });
-                var connection = communication.connect();
-                space = new semispace.SemiSpace(connection);
+                semispace.connection.init();
+                semispace.connection.connect();
 
                 msgEl = document.getElementById('status');
             },
 
-            spaceWrite:function(){
+            spaceWrite : function() {
                var jsonString = JSON.stringify({"Person":{"firstName":"John","lastName":"Doe"}});
-               space.write(jsonString, 10000, function(data){
-                   // msgEl.innerHTML = 'Data written to space';
-                   console.log('write: ' + data);
+               semispace.space.write(jsonString, 10000, function(data){
+                   msgEl.innerHTML = 'Data written to space';
                });
             },
 
-            spaceRead:function(){
+            spaceRead : function() {
                 var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
-                space.read(jsonTemplate, 10000, function(data){
+                semispace.space.read(jsonTemplate, 10000, function(data){
                     if(data){
-                        // msgEl.innerHTML = data;
-                        console.log('read: ' + data);
+                        msgEl.innerHTML = data;
                     }
                 });
             },
 
-            spaceNotify:function(){
+            spaceNotify : function() {
                 var jsonTemplate = JSON.stringify({"Person":{"firstName":"John"}});
-
-                var invalidate = space.notify(jsonTemplate, 'availability', 10000, example.spaceRead);
+                var invalidate = semispace.space.notify(jsonTemplate, 'availability', 10000, example.spaceRead);
             }
 
         }
