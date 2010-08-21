@@ -23,6 +23,7 @@ Communication introduction
  and a the long polling {{{http://svn.cometd.com/trunk/bayeux/bayeux.html}Bayeux protocol}} for browsers not supporting
  WebSockets.
 
+
 ~~~~~~~~~~~~
 Browser support
 ~~~~~~~~~~~~
@@ -112,9 +113,9 @@ The easy way
 Communicating with the space
 ~~~~~~~~~~~~
 
- The SemisSpace JavaScript client provides a common interface against the space so whatever JavaScript library used the
- methods are the same among them. The SemiSpace JavaScript client will automaticly detect which JavaScript library which
- are in use so no more configuration are needed to get the SemiSpace client up running.
+ The SemiSpace JavaScript client provides a common interface against the space so whatever JavaScript library used the
+ methods are the same among them. The SemiSpace JavaScript client will automaticly detect which JavaScript library in use
+ so no configuration against the library are needed to get the SemiSpace JavaScript client up running.
 
 
  ~~~~~~~~~~~~~~
