@@ -74,7 +74,7 @@ public class GoogledController {
 
     @ModelAttribute("userList")
     public UserList userList() {
-        UserList userList = (UserList) space.read(new UserList(), 750);
+        UserList userList = space.read(new UserList(), 750);
         if ( userList == null ) {
             log.info("Creating new userlist as it was not present.");
             userList = new UserList();
@@ -94,7 +94,7 @@ public class GoogledController {
         space.write(query, 5000);
         GoogleAddress ga = new GoogleAddress();
         ga.setAddress( query.getAddress());
-        ga = (GoogleAddress) space.read(ga, 5500);
+        ga = space.read(ga, 5500);
         ModelAndView mv = new ModelAndView("entry");
         mv.addObject("addressResult", ga);
         return mv;
@@ -116,13 +116,13 @@ public class GoogledController {
             log.info("Removed token for user "+token.getUsername());
         }
         
-        UserList userList = (UserList) space.take(new UserList(), 500);
+        UserList userList = space.take(new UserList(), 500);
         // Need to collate potential "slow" results at the off chance that some may exist
-        UserList seldom = (UserList) space.takeIfExists(new UserList());
+        UserList seldom = space.takeIfExists(new UserList());
         while ( seldom != null) {
             log.warn("Notice: The space has obviously responded slowly at some time, and I therefore need to collate results");
             userList.getUsers().addAll(seldom.getUsers());
-            seldom = (UserList) space.takeIfExists(new UserList());
+            seldom = space.takeIfExists(new UserList());
         }
         userList.getUsers().remove(user.getUsername());
         
