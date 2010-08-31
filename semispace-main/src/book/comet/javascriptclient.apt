@@ -10,7 +10,7 @@
  by the JavaScript client are available for other clients. JSON objects can also be mapped directly to any known JAVA
  object and vise versa.
 
- If you are not familliar with how to work against a space we recommend you read {{{http://www.trygve-lie.com/blog/entry/tuple_space_in_few_words}a simple introduction}}
+ If you are not familiar with how to work against a space we recommend you read {{{http://www.trygve-lie.com/blog/entry/tuple_space_in_few_words}a simple introduction}}
  before you proceed.
 
 
@@ -36,12 +36,13 @@ Browser support
  * FireFox 3.x and newer
  * Chrome 5.x and newer
  * Safari 3.x and newer
+ []
 
  Mobile:
  * Opera Mobile 10.x and newer
  * Android 2.2 and newer
  * Fennec 2.x beta and newer
-
+ []
 
 ~~~~~~~~~~~~
 Installation
@@ -54,7 +55,7 @@ Installation
  The SemiSpace JavaScript client does only use the {{{http://cometd.org/}CometD}} connection module in these libraries
  and does not depend on any other functions in these libraries.
 
- There are two ways to get up and running; The "custom way" and the "easy way". If your project already are depening on
+ There are two ways to get up and running; The "custom way" and the "easy way". If your project already are depending on
  one of the libraries CometD have bindings to (Dojo Kit or jQuery), the "custom way" are the part you want to dive into.
  If you have no existing library and just want to get up and running, the "easy way" are the part you should read.
 
@@ -63,7 +64,7 @@ Installation
 The custom way
 ~~~~~~~~~~~~
 
- The CometD module are not part of the core functionality in these libraries and must therfor be installed in the library of choise.
+ The CometD module are not part of the core functionality in these libraries and must therfore be installed in the library of choice.
 
  TODO: complete description....
 
@@ -73,7 +74,7 @@ The easy way
 ~~~~~~~~~~~~
 
  For your convenience the SemiSpace Comet package come with prepared builds of DojoKit and jQuery where the CometD module
- have been applied. To get started, select one of the provided prebuild libraries for your project.
+ have been applied. To get started, select one of the provided prebuilt libraries for your project.
 
  ~~~~~~~~~~~~~~
  * Dojo Kit
@@ -114,7 +115,7 @@ Communicating with the space
 ~~~~~~~~~~~~
 
  The SemiSpace JavaScript client provides a common interface against the space so whatever JavaScript library used the
- methods are the same among them. The SemiSpace JavaScript client will automaticly detect which JavaScript library in use
+ methods are the same among them. The SemiSpace JavaScript client will automatically detect which JavaScript library in use
  so no configuration against the library are needed to get the SemiSpace JavaScript client up running.
 
 
@@ -122,14 +123,14 @@ Communicating with the space
  * Connecting to the space
  ~~~~~~~~~~~~~~
 
- To make the SemiSpace JavaScript client talk to the SemiSpace server a connection need to be stablished. This is done
- by initialize the connection module.
+ To make the SemiSpace JavaScript client talk to the SemiSpace server a connection need to be stabilised. This is done
+ by initializing the connection module.
 
 ~~ ---
 ~~ semispace.connection.init();
 ~~ ---
 
- The init metod can take a connection configuration object. This object are similar to the {{{http://cometd.org/documentation/cometd-javascript/configuration}CometD configuration}}.
+ The init method can take a connection configuration object. This object are similar to the {{{http://cometd.org/documentation/cometd-javascript/configuration}CometD configuration}}.
 
  If you run on a default setup there should be no need to provide a connection configuration to the init method. The most
  needed parameter in the configuration to override will probably be URL the server. To override the server URL you provide
@@ -260,7 +261,7 @@ Working against the space
  The JavaScript client does not stringify or parse the JSON object communicated with the space. This is left to the
  implementation and must be dealt with on each communication.
 
- Each JSON object transmitted to the space must be stringifyed before sendt.
+ Each JSON object transmitted to the space must be stringified before sent.
 
  Example:
 
@@ -269,7 +270,7 @@ Working against the space
 ~~ semispace.space.write(objAsString, 6000, callback);
 ~~ ---
 
- Each JSON object recieved from the space must be parsed before it can be delt with by JavaScript.
+ Each JSON object received from the space must be parsed before it can be dealt with by JavaScript.
 
  Example:
 
