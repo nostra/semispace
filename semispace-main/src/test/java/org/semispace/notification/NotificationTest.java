@@ -68,7 +68,6 @@ public class NotificationTest extends TestCase {
         ToBeNotified b = new ToBeNotified(false);
         ToBeNotified c = new ToBeNotified(false);
 
-        SemiSpaceInterface space = SemiSpace.retrieveSpace();
         SemiEventRegistration notifyA = space.notify(new NoticeA(), a, 10000);
         a.setNotify( notifyA );
         SemiEventRegistration notifyB = space.notify(new NoticeB(), b, 10000);
@@ -136,7 +135,6 @@ public class NotificationTest extends TestCase {
         final int numberOfListeners = StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS;
         ToBeNotified[] a = new ToBeNotified[numberOfListeners];
         ToBeNotified[] b = new ToBeNotified[numberOfListeners];
-        SemiSpaceInterface space = SemiSpace.retrieveSpace();
         List<SemiEventRegistration> regs = new ArrayList<SemiEventRegistration>();
         for ( int i=0 ; i < numberOfListeners ; i++ ) {
             a[i] = new ToBeNotified(false);
@@ -185,7 +183,6 @@ public class NotificationTest extends TestCase {
     public void testListenerExpiration() throws InterruptedException {
         ToBeNotified a = new ToBeNotified(false);
 
-        SemiSpaceInterface space = SemiSpace.retrieveSpace();
         SemiEventRegistration notifyA = space.notify(new NoticeA(), a, 150);
         a.setNotify( notifyA );
 
