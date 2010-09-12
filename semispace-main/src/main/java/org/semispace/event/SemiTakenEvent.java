@@ -26,12 +26,16 @@
 
 package org.semispace.event;
 
-public class SemiTakenEvent implements SemiEvent {
+/**
+ * Signifies that an object has been taken out of the space
+ */
+public class SemiTakenEvent extends SemiEvent {
     private long id;
     public SemiTakenEvent(long id) {
         this.id = id;
     }
 
+    @Override
     public long getId() {
         return id;
     }

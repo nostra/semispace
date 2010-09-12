@@ -31,7 +31,7 @@ package org.semispace.event;
 /**
  * An object has become available.
  */
-public class SemiAvailabilityEvent implements SemiEvent {
+public class SemiAvailabilityEvent extends SemiEvent {
     private long id;
 
     /**
@@ -42,7 +42,8 @@ public class SemiAvailabilityEvent implements SemiEvent {
         this.id = id;
     }
     
-	public long getId() {
+	@Override
+    public long getId() {
         return this.id;
     }
 }

@@ -38,6 +38,7 @@ public class SemiSpaceTest extends TestCase {
     protected static class JunitIdListener implements SemiEventListener {
         private long id;
 
+        @Override
         public void notify(SemiEvent theEvent) {
             if ( theEvent instanceof SemiAvailabilityEvent ) {
                 this.id = theEvent.getId();
@@ -319,8 +320,9 @@ public class SemiSpaceTest extends TestCase {
     }
     
     
-    protected class JunitEventListener implements SemiEventListener {
+    protected static class JunitEventListener implements SemiEventListener {
         private int count=0;
+        @Override
         public void notify(SemiEvent theEvent) {
             if ( theEvent instanceof SemiAvailabilityEvent ) {
                 count++;
@@ -333,6 +335,7 @@ public class SemiSpaceTest extends TestCase {
 
     protected class JunitTakingListener implements SemiEventListener {
         private int count=0;
+        @Override
         public void notify(SemiEvent theEvent) {
             FieldHolder fh = new FieldHolder();
             fh.setFieldA("a");

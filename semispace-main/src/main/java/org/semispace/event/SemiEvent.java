@@ -30,9 +30,9 @@ package org.semispace.event;
  * An event on an element in the semispace. The event as such is 
  * distributed through notify (by terracotta).
  */
-public interface SemiEvent {
+public abstract class SemiEvent {
     /**
      * The id of the object in the system
      */
-    public long getId();
+    public abstract long getId();
 }

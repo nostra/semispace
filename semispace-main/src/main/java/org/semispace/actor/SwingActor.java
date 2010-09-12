@@ -35,7 +35,8 @@ import java.lang.annotation.Target;
 /**
  * This annotation indicates that the actor in question is a swing action, which 
  * means that the messages sent to this actor are sent on the <b>swing thread</b>
- * and not via an internal pool.
+ * and not via an internal pool. This is useful when using actors to take care
+ * of asynchronous form processing (for example).
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})

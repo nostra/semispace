@@ -116,7 +116,8 @@ public class SemiSpace implements SemiSpaceInterface {
         instance.listeners = new ConcurrentHashMap<Long, ListenerHolder>();
         instance.setAdmin(new SemiSpaceAdmin(this));
         instance.xStream = new XStream();
-        instance.classFieldMap = classFieldMap = new WeakHashMap<String, Field[]>();
+        instance.classFieldMap = new WeakHashMap<String, Field[]>();
+        classFieldMap = instance.classFieldMap; 
     }
 
     /**
@@ -136,9 +137,9 @@ public class SemiSpace implements SemiSpaceInterface {
      * None of the parameters can be null
      * 
      * @return Returning null if something went wrong or was wrong, a registration object otherwise.
-     * @see org.semispace.SemiSpaceInterface#notify(java.lang.Object,
-     *      org.semispace.SemiEventListener, long)
+     * @see org.semispace.SemiSpaceInterface#notify(Object, SemiEventListener, long)  
      */
+    @Override
     public SemiEventRegistration notify(Object tmpl, SemiEventListener listener, long duration) {
         if (tmpl == null) {
             log.warn("Not registering notification on null object.");
@@ -169,7 +170,6 @@ public class SemiSpace implements SemiSpaceInterface {
             return null;
         }
 
-        SemiEventRegistration eventRegistration = null;
         rwl.writeLock().lock();
         ListenerHolder holder = null;
         try {
@@ -184,7 +184,7 @@ public class SemiSpace implements SemiSpaceInterface {
         }
         statistics.increaseNumberOfListeners();
         SemiLease lease = new ListenerLease(holder, this);
-        eventRegistration = new SemiEventRegistration(holder.getId(), lease);
+        SemiEventRegistration eventRegistration = new SemiEventRegistration(holder.getId(), lease);
         return eventRegistration;
     }
 
@@ -210,7 +210,11 @@ public class SemiSpace implements SemiSpaceInterface {
             public void run() {
                 for (SemiEventListener notify : toNotify) {
                     if ( ! admin.getThreadPool().isShutdown() ) {
-                        notify.notify(event);
+                        try {
+                            notify.notify(event);
+                        } catch (ClassCastException cce ) {
+                            log.info("Temporary workaround. Expected ClassCastException: "+cce);
+                        }
                     } else {
                         log.debug("Not notifying, as the thread pool has been shut down.");
                     }

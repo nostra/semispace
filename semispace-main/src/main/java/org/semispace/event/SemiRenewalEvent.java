@@ -29,7 +29,7 @@ package org.semispace.event;
 /**
  * Object with id has been renewed, and now has a different expiration date, which may be shorter...
  */
-public class SemiRenewalEvent implements SemiEvent {
+public class SemiRenewalEvent extends SemiEvent {
 
     private long id;
     private long liveUntil;
@@ -43,6 +43,7 @@ public class SemiRenewalEvent implements SemiEvent {
         this.liveUntil = liveUntil;
     }
 
+    @Override
     public long getId() {
         return id;
     }

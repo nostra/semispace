@@ -33,12 +33,12 @@ import org.semispace.event.SemiExpirationEvent;
 /**
  * Event listener interface
  */
-public interface SemiEventListener {
+public interface SemiEventListener<E extends SemiEvent> {
     /**
      * <b>Notice</b> that the notification object is an interface,
      * and you will need to figure out the concrete type yourself.
      * @see SemiAvailabilityEvent
      * @see SemiExpirationEvent
      */
-    public void notify(SemiEvent theEvent);
+    public void notify(E theEvent);
 }

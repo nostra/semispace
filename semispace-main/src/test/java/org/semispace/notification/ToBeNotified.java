@@ -29,9 +29,8 @@ package org.semispace.notification;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.event.SemiAvailabilityEvent;
-import org.semispace.event.SemiEvent;
 
-public class ToBeNotified implements SemiEventListener {
+public class ToBeNotified implements SemiEventListener<SemiAvailabilityEvent> {
     private int notified;
     private boolean toCancelLease;
     private SemiEventRegistration lease;
@@ -47,13 +46,11 @@ public class ToBeNotified implements SemiEventListener {
     /**
      * synchronized in order to avoid it being called twice (as it may be removed)
      */
-    public void notify(SemiEvent theEvent) {
-        
-        if ( theEvent instanceof SemiAvailabilityEvent ) {
-            notified++;
-            if (toCancelLease) {
-                lease.getLease().cancel();
-            }
+    @Override
+    public void notify(SemiAvailabilityEvent theEvent) {        
+        notified++;
+        if (toCancelLease) {
+            lease.getLease().cancel();
         }
     }
 

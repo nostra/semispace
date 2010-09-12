@@ -26,18 +26,17 @@
 
 package org.semispace;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
+import org.semispace.event.SemiAvailabilityEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.semispace.event.SemiAvailabilityEvent;
-import org.semispace.event.SemiEvent;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Block until notification or timeout.
  */
-public class SemiBlockingListener implements SemiEventListener {
+public class SemiBlockingListener implements SemiEventListener<SemiAvailabilityEvent> {
     private static final Logger log = LoggerFactory.getLogger(SemiBlockingListener.class);
     private transient CountDownLatch latch;
     private transient Boolean beenNotified;
@@ -49,16 +48,15 @@ public class SemiBlockingListener implements SemiEventListener {
     /**
      * Resetting notified state - necessary for re-blocking
      */
-    public void reset() {
+    public final void reset() {
         this.beenNotified = Boolean.FALSE;
     }
 
-    public void notify(SemiEvent theEvent) {
+    @Override
+    public void notify(SemiAvailabilityEvent theEvent) {
         //log.debug("Notify");
-        if ( theEvent instanceof SemiAvailabilityEvent ) {
-            this.beenNotified = Boolean.TRUE;
-            unblock();
-        }
+        this.beenNotified = Boolean.TRUE;
+        unblock();
     }
 
     private void unblock() {
@@ -78,7 +76,7 @@ public class SemiBlockingListener implements SemiEventListener {
             if ( ! beenNotified.booleanValue() ) {
                 latch.await(msToWait*1000, TimeUnit.NANOSECONDS);
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignore) {
             log.error("Got interrupted exception (which unblocks await)");
         }
     }
@@ -86,5 +84,4 @@ public class SemiBlockingListener implements SemiEventListener {
     public boolean hasBeenNotified() {
         return beenNotified.booleanValue();
     }
-
 }

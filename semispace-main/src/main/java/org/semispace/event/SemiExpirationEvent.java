@@ -30,12 +30,13 @@ package org.semispace.event;
 /**
  * Given element has been removed due to expiration.
  */
-public class SemiExpirationEvent implements SemiEvent {
+public class SemiExpirationEvent extends SemiEvent {
     private long id;
     public SemiExpirationEvent(long id) {
         this.id = id;
     }
 
+    @Override
     public long getId() {
         return id;
     }

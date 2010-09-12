@@ -37,6 +37,12 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementation of an actor. You need to register the actor in a space, in
+ * order to get a lifetime of the actor. The read and take templates are
+ * registered at this time as well.
+ *
+ */
 public abstract class Actor {
 	private static final Logger log = LoggerFactory.getLogger(Actor.class);
     /** 
