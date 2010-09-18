@@ -14,15 +14,20 @@ chmod a+x *.sh
 # Rename jetty jars so that they do not have version number.
 # The sed expression is not very good, but as long as it works...
 cd ../lib
-for a in `ls | grep "jetty\|start"` 
-do
-  moveTo=`echo $a | sed s/-[0-9]*\.[0-9]*\.[0-9]*\.jar/.jar/g`
-  if [ "$moveTo" != "$a" ]
-  then
-    echo "Moving " $a" to " $moveTo 
-    mv -i $a $moveTo
-  fi 
-done
+# Remove dummy jar
+rm semispace-comet-app*.jar
+# Startup jar goes in parent directory
+mv *start*.jar ../start.jar
+#for a in `ls | grep "jetty\|start"`
+#do
+#  moveTo=`echo $a | sed s/-[0-9]*\.[0-9]*\.[0-9]*\.jar/.jar/g`
+#  #moveTo=`echo $a | sed s/-[0-9]*\.[0-9]*\.[0-9]*\.v........\.jar/.jar/g`
+#  if [ "$moveTo" != "$a" ]
+#  then
+#    echo "Moving " $a" to " $moveTo
+#    mv -i $a $moveTo
+#  fi
+#done
 
 # Rename also the war file(s)
 for a in `ls | grep "\.war"` 
@@ -49,6 +54,7 @@ echo "Go to the bin directory."
 echo "You start the application by writing (in the bin directory)"
 echo "export JETTY_HOME=`pwd`/.."
 echo "export JETTY_RUN=`pwd`/../tmp"
+echo "export JETTY_LOGS=`pwd`/../logs"
 echo "export TMP=`pwd`/../tmp"
 echo 'export JAVA_OPTIONS="-server -Djava.awt.headless=true -Xmx768m -Xms256m -XX:PermSize=128m -XX:MaxPermSize=256m -XX:NewSize=64m -XX:MaxNewSize=128m -Dspacecfg=mock"'
 echo "./jetty.sh start # In order to background the process."
