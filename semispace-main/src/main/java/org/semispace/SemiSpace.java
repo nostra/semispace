@@ -212,8 +212,8 @@ public class SemiSpace implements SemiSpaceInterface {
                     if ( ! admin.getThreadPool().isShutdown() ) {
                         try {
                             notify.notify(event);
-                        } catch (ClassCastException cce ) {
-                            log.info("Temporary workaround. Expected ClassCastException: "+cce);
+                        } catch (ClassCastException ignored ) {
+                            // Sadly enough, I need to ignore this due to type erasure.
                         }
                     } else {
                         log.debug("Not notifying, as the thread pool has been shut down.");

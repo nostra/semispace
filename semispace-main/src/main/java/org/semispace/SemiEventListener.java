@@ -26,19 +26,17 @@
 
 package org.semispace;
 
-import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
-import org.semispace.event.SemiExpirationEvent;
 
 /**
  * Event listener interface
  */
 public interface SemiEventListener<E extends SemiEvent> {
     /**
-     * <b>Notice</b> that the notification object is an interface,
-     * and you will need to figure out the concrete type yourself.
-     * @see SemiAvailabilityEvent
-     * @see SemiExpirationEvent
+     * @param theEvent Event which is subclass of the abstract SemiEvent
+     * @see org.semispace.event.SemiEvent
+     * @see org.semispace.event.SemiAvailabilityEvent
+     * @see org.semispace.event.SemiExpirationEvent
      */
     public void notify(E theEvent);
 }
