@@ -44,8 +44,8 @@
     </ciManagement>-->
 
     <properties>
-        <springframework.version>3.0.3.RELEASE</springframework.version>
-        <cxf.version>2.2.9</cxf.version>
+        <springframework.version>3.0.4.RELEASE</springframework.version>
+        <cxf.version>2.2.10</cxf.version>
         <jetty.version>6.1.25</jetty.version>
         <slf4j.version>1.6.1</slf4j.version>
         <cometd.version>2.0.0</cometd.version>
@@ -254,12 +254,11 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.2</version>
         </dependency>        
          <dependency>
             <groupId>org.springframework</groupId>
