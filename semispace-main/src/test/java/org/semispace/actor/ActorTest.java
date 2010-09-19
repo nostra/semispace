@@ -34,7 +34,6 @@ import org.semispace.actor.example.Ping;
 import org.semispace.actor.example.PingActor;
 import org.semispace.actor.example.PongActor;
 import org.semispace.event.SemiAvailabilityEvent;
-import org.semispace.event.SemiEvent;
 
 public class ActorTest extends TestCase {
 	private SemiSpace space ;
@@ -59,7 +58,7 @@ public class ActorTest extends TestCase {
 	    assertNull(space.takeIfExists(template));
 	    
         space.write(msg, 3600*24*1000);
-        ActorMessage match = (ActorMessage) space.takeIfExists(template);
+        ActorMessage match = space.takeIfExists(template);
         XStream xstream = new XStream();
         
 	    assertNull("The take template should not match any element in space. Template: \n"+xstream.toXML(template)+"\n... should not match match...\n"+xstream.toXML(match), match);
@@ -107,14 +106,11 @@ public class ActorTest extends TestCase {
 		Thread.sleep(95);
 		assertTrue(listener.notified);
 	}
-    protected class NotificationTestListener implements SemiEventListener {
+    protected class NotificationTestListener implements SemiEventListener<SemiAvailabilityEvent> {
         protected boolean notified = false;
 
-        public void notify(SemiEvent theEvent) {
-            if ( theEvent instanceof SemiAvailabilityEvent ) {
-                // Testing only that elements are added
-                notified = true;
-            }
+        public void notify(SemiAvailabilityEvent ignore) {
+            notified = true;
         }
     }
 
