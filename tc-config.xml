@@ -111,9 +111,12 @@
           <class-expression>org.semispace.SemiSpaceStatistics</class-expression>
           <honor-transient>true</honor-transient>
         </include>
-        <include>
-           <class-expression>org.semispace.event.SemiExpirationEvent</class-expression>
-         </include>
+          <include>
+             <class-expression>org.semispace.event.SemiEvent</class-expression>
+           </include>
+          <include>
+             <class-expression>org.semispace.event.SemiExpirationEvent</class-expression>
+           </include>
         <include>
            <class-expression>org.semispace.event.SemiAvailabilityEvent</class-expression>
          </include>        
