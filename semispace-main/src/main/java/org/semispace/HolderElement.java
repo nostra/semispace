@@ -26,6 +26,8 @@
 
 package org.semispace;
 
+import org.semispace.exception.SemiSpaceInternalException;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,7 +61,7 @@ public class HolderElement implements Iterable<Holder>{
     public synchronized void addHolder(Holder add ) {
         Holder old = elements.put( Long.valueOf(add.getId()), add);
         if ( old != null ) {
-            throw new RuntimeException("Unexpected duplication id IDs. Found twice: "+old.getId());
+            throw new SemiSpaceInternalException("Unexpected duplication id IDs. Found twice: "+old.getId());
         }
     }
 

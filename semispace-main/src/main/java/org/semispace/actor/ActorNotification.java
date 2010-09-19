@@ -31,6 +31,7 @@ import org.semispace.SemiEventListener;
 import org.semispace.SemiSpaceInterface;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
+import org.semispace.exception.ActorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +113,7 @@ public class ActorNotification implements SemiEventListener {
 
                     final ActorMessage msg = payload;
                     if ( msg.getOriginatorId() == null ){
-                        throw new RuntimeException("Originator was not found for message with address "+msg.getAddress()+" and payload "+msg.getPayload().getClass().getName());
+                        throw new ActorException("Originator was not found for message with address "+msg.getAddress()+" and payload "+msg.getPayload().getClass().getName());
                     }
                     //final long holderId = theEvent.getId();
                     //log.debug("Holder id=" + holderId + " Notifying "+ actor.getActorId()+" ("+actor.getClass().getName() + ") of "+ msg.getPayload().getClass()+" with address "+msg.getAddress());

@@ -18,7 +18,7 @@
   It can be run as single, <<stand alone,>> space on one 
   {{{http://java.sun.com/javase/6/docs/}J2SE 6.0}} 
   VM (or greater), or
-  <<clustered>> with {{{http://www.terracotta.org}Terracotta}} version 3.2.1_2. 
+  <<clustered>> with {{{http://www.terracotta.org}Terracotta}} version 3.3.0. 
 
   Please see the 
   {{{semispace-main/semispace-book}SemiSpace book}}

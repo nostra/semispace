@@ -65,7 +65,7 @@ public class NotifyFromSpace implements SemiEventListener {
 // If this comment is seen in the doc, it is because mavens apt book generator has
 // become confused with the code snippets.
 
-            while (true) {
+            for ( int i=0 ; i < 10 ; i++) {
                 try {
                     Thread.sleep(1000 * 10);
                 } catch (InterruptedException e) {
@@ -73,7 +73,8 @@ public class NotifyFromSpace implements SemiEventListener {
                 }
             }
             /* If you like to cancel the notification, perform
-               the following: eventRegistration.getLease().cancel(); */
+               the following: */
+            eventRegistration.getLease().cancel();
         } catch (RuntimeException e) {
             e.printStackTrace();
         }

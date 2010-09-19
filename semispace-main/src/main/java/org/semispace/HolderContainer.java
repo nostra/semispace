@@ -26,6 +26,9 @@
 
 package org.semispace;
 
+import org.semispace.exception.SemiSpaceObjectException;
+import org.semispace.exception.SemiSpaceUsageException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -103,10 +106,10 @@ public class HolderContainer {
         rwl.writeLock().lock();
         try {
             if (add == null) {
-                throw new RuntimeException("Illegal to add null");
+                throw new SemiSpaceUsageException("Illegal to add null");
             }
             if ( add.getClassName() == null ) {
-                throw new RuntimeException("Need classname in holder with contents "+add.getXml());
+                throw new SemiSpaceObjectException("Need classname in holder with contents "+add.getXml());
             }
             HolderElement head = heads.get( add.getClassName() );
             if (head == null) {

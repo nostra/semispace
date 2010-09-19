@@ -31,6 +31,8 @@ import org.semispace.SemiEventRegistration;
 import org.semispace.SemiLease;
 import org.semispace.SemiSpace;
 import org.semispace.SemiSpaceInterface;
+import org.semispace.exception.ActorException;
+import org.semispace.exception.SemiSpaceUsageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +100,7 @@ public abstract class Actor {
             an = new ActorNotification( this, space, toTake, true );
             SemiEventRegistration registration = space.notify(toTake, an, actorLifeMs);
             if ( registration == null ) {
-                throw new RuntimeException("Did not manage to register with space.");
+                throw new ActorException("Did not manage to register with space.");
             }
             notifications.add( registration );
         }
@@ -106,7 +108,7 @@ public abstract class Actor {
             an = new ActorNotification( this, space, toRead, false );
             SemiEventRegistration registration = space.notify(toRead, an, actorLifeMs);
             if ( registration == null ) {
-                throw new RuntimeException("Did not manage to register with space.");
+                throw new ActorException("Did not manage to register with space.");
             }
             notifications.add( registration );
         }
@@ -141,7 +143,7 @@ public abstract class Actor {
      */
     public void send( Object obj ) {
         if ( actorId == null ) {
-            throw new RuntimeException("Actor id must be set. Did you remember to register actor class?");
+            throw new SemiSpaceUsageException("Actor id must be set. Did you remember to register actor class?");
         }
         SemiLease lease = space.write(obj, defaultLifeMsOfSpaceObject);
         ActorManifest manifest = new ActorManifest(Long.valueOf( lease.getHolderId()), actorId);
@@ -159,10 +161,10 @@ public abstract class Actor {
      */
     public void send(Long destinationId, Object payload) {
         if ( payload == null ) {
-            throw new RuntimeException("No parameter is allowed to be null, but payload was. Destination id was "+destinationId);
+            throw new SemiSpaceUsageException("No parameter is allowed to be null, but payload was. Destination id was "+destinationId);
         }
         if ( destinationId == null ) {
-            throw new RuntimeException("No parameter is allowed to be null, but destination was. Are you certain that " +
+            throw new SemiSpaceUsageException("No parameter is allowed to be null, but destination was. Are you certain that " +
                     "you used originatorId when replying? Payload class: "+payload.getClass().getName());
         }
         ActorMessage msg = new ActorMessage();

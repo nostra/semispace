@@ -10,6 +10,8 @@
 *----------------------------------+------------+
 || Change or bug || Change
 *----------------------------------+------------+
+| Removed throwing of RuntimeExceptions | Throwing specific SemiSpaceExceptions |
+*----------------------------------+------------+
 | Changed SemiSpaceEvent from interface to abstract class | This makes information about type to be used, thus avoiding an if-test in implementation. |
 *----------------------------------+------------+
 | Upgraded to cometd-2.0.0 | Upgraded to new cometd-release. Several changes to API and library use. |

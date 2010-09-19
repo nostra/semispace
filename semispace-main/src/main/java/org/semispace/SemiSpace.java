@@ -36,6 +36,9 @@ import org.semispace.event.SemiEvent;
 import org.semispace.event.SemiExpirationEvent;
 import org.semispace.event.SemiRenewalEvent;
 import org.semispace.event.SemiTakenEvent;
+import org.semispace.exception.SemiSpaceInternalException;
+import org.semispace.exception.SemiSpaceObjectException;
+import org.semispace.exception.SemiSpaceUsageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,7 +183,7 @@ public class SemiSpace implements SemiSpaceInterface {
             rwl.writeLock().unlock();
         }
         if ( listeners.put(Long.valueOf(holder.getId()), holder) != null ) {
-            throw new RuntimeException("Internal assertion error. Listener map already had element with id "+holder.getId());
+            throw new SemiSpaceInternalException("Internal assertion error. Listener map already had element with id "+holder.getId());
         }
         statistics.increaseNumberOfListeners();
         SemiLease lease = new ListenerLease(holder, this);
@@ -257,7 +260,7 @@ public class SemiSpace implements SemiSpaceInterface {
             if ( write.getException() != null ) {
                 exception = write.getException();
             }
-            throw new RuntimeException(error, exception);
+            throw new SemiSpaceObjectException(error, exception);
         }
         return write.getLease();
     }
@@ -381,7 +384,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
         // Read all elements until element is found. Side effect is to generate eviction list.
         if ( templateSet.get("class") == null ) {
-            throw new RuntimeException("Did not expect classname to be null");
+            throw new SemiSpaceObjectException("Did not expect classname to be null");
         }
         String className = templateSet.get("class");
         if ( templateSet.get(SemiSpace.ADMIN_GROUP_IS_FLAGGED) != null ) {
@@ -472,7 +475,7 @@ public class SemiSpace implements SemiSpaceInterface {
     
     private boolean hasSubSet(Set<Entry<String, String>> containerEntrySet, Map<String, String> templateSubSet) {
         if (templateSubSet == null) {
-            throw new RuntimeException("Did not expect template sub set to be null");
+            throw new SemiSpaceUsageException("Did not expect template sub set to be null");
         }
         Set<Entry<String, String>> templateEntrySet = templateSubSet.entrySet();
         return containerEntrySet.containsAll(templateEntrySet);
@@ -635,7 +638,7 @@ public class SemiSpace implements SemiSpaceInterface {
                     map.put(name, "" + value);
                 }
             } catch (IllegalAccessException e) {
-                log.warn("Introspection gave exception - which is not rethrown.", e);
+                log.warn("Introspection gave exception - which is not re-thrown.", e);
             }
         }
         return map;
@@ -845,7 +848,7 @@ public class SemiSpace implements SemiSpaceInterface {
         Holder elem = elements.removeHolderById(id.longValue(), className);
         if (elem != null) {
             if ( elem.getId() != id.longValue()) {
-                throw new RuntimeException("Sanity problem. Removed "+id.longValue()+" and got back element with id "+elem.getId());
+                throw new SemiSpaceInternalException("Sanity problem. Removed "+id.longValue()+" and got back element with id "+elem.getId());
             }
             success = true;
             SemiEvent semiEvent = null;
@@ -906,7 +909,7 @@ public class SemiSpace implements SemiSpaceInterface {
     private static class ShortestTtlComparator implements Comparator<ListenerHolder> {
         public int compare(ListenerHolder o1, ListenerHolder o2) {
             if ( o1 == null || o2 == null ) {
-                throw new RuntimeException("Did not expect any null values for listenerHolder.");
+                throw new SemiSpaceUsageException("Did not expect any null values for listenerHolder.");
             }
             return (int) (o1.getLiveUntil() - o2.getLiveUntil());
         }
