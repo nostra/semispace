@@ -23,7 +23,10 @@ Doc needed
  * <li>Integration with hadoop?</li>
  * <li>Integration with cache channels?</li>
  * </ul>
- * 
+ *
+
+- Instructions how to set up web.xml / pom.xml
+- Security (config in web.xml): Size of xml, number of req. per user, disable write
 
  - jgroups integration
  - support for internal ad-hoc indexes, for speeding up queries
