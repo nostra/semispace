@@ -79,3 +79,19 @@ Parameter overview
 *--------------------------+--------------------+---+
 | lease cancel             | callId | The caller id the notification lease is registered to. |
 *--------------------------+--------------------+---+
+
+~~~~~~~~~~~~~~~~~~
+Servlet configuration parameters
+~~~~~~~~~~~~~~~~~~
+
+ If you want to exclude either take or write as feature, you can do this in the web.xml file.
+ This is relevant when you have a service which shall provide a read-only interface to the clients,
+ probably due to data entering the space from a backend service.
+
+*--------------------------+--------------------+
+|| Init parameter || Significance ||
+*--------------------------+--------------------+
+| disableTake  | If disableTake is true, clients will be unable to remove anything from the space |
+*--------------------------+--------------------+
+| disableWrite | If disableWrite is true, clients will not be able to write anything to the space |
+*--------------------------+--------------------+
