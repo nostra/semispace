@@ -37,17 +37,23 @@ public class SemiSpaceInitializer extends GenericServlet {
 
     @Override
     public void init() throws ServletException {
+        boolean shallDisableWrite = checkContextForWriteDisabling("disableWrite", "write");
+        boolean shallDisableTake = checkContextForWriteDisabling("disableTake", "take");
         SemiSpace space = (SemiSpace) SemiSpace.retrieveSpace();
         BayeuxServer bayeux = (BayeuxServer)getServletContext().getAttribute(BayeuxServer.ATTRIBUTE);
-        ts = new TakeService(bayeux, space);
-        //new HelloService( bayeux );
-        //log.debug("Initialization done.");
-        ts.setSeeOwnPublishes(false);
+
         rs = new ReadService(bayeux, space);
         rs.setSeeOwnPublishes(false);
 
-        ws = new WriteService(bayeux, space);
-        ws.setSeeOwnPublishes(false);
+        if ( !shallDisableTake) {
+            ts = new TakeService(bayeux, space);
+            ts.setSeeOwnPublishes(false);
+        }
+
+        if ( !shallDisableWrite ) {
+            ws = new WriteService(bayeux, space);
+            ws.setSeeOwnPublishes(false);
+        }
 
         ns = new NotificationService(bayeux, space);
         ns.setSeeOwnPublishes(false);
@@ -59,12 +65,29 @@ public class SemiSpaceInitializer extends GenericServlet {
         //bayeux.addExtension(new AcknowledgedMessagesExtension());
     }
 
+    private boolean checkContextForWriteDisabling(String bs, String serviceName) {
+        String disable = getInitParameter(bs);
+        if ( "true".equalsIgnoreCase( disable )) {
+            log.info("Parameter "+bs+" is true, and "+serviceName+" service will be disabled, i.e. no external clients can invoke "+serviceName+".");
+            return true;
+        } else if ( disable != null && !"false".equalsIgnoreCase("false")) {
+            log.warn("Parameter "+bs+" is set, but with an illegal value ("+disable+"). Use true or false as values. Service "+serviceName+" is enabled.");
+        } else {
+            log.info("Parameter "+bs+" is not set or false, and "+serviceName+" is enabled. This is the default behaviour.");
+        }
+        return false;
+    }
+
     @Override
     public void destroy() {
         super.destroy();
+        if ( ws != null ) {
+            ws.getServerSession().disconnect();
+        }
+        if ( ts != null ) {
+            ts.getServerSession().disconnect();
+        }
         rs.getServerSession().disconnect();
-        ws.getServerSession().disconnect();
-        ts.getServerSession().disconnect();
         ns.getServerSession().disconnect();
         lcs.getServerSession().disconnect();
     }

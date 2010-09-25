@@ -54,6 +54,16 @@
     <servlet>
         <servlet-name>SemiSpaceInitializer</servlet-name>
         <servlet-class>org.semispace.comet.server.SemiSpaceInitializer</servlet-class>
+        <init-param>
+            <description>If disableTake is true, clients will be unable to remove anything from the space</description>
+            <param-name>disableTake</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <description>If disableWrite is true, clients will not be able to write anything to the space</description>
+            <param-name>disableWrite</param-name>
+            <param-value>false</param-value>
+        </init-param>
         <load-on-startup>2</load-on-startup>
     </servlet>
     <!-- Need jetty7 in order to activate this filter -->
