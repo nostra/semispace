@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Semispace Example 05</title>
+
+    <!-- jQuery kit -->
+
+   <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/org/cometd.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/org/cometd/AckExtension.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/org/cometd/ReloadExtension.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.json-2.2.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.cometd.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.cometd-reload.js"></script>
+
+    <!-- SemiSpace -->
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.utils.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.connection.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.space.js"> </script>
+
+    <script type="text/javascript">
+        var monitor = {
+
+            total : 0,
+            domStatus : undefined,
+
+            load : function() {
+                monitor.domStatus = document.getElementById('total');
+
+                semispace.connection.init();
+                semispace.connection.connect();
+
+                var templateAsString = JSON.stringify({"User" : {} });
+
+                semispace.space.notify(templateAsString, 'availability', 6000000, monitor.addUser);
+                semispace.space.notify(templateAsString, 'expiration', 6000000, monitor.removeUser);
+            },
+
+            addUser : function(data) {
+                monitor.total++;
+                monitor.updateStatus();
+            },
+
+            removeUser : function(data) {
+                if(monitor.total != 0){
+                    monitor.total--;
+                }
+
+                monitor.updateStatus();
+            },
+
+            updateStatus : function() {
+                monitor.domStatus.innerHTML = monitor.total;
+            }
+
+        };
+    </script>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        h1{
+            margin-top: 50px;
+            text-align: center;
+            font-size: 60px;
+        }
+        h2{
+            text-align: center;
+            font-size: 200px;
+            color: red;
+        }
+    </style>
+</head>
+<body onload="monitor.load();">
+    <h1>Online users now:</h1>
+    <h2 id="total">0</h2>
+</body>
+</html>

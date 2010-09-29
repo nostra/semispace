@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Semispace Example 05</title>
+
+    <!-- jQuery kit -->
+
+   <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/org/cometd.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/org/cometd/AckExtension.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/org/cometd/ReloadExtension.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.json-2.2.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.cometd.js"></script>
+    <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery.cometd-reload.js"></script>
+
+    <!-- SemiSpace -->
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.utils.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.connection.js"> </script>
+    <script type="text/javascript" src="/semispace-comet-server/js/core/uncompressed/semispace.space.js"> </script>
+
+    <script type="text/javascript" src="uuid.js"> </script>
+
+
+    <script type="text/javascript">
+        var online = {
+
+            data : {"User" : {'uuid' : ''}},
+            counter : 0,
+
+            load : function() {
+
+                semispace.connection.init();
+                semispace.connection.connect();
+
+                online.data.User.uuid = Math.uuid();
+
+                online.register();
+
+                var dataAsString = JSON.stringify(online.data);
+                semispace.space.notify(dataAsString, 'expiration', 6000000, online.register);
+            },
+
+            register : function() {
+                online.counter++;
+
+                var dataAsString = JSON.stringify(online.data);
+                semispace.space.write(dataAsString, 1000, function(data){ /* Do nothing! */});
+
+                var domStatus = document.getElementById('status');
+                domStatus.innerHTML = 'Your UUID: ' + online.data.User.uuid +'<br>Number of keepalives: ' + online.counter;
+            }
+
+        };
+
+    </script>
+</head>
+<body onload="online.load();">
+
+    <div id="status"> </div>
+
+</body>
+</html>
