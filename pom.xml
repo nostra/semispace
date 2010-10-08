@@ -220,6 +220,8 @@
             <groupId>commons-dbcp</groupId>
             <version>1.4</version>
         </dependency>
+        <!-- Terracotta will pull in the 2.1.1 version of this library. This breaks some other
+            functionality, and some webapps will not start. -->
         <dependency>
             <artifactId>commons-collections</artifactId>
             <groupId>commons-collections</groupId>
