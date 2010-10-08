@@ -24,4 +24,4 @@ then
 fi
 
 export CMD="-cp ${EXTRA} -Dlog4j.configuration=log4j.properties -Xmx128m org.semispace.space.tutorial.InsertIntoSpace"
-${TC_INSTALL_DIR}/bin/dso-java.sh -Dtc.config=${TC_CONFIG_PATH} ${CMD} $*
+${TC_INSTALL_DIR}/platform/bin/dso-java.sh -Dtc.config=${TC_CONFIG_PATH} ${CMD} $*
