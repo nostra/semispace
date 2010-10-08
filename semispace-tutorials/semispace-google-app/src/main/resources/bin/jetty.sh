@@ -89,7 +89,7 @@ START_STOP_DAEMON=1
 if [ "x${TC_INSTALL_DIR}" != "x" ] && [ "x${TC_CONFIG_PATH}" != "x" ]
 then
     echo "Using Terracotta"
-    . ${TC_INSTALL_DIR}/bin/dso-env.sh -q
+    . ${TC_INSTALL_DIR}/platform/bin/dso-env.sh -q
 #export JAVA_OPTIONS="$TC_JAVA_OPTS $JAVA_OPTS -Dcom.tc.loader.system.name='Jetty.path:/google' -Dspacecfg=mock"
     export JAVA_OPTIONS="$TC_JAVA_OPTS $JAVA_OPTS -Dspacecfg=mock"
 else

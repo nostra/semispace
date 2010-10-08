@@ -39,7 +39,7 @@ then
     echo "This may be corrected in a later version of either "
     echo "Terracotta or Semispace."
     echo "********************************************************************************"
-    ${TC_INSTALL_DIR}/bin/dso-java.sh -Dcom.tc.loader.system.name="Jetty.path:/semispace-google" -Dtc.config=${TC_CONFIG_PATH} ${CMD}
+    ${TC_INSTALL_DIR}/platform/bin/dso-java.sh -Dcom.tc.loader.system.name="Jetty.path:/semispace-google" -Dtc.config=${TC_CONFIG_PATH} ${CMD}
     
 else
     echo "Running with endpoint: " $1
