@@ -490,7 +490,7 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     public <T> T takeIfExists(T tmpl) {
-        return (T)take(tmpl, 0);
+        return take(tmpl, 0);
     }
 
     private String objectToXml(Object obj) {
