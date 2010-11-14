@@ -45,8 +45,8 @@
 
     <properties>
         <springframework.version>3.0.4.RELEASE</springframework.version>
-        <cxf.version>2.2.10</cxf.version>
-        <jetty.version>6.1.25</jetty.version>
+        <cxf.version>2.3.0</cxf.version>
+        <jetty.version>6.1.26</jetty.version>
         <slf4j.version>1.6.1</slf4j.version>
         <cometd.version>2.0.0</cometd.version>
     </properties>
@@ -59,7 +59,7 @@
             <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.1</version>
+            <version>4.8.2</version>
         </dependency>
         
 		<dependency>
