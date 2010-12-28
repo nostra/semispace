@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
  * Listener of a semispace template. The actor will be notified
  * with actor message.
  */
-public class ActorNotification implements SemiEventListener {
+public class ActorNotification implements SemiEventListener<SemiAvailabilityEvent> {
     private static final Logger log = LoggerFactory.getLogger(ActorNotification.class);
 
     private Actor actor;
@@ -73,16 +73,12 @@ public class ActorNotification implements SemiEventListener {
     }
 
     @Override
-    public void notify(final SemiEvent theEvent) {
-        // log.debug("incoming event "+theEvent.getId()+" "+theEvent.getClass().getName());
-
-        if (theEvent instanceof SemiAvailabilityEvent) {
-            final Runnable receive = new ActorMessageTaker(theEvent);
-            if ( pool == null ) {
-                SwingUtilities.invokeLater(receive);
-            } else {                
-                pool.submit(receive);
-            }
+    public void notify(SemiAvailabilityEvent theEvent) {
+        final Runnable receive = new ActorMessageTaker(theEvent);
+        if ( pool == null ) {
+            SwingUtilities.invokeLater(receive);
+        } else {
+            pool.submit(receive);
         }
     }
 
