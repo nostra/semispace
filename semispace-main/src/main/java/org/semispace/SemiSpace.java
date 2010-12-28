@@ -42,6 +42,7 @@ import org.semispace.exception.SemiSpaceUsageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -516,8 +517,8 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     private static class PreprocessedTemplate {
-       Object object;
-       Map<String, String> cachedSet;
+       private Object object;
+       private Map<String, String> cachedSet;
        
        public PreprocessedTemplate(Object object, Map<String, String> cachedSet) {
           this.object = object;
@@ -906,7 +907,7 @@ public class SemiSpace implements SemiSpaceInterface {
         return xStream;
     }
 
-    private static class ShortestTtlComparator implements Comparator<ListenerHolder> {
+    private static class ShortestTtlComparator implements Comparator<ListenerHolder>, Serializable {
         public int compare(ListenerHolder o1, ListenerHolder o2) {
             if ( o1 == null || o2 == null ) {
                 throw new SemiSpaceUsageException("Did not expect any null values for listenerHolder.");

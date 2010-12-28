@@ -168,17 +168,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
 
         IdentifyAdminQuery masterFound = populateListOfAllSpaces(admins);
 
-        Collections.sort(admins, new Comparator<IdentifyAdminQuery>() {
-            @Override
-            public int compare(IdentifyAdminQuery a1, IdentifyAdminQuery a2) {
-                if (a1.id == null) {
-                    return 1;
-                } else if (a2.id == null) {
-                    return -1;
-                }
-                return a2.id.intValue() - a1.id.intValue();
-            }
-        });
+        Collections.sort(admins, new IdentifyAdminQueryComparator());
         int foundId = 1;
         if (!admins.isEmpty()) {
             // Collection is sorted, and therefore the admin should increase
@@ -237,8 +227,9 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
             // Looping until we do not find any more admins
         } while (answer != null);
 
-        // Remove identity query from space as we do not need it anymore. If more than one present, we have a race condition (not likely)
-        while ( space.takeIfExists(new IdentifyAdminQuery()) != null) { }
+        while ( space.takeIfExists(new IdentifyAdminQuery()) != null) {
+            // Remove identity query from space as we do not need it anymore. If more than one present, we have a race condition (not likely)
+        }
 
         return masterFound;
     }
@@ -401,6 +392,18 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         periodicHarvest.cancelReaper();
         if ( shutDownHook != null ) {
             Runtime.getRuntime().removeShutdownHook(shutDownHook);            
+        }
+    }
+
+    private static class IdentifyAdminQueryComparator implements Comparator<IdentifyAdminQuery> {
+        @Override
+        public int compare(IdentifyAdminQuery a1, IdentifyAdminQuery a2) {
+            if (a1.id == null) {
+                return 1;
+            } else if (a2.id == null) {
+                return -1;
+            }
+            return a2.id.intValue() - a1.id.intValue();
         }
     }
 }

@@ -72,59 +72,12 @@ public class ActorNotification implements SemiEventListener {
         
     }
 
+    @Override
     public void notify(final SemiEvent theEvent) {
         // log.debug("incoming event "+theEvent.getId()+" "+theEvent.getClass().getName());
 
         if (theEvent instanceof SemiAvailabilityEvent) {
-            final Runnable receive = new Runnable() {
-                @SuppressWarnings("synthetic-access")
-                public void run() {
-                    Object element = null;
-                    if (toTake) {
-                        element = space.takeIfExists(template);
-                    } else {
-                        element = space.readIfExists(template);
-                    }
-                    //log.debug("incoming event with " + (element == null ? "null" : element.getClass().getName()));
-
-                    // final long holderId = theEvent.getId();
-                    ActorMessage payload = null;
-                    if (element instanceof ActorMessage) {
-                        payload = (ActorMessage) element;
-                    } else if (element != null) {
-                        payload = new ActorMessage();
-                        payload.setPayload(element);
-                        // Trying to find the manifest
-                        ActorManifest manifest = new ActorManifest(theEvent.getId());
-                        //log.debug("Trying to take with manifest " + theEvent.getId());
-                        if (toTake) {
-                            manifest = space.take(manifest, 1000);
-                        } else {
-                            manifest = space.read(manifest, 1000);
-                        }
-                        if (manifest != null) {
-                            payload.setOriginatorId(manifest.getOriginatorId());
-                        } 
-                    } else {
-                        log.debug("Probably having competing listeners, and this listener was not quick enough to take the object.");
-                        return;
-                    }
-
-
-                    final ActorMessage msg = payload;
-                    if ( msg.getOriginatorId() == null ){
-                        throw new ActorException("Originator was not found for message with address "+msg.getAddress()+" and payload "+msg.getPayload().getClass().getName());
-                    }
-                    //final long holderId = theEvent.getId();
-                    //log.debug("Holder id=" + holderId + " Notifying "+ actor.getActorId()+" ("+actor.getClass().getName() + ") of "+ msg.getPayload().getClass()+" with address "+msg.getAddress());
-                    try {
-                        actor.receive(msg);
-                    } catch (Exception e) {
-                        XStream xStream  = new XStream();
-                        log.error("Got exception with template:\n"+xStream.toXML(template)+"\n... and incoming actor message ...\n"+xStream.toXML(msg), e);
-                    }
-                }
-            };
+            final Runnable receive = new ActorMessageTaker(theEvent);
             if ( pool == null ) {
                 SwingUtilities.invokeLater(receive);
             } else {                
@@ -138,4 +91,60 @@ public class ActorNotification implements SemiEventListener {
      * pool.shutdownNow(); // Cancel currently executing tasks pool.awaitTermination(60, TimeUnit.SECONDS); } } catch
      * (InterruptedException ie) { pool.shutdownNow(); Thread.currentThread().interrupt(); } }
      */
+
+    private class ActorMessageTaker implements Runnable {
+        private final SemiEvent theEvent;
+
+        public ActorMessageTaker(SemiEvent theEvent) {
+            this.theEvent = theEvent;
+        }
+
+        @Override
+        public void run() {
+            Object element = null;
+            if (toTake) {
+                element = space.takeIfExists(template);
+            } else {
+                element = space.readIfExists(template);
+            }
+            //log.debug("incoming event with " + (element == null ? "null" : element.getClass().getName()));
+
+            // final long holderId = theEvent.getId();
+            ActorMessage payload = null;
+            if (element instanceof ActorMessage) {
+                payload = (ActorMessage) element;
+            } else if (element != null) {
+                payload = new ActorMessage();
+                payload.setPayload(element);
+                // Trying to find the manifest
+                ActorManifest manifest = new ActorManifest(theEvent.getId());
+                //log.debug("Trying to take with manifest " + theEvent.getId());
+                if (toTake) {
+                    manifest = space.take(manifest, 1000);
+                } else {
+                    manifest = space.read(manifest, 1000);
+                }
+                if (manifest != null) {
+                    payload.setOriginatorId(manifest.getOriginatorId());
+                }
+            } else {
+                log.debug("Probably having competing listeners, and this listener was not quick enough to take the object.");
+                return;
+            }
+
+
+            final ActorMessage msg = payload;
+            if ( msg.getOriginatorId() == null ){
+                throw new ActorException("Originator was not found for message with address "+msg.getAddress()+" and payload "+msg.getPayload().getClass().getName());
+            }
+            //final long holderId = theEvent.getId();
+            //log.debug("Holder id=" + holderId + " Notifying "+ actor.getActorId()+" ("+actor.getClass().getName() + ") of "+ msg.getPayload().getClass()+" with address "+msg.getAddress());
+            try {
+                actor.receive(msg);
+            } catch (Exception e) {
+                XStream xStream  = new XStream();
+                log.error("Got exception with template:\n"+xStream.toXML(template)+"\n... and incoming actor message ...\n"+xStream.toXML(msg), e);
+            }
+        }
+    }
 }
