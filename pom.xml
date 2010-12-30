@@ -44,11 +44,11 @@
     </ciManagement>-->
 
     <properties>
-        <springframework.version>3.0.4.RELEASE</springframework.version>
+        <springframework.version>3.0.5.RELEASE</springframework.version>
         <cxf.version>2.3.0</cxf.version>
         <jetty.version>6.1.26</jetty.version>
         <slf4j.version>1.6.1</slf4j.version>
-        <cometd.version>2.0.0</cometd.version>
+        <cometd.version>2.1.0.beta2</cometd.version>
     </properties>
 
     <!--

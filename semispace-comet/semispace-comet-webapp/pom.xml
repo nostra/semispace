@@ -24,7 +24,8 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${comet-jetty-version}</version>
                 <configuration>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <!-- Not needing to scan, as SemiSpace use jrebel -->
+                    <scanIntervalSeconds>0</scanIntervalSeconds>
                     <webAppConfig>
                         <contextPath>/semispace-comet-server</contextPath>
                     </webAppConfig>
