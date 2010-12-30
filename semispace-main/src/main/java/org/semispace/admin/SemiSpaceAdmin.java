@@ -36,6 +36,7 @@ import org.semispace.event.SemiAvailabilityEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -227,7 +228,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
             // Looping until we do not find any more admins
         } while (answer != null);
 
-        while ( space.takeIfExists(new IdentifyAdminQuery()) != null) {
+        while ( space.takeIfExists(new IdentifyAdminQuery()) != null) { // NOSONAR
             // Remove identity query from space as we do not need it anymore. If more than one present, we have a race condition (not likely)
         }
 
@@ -395,7 +396,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         }
     }
 
-    private static class IdentifyAdminQueryComparator implements Comparator<IdentifyAdminQuery> {
+    private static class IdentifyAdminQueryComparator implements Comparator<IdentifyAdminQuery>, Serializable {
         @Override
         public int compare(IdentifyAdminQuery a1, IdentifyAdminQuery a2) {
             if (a1.id == null) {

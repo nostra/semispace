@@ -309,6 +309,7 @@ public class SemiSpace implements SemiSpaceInterface {
         return lease;
     }
 
+    @Override
     public <T> T read(T tmpl, long timeout) {
         String found = null;
         if (tmpl != null) {
@@ -425,13 +426,11 @@ public class SemiSpace implements SemiSpaceInterface {
         boolean needToRetake = false;
 
         if (found != null) {
-            if (isToTakeTheLease) {
-                if (!cancelElement(Long.valueOf(found.getId()), isToTakeTheLease, found.getClassName())) {
-                    log.info("Element with id " + found.getId() + " ceased to exist during take. "
-                            + "This is not an error; Just an indication of a busy space. ");
-                    found = null;
-                    needToRetake = true;
-                }
+            if (isToTakeTheLease && !cancelElement(Long.valueOf(found.getId()), isToTakeTheLease, found.getClassName())) {
+                log.info("Element with id " + found.getId() + " ceased to exist during take. "
+                        + "This is not an error; Just an indication of a busy space. ");
+                found = null;
+                needToRetake = true;
             }
         }
 
@@ -482,6 +481,7 @@ public class SemiSpace implements SemiSpaceInterface {
         return containerEntrySet.containsAll(templateEntrySet);
     }
 
+    @Override
     public <T> T take(T tmpl, long timeout) {
         String found = null;
         if (tmpl != null) {
@@ -490,6 +490,7 @@ public class SemiSpace implements SemiSpaceInterface {
         return (T)xmlToObject(found);
     }
 
+    @Override
     public <T> T takeIfExists(T tmpl) {
         return take(tmpl, 0);
     }
@@ -684,7 +685,7 @@ public class SemiSpace implements SemiSpaceInterface {
             return lease;
         }
 
-        public WrappedInternalWriter(Object entry, long leaseTimeMs) {
+        protected WrappedInternalWriter(Object entry, long leaseTimeMs) {
             this.entry = entry;
             this.leaseTimeMs = leaseTimeMs;
         }
