@@ -26,6 +26,23 @@
 | ListenerStarvationTest| Basic (10 it): 4.7, 1000 it: 44.8 sec
 *------+-----+
 
+*------+-----+
+|| 1.2.1-SNAPSHOT || Terracotta 3.4.0_1 without admin module
+*------+-----+
+| TerraSpaceTest | ~25 sec
+| testInsertionTime | (1 sec): 4258 items, 2314ms time
+*------+-----+
+| SpaceTest| 6.3 sec
+*------+-----+
+| SemiSpaceTest| 11.6 sec (with failures)
+*------+-----+
+| NotificationTest | 21.8 sec
+*------+-----+
+| ActorTest | 4,3 sec (with errors, which may influence number)
+*------+-----+
+| ListenerStarvationTest| Basic (10 it): 4.6, 100 it: 8.7, 1000 it: 44.8 sec
+*------+-----+
+
 With Chris' changes:
 
 *------+-----+
