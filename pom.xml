@@ -447,6 +447,13 @@
                 <artifactId>jta</artifactId>
                 <version>1.1</version>
             </dependency>
+            <!-- If you need terracotta-toolkit for annotation based terracotta config:
+            <dependency>
+                <groupId>org.terracotta.toolkit</groupId>
+                  <artifactId>terracotta-toolkit-1.0</artifactId>
+                  <version>1.0.0</version>
+            </dependency>
+            -->
       </dependencies>
     </dependencyManagement>
     
@@ -612,7 +619,20 @@
             -->
         </repository>
     </distributionManagement>
-
+    <!-- If you are using terracotta-toolkit, you need:
+    <repositories>
+        <repository>
+            <id>terracotta-repository</id>
+            <url>http://www.terracotta.org/download/reflector/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    -->
     <!-- 
         MODULES
     -->
