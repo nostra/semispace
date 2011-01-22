@@ -12,7 +12,7 @@
 Problem with JVM > 1.6.0_18
 ~~~~
 
- Unless you run version 3.2.2 (which in the time of writing is not released),
+ Unless you run version 3.2.2 or higher,
  Terracotta will not work with JVM-1.6.0_19 or later:
 
  * {{https://jira.terracotta.org/jira/browse/CDV-1472}}

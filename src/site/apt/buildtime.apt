@@ -1,0 +1,26 @@
+                    -----
+                    Build and test times
+                    -----
+
+ Internal document in order to register changes in setup / build time.
+
+ Total (test) build times without cometd modules.
+
++------+-----
+|| 1.2.1-SNAPSHOT || Terracotta 3.3.0 / 3.0.4_1
++------+-----
+| Total build time w/o Terracotta| 2 min 41 sec (1000 it in ListenerStarvationTest)
++------+-----
+| TerraSpaceTest | ~28 sec
+| testInsertionTime | (1 sec): 3982 items, 2603ms time
++------+-----
+| SpaceTest| 6.3 sec
++------+-----
+| SemiSpaceTest| 12.5 sec
++------+-----
+| NotificationTest | 22.2 sec
++------+-----
+| ActorTest | 30.5 sec
++------+-----
+| ListenerStarvationTest| Basic (10 it): 4.7, 1000 it: 44.8 sec
++------+-----
