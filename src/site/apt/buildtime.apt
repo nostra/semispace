@@ -6,21 +6,60 @@
 
  Total (test) build times without cometd modules.
 
-+------+-----
-|| 1.2.1-SNAPSHOT || Terracotta 3.3.0 / 3.0.4_1
-+------+-----
-| Total build time w/o Terracotta| 2 min 41 sec (1000 it in ListenerStarvationTest)
-+------+-----
+*------+-----+
+|| 1.2.1-SNAPSHOT || Terracotta 3.3.0 / 3.4.0_1
+*------+-----+
+| Total build time | 2 min 41 sec (1000 it in ListenerStarvationTest)
+| semispace-main build time | 38 sec (10 it in ListenerStarvationTest)
+*------+-----+
 | TerraSpaceTest | ~28 sec
 | testInsertionTime | (1 sec): 3982 items, 2603ms time
-+------+-----
+*------+-----+
 | SpaceTest| 6.3 sec
-+------+-----
+*------+-----+
 | SemiSpaceTest| 12.5 sec
-+------+-----
+*------+-----+
 | NotificationTest | 22.2 sec
-+------+-----
+*------+-----+
 | ActorTest | 30.5 sec
-+------+-----
+*------+-----+
 | ListenerStarvationTest| Basic (10 it): 4.7, 1000 it: 44.8 sec
-+------+-----
+*------+-----+
+
+With Chris' changes:
+
+*------+-----+
+|| 1.2.1-SNAPSHOT || 3.3.0
+*------+-----+
+| semispace-main build time | 55 sec with test failures (10 it in ListenerStarvationTest)
+*------+-----+
+| TerraSpaceTest | ~18 sec
+| testInsertionTime | (1 sec): 18285 items, 2113 ms time
+*------+-----+
+| SpaceTest| 5.6 sec
+*------+-----+
+| SemiSpaceTest| 12.6 sec (failure in testStatistics)
+*------+-----+
+| NotificationTest | 23 sec (with error)
+*------+-----+
+| ActorTest | 6.5 sec
+*------+-----+
+| ListenerStarvationTest| Basic (10 it): 3.8, 1000 it: 20.8 sec (with error)
+*------+-----+
+
+*------+-----+
+|| 1.2.1-SNAPSHOT || 3.4.0_1
+*------+-----+
+| TerraSpaceTest | ~18 sec
+| testInsertionTime | (1 sec): 18263 items, 2094 ms time
+*------+-----+
+| SpaceTest| 5.6 sec
+*------+-----+
+| SemiSpaceTest| 12.6 sec (failure in testStatistics)
+*------+-----+
+| NotificationTest | 23.3 sec (sometime errors)
+*------+-----+
+| ActorTest | 6.5 sec
+*------+-----+
+| ListenerStarvationTest| Basic (10 it): 3.9, 100 it: 6.6, 1000 it: 24.2 sec (with error)
+*------+-----+
