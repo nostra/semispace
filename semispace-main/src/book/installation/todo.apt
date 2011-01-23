@@ -38,3 +38,6 @@ Doc needed
  - update actor elements
  - JSON schema implementation
  - Warning when primitives in object
+ - Suppress events flag
+ - Better strategy for removing holder if last element
+ - Consider disabling statistics collection
