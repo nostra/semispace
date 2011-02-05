@@ -26,38 +26,22 @@
 
 package org.semispace;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import org.semispace.event.SemiEvent;
 
 
 /**
  * Used for distributing event through terracotta. 
  */
 public class EventDistributor {
+    private static EventDistributor instance = new EventDistributor();
 
-    private String holderClassName;
-    private SemiEvent event;
-    private Map<String, String> entrySet;
-    
-    public EventDistributor(String holderClassName, SemiEvent event, Map<String, String> map) {
-        this.holderClassName = holderClassName;
-        this.event = event;
-        this.entrySet = map;
+    public static EventDistributor getInstance() {
+        return instance;
     }
 
-    public SemiEvent getEvent() {
-        return this.event;
+    private EventDistributor() {
     }
 
-    public Set<Entry<String, String>> getEntrySet() {
-        return this.entrySet.entrySet();
+    public void distributeEvent(DistributedEvent event) {
+        ((SemiSpace)SemiSpace.retrieveSpace()).notifyListeners(event);
     }
-
-    public String getHolderClassName() {
-        return holderClassName;
-    }
-
 }

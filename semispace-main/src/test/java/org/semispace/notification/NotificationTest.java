@@ -39,14 +39,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class NotificationTest extends TestCase {
     private static final Logger log = LoggerFactory.getLogger(NotificationTest.class);
     private SemiSpaceInterface space;
+    private ThreadPoolExecutor tpe;
 
     @Override
     protected void setUp() {
         space = SemiSpace.retrieveSpace();
+        tpe = (ThreadPoolExecutor) ((SemiSpace)space).getAdmin().getThreadPool();
     }
 
     @Override
@@ -63,7 +66,7 @@ public class NotificationTest extends TestCase {
     /**
      * Few listeners and a larger number of inserts.
      */
-    public void testNotificationAndTake() throws InterruptedException {
+    public void testNotificationAndTake() {
         ToBeNotified a = new ToBeNotified(false);
         ToBeNotified b = new ToBeNotified(false);
         ToBeNotified c = new ToBeNotified(false);
@@ -123,8 +126,7 @@ public class NotificationTest extends TestCase {
             if ( cTaken != null ) {
                 assertTrue(noDups.add(cTaken.getField()) );
             }
-
-        } while (aTaken != null || bTaken != null || bTaken != null);
+        } while (aTaken != null || bTaken != null || cTaken != null);
         assertEquals(3* StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS,noDups.size());
     }
 
@@ -133,6 +135,11 @@ public class NotificationTest extends TestCase {
      */
     public void testQuantityOfNotification() throws InterruptedException {
         final int numberOfListeners = StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS;
+        final int numberOfWrittenObjects = ((SemiSpace)space).numberOfWrite();
+        
+        log.debug("Active before starting testing:"+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+        stabilizeThreadNumber();
+        
         ToBeNotified[] a = new ToBeNotified[numberOfListeners];
         ToBeNotified[] b = new ToBeNotified[numberOfListeners];
         List<SemiEventRegistration> regs = new ArrayList<SemiEventRegistration>();
@@ -143,29 +150,57 @@ public class NotificationTest extends TestCase {
             regs.add( space.notify(new NoticeB(), b[i], 90000));
         }
         final int numinserts = 50;
-        log.debug("Before insertion of {} elements", Integer.valueOf(numinserts));
+        log.debug("Before insertion of {} elements. Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount(), Integer.valueOf(numinserts));
         for ( int i=0 ; i < numinserts ; i++ ) {
             insertIntoSpace(space, i);
+            //log.debug("Insertion into space. Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
         }
-        log.debug("Active threads "+Thread.activeCount());
-        log.debug("Insertion finished, sleeping 200ms");
-        space.read(new AlternateButEqual(), 200);
-        log.debug("Active threads "+Thread.activeCount());
+        assertEquals(numberOfWrittenObjects + (3*numinserts), ((SemiSpace)space).numberOfWrite());
+        
+        log.debug("Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+        log.debug("Insertion finished, pausing for 400ms");
+        space.read(new AlternateButEqual(), 400);
+                
+        stabilizeThreadNumber();
+        log.debug("Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+
+        log.debug("After sleep: Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+        int errorCount = 0;
+        for ( int i=0 ; i < a.length ; i++ ) {
+            if ( numinserts != a[i].getNotified() || numinserts != b[i].getNotified()) {
+                /*
+                log.error("Warning: Discrepancy. Trying to resolve by sleeping a bit more");
+                log.debug("Before sleeping: Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+                Thread.sleep(1000);
+                stabilizeThreadNumber();
+                log.debug("After sleeping (at "+i+" of "+a.length+"): Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+                */
+                errorCount++;
+            }
+        }
+
+        log.debug("Error count after slight sleep is "+errorCount);
+
         log.debug("Cancelling "+regs.size()+" leases");
         for ( SemiEventRegistration er : regs ) {
             er.getLease().cancel();
         }
         log.debug("Leases cancelled");
+        log.debug("Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+
+            
         for ( int i=0 ; i < a.length ; i++ ) {
-            assertEquals("At element a"+i+" notified number had a discrepancy. Element b, incidentally, was "+b[i].getNotified()+".", numinserts, a[i].getNotified());
-            assertEquals("At element b"+i+" notified number had a discrepancy. Element a, incidentally, was "+a[i].getNotified()+".", numinserts, b[i].getNotified());
+            assertEquals("At element a"+i+" notified number had a discrepancy. Element b"+i+", incidentally, was "+b[i].getNotified()+".", numinserts, a[i].getNotified());
+            assertEquals("At element b"+i+" notified number had a discrepancy. Element a"+i+", incidentally, was "+a[i].getNotified()+".", numinserts, b[i].getNotified());
         }
         NoticeA aTaken;
         NoticeB bTaken;
+        NoticeC cTaken;
         Set<String> noDups = new HashSet<String>();
         do {
             aTaken = space.takeIfExists(new NoticeA());
             bTaken = space.takeIfExists(new NoticeB());
+            cTaken = space.takeIfExists(new NoticeC());
             if ( aTaken != null ) {
                 assertTrue(noDups.add(aTaken.getField()) );
             }
@@ -173,14 +208,26 @@ public class NotificationTest extends TestCase {
                 assertTrue(noDups.add(bTaken.getField()) );
             }
 
-        } while (aTaken != null || bTaken != null);
+        } while (aTaken != null || bTaken != null || cTaken != null );
         assertEquals(2*numinserts,noDups.size());
+    }
+
+    private void stabilizeThreadNumber() throws InterruptedException {
+        int lastCheckActive= tpe.getActiveCount() + Thread.activeCount();
+        for ( int i=0 ; i < 100 ; i++) {
+            Thread.sleep(500);
+            int updatedActive= tpe.getActiveCount() + Thread.activeCount();
+            if ( updatedActive == lastCheckActive ) {
+                break;
+            }            
+            lastCheckActive = updatedActive;
+        }
     }
 
     /**
      * Expiration of listener
      */
-    public void testListenerExpiration() throws InterruptedException {
+    public void testListenerExpiration() {
         ToBeNotified a = new ToBeNotified(false);
 
         SemiEventRegistration notifyA = space.notify(new NoticeA(), a, 150);
@@ -195,7 +242,7 @@ public class NotificationTest extends TestCase {
     /**
      * Repetition test in order to examine stress slightly better.
      */
-    public void deactivated___testRepeatedTest() throws InterruptedException {
+    public void deactivated_testRepeatedTest() throws InterruptedException {
         testQuantityOfNotification();
         testQuantityOfNotification();
         for ( int i=0 ; i < 20 ; i++ ) {

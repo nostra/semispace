@@ -26,12 +26,14 @@
 
 package org.semispace.notification;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.semispace.SemiEventListener;
 import org.semispace.SemiEventRegistration;
 import org.semispace.event.SemiAvailabilityEvent;
 
 public class ToBeNotified implements SemiEventListener<SemiAvailabilityEvent> {
-    private int notified;
+    private AtomicInteger notified = new AtomicInteger();
     private boolean toCancelLease;
     private SemiEventRegistration lease;
 
@@ -40,7 +42,7 @@ public class ToBeNotified implements SemiEventListener<SemiAvailabilityEvent> {
     }
 
     public int getNotified() {
-        return this.notified;
+        return this.notified.intValue();
     }
 
     /**
@@ -48,7 +50,7 @@ public class ToBeNotified implements SemiEventListener<SemiAvailabilityEvent> {
      */
     @Override
     public void notify(SemiAvailabilityEvent theEvent) {        
-        notified++;
+        notified.incrementAndGet();
         if (toCancelLease) {
             lease.getLease().cancel();
         }

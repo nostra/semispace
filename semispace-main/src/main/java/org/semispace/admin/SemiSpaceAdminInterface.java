@@ -28,6 +28,7 @@ package org.semispace.admin;
 
 import java.util.concurrent.ExecutorService;
 
+import org.semispace.DistributedEvent;
 import org.semispace.EventDistributor;
 
 public interface SemiSpaceAdminInterface {
@@ -49,6 +50,6 @@ public interface SemiSpaceAdminInterface {
      * Administrator should get notified about all events. This
      * can be used for attaching persistence engine.
      */
-    public void notifyAboutEvent(EventDistributor event);
+    public void notifyAboutEvent(DistributedEvent event);
     
 }

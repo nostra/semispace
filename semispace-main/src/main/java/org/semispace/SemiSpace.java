@@ -59,9 +59,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -99,6 +101,9 @@ public class SemiSpace implements SemiSpaceInterface {
     private SemiSpaceStatistics statistics;
 
     private transient XStream xStream;
+    
+    private EventDistributor eventDistributor = EventDistributor.getInstance();
+
 
     /**
      * Holder for sanity check of stored class. It should not be an inner class.
@@ -195,7 +200,7 @@ public class SemiSpace implements SemiSpaceInterface {
     /**
      * Distributed notification method.
      */
-    private void notifyListeners(EventDistributor distributedEvent) {
+    protected void notifyListeners(DistributedEvent distributedEvent) {
         final List<SemiEventListener> toNotify = new ArrayList<SemiEventListener>();
         ListenerHolder[] listenerArray = listeners.values().toArray(new ListenerHolder[0]);
         Arrays.sort( listenerArray, new ShortestTtlComparator());
@@ -210,22 +215,15 @@ public class SemiSpace implements SemiSpaceInterface {
             }
         }
         final SemiEvent event = distributedEvent.getEvent();
-        final Runnable notifyThread = new Runnable() {
-            public void run() {
-                for (SemiEventListener notify : toNotify) {
-                    if ( ! admin.getThreadPool().isShutdown() ) {
-                        try {
-                            notify.notify(event);
-                        } catch (ClassCastException ignored ) {
-                            // Sadly enough, I need to ignore this due to type erasure.
-                        }
-                    } else {
-                        log.debug("Not notifying, as the thread pool has been shut down.");
-                    }
+        for (SemiEventListener notify : toNotify) {
+                try {
+                    notify.notify(event);
+                } catch (ClassCastException ignored ) {
+                    // Sadly enough, I need to ignore this due to type erasure.
                 }
-            }
-        };
-        admin.getThreadPool().execute(notifyThread);
+        }
+
+        
         admin.notifyAboutEvent(distributedEvent);
     }
 
@@ -235,7 +233,7 @@ public class SemiSpace implements SemiSpaceInterface {
      * 
      * @return Either the resulting lease or null if an error
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public SemiLease write(final Object entry, final long leaseTimeMs) {
         if (entry == null) {
             return null;
@@ -247,13 +245,16 @@ public class SemiSpace implements SemiSpaceInterface {
         Exception exception = null;
         try {
             future.get();
+        } catch ( CancellationException e ) {
+            log.error("Got exception", e);
+            exception = e;            
         } catch (InterruptedException e) {
             log.error("Got exception", e);
             exception = e;
         } catch (ExecutionException e) {
             log.error("Got exception", e);
             exception = e;
-        }
+        } 
         
         if (write.getException() != null || exception != null) {
             String error = " Writing object (of type " + entry.getClass().getName()
@@ -304,10 +305,31 @@ public class SemiSpace implements SemiSpaceInterface {
         statistics.increaseWrite();
         
         SemiAvailabilityEvent semiEvent = new SemiAvailabilityEvent(holder.getId());
-        notifyListeners(new EventDistributor(holder.getClassName(), semiEvent, holder.getSearchMap()));
+        //notifyListeners(new EventDistributor(holder.getClassName(), semiEvent, holder.getSearchMap()));
+        distributeEvent(new DistributedEvent(holder.getClassName(), semiEvent,
+                holder.getSearchMap()));
 
         return lease;
     }
+    
+    private void distributeEvent(final DistributedEvent distributedEvent) {
+        final Runnable distRunnable = new Runnable() {
+            @Override
+            public void run() {
+                eventDistributor.distributeEvent(distributedEvent);
+            }
+        };
+        if (!getAdmin().getThreadPool().isShutdown()) {
+            try {
+                admin.getThreadPool().execute(distRunnable);
+            } catch ( RejectedExecutionException e ) {
+                log.error("Could not schedule notification",e);
+            }
+        } else {
+            log.warn("Thread pool is shut down, not relaying event");
+        }
+    }
+
 
     @Override
     public <T> T read(T tmpl, long timeout) {
@@ -372,6 +394,7 @@ public class SemiSpace implements SemiSpaceInterface {
         return found;
     }
 
+    @Override
     public <T> T readIfExists(T tmpl) {
         return read(tmpl, 0);
     }
@@ -690,11 +713,13 @@ public class SemiSpace implements SemiSpaceInterface {
             this.leaseTimeMs = leaseTimeMs;
         }
 
+        @Override
         @SuppressWarnings("synthetic-access")
         public void run() {
             try {
                 lease = writeInternally(entry, leaseTimeMs);
             } catch (Exception e) {
+                log.debug("Got exception writing object.", e);
                 exception = e;
             }
         }
@@ -860,7 +885,10 @@ public class SemiSpace implements SemiSpaceInterface {
                 semiEvent = new SemiExpirationEvent(elem.getId());
             }
             //log.debug("Notifying about "+(isTake?"take":"expiration")+" of element with id "+semiEvent.getId());
-            notifyListeners(new EventDistributor(elem.getClassName(), semiEvent, elem.getSearchMap()));
+            //notifyListeners(new EventDistributor(elem.getClassName(), semiEvent, elem.getSearchMap()));
+            distributeEvent(new DistributedEvent(elem.getClassName(), semiEvent,
+                    elem.getSearchMap()));
+
         }
 
         return success;
@@ -877,7 +905,9 @@ public class SemiSpace implements SemiSpaceInterface {
             if (elem != null) {
                 elem.setLiveUntil(duration + admin.calculateTime());
                 success = true;
-                notifyListeners(new EventDistributor(elem.getClassName(), new SemiRenewalEvent( elem.getId(), elem.getLiveUntil()), elem.getSearchMap()));
+                distributeEvent(new DistributedEvent(elem.getClassName(), new SemiRenewalEvent(
+                        elem.getId(), elem.getLiveUntil()), elem.getSearchMap()));
+                //notifyListeners(new EventDistributor(elem.getClassName(), new SemiRenewalEvent( elem.getId(), elem.getLiveUntil()), elem.getSearchMap()));
             }
         } finally {
             rwl.writeLock().unlock();
@@ -909,6 +939,7 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     private static class ShortestTtlComparator implements Comparator<ListenerHolder>, Serializable {
+        @Override
         public int compare(ListenerHolder o1, ListenerHolder o2) {
             if ( o1 == null || o2 == null ) {
                 throw new SemiSpaceUsageException("Did not expect any null values for listenerHolder.");

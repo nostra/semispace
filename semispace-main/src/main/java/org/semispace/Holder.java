@@ -54,7 +54,7 @@ public class Holder {
         return this.xml;
     }
 
-    public long getLiveUntil() {
+    public synchronized long getLiveUntil() {
         return this.liveUntil;
     }
 
@@ -66,7 +66,7 @@ public class Holder {
         return className;
     }
 
-    protected void setLiveUntil(long liveUntil) {
+    protected synchronized void setLiveUntil(long liveUntil) {
         this.liveUntil = liveUntil;
     }
 

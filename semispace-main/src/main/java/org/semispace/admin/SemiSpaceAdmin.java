@@ -26,16 +26,6 @@
 
 package org.semispace.admin;
 
-import com.thoughtworks.xstream.XStream;
-import org.semispace.EventDistributor;
-import org.semispace.Holder;
-import org.semispace.NameValueQuery;
-import org.semispace.SemiSpace;
-import org.semispace.SemiSpaceInterface;
-import org.semispace.event.SemiAvailabilityEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +36,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.semispace.DistributedEvent;
+import org.semispace.Holder;
+import org.semispace.NameValueQuery;
+import org.semispace.SemiSpace;
+import org.semispace.SemiSpaceInterface;
+import org.semispace.event.SemiAvailabilityEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
 
 public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     private static final Logger log = LoggerFactory.getLogger(SemiSpaceAdmin.class);
@@ -67,10 +68,12 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     private PeriodicHarvest periodicHarvest;
 
     public SemiSpaceAdmin(SemiSpaceInterface terraSpace) {
-        ThreadPoolExecutor tpe = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+        ThreadPoolExecutor tpe = new ThreadPoolExecutor(0, 5000,
                 5L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(true));
         tpe.setThreadFactory(new DaemonDelegateFactory(tpe.getThreadFactory()));
+        // Exchanging strategy. When thread pool is full, try to run on local thread.
+        tpe.setRejectedExecutionHandler(new SemiSpaceRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy()));
         tpe.allowCoreThreadTimeOut(true);
         this.pool = tpe;
         this.space = terraSpace;
@@ -345,7 +348,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     }
 
     @Override
-    public void notifyAboutEvent(EventDistributor event) {
+    public void notifyAboutEvent(DistributedEvent event) {
         if (event.getEvent() instanceof SemiAvailabilityEvent) {
             if (InternalQuery.class.getName().equals(event.getHolderClassName()) && space instanceof SemiSpace ) {
                 Holder holder = ((SemiSpace)space).readHolderById(event.getEvent().getId());

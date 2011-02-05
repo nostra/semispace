@@ -46,16 +46,13 @@ public class HolderContainer {
      */
     private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
-    private static HolderContainer instance = null;
+    private static HolderContainer instance = new HolderContainer();
     
     private HolderContainer() {
         heads = new HashMap<String, HolderElement>();
     }
 
     public static synchronized HolderContainer retrieveContainer() {
-        if ( instance == null ) {
-            instance = new HolderContainer();
-        }
         return instance;
     }
     

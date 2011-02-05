@@ -65,7 +65,7 @@
         if TIM support has not been installed. The module version
          may exist in different versions--> 
 	<modules>
-	    <module name="tim-jetty-6.1" version="2.2.0"/>
+	    <!-- module name="tim-jetty-6.1" version="2.2.0"/ -->
         <!-- module name="semispace-tim" version="1.2.0" group-id="org.semispace"/ -->
 	</modules> 
   </clients>
@@ -85,11 +85,8 @@
         -->      
       <instrumented-classes>
         <include>
-          <class-expression>org.semispace.SemiSpace</class-expression>
+          <class-expression>org.semispace.HolderContainer</class-expression>
           <honor-transient>true</honor-transient>
-          <on-load>
-            <method>initTransients</method>
-          </on-load>
         </include>
         <include>
           <class-expression>org.semispace.Holder</class-expression>
@@ -129,34 +126,34 @@
       </instrumented-classes>
       <locks>
         <autolock>
-          <method-expression>* org.semispace.SemiSpace*.*(..)</method-expression>
+          <method-expression>* org.semispace.HolderContainer.*(..)</method-expression>
           <lock-level>write</lock-level>
         </autolock>
         <autolock>
-          <method-expression>* org.semispace.Holder*.*(..)</method-expression>
+          <method-expression>* org.semispace.Holder.setLiveUntil(long)</method-expression>
           <lock-level>write</lock-level>
         </autolock>
         <autolock>
-          <method-expression>* org.semispace.EventDistributor*.*(..)</method-expression>
+          <method-expression>* org.semispace.EventDistributor.distributeEvent(DistributedEvent)</method-expression>
           <lock-level>write</lock-level>
         </autolock>
       </locks>
       <roots>
         <root>
-          <field-name>org.semispace.SemiSpace.instance</field-name>
-        </root>
-        <root>
           <field-name>org.semispace.HolderContainer.instance</field-name>
         </root>
       </roots>
-      <transient-fields>
+      <!-- transient-fields>
         <field-name>org.semispace.SemiSpace.listeners</field-name>
         <field-name>org.semispace.SemiSpace.admin</field-name>
         <field-name>org.semispace.SemiSpace.xStream</field-name>
-      </transient-fields>
-      <distributed-methods>
+      </transient-fields -->
+      <!-- distributed-methods>
         <method-expression>void org.semispace.SemiSpace.notifyListeners(org.semispace.EventDistributor)</method-expression>
-      </distributed-methods>
+      </distributed-methods  -->
+      <distributed-methods>
+        <method-expression>void org.semispace.EventDistributor.distributeEvent(org.semispace.DistributedEvent)</method-expression>
+      </distributed-methods>      
     </dso>
   <!--END SNIPPET: spaceConfig-->
     

@@ -16,6 +16,10 @@
 *----------------------------------+------------+
 | Upgraded to cometd-2.0.0 | Upgraded to new cometd-release. Several changes to API and library use. |
 *----------------------------------+------------+
+| Not using SemiSpace as Terracotta root | The Terracotta roots are now the event distributor and the data holder structure. |
+*----------------------------------+------------+
+| Removing persistence module | The JDBC persistence module is removed as the libraries are getting dated, and there has not been any demand for maintaining it. |
+*----------------------------------+------------+
 
 
 1.1.2-SNAPSHOT
