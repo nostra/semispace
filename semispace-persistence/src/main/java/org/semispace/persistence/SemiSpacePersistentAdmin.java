@@ -39,6 +39,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.semispace.DistributedEvent;
 import org.semispace.EventDistributor;
 import org.semispace.Holder;
 import org.semispace.SemiSpace;
@@ -167,7 +168,7 @@ public class SemiSpacePersistentAdmin extends SemiSpaceAdmin implements Disposab
     }
     
     @Override
-    public void notifyAboutEvent(EventDistributor event) {
+    public void notifyAboutEvent(DistributedEvent event) {
         super.notifyAboutEvent(event);
         if ( ! super.hasBeenInitialized() || !ready ) {
             log.debug("Ignoring event as not having been initialized. Holder id: "+event.getEvent().getId()+", event class "+event.getEvent().getClass().getName());
