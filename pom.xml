@@ -641,7 +641,7 @@
         <module>semispace-wsdef</module>
         <module>semispace-war</module>
         <module>semispace-wsclient</module>
-        <module>semispace-persistence</module>
+        <!--module>semispace-persistence</module-->
         <module>semispace-tutorials</module>
         <module>semispace-tim</module>
         <module>semispace-comet</module>
