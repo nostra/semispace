@@ -75,7 +75,10 @@ public class HolderContainerTest extends TestCase {
         assertTrue("Size 1 indicates that next is present.", hc.next(b.getClassName()) != null);
         assertEquals(b.getId(), hc.readHolderWithId(b.getId()).getId());
         assertNotNull( hc.removeHolderById(b.getId(), b.getClassName()) );
-        assertTrue(hc.next(b.getClassName()) == null );
+        HolderElement next = hc.next(b.getClassName());
+        if ( next != null ) {
+            assertEquals("Expecting holder element to be empty, if it exists.", 0, next.size());
+        } 
         assertEquals(orgsize, hc.size());
 
         assertNull(hc.findById(a.getId(), b.getClassName()));

@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -77,14 +78,31 @@ public class HolderContainer {
                 return null;
             }
             toReturn = head.removeHolderById(id);
-            if ( head.size() < 1 ) {
-                heads.remove(className); // TODO Retain empty heads a while
+            if ( (idseq.longValue() % 5000) == 0 && head.size() < 1 ) {
+                // It may not be deterministic when this actually occurs, but that does not matter. 
+                removeEmptyHeads();
             }
 
         } finally {
             rwl.writeLock().unlock();
         }
         return toReturn;
+    }
+
+    /**
+     * Instance need to have been locked in beforehand.
+     * Intended to be used occasionally in order to remove empty heads.
+     */
+    private void removeEmptyHeads() {
+        List<String> toPurge = new ArrayList<String>();
+        for ( String name : heads.keySet()) {
+            if ( heads.get( name).size() < 1 ) {
+                toPurge.add(name);
+            }
+        }
+        for ( String name : toPurge ) {
+            heads.remove(name);
+        }
     }
 
     public Holder findById(long id, String className) {
