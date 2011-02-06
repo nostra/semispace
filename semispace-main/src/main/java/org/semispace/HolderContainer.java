@@ -33,12 +33,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Container for holder elements.
  */
 public class HolderContainer {
+    private AtomicLong idseq = new AtomicLong();
+
     private Map<String, HolderElement> heads = null;
 
     /**
@@ -65,7 +68,6 @@ public class HolderContainer {
         }
     }
 
-
     public Holder removeHolderById(long id, String className) {
         Holder toReturn = null;
         rwl.writeLock().lock();
@@ -76,7 +78,7 @@ public class HolderContainer {
             }
             toReturn = head.removeHolderById(id);
             if ( head.size() < 1 ) {
-                heads.remove(className);
+                heads.remove(className); // TODO Retain empty heads a while
             }
 
         } finally {
@@ -99,7 +101,10 @@ public class HolderContainer {
         }
     }
 
-    public void addHolder(Holder add) {
+    /**
+     * Protected for the benefit of junit tests.
+     */
+    protected void addHolder(Holder add) {
         rwl.writeLock().lock();
         try {
             if (add == null) {
@@ -198,4 +203,17 @@ public class HolderContainer {
 
         return cnames;
     }
+
+    public Holder addHolder(String xml, long liveUntil, String entryClassName, Map<String, String> searchMap) {
+        // Methods used herein are thread safe, and therefore no reason to lock at this point.
+        long holderId = incrementReturnNextId();
+        Holder holder = new Holder(xml, liveUntil, entryClassName, holderId, searchMap);
+        addHolder(holder);
+        return holder;
+    }
+
+    public long incrementReturnNextId() {
+        return idseq.incrementAndGet();
+    }
+
 }

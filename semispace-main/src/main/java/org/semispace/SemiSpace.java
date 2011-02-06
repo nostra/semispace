@@ -81,8 +81,6 @@ public class SemiSpace implements SemiSpaceInterface {
 
     private static SemiSpace instance = null;
 
-    private long holderId = 0;
-
     private long listenerId = 0;
 
     /**
@@ -285,7 +283,6 @@ public class SemiSpace implements SemiSpaceInterface {
         Holder holder = null;
         rwl.writeLock().lock();
         try {
-            holderId++;
             if ( !checkedClassSet.contains( entryClassName )) {
                 checkedClassSet.add(entryClassName);
                 if ( xml.contains("<outer-class>")) {
@@ -295,8 +292,7 @@ public class SemiSpace implements SemiSpaceInterface {
                 }
             }
             // Need to add holder within lock. This indicates that HolderContainer has some thread safety issues
-            holder = new Holder(xml, admin.calculateTime() + leaseTimeMs, entryClassName, holderId, searchMap);
-            elements.addHolder(holder);
+            holder = elements.addHolder(xml, admin.calculateTime() + leaseTimeMs, entryClassName, searchMap);
         } finally {
             rwl.writeLock().unlock();
         }
