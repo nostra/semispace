@@ -44,6 +44,7 @@
 *------+-----+
 
 With Chris' changes:
+~~~~~~~~~~~~~~~~~~~~
 
 *------+-----+
 || 1.2.1-SNAPSHOT || 3.3.0
@@ -79,4 +80,26 @@ With Chris' changes:
 | ActorTest | 6.5 sec
 *------+-----+
 | ListenerStarvationTest| Basic (10 it): 3.9, 100 it: 6.6, 1000 it: 24.2 sec (with error)
+*------+-----+
+
+Removing SemiSpace as root
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*------+-----+
+|| 1.2.1-SNAPSHOT || 3.4_01
+*------+-----+
+| semispace-main build time | 43 sec (10 it in ListenerStarvationTest)
+*------+-----+
+| TerraSpaceTest | 23.5 sec
+| testInsertionTime | (1 sec): 6413 items, 2356 ms time
+*------+-----+
+| SpaceTest| 6.2 sec
+*------+-----+
+| SemiSpaceTest| 12.6 sec
+*------+-----+
+| NotificationTest |  15.5 sec
+*------+-----+
+| ActorTest |  26.4 sec
+*------+-----+
+| ListenerStarvationTest| Basic (10 it): 4.6, 1000 it: 43.5 sec
 *------+-----+
