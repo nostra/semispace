@@ -22,6 +22,8 @@
 *----------------------------------+------------+
 | Delaying removal of empty heads | Head elements are now not tried removed very often, which has a speed benefit. |
 *----------------------------------+------------+
+| The counter of operations are now local | Since the SemiSpace instance is not shared, all admin data it contains are now local. |
+*----------------------------------+------------+
 
 
 1.1.2-SNAPSHOT

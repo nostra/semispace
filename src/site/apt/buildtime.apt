@@ -103,3 +103,26 @@ Removing SemiSpace as root
 *------+-----+
 | ListenerStarvationTest| Basic (10 it): 4.6, 1000 it: 43.5 sec
 *------+-----+
+
+
+Header structure retains head element longer
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+*------+-----+
+|| 1.2.1-SNAPSHOT || 3.4_01
+*------+-----+
+| semispace-main build time | 42 sec (10 it in ListenerStarvationTest)
+*------+-----+
+| TerraSpaceTest | 23.4 sec
+| testInsertionTime | (1 sec): 5603 items, 1847 ms time
+*------+-----+
+| SpaceTest| 6.1 sec
+*------+-----+
+| SemiSpaceTest| 12.3 sec
+*------+-----+
+| NotificationTest |  14.5 sec
+*------+-----+
+| ActorTest |  9.4 sec
+*------+-----+
+| ListenerStarvationTest| Basic (10 it): 4.3, 1000 it: 34.6 sec
+*------+-----+
