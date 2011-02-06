@@ -18,7 +18,7 @@
   It can be run as single, <<stand alone,>> space on one 
   {{{http://java.sun.com/javase/6/docs/}J2SE 6.0}} 
   VM (or greater), or
-  <<clustered>> with {{{http://www.terracotta.org}Terracotta}} version 3.3.0. 
+  <<clustered>> with {{{http://www.terracotta.org}Terracotta}} version 3.4.0.
 
   Please see the 
   {{{semispace-main/semispace-book}SemiSpace book}}
@@ -36,7 +36,7 @@
   
  * The documentation for the 
   current snapshot version: \
-  {{{../semispace-1.1.2-SNAPSHOT/}semispace-1.1.2-SNAPSHOT}}
+  {{{../semispace-1.2.1-SNAPSHOT/}semispace-1.2.1-SNAPSHOT}}
 
  * {{{./changes.html}Changelist}} since version 1.0.0. 
 
@@ -76,8 +76,6 @@ SemiSpace offers
  * is <<Open Source>> and licensed under {{{http://www.apache.org/licenses/LICENSE-2.0}Apache 2}}
  
  * exposes statistics over <<JMX>> (if you use the webapp module)
- 
- * can use a <<JDBC>> back end for long time persistence
  
  * supplies a simple <<actor pattern>> framework
 
