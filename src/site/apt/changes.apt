@@ -20,6 +20,8 @@
 *----------------------------------+------------+
 | Removing persistence module | The JDBC persistence module is removed as the libraries are getting dated, and there has not been any demand for maintaining it. |
 *----------------------------------+------------+
+| Delaying removal of empty heads | Head elements are now not tried removed very often, which has a speed benefit. |
+*----------------------------------+------------+
 
 
 1.1.2-SNAPSHOT
