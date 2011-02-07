@@ -1,3 +1,4 @@
+
                     -------
                     JavaScript Client
                     -------
@@ -31,17 +32,27 @@ Browser support
  The client has been tested and proved to work at the following browsers:
 
  Desktop:
+ 
  * IE6 and newer
+ 
  * Opera 10.x and newer
+ 
  * FireFox 3.x and newer
+ 
  * Chrome 5.x and newer
+ 
  * Safari 3.x and newer
+ 
  []
 
  Mobile:
+ 
  * Opera Mobile 10.x and newer
+ 
  * Android 2.2 and newer
+ 
  * Fennec 2.x beta and newer
+ 
  []
 
 ~~~~~~~~~~~~
@@ -196,27 +207,27 @@ Communicating with the space
 
  The status codes are as follow
 
-+-------------------------------------+
+*-------+-------------------------------------+
 | value | Description
-+-------------------------------------+
+*-------+-------------------------------------+
 | 1     | Handshake is done. The client has contacted the server but no connection are set up yet
-+-------------------------------------+
+*-------+-------------------------------------+
 | 2     | The client are now connected to the server. Data can now be excanged with the server
-+-------------------------------------+
+*-------+-------------------------------------+
 | 3     | The client was connected to the server but has lost connection to the server
-+-------------------------------------+
+*-------+-------------------------------------+
 | 4     | The client communicates with the server. This will occure pretty frequently since the client pings the server from time to time
-+-------------------------------------+
+*-------+-------------------------------------+
 | 5     | The client was disconnected from the server by the disconnect method
-+-------------------------------------+
+*-------+-------------------------------------+
 | 6     | The client has subscribed to a CometD metachannel
-+-------------------------------------+
+*-------+-------------------------------------+
 | 7     | The client has unsubscribed from a CometD metachannel
-+-------------------------------------+
+*-------+-------------------------------------+
 | 8     | The client has published a message to the server
-+-------------------------------------+
+*-------+-------------------------------------+
 | 9     | The client tried to publish a message to the server but failed
-+-------------------------------------+
+*-------+-------------------------------------+
 
 
 
