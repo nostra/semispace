@@ -120,12 +120,15 @@ public class SpaceTest extends TestCase {
     public void testAnswerOfAdminQuery() {
         IdentifyAdminQuery iaq = new IdentifyAdminQuery();
         iaq.hasAnswered = Boolean.FALSE;
+        System.out.println("writing query");
         space.write(iaq, SemiSpace.ONE_DAY);
 
         IdentifyAdminQuery want = new IdentifyAdminQuery();
         want.hasAnswered = Boolean.TRUE;
 
+        System.out.println("taking query");
         IdentifyAdminQuery answer = space.take(want, 6500);
+        System.out.println("after take");
         assertNotNull("Admin element makes sure that identity queries are answered.", answer);
         assertNotNull( "Need to remove query for admin element", space.takeIfExists(iaq));
     }
@@ -204,6 +207,4 @@ public class SpaceTest extends TestCase {
         }
 
     }
-
-
 }

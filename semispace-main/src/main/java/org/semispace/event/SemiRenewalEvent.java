@@ -26,9 +26,12 @@
 
 package org.semispace.event;
 
+import org.terracotta.annotations.InstrumentedClass;
+
 /**
  * Object with id has been renewed, and now has a different expiration date, which may be shorter...
  */
+@InstrumentedClass
 public class SemiRenewalEvent extends SemiEvent {
 
     private long id;

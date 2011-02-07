@@ -26,11 +26,16 @@
 
 package org.semispace;
 
+import org.terracotta.annotations.AutolockWrite;
+
+import org.terracotta.annotations.InstrumentedClass;
+
 import java.util.Map;
 
 /**
  * Holder of an entry written into the space.
  */
+@InstrumentedClass
 public class Holder {
 
     private long liveUntil;
@@ -66,7 +71,8 @@ public class Holder {
         return className;
     }
 
-    protected void setLiveUntil(long liveUntil) {
+    @AutolockWrite
+    protected synchronized void setLiveUntil(long liveUntil) {
         this.liveUntil = liveUntil;
     }
 

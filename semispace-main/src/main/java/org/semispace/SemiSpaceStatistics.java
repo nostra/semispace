@@ -26,77 +26,78 @@
 
 package org.semispace;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import org.terracotta.annotations.InstrumentedClass;
 
 /**
  * Holder for statistical elements
  */
+@InstrumentedClass
 public class SemiSpaceStatistics {
-    private AtomicInteger read = new AtomicInteger();
-    private AtomicInteger take = new AtomicInteger();
-    private AtomicInteger write = new AtomicInteger();
-    private AtomicInteger missedTake = new AtomicInteger();
-    private AtomicInteger missedRead = new AtomicInteger();
-    private AtomicInteger blockingRead = new AtomicInteger();
-    private AtomicInteger blockingTake = new AtomicInteger();
-    private AtomicInteger numberOfListeners = new AtomicInteger();
+    private int read = 0;
+    private int take = 0;
+    private int write = 0;
+    private int missedTake = 0;
+    private int missedRead = 0;
+    private int blockingRead = 0;
+    private int blockingTake = 0;
+    private int numberOfListeners = 0;
     
     public int getRead() {
-        return this.read.get();
+        return this.read;
     }
     public int getTake() {
-        return this.take.get();
+        return this.take;
     }
     public int getWrite() {
-        return this.write.get();
+        return this.write;
     }
     public int getBlockingRead() {
-        return this.blockingRead.get();
+        return this.blockingRead;
     }
     public int getBlockingTake() {
-        return this.blockingTake.get();
+        return this.blockingTake;
     }
     public int getNumberOfListeners() {
-        return this.numberOfListeners.get();
+        return this.numberOfListeners;
     }
     public int getMissedTake() {
-        return this.missedTake.get();
+        return this.missedTake;
     }
     public int getMissedRead() {
-        return this.missedRead.get();
+        return this.missedRead;
     }
     protected void increaseWrite() {
-        write.incrementAndGet();
+        write++;
     }
     protected void increaseRead() {
-        read.incrementAndGet();
+        read++;
     }
     protected void increaseTake() {
-        take.incrementAndGet();
+        take++;
     }
     protected void increaseMissedRead() {
-        missedRead.incrementAndGet();
+        missedRead++;
     }
     protected void increaseNumberOfListeners() {
-        numberOfListeners.incrementAndGet();
+        numberOfListeners++;
     }
     protected void decreaseNumberOfListeners() {
-        numberOfListeners.decrementAndGet();
+        numberOfListeners--;
     }
     protected void increaseMissedTake() {
-        missedTake.incrementAndGet();
+        missedTake++;
     }
     protected void increaseBlockingRead() {
-        blockingRead.incrementAndGet();
+        blockingRead++;
     }
     protected void decreaseBlockingRead() {
-        blockingRead.decrementAndGet();
+        blockingRead--;
     }
     protected void increaseBlockingTake() {
-        blockingTake.incrementAndGet();
+        blockingTake++;
     }
     protected void decreaseBlockingTake() {
-        blockingTake.decrementAndGet();
+        blockingTake--;
     }
     public String toString() {
         StringBuilder sb = new StringBuilder();

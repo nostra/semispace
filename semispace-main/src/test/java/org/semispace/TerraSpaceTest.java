@@ -89,12 +89,14 @@ public class TerraSpaceTest extends TestCase {
                 }
             }
         };
-        new Thread( null, r ).start();
+        Thread t = new Thread( null, r );
+        t.start();
         FieldHolder read = new FieldHolder();
         read.setFieldA("a");
         Thread.sleep(100);
         assertNull(space.readIfExists(read));
         assertNotNull(space.take(read, 6000));
+        t.join();
     }
     
     public void testPreciseRead() throws InterruptedException {

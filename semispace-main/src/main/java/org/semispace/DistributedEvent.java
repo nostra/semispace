@@ -1,7 +1,7 @@
 /*
  * ============================================================================
  *
- *  File:     SemiEvent.java
+ *  File:     EventDistributor.java
  *----------------------------------------------------------------------------
  *
  * Copyright 2008 Erlend Nossum
@@ -20,22 +20,45 @@
  *
  *  Description:  See javadoc below
  *
- *  Created:      Apr 8, 2008
+ *  Created:      Apr 10, 2008
  * ============================================================================ 
  */
 
-package org.semispace.event;
+package org.semispace;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import org.semispace.event.SemiEvent;
 import org.terracotta.annotations.InstrumentedClass;
 
+
 /**
- * An event on an element in the semispace. The event as such is 
- * distributed through notify (by terracotta).
+ * Used for distributing event through terracotta. 
  */
 @InstrumentedClass
-public abstract class SemiEvent {
-    /**
-     * The id of the object in the system
-     */
-    public abstract long getId();
+public class DistributedEvent {
+
+    private String holderClassName;
+    private SemiEvent event;
+    private Map<String, String> entrySet;
+    
+    public DistributedEvent(String holderClassName, SemiEvent event, Map<String, String> map) {
+        this.holderClassName = holderClassName;
+        this.event = event;
+        this.entrySet = map;
+    }
+
+    public SemiEvent getEvent() {
+        return this.event;
+    }
+
+    public Set<Entry<String, String>> getEntrySet() {
+        return this.entrySet.entrySet();
+    }
+
+    public String getHolderClassName() {
+        return holderClassName;
+    }
+
 }

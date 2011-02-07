@@ -33,12 +33,11 @@
             <groupId>xpp3</groupId>
             <artifactId>xpp3_min</artifactId>
         </dependency>
-        <!-- If you need terracotta-toolkit:
        <dependency>
             <groupId>org.terracotta.toolkit</groupId>
 		      <artifactId>terracotta-toolkit-1.0</artifactId>
+		      <version>1.0.0</version>
 	    </dependency>
-        -->
     </dependencies>
 
     <!--

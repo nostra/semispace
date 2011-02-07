@@ -107,7 +107,7 @@ public class SemiSpaceTest extends TestCase {
         
         // Clean up
         space.takeIfExists(fh);
-        reg.getLease().cancel();
+        assertTrue("Failed to cancel notify lease", reg.getLease().cancel());
     }
     
     public void testRetrievePropertiesFromObject() {
@@ -218,9 +218,10 @@ public class SemiSpaceTest extends TestCase {
      */
     public void testNotificationStatistics() throws InterruptedException {
         // I know the stats are defensively copied
+    	Thread.sleep(1000);
+        space.harvest();
         SemiSpaceStatistics before = space.getStatistics();
 
-        space.harvest();
         JunitEventListener listener = new JunitEventListener();
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("a");

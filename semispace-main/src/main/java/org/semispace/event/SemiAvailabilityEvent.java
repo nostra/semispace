@@ -26,11 +26,14 @@
 
 package org.semispace.event;
 
+import org.terracotta.annotations.InstrumentedClass;
+
 
 
 /**
  * An object has become available.
  */
+@InstrumentedClass
 public class SemiAvailabilityEvent extends SemiEvent {
     private long id;
 

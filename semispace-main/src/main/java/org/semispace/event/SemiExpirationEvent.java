@@ -26,10 +26,13 @@
 
 package org.semispace.event;
 
+import org.terracotta.annotations.InstrumentedClass;
+
 
 /**
  * Given element has been removed due to expiration.
  */
+@InstrumentedClass
 public class SemiExpirationEvent extends SemiEvent {
     private long id;
     public SemiExpirationEvent(long id) {

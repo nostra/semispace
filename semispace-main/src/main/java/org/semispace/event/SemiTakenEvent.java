@@ -26,9 +26,12 @@
 
 package org.semispace.event;
 
+import org.terracotta.annotations.InstrumentedClass;
+
 /**
  * Signifies that an object has been taken out of the space
  */
+@InstrumentedClass
 public class SemiTakenEvent extends SemiEvent {
     private long id;
     public SemiTakenEvent(long id) {

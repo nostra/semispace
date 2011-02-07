@@ -43,14 +43,14 @@ public class ElementLease implements SemiLease {
      * @see org.semispace.SemiLease#cancel()
      */
     public boolean cancel() {
-        return space.cancelElement( Long.valueOf( holder.getId() ), false, holder.getClassName());
+        return space.cancelElement( Long.valueOf( holder.getId() ), false, holder.getClassName(), true);
     }
 
     /**
      * @see org.semispace.SemiLease#renew(long)
      */
     public boolean renew(long duration) {
-        return space.renewElement( holder, duration );
+        return space.renewElement( holder, duration, true);
     }
     public long getHolderId() {
         return holder.getId();

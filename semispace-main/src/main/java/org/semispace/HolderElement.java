@@ -26,17 +26,23 @@
 
 package org.semispace;
 
-import org.semispace.exception.SemiSpaceInternalException;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.semispace.exception.SemiSpaceInternalException;
+import org.terracotta.annotations.AutolockWrite;
+import org.terracotta.annotations.InstrumentedClass;
 
+@InstrumentedClass
 public class HolderElement implements Iterable<Holder>{
     private Map<Long, Holder> elements = new ConcurrentHashMap<Long, Holder>();
 
-    public synchronized int size() {
+    public int size() {
         return elements.size();
+    }
+    
+    public boolean isEmpty() {
+    	return elements.isEmpty();
     }
 
     public static synchronized HolderElement createNewCollection(Holder holder) {
@@ -45,7 +51,7 @@ public class HolderElement implements Iterable<Holder>{
         return hc;
     }
 
-    public synchronized Holder removeHolderById( long id ) {
+    public Holder removeHolderById( long id ) {
         Holder found = elements.remove(Long.valueOf(id));
         return found;
     }
@@ -53,24 +59,26 @@ public class HolderElement implements Iterable<Holder>{
     /**
      * Searching for holder elements with given ID
      */
-    public synchronized Holder findById(long id) {
+    public Holder findById(long id) {
         Holder found = elements.get(Long.valueOf(id));
         return found;
     }
 
+    @AutolockWrite
     public synchronized void addHolder(Holder add ) {
         Holder old = elements.put( Long.valueOf(add.getId()), add);
         if ( old != null ) {
             throw new SemiSpaceInternalException("Unexpected duplication id IDs. Found twice: "+old.getId());
         }
+    	notifyAll();
     }
 
-    public synchronized Holder[] toArray() {
+    public Holder[] toArray() {
         return elements.values().toArray( new Holder[0]);
     }
 
     @Override
-    public synchronized Iterator<Holder> iterator() {
+    public Iterator<Holder> iterator() {
         // TODO Will this be thread safe?
         /*
         List<Holder> defensive = new ArrayList();
@@ -78,5 +86,18 @@ public class HolderElement implements Iterable<Holder>{
         return defensive.iterator();
         */
         return elements.values().iterator();
+    }
+    
+    @AutolockWrite
+    public synchronized void waitHolder(long timeout) {
+    	if (elements.isEmpty()) {
+    		try {
+    			wait(timeout);
+    		}
+    		catch (InterruptedException ex) {
+    			// TODO Auto-generated catch block
+    			ex.printStackTrace();
+    		}
+    	}
     }
 }

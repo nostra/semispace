@@ -27,7 +27,7 @@
 package org.semispace.admin;
 
 import com.thoughtworks.xstream.XStream;
-import org.semispace.EventDistributor;
+import org.semispace.DistributedEvent;
 import org.semispace.Holder;
 import org.semispace.NameValueQuery;
 import org.semispace.SemiSpace;
@@ -116,7 +116,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     }
 
     @Override
-    public void performInitialization() {
+    public synchronized void performInitialization() {
         if (beenInitialized) {
             log.warn("Initialization called more than once.");
             return;
@@ -345,7 +345,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     }
 
     @Override
-    public void notifyAboutEvent(EventDistributor event) {
+    public void notifyAboutEvent(DistributedEvent event) {
         if (event.getEvent() instanceof SemiAvailabilityEvent) {
             if (InternalQuery.class.getName().equals(event.getHolderClassName()) && space instanceof SemiSpace ) {
                 Holder holder = ((SemiSpace)space).readHolderById(event.getEvent().getId());

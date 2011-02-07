@@ -26,179 +26,167 @@
 
 package org.semispace;
 
-import org.semispace.exception.SemiSpaceObjectException;
-import org.semispace.exception.SemiSpaceUsageException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import org.semispace.exception.SemiSpaceObjectException;
+import org.semispace.exception.SemiSpaceUsageException;
+import org.terracotta.annotations.AutolockRead;
+import org.terracotta.annotations.AutolockWrite;
+import org.terracotta.annotations.InstrumentedClass;
+import org.terracotta.annotations.Root;
 
 /**
  * Container for holder elements.
  */
+@InstrumentedClass
 public class HolderContainer {
-    private Map<String, HolderElement> heads = null;
+	private long idseq = 0;
+	private Map<String, HolderElement> heads = null;
+	
+	@Root
+	private static final HolderContainer instance = new HolderContainer();
+	
+	public static HolderContainer retreiveContainer() {
+		return instance;
+	}
 
-    /**
-     * Read / write lock
-     */
-    private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+	public HolderContainer() {
+		heads = new HashMap<String, HolderElement>();
+	}
+	
+	@AutolockWrite
+	public synchronized long getNextId() {
+		idseq++;
+		return idseq;
+	}
 
-    private static HolderContainer instance = null;
-    
-    private HolderContainer() {
-        heads = new HashMap<String, HolderElement>();
-    }
-
-    public static synchronized HolderContainer retrieveContainer() {
-        if ( instance == null ) {
-            instance = new HolderContainer();
+	public synchronized HolderElement next(String className) {
+		return heads.get(className);
+	}
+	
+	@AutolockWrite
+	public void waitHolder(String className, long timeout) {
+		HolderElement e = null;
+		synchronized (this) {
+			e = heads.get(className);
+			if (e == null) {
+				e = new HolderElement();
+				heads.put(className, e);
+			}
         }
-        return instance;
-    }
-    
-    public HolderElement next(String className) {
-        rwl.writeLock().lock();
-        try {
-            return heads.get(className);
-        } finally {
-            rwl.writeLock().unlock();
-        }
-    }
+		e.waitHolder(timeout);
+	}
 
+	@AutolockWrite
+	public synchronized Holder removeHolderById(long id, String className) {
+		Holder toReturn = null;
+		HolderElement head = heads.get(className);
+		if (head == null) {
+			return null;
+		}
+		toReturn = head.removeHolderById(id);
 
-    public Holder removeHolderById(long id, String className) {
-        Holder toReturn = null;
-        rwl.writeLock().lock();
-        try {
-            HolderElement head = heads.get(className);
-            if ( head == null ) {
-                return null;
-            }
-            toReturn = head.removeHolderById(id);
-            if ( head.size() < 1 ) {
-                heads.remove(className);
-            }
+		return toReturn;
+	}
 
-        } finally {
-            rwl.writeLock().unlock();
-        }
-        return toReturn;
-    }
+	@AutolockRead
+	public synchronized Holder findById(long id, String className) {
+		HolderElement n = heads.get(className);
+		if (n == null) {
+			return null;
+		}
+		return n.findById(id);
+	}
 
-    public Holder findById(long id, String className) {
-        rwl.readLock().lock();
+	@AutolockWrite
+	public synchronized Holder addHolder(Holder add) {
+		if (add == null) {
+			throw new SemiSpaceUsageException("Illegal to add null");
+		}
+		if (add.getClassName() == null) {
+			throw new SemiSpaceObjectException("Need classname in holder with contents "
+				+ add.getXml());
+		}
+		HolderElement head = heads.get(add.getClassName());
+		if (head == null) {
+			head = HolderElement.createNewCollection(add);
+			heads.put(add.getClassName(), head);
+		}
+		else {
+			head.addHolder(add);
+		}
+		
+		return add;
+	}
+	
+	@AutolockWrite
+	public synchronized Holder addHolder(String xml, long liveUntil, String className, Map<String, String> map) {
+		long holderId = getNextId();
+		Holder holder = new Holder(xml, liveUntil, className, holderId, map);
+		return addHolder(holder);
+	}
 
-        try {
-            HolderElement n = heads.get(className);
-            if ( n == null ) {
-                return null;
-            }
-            return n.findById(id);
-        } finally {
-            rwl.readLock().unlock();
-        }
-    }
+	/**
+	 * Method presumed called on first object, which is the holder object. Returning count,
+	 * excluding holder.
+	 */
+	@AutolockRead
+	public synchronized int size() {
+		if (heads == null) {
+			return 0;
+		}
+		int size = 0;
+		
+		for (HolderElement head : heads.values()) {
+			size += head.size();
+		}
+		return size;
+	}
 
-    public void addHolder(Holder add) {
-        rwl.writeLock().lock();
-        try {
-            if (add == null) {
-                throw new SemiSpaceUsageException("Illegal to add null");
-            }
-            if ( add.getClassName() == null ) {
-                throw new SemiSpaceObjectException("Need classname in holder with contents "+add.getXml());
-            }
-            HolderElement head = heads.get( add.getClassName() );
-            if (head == null) {
-                head = HolderElement.createNewCollection(add);
-                heads.put( add.getClassName(), head);
-            } else {
-                head.addHolder(add);
-            }
-        } finally {
-            rwl.writeLock().unlock();
-        }
-    }
+	@AutolockRead
+	public synchronized String[] retrieveGroupNames() {
+		String[] result = null;
+		result = heads.keySet().toArray(new String[0]);
+		return result;
+	}
 
-    /**
-     * Method presumed called on first object, which is the holder object. Returning count, excluding holder.
-     */
-    public int size() {
-        rwl.readLock().lock();
-        try {
-            if (heads == null) {
-                return 0;
-            }
-            int size = 0;
-            
-            for ( HolderElement head : heads.values() ) {
-                size += head.size();
-            }
-            return size;
-        } finally {
-            rwl.readLock().unlock();
-        }
+	@AutolockRead
+	public synchronized Holder readHolderWithId(long id) {
+		String[] cnames = retrieveClassNames();
+		for (String lookup : cnames) {
+			HolderElement next = next(lookup);
+			Holder toReturn = next.findById(id);
+			if (toReturn != null) {
+				return toReturn;
+			}
+		}
+		return null;
+	}
 
-    }
-    
-    public String[] retrieveGroupNames() {
-        rwl.readLock().lock();
-        String[] result = null;
-        try {
-            result = heads.keySet().toArray(new String[0]);
-        } finally {
-            rwl.readLock().unlock();
-        }
-        return result;
-    }
+	/**
+	 * Return all ids present. Notice that this method will be rather network expensive, and is only
+	 * intended to be used for persistence purposes.
+	 */
+	public Long[] findAllHolderIds() {
+		List<Long> allIds = new ArrayList<Long>();
+		String[] cnames = retrieveClassNames();
+		for (String lookup : cnames) {
+			HolderElement next = next(lookup);
+			synchronized (this) {
+				for (Holder elem : next.toArray()) {
+					allIds.add(Long.valueOf(elem.getId()));
+				}
+			}
+		}
+		return allIds.toArray(new Long[0]);
+	}
 
-    public Holder readHolderWithId(long id) {
-        String[] cnames = retrieveClassNames();
-        for (String lookup : cnames ) {
-            HolderElement next = next(lookup);
-            Holder toReturn = next.findById(id);
-            if ( toReturn != null ) {
-                return toReturn;
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * Return all ids present. Notice that this method will
-     * be rather network expensive, and is only intended to 
-     * be used for persistence purposes.
-     */
-    public Long[] findAllHolderIds() {
-        List<Long> allIds = new ArrayList<Long>();
-        String[] cnames = retrieveClassNames();
-        for (String lookup : cnames ) {
-            HolderElement next = next(lookup);
-            rwl.readLock().lock();
-            try {
-                for ( Holder elem : next.toArray()) {
-                    allIds.add(Long.valueOf( elem.getId() ));
-                }
-
-            } finally {
-                rwl.readLock().unlock();
-            }
-        }
-        return allIds.toArray(new Long[0]);
-    }
-    
-    private String[] retrieveClassNames() {
-        rwl.readLock().lock();
-        String[] cnames = null;
-        try {
-            cnames = heads.keySet().toArray(new String[0]);
-        } finally {
-            rwl.readLock().unlock();
-        }
-
-        return cnames;
-    }
+	@AutolockRead
+	private synchronized String[] retrieveClassNames() {
+		String[] cnames = null;
+		cnames = heads.keySet().toArray(new String[0]);
+		return cnames;
+	}
 }

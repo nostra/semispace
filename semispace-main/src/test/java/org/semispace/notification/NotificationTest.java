@@ -89,7 +89,7 @@ public class NotificationTest extends TestCase {
                     c.getNotified() != numinserts) {
                 log.debug("Sleeping slightly due to async operation");
                 // Pausing:
-                space.read(new AlternateButEqual(), 200);
+                space.read(new AlternateButEqual(), 250);
             } else {
                 isOk = true;
             }
@@ -148,14 +148,17 @@ public class NotificationTest extends TestCase {
             insertIntoSpace(space, i);
         }
         log.debug("Active threads "+Thread.activeCount());
-        log.debug("Insertion finished, sleeping 200ms");
-        space.read(new AlternateButEqual(), 200);
+        log.debug("Insertion finished, sleeping 2000ms");
+        space.read(new AlternateButEqual(), 10000);
         log.debug("Active threads "+Thread.activeCount());
         log.debug("Cancelling "+regs.size()+" leases");
         for ( SemiEventRegistration er : regs ) {
             er.getLease().cancel();
         }
         log.debug("Leases cancelled");
+        
+        Thread.sleep(5000);
+        
         for ( int i=0 ; i < a.length ; i++ ) {
             assertEquals("At element a"+i+" notified number had a discrepancy. Element b, incidentally, was "+b[i].getNotified()+".", numinserts, a[i].getNotified());
             assertEquals("At element b"+i+" notified number had a discrepancy. Element a, incidentally, was "+a[i].getNotified()+".", numinserts, b[i].getNotified());
