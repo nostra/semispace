@@ -126,9 +126,71 @@
       </instrumented-classes>
       <locks>
         <autolock>
-          <method-expression>* org.semispace.HolderContainer.*(..)</method-expression>
+          <method-expression>* org.semispace.HolderContainer.removeHolderById(..)</method-expression>
           <lock-level>write</lock-level>
         </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderContainer.removeEmptyHeads(..)</method-expression>
+          <lock-level>write</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderContainer.addHolder(..)</method-expression>
+          <lock-level>write</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderContainer.findById(long,String)</method-expression>
+          <lock-level>read</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderContainer.size(..)</method-expression>
+          <lock-level>read</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderContainer.retrieveGroupNames(..)</method-expression>
+          <lock-level>read</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderContainer.waitHolder(..)</method-expression>
+          <lock-level>write</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderContainer.readHolderWithId(..)</method-expression>
+          <lock-level>read</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderContainer.retrieveClassNames(..)</method-expression>
+          <lock-level>read</lock-level>
+        </autolock>
+        
+        <autolock>
+          <method-expression>* org.semispace.HolderElement.size(..)</method-expression>
+          <lock-level>read</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderElement.removeHolderById(..)</method-expression>
+          <lock-level>write</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderElement.addHolder(..)</method-expression>
+          <lock-level>write</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderElement.toArray(..)</method-expression>
+          <lock-level>read</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderElement.iterator(..)</method-expression>
+          <lock-level>read</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderElement.isWaiting(..)</method-expression>
+          <lock-level>read</lock-level>
+        </autolock>
+        <autolock>
+          <method-expression>* org.semispace.HolderElement.waitHolder(..)</method-expression>
+          <lock-level>write</lock-level>
+        </autolock>
+        
         <autolock>
           <method-expression>* org.semispace.Holder.setLiveUntil(long)</method-expression>
           <lock-level>write</lock-level>

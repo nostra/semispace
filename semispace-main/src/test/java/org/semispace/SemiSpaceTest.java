@@ -107,7 +107,7 @@ public class SemiSpaceTest extends TestCase {
         
         // Clean up
         space.takeIfExists(fh);
-        reg.getLease().cancel();
+        assertTrue("Failed to cancel notify lease", reg.getLease().cancel());
     }
     
     public void testRetrievePropertiesFromObject() {

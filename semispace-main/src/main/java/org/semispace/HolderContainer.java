@@ -95,7 +95,8 @@ public class HolderContainer {
     private void removeEmptyHeads() {
         List<String> toPurge = new ArrayList<String>();
         for ( String name : heads.keySet()) {
-            if ( heads.get( name).size() < 1 ) {
+            HolderElement head = heads.get( name);
+            if ( !head.isWaiting() && head.size() < 1 ) {
                 toPurge.add(name);
             }
         }
@@ -235,7 +236,7 @@ public class HolderContainer {
 
     public void waitHolder(String className, long timeout) {
         HolderElement e = null;
-        rwl.readLock().lock();
+        rwl.writeLock().lock();
         try {
             e = heads.get(className);
             if (e == null) {
@@ -243,7 +244,7 @@ public class HolderContainer {
                 heads.put(className, e);
             }
         } finally {
-            rwl.readLock().unlock();
+            rwl.writeLock().unlock();
         }
         e.waitHolder(timeout);
     }

@@ -37,7 +37,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HolderElement implements Iterable<Holder>{
     private static final Logger log = LoggerFactory.getLogger(HolderElement.class);
     private Map<Long, Holder> elements = new ConcurrentHashMap<Long, Holder>();
-
+    private boolean waiting;
+    
     public synchronized int size() {
         return elements.size();
     }
@@ -87,11 +88,18 @@ public class HolderElement implements Iterable<Holder>{
     public synchronized  void waitHolder(long timeout) {
         if (elements.isEmpty()) {
     		try {
+    		    waiting = true;
     			wait(timeout);
-    		}
-    		catch (InterruptedException ex) {
+    		} catch (InterruptedException ex) {
                 log.warn("InterruptedException ignored: "+ex);
+    		} finally {
+    		    waiting = false;
     		}
+    		
     	}
+    }
+    
+    public boolean isWaiting() {
+        return waiting;
     }
 }
