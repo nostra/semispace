@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -234,4 +233,18 @@ public class HolderContainer {
         return idseq.incrementAndGet();
     }
 
+    public void waitHolder(String className, long timeout) {
+        HolderElement e = null;
+        rwl.readLock().lock();
+        try {
+            e = heads.get(className);
+            if (e == null) {
+                e = new HolderElement();
+                heads.put(className, e);
+            }
+        } finally {
+            rwl.readLock().unlock();
+        }
+        e.waitHolder(timeout);
+    }
 }

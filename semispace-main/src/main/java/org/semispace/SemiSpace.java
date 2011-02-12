@@ -344,19 +344,15 @@ public class SemiSpace implements SemiSpaceInterface {
      * @return XML version of data, if found, or null
      */
     public String findOrWaitLeaseForTemplate(Map<String, String> templateSet, long timeout, boolean isToTakeTheLease) {
-        long until = admin.calculateTime() + timeout;
+        final long until = admin.calculateTime() + timeout;
         long subtract = 0;
-        boolean firstTime = true;
         String found = null;
-
-        SemiBlockingListener listener = new SemiBlockingListener();
-        SemiEventRegistration eventReg = null;
-        if ( timeout > 0 ) {
-            // Registering listener early in order not to miss any intermittent notifications.
-            eventReg = notify(templateSet, listener, timeout);
-        }
+        long systime = admin.calculateTime();
+        String className = templateSet.get("class");
+		if (templateSet.get(SemiSpace.ADMIN_GROUP_IS_FLAGGED) != null) {
+			className = InternalQuery.class.getName();
+		}
         do {
-            long systime = admin.calculateTime();
             final long duration = timeout - subtract;
             if (isToTakeTheLease) {
                 statistics.increaseBlockingTake();
@@ -364,29 +360,21 @@ public class SemiSpace implements SemiSpaceInterface {
                 statistics.increaseBlockingRead();
             }
 
-            if ( firstTime || duration <= 0 ) {
-                found = findLeaseForTemplate(templateSet, isToTakeTheLease);
-                firstTime = false;
-            }
+            found = findLeaseForTemplate(templateSet, isToTakeTheLease);
 
             if ( found == null && duration > 0) {
-                listener.block(duration);
+                elements.waitHolder(className, duration);
             }
             if (isToTakeTheLease) {
                 statistics.decreaseBlockingTake();
             } else {
                 statistics.decreaseBlockingRead();
             }
-            if (listener.hasBeenNotified() && found == null) {
-                // Need to reset notification status
-                listener.reset();
-                found = findLeaseForTemplate(templateSet, isToTakeTheLease);
-            }
-            subtract += admin.calculateTime() - systime;
-        } while (found == null && admin.calculateTime() < until || firstTime);
-        if ( eventReg != null ) {
-            eventReg.getLease().cancel();
-        }
+
+            final long now = getAdmin().calculateTime();
+			subtract += now - systime;
+			systime = now;
+        } while (found == null && systime < until );
         return found;
     }
 

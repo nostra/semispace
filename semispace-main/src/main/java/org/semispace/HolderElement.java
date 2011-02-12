@@ -27,12 +27,15 @@
 package org.semispace;
 
 import org.semispace.exception.SemiSpaceInternalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HolderElement implements Iterable<Holder>{
+    private static final Logger log = LoggerFactory.getLogger(HolderElement.class);
     private Map<Long, Holder> elements = new ConcurrentHashMap<Long, Holder>();
 
     public synchronized int size() {
@@ -63,6 +66,7 @@ public class HolderElement implements Iterable<Holder>{
         if ( old != null ) {
             throw new SemiSpaceInternalException("Unexpected duplication id IDs. Found twice: "+old.getId());
         }
+        notifyAll();
     }
 
     public synchronized Holder[] toArray() {
@@ -78,5 +82,16 @@ public class HolderElement implements Iterable<Holder>{
         return defensive.iterator();
         */
         return elements.values().iterator();
+    }
+
+    public synchronized  void waitHolder(long timeout) {
+        if (elements.isEmpty()) {
+    		try {
+    			wait(timeout);
+    		}
+    		catch (InterruptedException ex) {
+                log.warn("InterruptedException ignored: "+ex);
+    		}
+    	}
     }
 }
