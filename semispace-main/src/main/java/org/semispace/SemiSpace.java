@@ -112,19 +112,8 @@ public class SemiSpace implements SemiSpaceInterface {
         elements = HolderContainer.retrieveContainer();
         listeners = new ConcurrentHashMap<Long, ListenerHolder>();
         statistics = new SemiSpaceStatistics();
-        setAdmin(new SemiSpaceAdmin(this));
         xStream = new XStream();
-    }
-
-    /**
-     * Needed by terracotta.
-     */
-    public void initTransients() {
-        instance.listeners = new ConcurrentHashMap<Long, ListenerHolder>();
-        instance.setAdmin(new SemiSpaceAdmin(this));
-        instance.xStream = new XStream();
-        instance.classFieldMap = new WeakHashMap<String, Field[]>();
-        classFieldMap = instance.classFieldMap; 
+        setAdmin(new SemiSpaceAdmin(this));
     }
 
     /**
@@ -345,13 +334,13 @@ public class SemiSpace implements SemiSpaceInterface {
      */
     public String findOrWaitLeaseForTemplate(Map<String, String> templateSet, long timeout, boolean isToTakeTheLease) {
         final long until = admin.calculateTime() + timeout;
-        long subtract = 0;
-        String found = null;
         long systime = admin.calculateTime();
         String className = templateSet.get("class");
 		if (templateSet.get(SemiSpace.ADMIN_GROUP_IS_FLAGGED) != null) {
 			className = InternalQuery.class.getName();
 		}
+        String found = null;
+        long subtract = 0;
         do {
             final long duration = timeout - subtract;
             if (isToTakeTheLease) {
