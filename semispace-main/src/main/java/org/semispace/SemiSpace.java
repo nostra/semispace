@@ -83,11 +83,6 @@ public class SemiSpace implements SemiSpaceInterface {
 
     private long listenerId = 0;
 
-    /**
-     * Read / write lock
-     */
-    private ReadWriteLock rwl = new ReentrantReadWriteLock();
-
     private HolderContainer elements = null;
 
     private transient Map<Long, ListenerHolder> listeners;
@@ -166,15 +161,10 @@ public class SemiSpace implements SemiSpaceInterface {
             return null;
         }
 
-        rwl.writeLock().lock();
         ListenerHolder holder = null;
-        try {
-            listenerId++;
-            holder = new ListenerHolder(listenerId, listener, duration + admin.calculateTime(),
-                    searchProps);
-        } finally {
-            rwl.writeLock().unlock();
-        }
+        listenerId++;
+        holder = new ListenerHolder(listenerId, listener, duration + admin.calculateTime(),
+                searchProps);
         if ( listeners.put(Long.valueOf(holder.getId()), holder) != null ) {
             throw new SemiSpaceInternalException("Internal assertion error. Listener map already had element with id "+holder.getId());
         }
@@ -270,21 +260,16 @@ public class SemiSpace implements SemiSpaceInterface {
      */
     public SemiLease writeToElements(String entryClassName, long leaseTimeMs, String xml, Map<String, String> searchMap) {
         Holder holder = null;
-        rwl.writeLock().lock();
-        try {
-            if ( !checkedClassSet.contains( entryClassName )) {
-                checkedClassSet.add(entryClassName);
-                if ( xml.contains("<outer-class>")) {
-                    log.warn("It seems that "+entryClassName+" is an inner class. This is DISCOURAGED as it WILL serialize the outer " +
-                            "class as well. If you did not intend this, note that what you store MAY be significantly larger than you " +
-                            "expected. This warning is printed once for each class type.");
-                }
+        if ( !checkedClassSet.contains( entryClassName )) {
+            checkedClassSet.add(entryClassName);
+            if ( xml.contains("<outer-class>")) {
+                log.warn("It seems that "+entryClassName+" is an inner class. This is DISCOURAGED as it WILL serialize the outer " +
+                        "class as well. If you did not intend this, note that what you store MAY be significantly larger than you " +
+                        "expected. This warning is printed once for each class type.");
             }
-            // Need to add holder within lock. This indicates that HolderContainer has some thread safety issues
-            holder = elements.addHolder(xml, admin.calculateTime() + leaseTimeMs, entryClassName, searchMap);
-        } finally {
-            rwl.writeLock().unlock();
         }
+        // Need to add holder within lock. This indicates that HolderContainer has some thread safety issues
+        holder = elements.addHolder(xml, admin.calculateTime() + leaseTimeMs, entryClassName, searchMap);
 
         SemiLease lease = new ElementLease(holder, this);
         statistics.increaseWrite();
@@ -390,25 +375,18 @@ public class SemiSpace implements SemiSpaceInterface {
         }
 
         HolderElement next = elements.next(className);
-        // TODO Presently locking structure whilst searching for match
-        rwl.writeLock().lock();
-        try {
-            if ( next != null ) {
-                Iterator<Holder> it = next.iterator();
-                while ( found == null && it.hasNext()) {
-                    Holder elem = it.next();
-                    if (elem.getLiveUntil() < admin.calculateTime()) {
-                        toEvict.add(elem);
-                        elem = null;
-                    }
-                    if (elem != null && hasSubSet(elem.getSearchMap().entrySet(), templateSet)) {
-                        found = elem;
-                    }
+        if ( next != null ) {
+            Iterator<Holder> it = next.iterator();
+            while ( found == null && it.hasNext()) {
+                Holder elem = it.next();
+                if (elem.getLiveUntil() < admin.calculateTime()) {
+                    toEvict.add(elem);
+                    elem = null;
+                }
+                if (elem != null && hasSubSet(elem.getSearchMap().entrySet(), templateSet)) {
+                    found = elem;
                 }
             }
-
-        } finally {
-            rwl.writeLock().unlock();
         }
 
         for (Holder evict : toEvict) {
@@ -459,13 +437,8 @@ public class SemiSpace implements SemiSpaceInterface {
      * @return Element with given holder id, or null if not found (or expired
      */
     public Holder readHolderById( long hId ) {
-        rwl.readLock().lock();
         Holder result = null;
-        try {
-            result = elements.readHolderWithId(hId);
-        } finally {
-            rwl.readLock().unlock();
-        }
+        result = elements.readHolderWithId(hId);
         return result;
     }
     
@@ -712,33 +685,28 @@ public class SemiSpace implements SemiSpaceInterface {
             }
         List<Holder> beforeEvict = new ArrayList<Holder>();
 
-        rwl.readLock().lock();
-        try {
-            String[] groups = elements.retrieveGroupNames();
-            for ( String group : groups ) {
-                int evictSize = beforeEvict.size();
-                HolderElement hc = elements.next(group);
-                for (Holder elem : hc) {
-                    if (elem.getLiveUntil() < admin.calculateTime()) {
-                        beforeEvict.add(elem);
-                    }
-                }
-                long afterSize = beforeEvict.size() - evictSize ;
-                if ( afterSize > 0 ) {
-                    List<Long>ids = new ArrayList<Long>();
-                    for (Holder evict : beforeEvict) {
-                        ids.add(Long.valueOf( evict.getId()) );
-                    }
-                    String moreInfo = "";
-                    if ( ids.size() < 30 ) {
-                        Collections.sort(ids);
-                        moreInfo = "Ids: "+ids;
-                    }
-                    log.debug("Testing group "+group+" gave "+afterSize+" element(s) to evict. "+moreInfo);
+        String[] groups = elements.retrieveGroupNames();
+        for ( String group : groups ) {
+            int evictSize = beforeEvict.size();
+            HolderElement hc = elements.next(group);
+            for (Holder elem : hc) {
+                if (elem.getLiveUntil() < admin.calculateTime()) {
+                    beforeEvict.add(elem);
                 }
             }
-        } finally {
-            rwl.readLock().unlock();
+            long afterSize = beforeEvict.size() - evictSize ;
+            if ( afterSize > 0 ) {
+                List<Long>ids = new ArrayList<Long>();
+                for (Holder evict : beforeEvict) {
+                    ids.add(Long.valueOf( evict.getId()) );
+                }
+                String moreInfo = "";
+                if ( ids.size() < 30 ) {
+                    Collections.sort(ids);
+                    moreInfo = "Ids: "+ids;
+                }
+                log.debug("Testing group "+group+" gave "+afterSize+" element(s) to evict. "+moreInfo);
+            }
         }
         for (Holder evict : beforeEvict) {
             cancelElement(Long.valueOf(evict.getId()), false, evict.getClassName());
@@ -751,12 +719,7 @@ public class SemiSpace implements SemiSpaceInterface {
      */
     public int numberOfSpaceElements() {
         int size;
-        rwl.readLock().lock();
-        try {
-            size = elements.size();
-        } finally {
-            rwl.readLock().unlock();
-        }
+        size = elements.size();
         return size;
     }
 
@@ -805,13 +768,8 @@ public class SemiSpace implements SemiSpaceInterface {
      */
     protected SemiSpaceStatistics getStatistics() {
         SemiSpaceStatistics stats;
-        rwl.readLock().lock();
-        try {
-            // Defensive copied statistics
-            stats = (SemiSpaceStatistics) xmlToObject(objectToXml(statistics));
-        } finally {
-            rwl.readLock().unlock();
-        }
+        // Defensive copied statistics
+        stats = (SemiSpaceStatistics) xmlToObject(objectToXml(statistics));
         return stats;
     }
 
@@ -872,18 +830,13 @@ public class SemiSpace implements SemiSpaceInterface {
      */
     protected boolean renewElement(Holder holder, long duration) {
         boolean success = false;
-        rwl.writeLock().lock();
-        try {
-            Holder elem = elements.findById(holder.getId(), holder.getClassName());
-            if (elem != null) {
-                elem.setLiveUntil(duration + admin.calculateTime());
-                success = true;
-                distributeEvent(new DistributedEvent(elem.getClassName(), new SemiRenewalEvent(
-                        elem.getId(), elem.getLiveUntil()), elem.getSearchMap()));
-                //notifyListeners(new EventDistributor(elem.getClassName(), new SemiRenewalEvent( elem.getId(), elem.getLiveUntil()), elem.getSearchMap()));
-            }
-        } finally {
-            rwl.writeLock().unlock();
+        Holder elem = elements.findById(holder.getId(), holder.getClassName());
+        if (elem != null) {
+            elem.setLiveUntil(duration + admin.calculateTime());
+            success = true;
+            distributeEvent(new DistributedEvent(elem.getClassName(), new SemiRenewalEvent(
+                    elem.getId(), elem.getLiveUntil()), elem.getSearchMap()));
+            //notifyListeners(new EventDistributor(elem.getClassName(), new SemiRenewalEvent( elem.getId(), elem.getLiveUntil()), elem.getSearchMap()));
         }
 
         return success;
@@ -894,12 +847,7 @@ public class SemiSpace implements SemiSpaceInterface {
      */
     public Long[] findAllHolderIds() {
         Long[] result = null;
-        rwl.readLock().lock();
-        try {
-            result = elements.findAllHolderIds();
-        } finally {
-            rwl.readLock().unlock();
-        }
+        result = elements.findAllHolderIds();
         return result;
     }
 
