@@ -94,15 +94,15 @@ public class SemiSpace implements SemiSpaceInterface {
 
 	private SemiSpaceStatistics statistics = null;
 
-	private XStream xStream = null;
+	private SemiSpaceMarshaller marshaller = null;
 	
 	private SemiSpace() {
 		listeners = new ConcurrentHashMap<Long, ListenerHolder>();
-		xStream = new XStream();
 		classFieldMap = new WeakHashMap<String, Field[]>();
 		checkedClassSet = new HashSet<String>();	
 		statistics = new SemiSpaceStatistics();
 		admin = new SemiSpaceAdmin(this);
+		marshaller = new XStreamSemiSpaceMarshaller();
 	}
 
 	/**
@@ -506,29 +506,20 @@ public class SemiSpace implements SemiSpaceInterface {
 	public <T> T takeIfExists(T tmpl) {
 		return take(tmpl, 0);
 	}
+	
+	public void setMarshaller(SemiSpaceMarshaller aMarshaller) {
+		this.marshaller = aMarshaller;
+	}
 
 	private String objectToXml(Object obj) {
-		StringWriter writer = new StringWriter();
-		xStream.marshal(obj, new CompactWriter(writer));
-		return writer.toString();
+		return marshaller.objectToXml(obj);
 	}
 
 	private Object xmlToObject(String xml) {
 		if (xml == null || "".equals(xml)) {
 			return null;
 		}
-		Object result = null;
-		try {
-			result = xStream.fromXML(xml);
-		}
-		catch (Exception e) {
-			// Not sure if masking exception is the most correct way of dealing with it.
-			log.error(
-			    "Got exception unmarshalling. Not throwing the exception up, but rather returning null. "
-			            + "This is as the cause may be a change in the object which is sent over. "
-			            + "The XML was read as\n" + xml, e);
-		}
-		return result;
+		return marshaller.xmlToObject(xml);
 	}
 
 	private static class PreprocessedTemplate {
@@ -916,7 +907,10 @@ public class SemiSpace implements SemiSpaceInterface {
 	 * @return The xstream instance used.
 	 */
 	public XStream getXStream() {
-		return xStream;
+		if (marshaller instanceof XStreamSemiSpaceMarshaller) {
+			return ((XStreamSemiSpaceMarshaller)marshaller).getXStream();
+		}
+		return null;
 	}
 
 	private static class ShortestTtlComparator implements Comparator<ListenerHolder>, Serializable {
