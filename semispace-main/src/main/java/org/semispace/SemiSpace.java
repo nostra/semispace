@@ -510,6 +510,10 @@ public class SemiSpace implements SemiSpaceInterface {
 	public void setMarshaller(SemiSpaceMarshaller aMarshaller) {
 		this.marshaller = aMarshaller;
 	}
+	
+	public SemiSpaceMarshaller getMarshaller() {
+		return this.marshaller;
+	}
 
 	private String objectToXml(Object obj) {
 		return marshaller.objectToXml(obj);
@@ -905,6 +909,7 @@ public class SemiSpace implements SemiSpaceInterface {
 	 * affiliation.
 	 * 
 	 * @return The xstream instance used.
+	 * @deprecated Use getMarshaller() instead
 	 */
 	public XStream getXStream() {
 		if (marshaller instanceof XStreamSemiSpaceMarshaller) {
