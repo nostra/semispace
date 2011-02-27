@@ -24,6 +24,8 @@
 *----------------------------------+------------+
 | The counter of operations are now local | Since the SemiSpace instance is not shared, all admin data it contains are now local. |
 *----------------------------------+------------+
+| Using blocking wait | Exchanging object wait pattern to blocking wait |
+*----------------------------------+------------+
 
 
 1.1.2-SNAPSHOT
