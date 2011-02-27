@@ -30,9 +30,9 @@ import org.semispace.exception.SemiSpaceObjectException;
 import org.semispace.exception.SemiSpaceUsageException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -52,7 +52,7 @@ public class HolderContainer {
     private static HolderContainer instance = new HolderContainer();
     
     private HolderContainer() {
-        heads = new HashMap<String, HolderElement>();
+        heads = new ConcurrentHashMap<String, HolderElement>();
     }
 
     public static synchronized HolderContainer retrieveContainer() {
