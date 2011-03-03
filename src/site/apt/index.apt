@@ -79,9 +79,9 @@ SemiSpace offers
  
  * supplies a simple <<actor pattern>> framework
 
- * a comet-based interface to a SemiSpace-enabled webapp
+ * a {{{http://www.cometd.org/}cometd-based}} interface to a SemiSpace-enabled webapp
 
- []
+  []
 
 
 ~~~~~~~~~~~~~~~~~
