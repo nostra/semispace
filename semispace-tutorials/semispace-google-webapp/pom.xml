@@ -18,11 +18,6 @@
     <dependencies>
         <dependency>
             <groupId>org.semispace</groupId>
-            <artifactId>semispace-persistence</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.semispace</groupId>
             <artifactId>semispace-wsdef</artifactId>
             <version>${version}</version>
         </dependency>        
@@ -116,13 +111,6 @@
     <build>
         <finalName>google</finalName>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
