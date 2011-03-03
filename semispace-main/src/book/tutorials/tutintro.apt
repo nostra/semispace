@@ -36,7 +36,7 @@ Introduction to tutorials
 mvn clean install
 +-------------------------+
  
- You will need version 2.0.10, or later, of maven.
+ You will need version 2.2.1, or later, of maven.
  
  If you get a dependency error due to missing JAXB, you need
  to install JAXB as explained 
@@ -54,6 +54,27 @@ mvn -Dmaven.test.skip=true
  rest is for your convenience. If you have problems compiling
  (typically because of missing jar libraries), you can try to
  comment out optional modules in the parent pom.
+
+~~~~~~~~~~~~~~~~~~~~~~
+** Failing comet tests
+~~~~~~~~~~~~~~~~~~~~~~
+
+ The comet tests need a running comet instance. This is most easily
+ obtained by
+
+ * compiling the complete project without any tests
+
+ * check out semispace-comet in a separate directory
+
+ * run the comet server with
+
++----
+mvn jetty:run
++----
+
+ * run the tests in the source version that contain the complete project.
+
+ []
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 * Terracotta for distribution

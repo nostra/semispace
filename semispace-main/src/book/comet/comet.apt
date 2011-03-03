@@ -7,16 +7,13 @@
  mimics the {{{../apidocs/org/semispace/SemiSpaceInterface.html}Java interface}}
  as closely as possible.
 
- Presently, cometd-1.x is used. This will later be migrated to cometd-2.x.
- Cometd has a page with {{{http://cometd.org/node/87}overview over the migration
- path of classes and packages}}. At a time where it is stable and sufficiently
- wide spread, websocket is going to be the main target.
+ We are presently using Cometd-2.x.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Overview of semispace-comet
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- The semispace-comet module of SemiSpace consists of 4 parts:
+ The semispace-comet module of SemiSpace consists of the following parts:
 
 *--------------+----------+
 | semispace-comet-server | The webapp which will answer the JavaScript queries |

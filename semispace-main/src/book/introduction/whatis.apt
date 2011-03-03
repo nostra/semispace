@@ -22,7 +22,7 @@ Introduction
  mandatory, the other modules are used on a <need to have>
  basis: If you do not need the web services interface,
  disregard the module. If you do not want to use, or 
- need {{{http://www.springframework.org/}Spring,}} 
+ need, {{{http://www.springframework.org/}Spring,}}
  use standard POJO code for your configuration.
  
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -136,7 +136,8 @@ Introduction
  well on a single VM.
  
  * When distributing with Terracotta, you do <<not be
- too concerned about>> <<<tc-config.xml>>> (the Terracotta 
+ too concerned about>>
+ <<<tc-config.xml>>> (the Terracotta
  configuration file).
  
  * You can distribute Objects without taking the object depth

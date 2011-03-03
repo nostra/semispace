@@ -7,19 +7,7 @@
  use Terracotta right away.
 
  This explanation is aimed at
- {{{http://www.terracotta.org}Terracotta version 3.3.0.}}
-
-Problem with JVM > 1.6.0_18
-~~~~
-
- Unless you run version 3.2.2 or higher,
- Terracotta will not work with JVM-1.6.0_19 or later:
-
- * {{https://jira.terracotta.org/jira/browse/CDV-1472}}
-
- * {{http://forums.terracotta.org/forums/posts/list/3823.page}}
-
- []
+ {{{http://www.terracotta.org}Terracotta version 3.4.1.}} 
 
 ~~~~~~~~~~~~
 Configuration of Terracotta
@@ -90,7 +78,7 @@ export TC_INSTALL_DIR=<where you have exploded the terracotta-3.x.x.tar.gz file>
  
 +--------
 $TC_INSTALL_DIR/bin/tim-get.sh list jetty  
-$TC_INSTALL_DIR/bin/tim-get.sh install tim-jetty-6.1 2.2.0 org.terracotta.modules
+$TC_INSTALL_DIR/bin/tim-get.sh install tim-jetty-6.1 2.2.1 org.terracotta.modules
 +--------
   
 ~~~~~~~~~~~~
@@ -147,7 +135,7 @@ ${TC_INSTALL_DIR}/bin/dso-java.sh -Dtc.config=localhost:9510
 
  This is typically the configuration you will use 
  <outside> a webapp. <<Note that this is not relevant
- if you use the SemiSpace TIM>>, as the TIM will take
+ if you use the SemiSpace TIM,>> as the TIM will take
  care of the configuration for you.
 
  If you prefer to obtain a

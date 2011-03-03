@@ -87,37 +87,37 @@ The easy way
  For your convenience the SemiSpace Comet package come with prepared builds of DojoKit and jQuery where the CometD module
  have been applied. To get started, select one of the provided prebuilt libraries for your project.
 
- ~~~~~~~~~~~~~~
- * Dojo Kit
- ~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+* Dojo Kit
+~~~~~~~~~~~~~~
 
  To use Dojo Kit for communication with the SemiSpace server, include Dojo Kit:
 
- +-------------------------+
- <script type="text/javascript" src="/semispace-comet-server/js/lib/dojo-release-1.4.3/dojo/dojo.js"> </script>
- +-------------------------+
++-------------------------+
+<script type="text/javascript" src="/semispace-comet-server/js/lib/dojo-release-1.4.3/dojo/dojo.js"> </script>
++-------------------------+
 
  Then include the SemiSpace JavaScript client:
 
- +-------------------------+
- <script type="text/javascript" src="/semispace-comet-server/js/core/semispace.js"> </script>
- +-------------------------+
++-------------------------+
+<script type="text/javascript" src="/semispace-comet-server/js/core/semispace.js"> </script>
++-------------------------+
 
- ~~~~~~~~~~~~~~
- * jQuery
- ~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
+* jQuery
+~~~~~~~~~~~~~~
 
  To use jQuery for communication with the SemiSpace server, include jQuery:
 
- +-------------------------+
- <script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery-1.4.2.js"> </script>
- +-------------------------+
++-------------------------+
+<script type="text/javascript" src="/semispace-comet-server/js/lib/jquery/jquery-1.4.2.js"> </script>
++-------------------------+
 
  Then include the SemiSpace JavaScript client:
 
- +-------------------------+
- <script type="text/javascript" src="/semispace-comet-server/js/core/semispace.js"> </script>
- +-------------------------+
++-------------------------+
+<script type="text/javascript" src="/semispace-comet-server/js/core/semispace.js"> </script>
++-------------------------+
 
 
 
@@ -216,7 +216,7 @@ Communicating with the space
 *-------+-------------------------------------+
 | 3     | The client was connected to the server but has lost connection to the server
 *-------+-------------------------------------+
-| 4     | The client communicates with the server. This will occure pretty frequently since the client pings the server from time to time
+| 4     | The client communicates with the server. This will occur pretty frequently since the client pings the server from time to time
 *-------+-------------------------------------+
 | 5     | The client was disconnected from the server by the disconnect method
 *-------+-------------------------------------+
@@ -261,6 +261,9 @@ Working against the space
  ~~~~~~~~~~~~~~
  * notify
  ~~~~~~~~~~~~~~
+
+ []
+
  TODO: remember release function on notify
 
 

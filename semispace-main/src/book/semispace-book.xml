@@ -88,9 +88,6 @@
           <section>
             <id>actor</id>
           </section>
-          <section>
-            <id>persistence</id>
-          </section>
         <section>
           <id>security</id>
         </section>

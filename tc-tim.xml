@@ -78,7 +78,7 @@
 <!--START SNIPPET: semispaceTimReference-->
     <modules>
         <!-- You only need jetty module if you are actually using jetty -->
-        <module name="tim-jetty-6.1" version="2.2.0"/>
+        <module name="tim-jetty-6.1" version="2.2.1"/>
         <repository>%(user.home)/.m2/repository</repository>
         <module name="semispace-tim" version="1.2.0" group-id="org.semispace"/>
 	</modules>

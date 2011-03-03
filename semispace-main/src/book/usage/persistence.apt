@@ -1,7 +1,9 @@
 			------
 			Database persistence
 			------
-			
+
+ <<Deprecated>> SemiSpace does not support JDBC persistence any more.
+
 Storage in database
 ~~~~~~~~~~~~~~~~~~~
 

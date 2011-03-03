@@ -10,7 +10,7 @@ Communication channel overview
 
  The communication between the comet client and java webapp
  comet server is asynchronous. The communication is initiated
- with a <call>, and returned with a <reply> (except in the
+ with a <call,> and returned with a <reply> (except in the
  case of notify, which is a special case).
 
  The communication channels are as follows:
