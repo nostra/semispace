@@ -2,7 +2,7 @@
     <parent>
         <groupId>org.semispace</groupId>
         <artifactId>semispace-tutorials</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -10,7 +10,7 @@
     <groupId>org.semispace</groupId>
     <artifactId>semispace-google-app</artifactId>
     <packaging>jar</packaging>
-    <version>1.3.0</version>
+    <version>1.3.1-SNAPSHOT</version>
     <name>semispace-google-app</name>
     <description>Part of the SemiSpace tutorial: The webapp packaged as a stand alone, easily deployable, application.</description>
     <url>http://www.semispace.org/semispace/semispace-tutorials/semispace-google-app</url>

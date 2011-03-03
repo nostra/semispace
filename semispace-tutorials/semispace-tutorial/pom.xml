@@ -2,14 +2,14 @@
 	<parent>
         <groupId>org.semispace</groupId>
         <artifactId>semispace-tutorials</artifactId>
-		<version>1.3.0</version>
+		<version>1.3.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.semispace</groupId>
 	<artifactId>semispace-tutorial</artifactId>
 	<packaging>jar</packaging>
-	<version>1.3.0</version>
+	<version>1.3.1-SNAPSHOT</version>
 	<name>semispace-tutorial</name>
     <description>Part of the SemiSpace tutorial: Simple example of SemiSpace interaction.</description>
     <url>http://www.semispace.org/semispace/semispace-tutorials/semispace-tutorial</url>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.semispace</groupId>
 			<artifactId>semispace-main</artifactId>
-			<version>1.3.0</version>
+			<version>1.3.1-SNAPSHOT</version>
 		</dependency>
 <!--END SNIPPET: semispaceDependency -->
 		<dependency>

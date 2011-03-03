@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.semispace.comet</groupId>
         <artifactId>semispace-comet</artifactId>
-        <version>1.3.0</version>
+        <version>1.3.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>org.semispace.comet</groupId>
     <artifactId>semispace-comet-client</artifactId>
     <packaging>jar</packaging>
-    <version>1.3.0</version>
+    <version>1.3.1-SNAPSHOT</version>
     <name>semispace-comet-client</name>
     <description>Java client for SemiSpace comet connection. Useful for bridging two SemiSpace instances, or for testing semispace-comet-server</description>
 
