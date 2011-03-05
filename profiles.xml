@@ -17,45 +17,58 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://maven.apache.org/PROFILES/1.0.0
                       http://maven.apache.org/xsd/profiles-1.0.0.xsd">
-<profiles>
-    <profile>
-        <id>buildWithIntegrationTests</id>
-        <activation>
-            <property>
-                <name>env</name>
-                <value>integration</value>
-            </property>
-        </activation>
-        <properties>
-            <tests.to.exclude>do.not.exclude.any.tests</tests.to.exclude>
-        </properties>
-    </profile>
+    <profiles>
+        <profile>
+            <id>buildWithIntegrationTests</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>integration</value>
+                </property>
+            </activation>
+            <properties>
+                <tests.to.exclude>do.not.exclude.any.tests</tests.to.exclude>
+            </properties>
+        </profile>
 
-    <profile>
-        <id>buildWithNoTests</id>
-        <activation>
-            <property>
-                <name>env</name>
-                <value>dev</value>
-            </property>
-        </activation>
-        <properties>
-            <tests.to.exclude>*Test.java</tests.to.exclude>
-        </properties>
-    </profile>
+        <profile>
+            <id>buildWithNoTests</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+            <properties>
+                <tests.to.exclude>*Test.java</tests.to.exclude>
+            </properties>
+        </profile>
 
-    <profile>
-        <id>buildWithOnlyRegularTests</id>
-        <activation>
-            <property>
-                <name>env</name>
-                <value>test</value>
-            </property>
-        </activation>
-        <properties>
-            <tests.to.exclude>*IntegrationTest.java</tests.to.exclude>
-        </properties>
-    </profile>
-</profiles>
+        <profile>
+            <id>buildWithNoTestsAndJrebel</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>jrebel</value>
+                </property>
+            </activation>
+            <properties>
+                <tests.to.exclude>*Test.java</tests.to.exclude>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>buildWithOnlyRegularTests</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>test</value>
+                </property>
+            </activation>
+            <properties>
+                <tests.to.exclude>*IntegrationTest.java</tests.to.exclude>
+            </properties>
+        </profile>
+    </profiles>
     
 </profilesXml>
