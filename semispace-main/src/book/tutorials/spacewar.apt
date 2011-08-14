@@ -51,7 +51,7 @@ spacepad.sh http://localhost:8080/semispace-war/services/space
  arguments, i.e. Terracotta-configured, you need to stop
  both the terracotta-server, and spacepad. This is due to 
  problems explained in 
- {{{terraconfig.html}the Terracotta chapter.}}
+ {{{./terraconfig.html}the Terracotta chapter.}}
  
 ~~~~~~~~~~~~~~~~~~~
 ** Deploy spacewar

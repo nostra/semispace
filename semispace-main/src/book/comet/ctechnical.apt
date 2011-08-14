@@ -17,29 +17,29 @@ Communication channel overview
 
 *-------------------------------------+---------------+
 || Channel                  || purpose ||
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 | /semispace/call/read/<number>  |  Initiate a read request. |
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 | /semispace/reply/read/<number> | Reply of a read, with the payload being the result if it was obtained. |
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 |/semispace/call/take/<number>    | Initiate a take request.|
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 |/semispace/reply/take/<number>   | Result of take. |
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 |/semispace/call/write/<number>   | Insert an object into the space. This is a <<synchronous>> operation when using the comet java client.|
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 |/semispace/reply/write/<number>  | Acknowledge that the element has been written.|
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 |/semispace/call/notify/<number>/<type>  | Register a notification.  This is a <<synchronous>> operation when using the comet java client.|
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 |/semispace/reply/notify/<number>/<type> | Acknowledge that the notification has been registered. |
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 |/semispace/event/notify/<number>/<type> | Attached is a notification event. |
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 |/semispace/call/leasecancel/<number>  | Cancel lease with callId as mapped parameter. CallId is the <number> from the notify method|
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 |/semispace/reply/leasecancel/<number>  | Acknowledge of listener cancellation |
-*-------------------------------------+---------------
+*-------------------------------------+---------------+
 
  Channel parameters are:
 
@@ -72,7 +72,7 @@ Parameter overview
 |  take                    |  ... | Same parameters as read |
 *--------------------------+--------------------+---+
 | write                    | timeToLiveMs | How long the object shall live in the space TODO Shall change to duration |
-|                          | json | Payload. This is the String representation of the client side JSON object.
+|                          | json | Payload. This is the String representation of the client side JSON object.|
 *--------------------------+--------------------+---+
 |  notify                  | duration  | How long the notification registration shall exist. |
 |                          | json | As for read |

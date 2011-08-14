@@ -8,7 +8,7 @@ Using Spring to configure space
 
  {{{http://www.springsource.org/documentation}Spring}} can be used for configuration.
  Remember that this configuration is not interchangeable with other
- configuration options, due to reasons explained in {{{terraconfig.html}the 
+ configuration options, due to reasons explained in {{{./terraconfig.html}the
  Terracotta configuration}} chapter. 
  
  <<Notice>> that this description is <<not>> complete, as there

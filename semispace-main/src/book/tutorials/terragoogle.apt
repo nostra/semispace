@@ -78,7 +78,7 @@ Distributing jetty instances
  You need to have unzipped the <<<google-app.zip>>> in two
  different directories, lets call them A and B. You also
  need to have started the Terracotta server, as explained
- in {{{terraconfig.html}Terracotta configuration}} chapter.
+ in {{{./terraconfig.html}Terracotta configuration}} chapter.
  
  Recap:
 

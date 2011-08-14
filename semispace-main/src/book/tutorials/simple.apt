@@ -9,7 +9,7 @@ Simple terracotta interaction
  The purpose of the tutorial is to give you an insight in how
  SemiSpace is intended to work together with <<Terracotta.>>
  Terracotta needs to be configured as explained in
- {{{installation.html}the installation chapter.}}
+ {{{./installation.html}the installation chapter.}}
 
  
 ~~~~~~~~~~~~
@@ -28,7 +28,7 @@ unzip tutorial.zip
 chmod a+x *.sh
 +----------------------------------+
 
- Start the Terracotta server as explained in {{{terraconfig.html}the Terracotta chapter.}}
+ Start the Terracotta server as explained in {{{./terraconfig.html}the Terracotta chapter.}}
  Run the java program in order to insert a value into the space:
  
 +----------------------------------+
