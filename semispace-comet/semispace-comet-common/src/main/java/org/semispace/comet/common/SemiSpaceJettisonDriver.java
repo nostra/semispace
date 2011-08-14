@@ -26,17 +26,24 @@ import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.json.JettisonStaxWriter;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxReader;
-import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import org.codehaus.jettison.mapped.Configuration;
 import org.codehaus.jettison.mapped.MappedNamespaceConvention;
 import org.codehaus.jettison.mapped.MappedXMLInputFactory;
 import org.codehaus.jettison.mapped.MappedXMLOutputFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.stream.XMLStreamException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +55,7 @@ import java.util.Map;
  * @see JettisonMappedXmlDriver
  */
 public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
+    private static final Logger log = LoggerFactory.getLogger(SemiSpaceJettisonDriver.class);
     private final MappedXMLOutputFactory mof;
     private final MappedXMLInputFactory mif;
     private final MappedNamespaceConvention convention;
@@ -65,7 +73,7 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
         try {
             return new ReaderWrapper(
                 new StaxReader(new QNameMap(), mif.createXMLStreamReader(reader),
-                        new XmlFriendlyReplacer("$","_"))) {
+                        new XmlFriendlyNameCoder("$","_"))) {
                     @Override
                     public String getNodeName() {
                         return super.getNodeName().replace('_', '.');
@@ -79,17 +87,37 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
     @Override
     public HierarchicalStreamReader createReader(final InputStream input) {
         try {
-            return new StaxReader(new QNameMap(), mif.createXMLStreamReader(input), new XmlFriendlyReplacer("$","_"));
+            return new StaxReader(new QNameMap(), mif.createXMLStreamReader(input), new XmlFriendlyNameCoder("$","_"));
         } catch (final XMLStreamException e) {
             throw new StreamException(e);
         }
     }
 
     @Override
+    public HierarchicalStreamReader createReader(URL in) {
+        try {
+            return createReader(in.openStream());
+        } catch (IOException e) {
+            log.error("Got exception", e);
+        }
+        return null;
+    }
+
+    @Override
+    public HierarchicalStreamReader createReader(File in) {
+        try {
+            return createReader( new FileInputStream(in));
+        } catch (FileNotFoundException e) {
+            log.error("Got exception", e);
+        }
+        return null;
+    }
+
+    @Override
     public HierarchicalStreamWriter createWriter(final Writer writer) {
         try {
             return new WriterWrapper(new JettisonStaxWriter(new QNameMap(), mof.createXMLStreamWriter(writer),
-                    true, true, new XmlFriendlyReplacer("$","_"), convention)) {
+                    true, true, new XmlFriendlyNameCoder("$","_"), convention)) {
                 @Override
                 public void startNode(String name, Class clazz) {
                     super.startNode(name.replace('.', '_'), clazz);
@@ -108,7 +136,7 @@ public class SemiSpaceJettisonDriver implements HierarchicalStreamDriver {
     public HierarchicalStreamWriter createWriter(final OutputStream output) {
         try {
             return new JettisonStaxWriter(new QNameMap(), mof.createXMLStreamWriter(output), 
-                    true, true, new XmlFriendlyReplacer("$","_"), convention);
+                    true, true, new XmlFriendlyNameCoder("$","_"), convention);
         } catch (final XMLStreamException e) {
             throw new StreamException(e);
         }
