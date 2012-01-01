@@ -19,7 +19,7 @@ package org.semispace.comet.common;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.copy.HierarchicalStreamCopier;
-import com.thoughtworks.xstream.io.xml.XmlFriendlyReplacer;
+import com.thoughtworks.xstream.io.xml.XmlFriendlyNameCoder;
 import com.thoughtworks.xstream.io.xml.XppDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class Xml2Json {
      */
     public static final String transform( String xml ) {
         final HierarchicalStreamDriver jettison = new SemiSpaceJettisonDriver();
-        final XppDriver xpp = new XppDriver(new XmlFriendlyReplacer("$","_"));
+        final XppDriver xpp = new XppDriver(new XmlFriendlyNameCoder("$","_"));
 
         StringReader reader = new StringReader(xml);
         HierarchicalStreamReader hsr= xpp.createReader(reader);
