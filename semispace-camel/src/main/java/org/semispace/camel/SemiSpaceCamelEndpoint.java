@@ -18,14 +18,19 @@ package org.semispace.camel;
 
 import org.apache.camel.Component;
 import org.apache.camel.Consumer;
+import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  */
 public class SemiSpaceCamelEndpoint extends DefaultEndpoint{
+    private static final Logger log = LoggerFactory.getLogger(SemiSpaceCamelEndpoint.class);
+
     public SemiSpaceCamelEndpoint(String endpointUri, Component component) {
         super(endpointUri, component);
     }
@@ -43,5 +48,17 @@ public class SemiSpaceCamelEndpoint extends DefaultEndpoint{
     @Override
     public boolean isSingleton() {
         return true;
+    }
+
+    @Override
+    public Exchange createExchange(Exchange exchange) {
+        log.debug("Creating exchange with basis in "+exchange);
+        return super.createExchange(exchange);
+    }
+
+    @Override
+    public Exchange createExchange() {
+        log.debug("Creating exchange from scratch");
+        return super.createExchange();
     }
 }

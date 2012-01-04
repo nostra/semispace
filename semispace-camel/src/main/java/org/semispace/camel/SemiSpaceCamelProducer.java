@@ -22,11 +22,14 @@ import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultProducer;
 import org.semispace.SemiSpace;
 import org.semispace.SemiSpaceInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class SemiSpaceCamelProducer extends DefaultProducer{
+    private static final Logger log = LoggerFactory.getLogger(SemiSpaceCamelProducer.class);
     private SemiSpaceInterface space;
 
     public SemiSpaceCamelProducer(Endpoint endpoint) {

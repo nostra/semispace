@@ -17,24 +17,31 @@
 package org.semispace.camel;
 
 import org.apache.camel.Processor;
+import org.apache.camel.impl.DefaultConsumer;
 import org.apache.camel.impl.DefaultEndpoint;
-import org.apache.camel.impl.ScheduledPollConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  */
-public class SemiSpaceCamelConsumer extends ScheduledPollConsumer {
+public class SemiSpaceCamelConsumer extends DefaultConsumer {
     private static final Logger log = LoggerFactory.getLogger(SemiSpaceCamelConsumer.class);
+    private int count = 0;
 
     public SemiSpaceCamelConsumer(DefaultEndpoint endpoint, Processor processor) {
         super(endpoint, processor);
     }
 
+    
+    /*
     @Override
     protected int poll() throws Exception {
-        log.debug("==> Polling");
-        return 0;
+        int num = count >= 2 ? 1 : 0;
+        log.debug("==> Polling and returning "+num);
+        //SemiSpace.retrieveSpace().readIfExists(new CustomPayload());
+        count++;
+        return num;
     }
+    */
 }
