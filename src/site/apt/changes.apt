@@ -5,6 +5,15 @@
  Changes over the versions from version 1.0.0. The changes are grouped by the
  snapshot versions for which they were made.
 
+1.3.1-SNAPSHOT
+
+*----------------------------------+------------+
+|| Change or bug || Change
+*----------------------------------+------------+
+| Updated dependencies | Maintenance library updates |
+*----------------------------------+------------+
+
+
 1.2.1-SNAPSHOT
 
 *----------------------------------+------------+
