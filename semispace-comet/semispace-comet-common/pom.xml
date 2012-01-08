@@ -4,13 +4,13 @@
 	<parent>
 		<groupId>org.semispace.comet</groupId>
 		<artifactId>semispace-comet</artifactId>
-		<version>1.3.1-SNAPSHOT</version>
+		<version>1.3.1</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
     <groupId>org.semispace.comet</groupId>
     <artifactId>semispace-comet-common</artifactId>
     <packaging>jar</packaging>
-    <version>1.3.1-SNAPSHOT</version>
+    <version>1.3.1</version>
     <name>semispace-comet-common</name>
     <description>Common functionality for the client and server Java side interface to SemiSpace</description>
 
