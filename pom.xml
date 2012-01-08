@@ -614,7 +614,7 @@
         <module>semispace-wsclient</module>
         <module>semispace-tutorials</module>
         <module>semispace-tim</module>
-        <module>semispace-camel</module>
+        <!--<module>semispace-camel</module>-->
         <module>semispace-comet</module>
   </modules>
 </project>
