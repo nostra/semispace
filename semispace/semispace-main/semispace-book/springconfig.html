@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Spring configuration</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="hintsandtips.html">Hints and tips</a></td>
+<td>Up: <a href="usage.html">Usage</a></td>
+<td>Next: <a href="actor.html">Actor pattern framework</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<div class="section"><h2><a name="Using_Spring_to_configure_space"></a>Using Spring to configure space</h2>
+<p><a href="http://www.springsource.org/documentation" class="externalLink">Spring</a> can be used for configuration. Remember that this configuration is not interchangeable with other configuration options, due to reasons explained in <a href="./terraconfig.html">the Terracotta configuration</a> chapter. </p>
+<p><b>Notice</b> that this description is <b>not</b> complete, as there are several elements to configure and take into consideration. The easiest way of working with this, is probably to start with the sources for semispace-war, run the application with <tt>mvn jetty:run</tt> and examine the result(s). </p>
+<div class="section"><h3><a name="Configure_your_webapps_beans_for_spring"></a>Configure your webapp's beans for spring</h3>
+<p>As of Terracotta 3.2, you do not need to add anything particular in your <tt>tc-config.xml</tt> file.</p>
+<p>The part you need, is the configuration in Spring's <tt>application-context.xml</tt></p>
+<div class="source"><pre>	&lt;!-- 
+		The space itself. It may be distributed with terracotta, or
+		be stand alone.
+	--&gt;
+	&lt;bean id=&quot;semispace&quot; class=&quot;org.semispace.SemiSpace&quot; scope=&quot;singleton&quot;
+		factory-method=&quot;retrieveSpace&quot; /&gt;
+</pre>
+</div>
+<p>The bean is used in the &quot;normal&quot; way, which is to say that it is either injected into a controller, or retrieved as a bean. <b>Notice</b> that you <b>do not need</b> to configure SemiSpace for Spring, as the other parts of the <tt>tc-config.xml</tt> covers those classes, even when they are instantiated with spring.</p>
+<h4>Exposing the web service in spring</h4>
+<p>The webservices configuration needs some more configuration in <tt>applicationContext.xml:</tt></p>
+<div class="source"><pre>	&lt;import resource=&quot;classpath:META-INF/cxf/cxf.xml&quot; /&gt;
+	&lt;import resource=&quot;classpath:META-INF/cxf/cxf-extension-soap.xml&quot; /&gt;
+	&lt;import resource=&quot;classpath:META-INF/cxf/cxf-servlet.xml&quot; /&gt;
+
+	&lt;!--
+		Definition of an unauthenticated space. Useful if you are
+		within a firewall, or otherwise do not expose the
+		service to the world. 
+	--&gt;
+	&lt;jaxws:endpoint id=&quot;space&quot; implementor=&quot;#spaceproxy&quot;
+		address=&quot;/space&quot; /&gt;
+
+	&lt;bean id=&quot;spaceproxy&quot;
+		class=&quot;org.semispace.ws.WsSpaceImpl&quot;&gt;
+		&lt;property name=&quot;space&quot;&gt;
+			&lt;ref bean=&quot;semispace&quot; /&gt;
+		&lt;/property&gt;
+	&lt;/bean&gt;
+</pre>
+</div>
+<h4>Running the CXF servlet</h4>
+<p>In addition to setting up the spring controller servlet, you need to start the CXF servlet in web.xml:</p>
+<div class="source"><pre>  &lt;servlet&gt;
+    &lt;servlet-name&gt;CXFServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;
+        org.apache.cxf.transport.servlet.CXFServlet
+    &lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;CXFServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/services/*&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+</pre>
+</div>
+<p>This will interface with the CXF configuration you performed in <tt>applicationContext.xml.</tt></p>
+</div>
+<div class="section"><h3><a name="JMX_exposure"></a>JMX exposure</h3>
+<p>The application context for <tt>semispace-war</tt> is configured to expose statistical data to a JMX client. In order to avoid setting up alternate strategies for injection of the statistical object, the data is exposed through the SemiSpace instance itself. The problem is that it is difficult (but not impossible) to successfully use different wiring strategies together with terracotta. SemiSpace uses the easiest approach...</p>
+<p>The following spring MBean configuration is used for exposing the statistic:</p>
+<div class="source"><pre>	&lt;bean id=&quot;mbeanServer&quot;
+		class=&quot;org.springframework.jmx.support.MBeanServerFactoryBean&quot;&gt;
+		&lt;!-- indicate to first look for a server --&gt;
+		&lt;property name=&quot;locateExistingServerIfPossible&quot; value=&quot;true&quot; /&gt;
+	&lt;/bean&gt;
+	&lt;!--
+		this bean needs to be eagerly pre-instantiated in order for the exporting to occur;
+		this means that it must not be marked as lazily initialized
+	--&gt;
+	&lt;bean id=&quot;exporter&quot;
+		class=&quot;org.springframework.jmx.export.MBeanExporter&quot;&gt;
+		&lt;property name=&quot;beans&quot;&gt;
+			&lt;map&gt;
+				&lt;entry key=&quot;bean:name=semiSpaceStatistics&quot;
+					value-ref=&quot;semispace&quot; /&gt;
+			&lt;/map&gt;
+		&lt;/property&gt;
+		&lt;property name=&quot;server&quot; ref=&quot;mbeanServer&quot; /&gt;
+	    &lt;property name=&quot;assembler&quot;&gt;
+      	&lt;bean class=&quot;org.springframework.jmx.export.assembler.MethodNameBasedMBeanInfoAssembler&quot;&gt;
+        	&lt;property name=&quot;managedMethods&quot;&gt;
+          		&lt;value&gt;numberOfSpaceElements,numberOfBlockingRead,numberOfBlockingTake,numberOfMissedRead,numberOfMissedTake,numberOfNumberOfListeners,,numberOfRead,numberOfTake,numberOfWrite
+			    &lt;/value&gt;
+        	&lt;/property&gt;
+      	&lt;/bean&gt;
+    &lt;/property&gt;
+	&lt;/bean&gt;
+</pre>
+</div>
+<p>You need either a container which registers and presents the JMX data, or SDK-1.6. </p>
+<h4>Examine JMX data with JConsole</h4>
+<p>With SDK-1.6 (or greater), you have <tt>jconsole</tt> available, and can connect to the bean for obtaining statistical information.</p>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="hintsandtips.html">Hints and tips</a></td>
+<td>Up: <a href="usage.html">Usage</a></td>
+<td>Next: <a href="actor.html">Actor pattern framework</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

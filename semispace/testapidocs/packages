@@ -1,0 +1,13 @@
+org.semispace.take
+org.semispace.notification
+org.semispace.actor.example
+org.semispace.actor
+org.semispace.admin
+org.semispace
+org.semispace.ws
+org.semispace.ws.client
+org.semispace.comet.common
+org.semispace.comet.jsonschema
+org.semispace.comet.client.multithread
+org.semispace.comet.client.notification
+org.semispace.comet.client

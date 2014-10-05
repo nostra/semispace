@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - JavaScript Client</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="ctechnical.html">Technical overview</a></td>
+<td>Up: <a href="comet.html">SemiSpace and Cometd</a></td>
+<td>Next: <a href="usage.html">Usage</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<p>The JavaScript client makes it possible to communicate with the SemiSpace from JavaScript. This JavaScript client mimics the <a href="../apidocs/org/semispace/SemiSpaceInterface.html">Java interface</a> as closely as possible and makes it possible to distribute JSON objects between the JavaScript client and the space.</p>
+<p>Objects in the space are available as JSON objects for the JavaScript client and JSON objects pushed to the space by the JavaScript client are available for other clients. JSON objects can also be mapped directly to any known JAVA object and vise versa.</p>
+<p>If you are not familiar with how to work against a space we recommend you read <a href="http://www.trygve-lie.com/blog/entry/tuple_space_in_few_words" class="externalLink">a simple introduction</a> before you proceed.</p>
+<div class="section"><h2><a name="Communication_introduction"></a>Communication introduction</h2>
+<p>The JavaScript client rely on communicating with the space trough a <a href="http://cometd.org/" class="externalLink">CometD</a> implementation. SemiSpace use the latest version of CometD which use a WebSocket implementation for browsers with native WebSocket support and a the long polling <a href="http://svn.cometd.com/trunk/bayeux/bayeux.html" class="externalLink">Bayeux protocol</a> for browsers not supporting WebSockets.</p>
+</div>
+<div class="section"><h2><a name="Browser_support"></a>Browser support</h2>
+<p>The client has been tested and proved to work at the following browsers:</p>
+<p>Desktop:</p>
+<ul><li>IE6 and newer</li>
+<li>Opera 10.x and newer</li>
+<li>FireFox 3.x and newer</li>
+<li>Chrome 5.x and newer</li>
+<li>Safari 3.x and newer</li>
+</ul>
+<p>Mobile:</p>
+<ul><li>Opera Mobile 10.x and newer</li>
+<li>Android 2.2 and newer</li>
+<li>Fennec 2.x beta and newer</li>
+</ul>
+</div>
+<div class="section"><h2><a name="Installation"></a>Installation</h2>
+<p>Since the JavaScript client rely on communicating with the space trough a CometD implementation the JavaScript client need one of the JavaScript libraries CometD have bindings too. These libraries are <a href="http://www.dojotoolkit.org/" class="externalLink">Dojo Kit</a> and <a href="http://jquery.com/" class="externalLink">jQuery</a>.</p>
+<p>The SemiSpace JavaScript client does only use the <a href="http://cometd.org/" class="externalLink">CometD</a> connection module in these libraries and does not depend on any other functions in these libraries.</p>
+<p>There are two ways to get up and running; The &quot;custom way&quot; and the &quot;easy way&quot;. If your project already are depending on one of the libraries CometD have bindings to (Dojo Kit or jQuery), the &quot;custom way&quot; are the part you want to dive into. If you have no existing library and just want to get up and running, the &quot;easy way&quot; are the part you should read.</p>
+</div>
+<div class="section"><h2><a name="The_custom_way"></a>The custom way</h2>
+<p>The CometD module are not part of the core functionality in these libraries and must therfore be installed in the library of choice.</p>
+<p>TODO: complete description....</p>
+</div>
+<div class="section"><h2><a name="The_easy_way"></a>The easy way</h2>
+<p>For your convenience the SemiSpace Comet package come with prepared builds of DojoKit and jQuery where the CometD module have been applied. To get started, select one of the provided prebuilt libraries for your project.</p>
+<div class="section"><h3><a name="Dojo_Kit"></a>Dojo Kit</h3>
+<p>To use Dojo Kit for communication with the SemiSpace server, include Dojo Kit:</p>
+<div class="source"><pre>&lt;script type=&quot;text/javascript&quot; src=&quot;/semispace-comet-server/js/lib/dojo-release-1.4.3/dojo/dojo.js&quot;&gt; &lt;/script&gt;</pre>
+</div>
+<p>Then include the SemiSpace JavaScript client:</p>
+<div class="source"><pre>&lt;script type=&quot;text/javascript&quot; src=&quot;/semispace-comet-server/js/core/semispace.js&quot;&gt; &lt;/script&gt;</pre>
+</div>
+</div>
+<div class="section"><h3><a name="jQuery"></a>jQuery</h3>
+<p>To use jQuery for communication with the SemiSpace server, include jQuery:</p>
+<div class="source"><pre>&lt;script type=&quot;text/javascript&quot; src=&quot;/semispace-comet-server/js/lib/jquery/jquery-1.4.2.js&quot;&gt; &lt;/script&gt;</pre>
+</div>
+<p>Then include the SemiSpace JavaScript client:</p>
+<div class="source"><pre>&lt;script type=&quot;text/javascript&quot; src=&quot;/semispace-comet-server/js/core/semispace.js&quot;&gt; &lt;/script&gt;</pre>
+</div>
+</div>
+</div>
+<div class="section"><h2><a name="Communicating_with_the_space"></a>Communicating with the space</h2>
+<p>The SemiSpace JavaScript client provides a common interface against the space so whatever JavaScript library used the methods are the same among them. The SemiSpace JavaScript client will automatically detect which JavaScript library in use so no configuration against the library are needed to get the SemiSpace JavaScript client up running.</p>
+<ul><li>Connecting to the space</li>
+</ul>
+<p>To make the SemiSpace JavaScript client talk to the SemiSpace server a connection need to be stabilised. This is done by initializing the connection module.</p>
+<p>The init method can take a connection configuration object. This object are similar to the <a href="http://cometd.org/documentation/cometd-javascript/configuration" class="externalLink">CometD configuration</a>.</p>
+<p>If you run on a default setup there should be no need to provide a connection configuration to the init method. The most needed parameter in the configuration to override will probably be URL the server. To override the server URL you provide a config object to the init method as follow:</p>
+<p>When a initialization are done you can connect by executing the connection method:</p>
+<ul><li>Disconnecting from the space</li>
+</ul>
+<p>It's possible to disconnect from the server by executing the disconnect method:</p>
+<ul><li>Listening in on the communication</li>
+</ul>
+<p>It is also possible to listen in on the communication between the client (browser) and the server. This can be used to get valuable information on what is going on in the browser when communicating with the server. It can also be used to provide status messages to the user on what is going on.</p>
+<p>You listen in on the communication by providing a callback function to the meta listener method:</p>
+<p>The provided callback function must take two metod variables as input. The first variable will get a status code, ranging from 1 to 9, from the SemiSpace JavaScript library. The second variable will get the raw communication message provided by CometD.</p>
+<p>A popular pattern is to listen in on the status codes and provide the user with information on the connection to the server.</p>
+<p>The status codes are as follow</p>
+<table class="bodyTable"><tr class="b"><td>value</td>
+<td>Description</td>
+</tr>
+<tr class="a"><td>1</td>
+<td>Handshake is done. The client has contacted the server but no connection are set up yet</td>
+</tr>
+<tr class="b"><td>2</td>
+<td>The client are now connected to the server. Data can now be excanged with the server</td>
+</tr>
+<tr class="a"><td>3</td>
+<td>The client was connected to the server but has lost connection to the server</td>
+</tr>
+<tr class="b"><td>4</td>
+<td>The client communicates with the server. This will occur pretty frequently since the client pings the server from time to time</td>
+</tr>
+<tr class="a"><td>5</td>
+<td>The client was disconnected from the server by the disconnect method</td>
+</tr>
+<tr class="b"><td>6</td>
+<td>The client has subscribed to a CometD metachannel</td>
+</tr>
+<tr class="a"><td>7</td>
+<td>The client has unsubscribed from a CometD metachannel</td>
+</tr>
+<tr class="b"><td>8</td>
+<td>The client has published a message to the server</td>
+</tr>
+<tr class="a"><td>9</td>
+<td>The client tried to publish a message to the server but failed</td>
+</tr>
+</table>
+</div>
+<div class="section"><h2><a name="Working_against_the_space"></a>Working against the space</h2>
+<p>When a connection is set up, its possible to send and recieve JSON objects to and from the space. This JavaScript client mimics the <a href="../apidocs/org/semispace/SemiSpaceInterface.html">Java interface</a> as closely as possible and are as follow:</p>
+<ul><li>write</li>
+</ul>
+<ul><li>read</li>
+</ul>
+<ul><li>readIfExist</li>
+</ul>
+<ul><li>take</li>
+</ul>
+<ul><li>takeIfExist</li>
+</ul>
+<ul><li>notify</li>
+</ul>
+<p>TODO: remember release function on notify</p>
+<p>A note on handling JSON</p>
+<p>The JavaScript client does not stringify or parse the JSON object communicated with the space. This is left to the implementation and must be dealt with on each communication.</p>
+<p>Each JSON object transmitted to the space must be stringified before sent.</p>
+<p>Example:</p>
+<p>Each JSON object received from the space must be parsed before it can be dealt with by JavaScript.</p>
+<p>Example:</p>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="ctechnical.html">Technical overview</a></td>
+<td>Up: <a href="comet.html">SemiSpace and Cometd</a></td>
+<td>Next: <a href="usage.html">Usage</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - </title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href=".." id="bannerLeft">
+    
+                                            <img src="../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-main/semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-main/semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+                        <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+              <h5>Modules</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-main/index.html">semispace-main</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-wsdef/index.html">semispace-wsdef</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-war/index.html">semispace-war</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-wsclient/index.html">semispace-wsclient</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-tutorials/index.html">semispace-tutorials</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-tim/index.html">semispace-tim</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-comet/index.html">semispace-comet</a>
+          </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <p><b>NB</b> Obsolete documentation</p>
+<div class="section"><h2>Howto override the Spring configuration.</h2>
+<p>You have 2 java VM parameters which can be set for changing the configuration:</p>
+<div class="source"><pre> -Dspacecfg=config_type
+ -Dspaceoverride=somewhere/exists/a/property/file.properties</pre>
+</div>
+<p>The first of these arguments (<b>spacecfg</b>) chooses the configuration type, presently mock or live.</p>
+<p>The property file is a reference to a &quot;regular&quot; java property file which contains override information in a dotted manner. If, for example, you would like to override the datasource driver, this can be performed in the following manner:</p>
+<div class="source"><pre> dataSource.driverClassName=xxx.xxx.xx</pre>
+</div>
+<p>A more apt example is the reconfiguration and insertion of test data. The database service is configured up to be changed with the following:</p>
+<div class="source"><pre> IntraDatabaseService.needForTestData=true
+ IntraDatabaseService.pathToDbUnitXml=/opt/home/en/workspace/spacedefault.xml</pre>
+</div>
+<p>Change the last path to something more suitable for your own environment.</p>
+</div>
+<div class="section"><h2>Override mock hsql to use postgresql</h2>
+<p>This is an example as you just as well can use <tt>-Dspacecfg=live</tt> in order to achieve the same thing.</p>
+<p>The following elements can be inserted into the override file in order to change configuration from hsql to postgresql:</p>
+<div class="source"><pre># Reconfigure elements to use spring config
+dataSource.url=jdbc:postgresql://localhost/intraspace
+dataSource.username=space
+dataSource.password=spock472
+dataSource.driverClassName=org.postgresql.Driver
+
+# Changing hibernate props.
+sessionFactory.hibernateProperties[hibernate.dialect]=org.hibernate.dialect.PostgreSQLDialect
+sessionFactory.hibernateProperties[connection.pool_size]=5</pre>
+</div>
+<p>This file is the loaded by using the VM property. Example:</p>
+<div class="source"><pre> -Dspaceoverride=/opt/home/en/workspace/au2override.properties</pre>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

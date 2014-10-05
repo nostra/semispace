@@ -1,0 +1,24 @@
+-classpath
+'/opt/home/en/svn/space/target/checkout/semispace-main/target/classes:/opt/home/en/.m2/repository/log4j/log4j/1.2.16/log4j-1.2.16.jar:/opt/home/en/.m2/repository/com/thoughtworks/xstream/xstream/1.4.2/xstream-1.4.2.jar:/opt/home/en/.m2/repository/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.jar:/opt/home/en/.m2/repository/org/slf4j/slf4j-log4j12/1.6.4/slf4j-log4j12-1.6.4.jar:/opt/home/en/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar:/opt/home/en/.m2/repository/org/slf4j/jcl-over-slf4j/1.6.4/jcl-over-slf4j-1.6.4.jar:/opt/home/en/.m2/repository/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/opt/home/en/svn/space/target/checkout/semispace-main/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2008-2012. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/opt/home/en/svn/space/target/checkout/semispace-main/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'semispace-main 1.3.1 API'
+-linkoffline
+'http://download.oracle.com/javase/6/docs/api' '/opt/home/en/svn/space/target/checkout/semispace-main/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'semispace-main 1.3.1 API'

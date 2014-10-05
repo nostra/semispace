@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Preliminaries</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="installation.html">Installation</a></td>
+<td>Up: <a href="installation.html">Installation</a></td>
+<td>Next: <a href="terraconfig.html">Terracotta configuration</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<div class="section"><h2><a name="Preliminaries"></a>Preliminaries</h2>
+<p>SemiSpace runs on <a href="http://java.sun.com/javase/6/docs/" class="externalLink">J2SE 6.0</a> or greater. The other components are optional. If you are not intending to distribute, you will not need Terracotta, etc.</p>
+<p>If you want SemiSpace to be distributed, you need to download and install <a href="http://www.terracotta.org" class="externalLink">Terracotta.</a></p>
+<p>In order to benefit from the webservices proxy (more about this in the tutorial), you need a sensible endpoint. This is in effect a webapp. Choose this at your own discretion. The recommendation is <a href="http://jetty.codehaus.org/jetty/" class="externalLink">Jetty</a>, but you should be effortlessly able to use <a href="http://tomcat.apache.org" class="externalLink">Tomcat</a>, or <a href="http://geronimo.apache.org/" class="externalLink">Geronimo</a> as well.</p>
+<p>It is presumed that you use bash as shell, most likely under MacOSX or Linux. Scripts and instructions must be adapted at your discretion if you are running something else. </p>
+<div class="section"><h3><a name="XStream_support_jars"></a>XStream support jars</h3>
+<p>XStream has some optional dependencies, and the XML support library <i>xpp</i> has been configured to be default, but you can exclude it and include a different support library instead. See <a href="http://xstream.codehaus.org/download.html" class="externalLink">http://xstream.codehaus.org/download.html</a> for details, or just include the following in your <a href="http://maven.apache.org" class="externalLink">maven</a> dependencies:</p>
+<div class="source"><pre>&lt;dependency&gt;
+    &lt;groupId&gt;xpp3&lt;/groupId&gt;
+    &lt;artifactId&gt;xpp3_min&lt;/artifactId&gt;
+    &lt;version&gt;1.1.4c&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+</div>
+</div>
+<div class="section"><h3><a name="Sun_jars"></a>Sun jars</h3>
+<p>The persistence and webapp sub projects depend on sun jars, which you may have to download and install yourself.</p>
+<p>See <a href="http://maven.apache.org/guides/mini/guide-coping-with-sun-jars.html" class="externalLink">Maven's guide to coping with Sun JARs</a> for more information.</p>
+<p>The semispace-main project does not have any such dependencies, indeed it is <a href="../dependencies.html">depends only on XStream and slf4j logging.</a></p>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="installation.html">Installation</a></td>
+<td>Up: <a href="installation.html">Installation</a></td>
+<td>Next: <a href="terraconfig.html">Terracotta configuration</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

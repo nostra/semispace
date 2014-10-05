@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Terracotta interaction</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="coding.html">Coding and integration</a></td>
+<td>Up: <a href="tutorials.html">Tutorials</a></td>
+<td>Next: <a href="google.html">Google map address lookup</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<div class="section"><h2><a name="Simple_terracotta_interaction"></a>Simple terracotta interaction</h2>
+<p>The purpose of the tutorial is to give you an insight in how SemiSpace is intended to work together with <b>Terracotta.</b> Terracotta needs to be configured as explained in <a href="./installation.html">the installation chapter.</a></p>
+</div>
+<div class="section"><h2><a name="Running_the_sources"></a>Running the sources</h2>
+<p>Presumably, you have the sources downloaded and and installed. Perform:</p>
+<div class="source"><pre>cd semispace-tutorials/semispace-tutorial
+mvn clean install
+mvn assembly:assembly
+cd target
+unzip tutorial.zip 
+chmod a+x *.sh</pre>
+</div>
+<p>Start the Terracotta server as explained in <a href="./terraconfig.html">the Terracotta chapter.</a> Run the java program in order to insert a value into the space:</p>
+<div class="source"><pre> ./insert.sh something value</pre>
+</div>
+<p>You should see a message at the bottom similar to:</p>
+<div class="source"><pre>Element inserted successfully: something=value</pre>
+</div>
+<p>Then try to retieve it:</p>
+<div class="source"><pre> ./take.sh something</pre>
+</div>
+<p>This should render:</p>
+<div class="source"><pre>Element found: something=value</pre>
+</div>
+<p>Try to run the <tt>take.sh</tt> script again. This should not find another instance, and the output should be (after a waiting time, due to 1 minute timeout in wait):</p>
+<div class="source"><pre>Could not find an element with name something</pre>
+</div>
+<p>If you get any errors, it is likely that you have not configured the environment correct, i.e. forgotten the <tt>TC_INSTALL_DIR</tt> variable.</p>
+<p>The <tt>take.sh</tt> script performs a <tt>take</tt> instead of a <tt>read,</tt> the difference being that the element is removed from the space. </p>
+<div class="source"><pre>Trying notification</pre>
+</div>
+<p>This program only works when distributed with Terracotta. This is as notification is not exposed over webservices. Furthermore, as this program hangs in an endless loop, you must press CTRL-C to stop it.</p>
+<p>The program will use notify, and subscribe to all objects of type Element. This means that you get an output every time you perform an insert into the space. Start the program with <tt>notify.sh.</tt></p>
+<p>When using the <tt>notify.sh</tt>, the <tt>insert.sh</tt> program may report an error. If it does, it is just because it is shutting down at the moment the event is being distributed. </p>
+</div>
+<div class="section"><h2><a name="What_can_you_use_this_to_do"></a>What can you use this to do</h2>
+<p>This simple example lets you experiment with the Terracotta configuration. Let's say you want to test Terracotta failover. Perform the following steps:</p>
+<ul><li>Modify the Terracotta &quot;servers&quot; configuration to include two different servers.</li>
+<li>Start Terracotta on both servers</li>
+<li>Run an &quot;insert&quot; (with <tt>insert.sh</tt>)</li>
+<li>Stop one of the Terracotta instances</li>
+<li>If applicable, modify your <tt>TC_CONFIG_PATH</tt> value</li>
+<li>Run a &quot;take&quot;: Expect everything to still work.</li>
+<li>If you are running the &quot;notify&quot; program, you should get an output for all elements added.</li>
+</ul>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="coding.html">Coding and integration</a></td>
+<td>Up: <a href="tutorials.html">Tutorials</a></td>
+<td>Next: <a href="google.html">Google map address lookup</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

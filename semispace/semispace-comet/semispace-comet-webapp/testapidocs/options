@@ -1,0 +1,24 @@
+-classpath
+'/opt/home/en/svn/space/target/checkout/semispace-comet/semispace-comet-webapp/target/classes:/opt/home/en/svn/space/target/checkout/semispace-comet/semispace-comet-webapp/target/test-classes:/opt/home/en/.m2/repository/log4j/log4j/1.2.16/log4j-1.2.16.jar:/opt/home/en/.m2/repository/junit/junit/4.10/junit-4.10.jar:/opt/home/en/.m2/repository/org/eclipse/jetty/jetty-io/7.4.4.v20110707/jetty-io-7.4.4.v20110707.jar:/opt/home/en/.m2/repository/org/eclipse/jetty/jetty-http/7.4.4.v20110707/jetty-http-7.4.4.v20110707.jar:/opt/home/en/svn/space/target/checkout/semispace-comet/semispace-comet-common/target/semispace-comet-common-1.3.1.jar:/opt/home/en/.m2/repository/org/cometd/java/cometd-java-client/2.3.1/cometd-java-client-2.3.1.jar:/opt/home/en/.m2/repository/org/eclipse/jetty/jetty-continuation/7.4.4.v20110707/jetty-continuation-7.4.4.v20110707.jar:/opt/home/en/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar:/opt/home/en/.m2/repository/org/cometd/java/bayeux-api/2.3.1/bayeux-api-2.3.1.jar:/opt/home/en/svn/space/target/checkout/semispace-comet/semispace-comet-client/target/semispace-comet-client-1.3.1.jar:/opt/home/en/.m2/repository/org/eclipse/jetty/jetty-util/7.4.4.v20110707/jetty-util-7.4.4.v20110707.jar:/opt/home/en/.m2/repository/org/slf4j/jcl-over-slf4j/1.6.4/jcl-over-slf4j-1.6.4.jar:/opt/home/en/.m2/repository/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar:/opt/home/en/.m2/repository/stax/stax-api/1.0.1/stax-api-1.0.1.jar:/opt/home/en/.m2/repository/com/thoughtworks/xstream/xstream/1.4.2/xstream-1.4.2.jar:/opt/home/en/.m2/repository/org/codehaus/jettison/jettison/1.3.1/jettison-1.3.1.jar:/opt/home/en/svn/space/target/checkout/semispace-comet/semispace-comet-server/target/semispace-comet-server-1.3.1.jar:/opt/home/en/.m2/repository/org/cometd/java/cometd-java-common/2.3.1/cometd-java-common-2.3.1.jar:/opt/home/en/.m2/repository/org/eclipse/jetty/jetty-jmx/7.4.4.v20110707/jetty-jmx-7.4.4.v20110707.jar:/opt/home/en/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar:/opt/home/en/.m2/repository/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar:/opt/home/en/.m2/repository/org/cometd/java/cometd-java-server/2.3.1/cometd-java-server-2.3.1.jar:/opt/home/en/svn/space/target/checkout/semispace-main/target/semispace-main-1.3.1.jar:/opt/home/en/.m2/repository/org/eclipse/jetty/jetty-servlets/7.4.4.v20110707/jetty-servlets-7.4.4.v20110707.jar:/opt/home/en/.m2/repository/org/eclipse/jetty/jetty-client/7.4.4.v20110707/jetty-client-7.4.4.v20110707.jar:/opt/home/en/.m2/repository/xmlpull/xmlpull/1.1.3.1/xmlpull-1.1.3.1.jar:/opt/home/en/.m2/repository/org/slf4j/slf4j-log4j12/1.6.4/slf4j-log4j12-1.6.4.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'/opt/home/en/svn/space/target/checkout/semispace-comet/semispace-comet-webapp/src/test/java'
+-author
+-bottom
+'Copyright &#169; 2008-2012. All Rights Reserved.'
+-charset
+'UTF-8'
+-d
+'/opt/home/en/svn/space/target/checkout/semispace-comet/semispace-comet-webapp/target/site/testapidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'semispace-comet-webapp 1.3.1 Test API'
+-linkoffline
+'http://download.oracle.com/javase/6/docs/api' '/opt/home/en/svn/space/target/checkout/semispace-comet/semispace-comet-webapp/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'semispace-comet-webapp 1.3.1 Test API'

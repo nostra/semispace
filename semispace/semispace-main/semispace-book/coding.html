@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Coding and integration</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="tutintro.html">Introduction to tutorials</a></td>
+<td>Up: <a href="tutorials.html">Tutorials</a></td>
+<td>Next: <a href="simple.html">Terracotta interaction</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<div class="section"><h2><a name="Stand_alone_operation"></a>Stand alone operation</h2>
+<p>In order to use the space in a stand alone fashion in your java code, just obtain a reference to it, and use it. You will need to use threading in order to benefit from it, as you typically will have an application thread and a worker thread:</p>
+<div class="source"><pre>SemiSpaceInterface space = SemiSpace.retrieveSpace();
+</pre>
+</div>
+</div>
+<div class="section"><h2><a name="General_space_usage"></a>General space usage</h2>
+<p>In order to insert an element into the space, use write:</p>
+<div class="source"><pre>Element element = new Element();
+element.setName(args[0]);
+element.setValue(args[1]);
+SemiSpaceInterface space = SemiSpace.retrieveSpace();
+// Life time of 5 minutes.
+space.write( element, 1000*5*60);
+System.out.println(&quot;Element inserted successfully: &quot;+element.getName()+&quot;=&quot;+element.getValue());
+</pre>
+</div>
+<p>Similarly, in order to read an element in the space, use:</p>
+<div class="source"><pre>Element searchFor = new Element();
+searchFor.setName(args[0]);
+SemiSpaceInterface space = SemiSpace.retrieveSpace();
+// reading with a timeout of 60 seconds
+Element read = space.read(searchFor, 60000);
+if ( read == null ) {
+    System.out.println(&quot;Could not find an element with name &quot;+searchFor.getName());
+} else {                    
+    System.out.println(&quot;Element found: &quot;+read.getName()+&quot;=&quot;+read.getValue());
+}
+</pre>
+</div>
+<p>In order to remove an element from the space do:</p>
+<div class="source"><pre>Element read = space.take(searchFor, 60000);
+</pre>
+</div>
+<p>The essential difference, is the <tt>read</tt> statement. <tt>Read</tt> can be performed repeatedly, whereas <tt>take</tt> will remove the object from the space.</p>
+</div>
+<div class="section"><h2><a name="Using_notify"></a>Using notify</h2>
+<p>Notify gives you an event containing the XML source of the element which matched the registration.</p>
+<p>A simple example of this is the following. First you need to register a notification:</p>
+<div class="source"><pre>            SemiSpaceInterface space = SemiSpace.retrieveSpace();
+            SemiEventRegistration eventRegistration = space.notify(new Element(), this, 60 * 1000 * 60);
+// If this comment is seen in the doc, it is because mavens apt book generator has
+// become confused with the code snippets.
+
+            for ( int i=0 ; i &lt; 10 ; i++) {
+                try {
+                    Thread.sleep(1000 * 10);
+                } catch (InterruptedException e) {
+                    // Ignore
+                }
+            }
+            /* If you like to cancel the notification, perform
+               the following: */
+            eventRegistration.getLease().cancel();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}
+</pre>
+</div>
+<p>In the notification method itself, you perform whatever you want in case of notification. The following just prints a statement that explains that an object matching the template is found in the space.</p>
+<div class="source"><pre>public void notify(SemiEvent theEvent) {
+    if ( theEvent instanceof SemiAvailabilityEvent) {
+        System.out.println(&quot;Incoming element which concurs with template has arrived.&quot;);
+        Element element = (Element) SemiSpace.retrieveSpace().takeIfExists( new Element());
+        if ( element ==null ) {
+            System.out.println(&quot;Could not take element that was flagged as available&quot;);
+        } else {
+            System.out.println(&quot;Read element from space: &quot;+element.getName()+&quot;=&quot;+element.getValue());
+        }
+    }
+}
+</pre>
+</div>
+<p>Sometimes, you will try to take the Object that has been transported with the notification. Be aware that the object may already have disappeared (for instance if it has already been taken). Therefore you always need to test your taken object for null.</p>
+<div class="section"><h3><a name="Notify_and_disappearing_instance."></a>Notify and disappearing instance.</h3>
+<p>You may think that a long living notification may be a problem if the instance falls down when being distributed with Terracotta. This is not the case. The notification lives only within the server instance in question, and if it disappears, it does not matter - the notification just disappears with it. However, the <i>statistics</i> will become wrong - in the count of number of listeners, as the listener is not de-registered correctly. This is inconsequential.</p>
+<p>If you like to cancel the registration, you can do this on the registration lease.</p>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="tutintro.html">Introduction to tutorials</a></td>
+<td>Up: <a href="tutorials.html">Tutorials</a></td>
+<td>Next: <a href="simple.html">Terracotta interaction</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

@@ -1,0 +1,510 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Terracotta configuration</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="preliminaries.html">Preliminaries</a></td>
+<td>Up: <a href="installation.html">Installation</a></td>
+<td>Next: <a href="tutorials.html">Tutorials</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<p>This chapter <b>can be skipped,</b> if you are <b>not</b> going to use Terracotta, or if you are not going to use Terracotta right away.</p>
+<p>This explanation is aimed at <a href="http://www.terracotta.org" class="externalLink">Terracotta version 3.4.1.</a></p>
+<div class="section"><h2><a name="Configuration_of_Terracotta"></a>Configuration of Terracotta</h2>
+<p>You can use SemiSpace's tc-config as a starting point for your configuration. </p>
+<p>You can download the configuration SemiSpace is set up to use from the subversion repository: <br />
+<a href="http://www.semispace.org/svn/trunk/tc-config.xml" class="externalLink">http://www.semispace.org/svn/trunk/tc-config.xml</a><br />
+The TIM version can be found here: <br />
+<a href="http://www.semispace.org/svn/trunk/tc-tim.xml" class="externalLink">http://www.semispace.org/svn/trunk/tc-tim.xml</a></p>
+<p>The configurations can be modified to your own needs. You find comments inside it which should help you along. See Terracotta documentation for more information about configuration.</p>
+<p>You want to set the environment variable <tt>TC_INSTALL_DIR</tt> pointing at the, surprise, installation directory of Terracotta:</p>
+<div class="source"><pre>export TC_INSTALL_DIR=&lt;where you have exploded the terracotta-3.x.x.tar.gz file&gt;</pre>
+</div>
+<div class="section"><h3><a name="Using_Maven_for_SemiSpace_TIM_reference"></a>Using Maven for SemiSpace TIM reference</h3>
+<p>The easiest way of configuring SemiSpace for Terracotta, is to use Maven and add a <tt>&lt;repository/&gt;</tt> section in your <tt>tc-config.xml.</tt> This tells Terracotta where it can find these modules:</p>
+<div class="source"><pre>    &lt;modules&gt;
+        &lt;!-- You only need jetty module if you are actually using jetty --&gt;
+        &lt;module name=&quot;tim-jetty-6.1&quot; version=&quot;2.2.1&quot;/&gt;
+        &lt;repository&gt;%(user.home)/.m2/repository&lt;/repository&gt;
+        &lt;module name=&quot;semispace-tim&quot; version=&quot;1.3.0&quot; group-id=&quot;org.semispace&quot;/&gt;
+	&lt;/modules&gt;
+</pre>
+</div>
+<p>Notice that the bundle reference <b>only works with released versions,</b> as it does not manage to parse &quot;SNAPSHOT&quot; as an integer.</p>
+<p>--- assuming that your local Maven repository is at:</p>
+<pre>~/.m2/repository</pre></div>
+<div class="section"><h3><a name="Jetty_TIM_module"></a>Jetty TIM module</h3>
+<p>If you are going to use Jetty, you need the jetty <a href="http://www.terracotta.org/confluence/display/docs/tim-get" class="externalLink">TIM module</a> for the Terracotta configuration, if this has not already been installed. You can check and obtain it by doing as follows:</p>
+<div class="source"><pre>$TC_INSTALL_DIR/bin/tim-get.sh list jetty  
+$TC_INSTALL_DIR/bin/tim-get.sh install tim-jetty-6.1 2.2.1 org.terracotta.modules</pre>
+</div>
+</div>
+<div class="section"><h3><a name="Starting_the_server"></a>Starting the server</h3>
+<p>Start the terracotta server with an invocation similar to:</p>
+<div class="source"><pre>${TC_INSTALL_DIR}/bin/start-tc-server.sh -f some/path/to/config/tc-config.xml </pre>
+</div>
+<p>The server part of the configuration file may look something like this:</p>
+<div class="source"><pre>  &lt;servers&gt;
+
+    &lt;!-- When having remote clients in a multiserver setup, you _must_ give the host an IP address --&gt;
+    &lt;server host=&quot;%i&quot; name=&quot;localhost&quot;&gt;
+      &lt;dso-port&gt;9510&lt;/dso-port&gt;
+      &lt;jmx-port&gt;9520&lt;/jmx-port&gt;
+      &lt;l2-group-port&gt;9530&lt;/l2-group-port&gt;
+      &lt;data&gt;/tmp/terracotta/server-data&lt;/data&gt;
+      &lt;logs&gt;/tmp/terracotta/server-logs&lt;/logs&gt;
+      &lt;!-- If you are sharing disk space over nfs or NAS, or are running in single VM modus 
+      &lt;dso&gt;
+        &lt;persistence&gt;
+          &lt;mode&gt;permanent-store&lt;/mode&gt;
+        &lt;/persistence&gt;
+      &lt;/dso&gt;
+       --&gt;
+      &lt;dso&gt;
+        &lt;persistence&gt;
+          &lt;mode&gt;temporary-swap-only&lt;/mode&gt;
+        &lt;/persistence&gt;
+      &lt;/dso&gt;
+    &lt;/server&gt;
+    &lt;!-- If you have some other server available
+    &lt;server host=&quot;servername.some.domain&quot; name=&quot;servername&quot;&gt;
+      &lt;dso-port&gt;9510&lt;/dso-port&gt;
+      &lt;jmx-port&gt;9520&lt;/jmx-port&gt;
+      &lt;l2-group-port&gt;9530&lt;/l2-group-port&gt;
+      &lt;data&gt;/tmp/terracotta/server-data&lt;/data&gt;
+      &lt;logs&gt;/tmp/terracotta/server-logs&lt;/logs&gt;
+      &lt;dso&gt;
+        &lt;persistence&gt;
+          &lt;mode&gt;temporary-swap-only&lt;/mode&gt;
+        &lt;/persistence&gt;
+      &lt;/dso&gt;
+    &lt;/server&gt;
+     --&gt;
+    &lt;ha&gt;
+      &lt;mode&gt;networked-active-passive&lt;/mode&gt;
+      &lt;networked-active-passive&gt;
+        &lt;election-time&gt;5&lt;/election-time&gt;
+      &lt;/networked-active-passive&gt;
+    &lt;/ha&gt;
+  &lt;/servers&gt;
+  &lt;clients&gt;
+    &lt;logs&gt;terracotta/client-logs&lt;/logs&gt;
+    &lt;!-- Load jetty-module. Notice that Eclipse integration will fail 
+        if TIM support has not been installed. The module version
+         may exist in different versions--&gt; 
+	&lt;modules&gt;
+	    &lt;!-- module name=&quot;tim-jetty-6.1&quot; version=&quot;2.2.1&quot;/ --&gt;
+        &lt;!-- module name=&quot;semispace-tim&quot; version=&quot;1.3.0&quot; group-id=&quot;org.semispace&quot;/ --&gt;
+	&lt;/modules&gt; 
+  &lt;/clients&gt;
+</pre>
+</div>
+<p><b>Notice</b> that you <b>need</b> to exchange the &quot;%i&quot; with a real DNS name or IP address if you are using remote clients that receive the configuration from the server. Otherwise they will simply not find the server...</p>
+</div>
+<div class="section"><h3><a name="Sharing_the_configuration_with_clients"></a>Sharing the configuration with clients</h3>
+<p>Clients need to use the same configuration as the Terracotta server. This is most easily performed by letting the clients <b>retrieve the configuration from the server</b> (exchanging localhost with the name of your real host if applicable):</p>
+<div class="source"><pre>${TC_INSTALL_DIR}/bin/dso-java.sh -Dtc.config=localhost:9510</pre>
+</div>
+<p>In addition to the configuration of the Terracotta server itself, you need to either configure up SemiSpace to use java objects, or to retrieve the space configuration from spring.</p>
+<p>The Terracotta configuration can naturally be amended with your &quot;other&quot; configuration as well; Just add it. This may be useful if you also want to, lets say, <a href="http://www.terracotta.org/web-sessions/" class="externalLink"> distribute the webapp session objects.</a></p>
+<p>Notice that only <b>some configuration highlights</b> are presented here. You will benefit from reading more about <a href="http://www.terracotta.org" class="externalLink">Terracotta on their home page.</a></p>
+</div>
+<div class="section"><h3><a name="POJO_configuration"></a>POJO configuration</h3>
+<p>This is typically the configuration you will use <i>outside</i> a webapp. <b>Note that this is not relevant if you use the SemiSpace TIM,</b> as the TIM will take care of the configuration for you.</p>
+<p>If you prefer to obtain a distributed reference to Terracotta <b>without using <a href="http://www.springframework.org/" class="externalLink">Spring,</a></b> you need to add the relevant SemiSpace specific class files. </p>
+<p>The relevant configuration snippet for this is: </p>
+<div class="source"><pre>&lt;application&gt;
+  &lt;dso&gt;
+    &lt;!-- Could not share a common root between different
+       contexts even when https://jira.terracotta.org/jira/browse/CDV-272
+       indicates I can:
+    &lt;app-groups&gt;
+      &lt;app-group name=&quot;space&quot;&gt;
+        &lt;web-application&gt;semispace-war&lt;/web-application&gt;
+        &lt;web-application&gt;semispace-google&lt;/web-application&gt;
+      &lt;/app-group&gt;
+    &lt;/app-groups&gt;
+      --&gt;      
+    &lt;instrumented-classes&gt;
+      &lt;include&gt;
+        &lt;class-expression&gt;org.semispace.HolderContainer&lt;/class-expression&gt;
+        &lt;honor-transient&gt;true&lt;/honor-transient&gt;
+      &lt;/include&gt;
+      &lt;include&gt;
+        &lt;class-expression&gt;org.semispace.Holder&lt;/class-expression&gt;
+        &lt;honor-transient&gt;true&lt;/honor-transient&gt;
+      &lt;/include&gt;
+      &lt;include&gt;
+        &lt;class-expression&gt;org.semispace.HolderContainer&lt;/class-expression&gt;
+        &lt;honor-transient&gt;true&lt;/honor-transient&gt;
+      &lt;/include&gt;
+      &lt;include&gt;
+        &lt;class-expression&gt;org.semispace.HolderElement&lt;/class-expression&gt;
+        &lt;honor-transient&gt;true&lt;/honor-transient&gt;
+      &lt;/include&gt;
+      &lt;include&gt;
+        &lt;class-expression&gt;org.semispace.EventDistributor&lt;/class-expression&gt;
+        &lt;honor-transient&gt;true&lt;/honor-transient&gt;
+      &lt;/include&gt;
+      &lt;include&gt;
+        &lt;class-expression&gt;org.semispace.SemiSpaceStatistics&lt;/class-expression&gt;
+        &lt;honor-transient&gt;true&lt;/honor-transient&gt;
+      &lt;/include&gt;
+        &lt;include&gt;
+           &lt;class-expression&gt;org.semispace.event.SemiEvent&lt;/class-expression&gt;
+         &lt;/include&gt;
+        &lt;include&gt;
+           &lt;class-expression&gt;org.semispace.event.SemiExpirationEvent&lt;/class-expression&gt;
+         &lt;/include&gt;
+      &lt;include&gt;
+         &lt;class-expression&gt;org.semispace.event.SemiAvailabilityEvent&lt;/class-expression&gt;
+       &lt;/include&gt;        
+      &lt;include&gt;
+         &lt;class-expression&gt;org.semispace.event.SemiTakenEvent&lt;/class-expression&gt;
+       &lt;/include&gt;        
+      &lt;include&gt;
+         &lt;class-expression&gt;org.semispace.event.SemiRenewalEvent&lt;/class-expression&gt;
+       &lt;/include&gt;        
+    &lt;/instrumented-classes&gt;
+    &lt;locks&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderContainer.removeHolderById(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;write&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderContainer.removeEmptyHeads(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;write&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderContainer.addHolder(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;write&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderContainer.findById(long,String)&lt;/method-expression&gt;
+        &lt;lock-level&gt;read&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderContainer.size(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;read&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderContainer.retrieveGroupNames(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;read&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderContainer.waitHolder(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;write&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderContainer.readHolderWithId(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;read&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderContainer.retrieveClassNames(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;read&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderElement.size(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;read&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderElement.removeHolderById(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;write&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderElement.addHolder(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;write&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderElement.toArray(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;read&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderElement.iterator(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;read&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderElement.isWaiting(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;read&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.HolderElement.waitHolder(..)&lt;/method-expression&gt;
+        &lt;lock-level&gt;write&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.Holder.setLiveUntil(long)&lt;/method-expression&gt;
+        &lt;lock-level&gt;write&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+      &lt;autolock&gt;
+        &lt;method-expression&gt;* org.semispace.EventDistributor.distributeEvent(DistributedEvent)&lt;/method-expression&gt;
+        &lt;lock-level&gt;write&lt;/lock-level&gt;
+      &lt;/autolock&gt;
+    &lt;/locks&gt;
+    &lt;roots&gt;
+      &lt;root&gt;
+        &lt;field-name&gt;org.semispace.HolderContainer.instance&lt;/field-name&gt;
+      &lt;/root&gt;
+    &lt;/roots&gt;
+    &lt;!-- transient-fields&gt;
+      &lt;field-name&gt;org.semispace.SemiSpace.listeners&lt;/field-name&gt;
+      &lt;field-name&gt;org.semispace.SemiSpace.admin&lt;/field-name&gt;
+      &lt;field-name&gt;org.semispace.SemiSpace.xStream&lt;/field-name&gt;
+    &lt;/transient-fields --&gt;
+    &lt;!-- distributed-methods&gt;
+      &lt;method-expression&gt;void org.semispace.SemiSpace.notifyListeners(org.semispace.EventDistributor)&lt;/method-expression&gt;
+    &lt;/distributed-methods  --&gt;
+    &lt;distributed-methods&gt;
+      &lt;method-expression&gt;void org.semispace.EventDistributor.distributeEvent(org.semispace.DistributedEvent)&lt;/method-expression&gt;
+    &lt;/distributed-methods&gt;      
+  &lt;/dso&gt;
+</pre>
+</div>
+</div>
+<div class="section"><h3><a name="Spring_configuration"></a>Spring configuration</h3>
+<p>If you are running within a webapp, and are using spring, you can add the following. <b>Note that this is not relevant if you use the SemiSpace TIM.</b> You will need a named configuration element <i>for each</i> of your webapps. Depending on your scenario, you may find it easier / more maintainable to just define and use the application in a POJO manner.</p>
+<div class="source"><pre>&lt;!--
+  Clustering Spring no longer requires special configuration. For more information, see http://www.terracotta.org/spring.
+  &lt;spring&gt;
+    &lt;jee-application name=&quot;*&quot;&gt;
+      &lt;application-contexts&gt;
+        &lt;application-context&gt;
+          &lt;paths&gt;
+            &lt;path&gt;*.xml&lt;/path&gt;
+          &lt;/paths&gt;
+          &lt;beans&gt;
+            The other beans to share beside semispace 
+            SemiSpace is covered in the dso configuration, and we do NOT need: &lt;bean name=&quot;semispace&quot; /&gt;
+          &lt;/beans&gt;
+        &lt;/application-context&gt;
+      &lt;/application-contexts&gt;
+    &lt;/jee-application&gt;
+  &lt;/spring&gt;--&gt;
+</pre>
+</div>
+</div>
+</div>
+<div class="section"><h2><a name="You_can_only_mix_some_Terracotta_runtime_configurations"></a>You can only mix some Terracotta runtime configurations</h2>
+<p>Mixing runtime configurations can give you some hassle. Terracotta lives best when running one of the following:</p>
+<ul><li>Running with a POJO container, such as a standalone console program.</li>
+<li>Running Spring configured in a webapp.</li>
+<li>Running POJO-invoked in a webapp. </li>
+</ul>
+<p>It is possible to mix some configurations, but it may involve an effort. The reason and explanation can be found here: <a href="http://forums.terracotta.org/forums/posts/list/505.page" class="externalLink">Object identity in Terracotta is dependent on the classLoaderName + fully qualified reference name</a>.</p>
+<div class="section"><h3><a name="Mixing_console_app_and_webapp"></a>Mixing console app and webapp</h3>
+<p>Presuming you are running with Jetty, the following extra parameter will interface your console application with your webapp:</p>
+<div class="source"><pre>-Dcom.tc.loader.system.name=&quot;Jetty.path:/some_path&quot;</pre>
+</div>
+<p>Terracottas documentation explains this in greater detail. The problem is even larger if you are using spring to configure the application.</p>
+</div>
+</div>
+<div class="section"><h2><a name="Running_with_Terracotta_within_Eclipse"></a>Running with Terracotta within Eclipse</h2>
+<p>For test purposes, or ease of development, you may want to run Terracotta within Eclipse. </p>
+<p>Besides <a href="http://www.eclipse.org" class="externalLink">Eclipse</a> itself, you will need the <a href="http://www.terracotta.org/confluence/display/docs/DSO+Eclipse+Plugin+Guide" class="externalLink">Terracotta eclipse plugin</a>. Activate your project as a &quot;Terracotta DSO project&quot;.</p>
+<p>If you do not have a <tt>tc-config.xml</tt> file already, create one as explained above.</p>
+<p>Presumably, your program is already using SemiSpace. Then the easiest way of testing the Eclipse / Terracotta easiest way of performing tests, is to create a <a href="http://www.junit.org/" class="externalLink">junit test</a>. Then choose to run the tests as &quot;Terracotta DSO junit test&quot;. This will prompt you to start a local Terracotta server, which you may have to do, depending on the contents of you <tt>tc-config.xml</tt> file.</p>
+<p>Notice that you <b>probably want to remove the TIM</b> module from the configuration whilst running under Eclipse, as this will make the integration fail. Presumably, you do not need Jetty integration in Eclipse.</p>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="preliminaries.html">Preliminaries</a></td>
+<td>Up: <a href="installation.html">Installation</a></td>
+<td>Next: <a href="tutorials.html">Tutorials</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

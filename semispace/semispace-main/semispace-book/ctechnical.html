@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Technical overview</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="comet.html">semispace-comet</a></td>
+<td>Up: <a href="comet.html">SemiSpace and Cometd</a></td>
+<td>Next: <a href="javascriptclient.html">JavaScript Client</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<p>Technical overview over channels and parameters.</p>
+<div class="section"><h2><a name="Communication_channel_overview"></a>Communication channel overview</h2>
+<p>The communication between the comet client and java webapp comet server is asynchronous. The communication is initiated with a <i>call,</i> and returned with a <i>reply</i> (except in the case of notify, which is a special case).</p>
+<p>The communication channels are as follows:</p>
+<table class="bodyTable"><tr class="b"><th>Channel</th>
+<th>purpose</th>
+</tr>
+<tr class="a"><td>/semispace/call/read/<i>number</i></td>
+<td>Initiate a read request.</td>
+</tr>
+<tr class="b"><td>/semispace/reply/read/<i>number</i></td>
+<td>Reply of a read, with the payload being the result if it was obtained.</td>
+</tr>
+<tr class="a"><td>/semispace/call/take/<i>number</i></td>
+<td>Initiate a take request.</td>
+</tr>
+<tr class="b"><td>/semispace/reply/take/<i>number</i></td>
+<td>Result of take.</td>
+</tr>
+<tr class="a"><td>/semispace/call/write/<i>number</i></td>
+<td>Insert an object into the space. This is a <b>synchronous</b> operation when using the comet java client.</td>
+</tr>
+<tr class="b"><td>/semispace/reply/write/<i>number</i></td>
+<td>Acknowledge that the element has been written.</td>
+</tr>
+<tr class="a"><td>/semispace/call/notify/<i>number</i>/<i>type</i></td>
+<td>Register a notification. This is a <b>synchronous</b> operation when using the comet java client.</td>
+</tr>
+<tr class="b"><td>/semispace/reply/notify/<i>number</i>/<i>type</i></td>
+<td>Acknowledge that the notification has been registered.</td>
+</tr>
+<tr class="a"><td>/semispace/event/notify/<i>number</i>/<i>type</i></td>
+<td>Attached is a notification event.</td>
+</tr>
+<tr class="b"><td>/semispace/call/leasecancel/<i>number</i></td>
+<td>Cancel lease with callId as mapped parameter. CallId is the <i>number</i> from the notify method</td>
+</tr>
+<tr class="a"><td>/semispace/reply/leasecancel/<i>number</i></td>
+<td>Acknowledge of listener cancellation</td>
+</tr>
+</table>
+<p>Channel parameters are:</p>
+<dl><dt>number</dt>
+<dd>Channel number. When having, for example, two simultaneous read operations, this number must be different for the two operation. The easiest is to have a client side sequence number, which is just incremented for each call.</dd>
+<dt>Notification type</dt>
+<dd>The type is one of <tt>availability</tt>, <tt>expiration</tt>, <tt>taken</tt>, <tt>renewal</tt> and <tt>all</tt>. The Java client only uses <i>all</i>, and the proxy will translate this into the correct response object. This is as the Java client does not know in beforehand what kind of notification that is registered.</dd>
+</dl>
+<p>It does not matter if several different clients use the same channel numbers. The communication to the client is based on the client ID, and has nothing to do with the channel number.</p>
+</div>
+<div class="section"><h2><a name="Parameter_overview"></a>Parameter overview</h2>
+<p>The parameters sent over the channel are packed JSON style. Then the control elements are extracted. The following is an overview:</p>
+<table class="bodyTable"><tr class="b"><th>Operation</th>
+<th>Parameter</th>
+<th>Significance</th>
+</tr>
+<tr class="a"><td>read</td>
+<td>duration json</td>
+<td>How long to wait for an object if it is not in the space. Payload to match. First level is object type, the second level are elements to match. (I.e. in a person object with firstname, lastname, it would be firstname=xxx). You cannot have 2 levels.</td>
+</tr>
+<tr class="b"><td>take</td>
+<td>...</td>
+<td>Same parameters as read</td>
+</tr>
+<tr class="a"><td>write</td>
+<td>timeToLiveMs json</td>
+<td>How long the object shall live in the space TODO Shall change to duration Payload. This is the String representation of the client side JSON object.</td>
+</tr>
+<tr class="b"><td>notify</td>
+<td>duration json</td>
+<td>How long the notification registration shall exist. As for read</td>
+</tr>
+<tr class="a"><td>lease cancel</td>
+<td>callId</td>
+<td>The caller id the notification lease is registered to.</td>
+</tr>
+</table>
+</div>
+<div class="section"><h2><a name="Servlet_configuration_parameters"></a>Servlet configuration parameters</h2>
+<p>If you want to exclude either take or write as feature, you can do this in the web.xml file. This is relevant when you have a service which shall provide a read-only interface to the clients, probably due to data entering the space from a backend service.</p>
+<table class="bodyTable"><tr class="b"><th>Init parameter</th>
+<th>Significance</th>
+</tr>
+<tr class="a"><td>disableTake</td>
+<td>If disableTake is true, clients will be unable to remove anything from the space</td>
+</tr>
+<tr class="b"><td>disableWrite</td>
+<td>If disableWrite is true, clients will not be able to write anything to the space</td>
+</tr>
+</table>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="comet.html">semispace-comet</a></td>
+<td>Up: <a href="comet.html">SemiSpace and Cometd</a></td>
+<td>Next: <a href="javascriptclient.html">JavaScript Client</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

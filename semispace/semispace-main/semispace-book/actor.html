@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Actor pattern framework</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="springconfig.html">Spring configuration</a></td>
+<td>Up: <a href="usage.html">Usage</a></td>
+<td>Next: <a href="security.html">Security considerations</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<p>The <a href="http://en.wikipedia.org/wiki/Actor_model" class="externalLink">actor pattern</a> framework is a powerful mechanism for inter process communication. The framework (mainly) supports communication between actors.</p>
+<p>One of the main benefits of the abstraction is that you can easily create an asynchronous message based system, which is suitable for (particularly) a Swing application. As Swing (as almost all GUI libraries) is based on a <b><a href="http://en.wikipedia.org/wiki/Event_dispatching_thread" class="externalLink">single thread model</a>,</b> you need to pass any real work to a <b>worker thread</b> - unless you do not mind creating a sluggish application.</p>
+<div class="section"><h2><a name="Utilizing_actors_in_a_Swing_application"></a>Utilizing actors in a Swing application</h2>
+<p>Actors in SemiSpace extend the <a href="../apidocs/org/semispace/actor/Actor.html">Actor</a> object. The object offers <tt>send</tt>, <tt>receive</tt> and the optional methods <tt>getReadTemplates</tt> and <tt>getTakeTemplates</tt>. A typical &quot;manager&quot; actor will register templates it want to react on. For instance, an OrderManager actor will want to receive Orders, place by a Client actor.</p>
+<p>The following declaration is annotated with <a href="../apidocs/org/semispace/actor/SwingActor.html">SwingActor</a> which makes the <tt>receive</tt> call executed on the Swing thread, which is essential when you are changing values that shall be displayed in the GUI.</p>
+<div class="source"><pre>@SwingActor
+public class SwingActorSearch extends Actor {
+</pre>
+</div>
+<p>Sending an actor query is performed with send. The example fills out an address query template, and sends it to whichever actor that is willing to answer. The receiving actor can, of course, reside in a server process (which is the case in the tutorial).</p>
+<div class="source"><pre>AddressQuery query = new AddressQuery();
+query.setAddress(address);
+send( query );
+</pre>
+</div>
+<p>After the &quot;search manager&quot; actor has performed the query, it will reply to the sender by using the originator identification field on the payload as destination address. This makes the answer go directly to the actor which made the query, and the answer is given in in the receive method:</p>
+<div class="source"><pre>public void receive(ActorMessage msg) {
+    if ( msg.isOfType(GoogleAddress.class)) {
+        swingAction.setEnabled(true);
+        fillArea.setText(msg.getPayload().toString());            
+    } else {
+        log.warn(&quot;Unexpected message: &quot;+msg.getPayload().getClass().getName());
+    }
+}
+</pre>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="springconfig.html">Spring configuration</a></td>
+<td>Up: <a href="usage.html">Usage</a></td>
+<td>Next: <a href="security.html">Security considerations</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

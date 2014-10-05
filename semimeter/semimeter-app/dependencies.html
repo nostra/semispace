@@ -1,0 +1,1011 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Project Dependencies</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+    <script src="./js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="http://www.semispace.org" id="bannerLeft">
+    
+                                    <img src="http://www.semispace.org/semispace/images/semispace.png" alt="SemiMeter" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="http://www.semispace.org/semispace" class="externalLink">SemiSpace home</a>
+            |
+                <a href="http://www.semispace.org/semimeter" class="externalLink">SemiMeter home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+            
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+            <li class="expanded">
+                    <a href="project-info.html">Project Information</a>
+                  <ul>
+                  
+    <li class="none">
+                    <a href="integration.html">Continuous Integration</a>
+          </li>
+                  
+    <li class="none">
+              <strong>Dependencies</strong>
+        </li>
+                  
+    <li class="none">
+                    <a href="dependency-convergence.html">Dependency Convergence</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="dependency-management.html">Dependency Management</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="issue-tracking.html">Issue Tracking</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="mail-lists.html">Mailing Lists</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="plugin-management.html">Plugin Management</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="license.html">Project License</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="plugins.html">Project Plugins</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="project-summary.html">Project Summary</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="team-list.html">Project Team</a>
+          </li>
+                  
+    <li class="none">
+                    <a href="source-repository.html">Source Repository</a>
+          </li>
+              </ul>
+        </li>
+              
+                
+              
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 13/10 2009
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <a name="Project_Dependencies"></a><div class="section"><h2>Project Dependencies</h2>
+<a name="compile"></a><div class="section"><h3>compile</h3>
+<p>The following is a list of compile dependencies for this project. These dependencies are required to compile and run the application:</p>
+<table class="bodyTable"><tr class="a"><th>GroupId</th>
+<th>ArtifactId</th>
+<th>Version</th>
+<th>Type</th>
+<th>Optional</th>
+</tr>
+<tr class="b"><td>log4j</td>
+<td><a class="externalLink" href="http://logging.apache.org/log4j/docs/">log4j</a></td>
+<td>1.2.14</td>
+<td>jar</td>
+<td>No</td>
+</tr>
+<tr class="a"><td>mysql</td>
+<td><a class="externalLink" href="http://dev.mysql.com/usingmysql/java/">mysql-connector-java</a></td>
+<td>5.1.10</td>
+<td>jar</td>
+<td>No</td>
+</tr>
+<tr class="b"><td>org.semispace</td>
+<td>semimeter-webapp</td>
+<td>0.1-SNAPSHOT</td>
+<td>war</td>
+<td>No</td>
+</tr>
+<tr class="a"><td>org.slf4j</td>
+<td><a class="externalLink" href="http://www.slf4j.org">slf4j-api</a></td>
+<td>1.5.8</td>
+<td>jar</td>
+<td>No</td>
+</tr>
+<tr class="b"><td>org.slf4j</td>
+<td><a class="externalLink" href="http://www.slf4j.org">slf4j-log4j12</a></td>
+<td>1.5.8</td>
+<td>jar</td>
+<td>No</td>
+</tr>
+<tr class="a"><td>org.mortbay.jetty</td>
+<td><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/modules/jetty">jetty</a></td>
+<td>6.1.21</td>
+<td>jar</td>
+<td>Yes</td>
+</tr>
+<tr class="b"><td>org.mortbay.jetty</td>
+<td><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/jetty-naming">jetty-naming</a></td>
+<td>6.1.21</td>
+<td>jar</td>
+<td>Yes</td>
+</tr>
+<tr class="a"><td>org.mortbay.jetty</td>
+<td><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/jetty-plus">jetty-plus</a></td>
+<td>6.1.21</td>
+<td>jar</td>
+<td>Yes</td>
+</tr>
+<tr class="b"><td>org.mortbay.jetty</td>
+<td><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/jsp-2.1-jetty">jsp-2.1-jetty</a></td>
+<td>6.1.21</td>
+<td>jar</td>
+<td>Yes</td>
+</tr>
+<tr class="a"><td>org.mortbay.jetty</td>
+<td><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/modules/start">start</a></td>
+<td>6.1.21</td>
+<td>jar</td>
+<td>Yes</td>
+</tr>
+</table>
+</div>
+</div>
+<a name="Project_Transitive_Dependencies"></a><div class="section"><h2>Project Transitive Dependencies</h2>
+<p>The following is a list of transitive dependencies for this project. Transitive dependencies are the dependencies of the project dependencies.</p>
+<a name="compile"></a><div class="section"><h3>compile</h3>
+<p>The following is a list of compile dependencies for this project. These dependencies are required to compile and run the application:</p>
+<table class="bodyTable"><tr class="b"><th>GroupId</th>
+<th>ArtifactId</th>
+<th>Version</th>
+<th>Type</th>
+</tr>
+<tr class="a"><td>ant</td>
+<td>ant</td>
+<td>1.6.5</td>
+<td>jar</td>
+</tr>
+<tr class="b"><td>geronimo-spec</td>
+<td>geronimo-spec-jta</td>
+<td>1.0.1B-rc4</td>
+<td>jar</td>
+</tr>
+<tr class="a"><td>javax.mail</td>
+<td><a class="externalLink" href="https://glassfish.dev.java.net/javaee5/mail/">mail</a></td>
+<td>1.4</td>
+<td>jar</td>
+</tr>
+<tr class="b"><td>org.eclipse.jdt</td>
+<td><a class="externalLink" href="http://www.eclipse.org/jdt/">core</a></td>
+<td>3.1.1</td>
+<td>jar</td>
+</tr>
+<tr class="a"><td>org.mortbay.jetty</td>
+<td><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/jetty-util">jetty-util</a></td>
+<td>6.1.21</td>
+<td>jar</td>
+</tr>
+<tr class="b"><td>org.mortbay.jetty</td>
+<td><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/jetty-jsp/jsp-2.1-glassfish">jsp-2.1-glassfish</a></td>
+<td>9.1.1.B60.25.p2</td>
+<td>jar</td>
+</tr>
+<tr class="a"><td>org.mortbay.jetty</td>
+<td><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/jetty-jsp/jsp-api-2.1-glassfish">jsp-api-2.1-glassfish</a></td>
+<td>9.1.1.B60.25.p2</td>
+<td>jar</td>
+</tr>
+<tr class="b"><td>org.mortbay.jetty</td>
+<td><a class="externalLink" href="http://jetty.mortbay.org/servlet-api">servlet-api</a></td>
+<td>2.5-20081211</td>
+<td>jar</td>
+</tr>
+</table>
+</div>
+</div>
+<a name="Project_Dependency_Graph"></a><div class="section"><h2>Project Dependency Graph</h2>
+<script language="javascript" type="text/javascript">
+      function toggleDependencyDetail( divId, imgId )
+      {
+        var div = document.getElementById( divId );
+        var img = document.getElementById( imgId );
+        if( div.style.display == '' )
+        {
+          div.style.display = 'none';
+          img.src='./images/icon_info_sml.gif';
+        }
+        else
+        {
+          div.style.display = '';
+          img.src='./images/close.gif';
+        }
+      }
+</script>
+<a name="Dependency_Tree"></a><div class="section"><h3>Dependency Tree</h3>
+<ul><li>org.semispace:semimeter-app:jar:0.1-SNAPSHOT <img id="_1408682671" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1451074696', '_1408682671' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1451074696" style="display:none"><table class="bodyTable"><tr class="a"><th>semimeter-app</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>Serve a blank gif, and count the access number</p>
+<p><b>Project License: </b>No project license is defined for this project.</p>
+</td>
+</tr>
+</table>
+</div><ul><li>log4j:log4j:jar:1.2.14 (compile) <img id="_1489186691" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1622070482', '_1489186691' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1622070482" style="display:none"><table class="bodyTable"><tr class="a"><th>Log4j</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>Log4j</p>
+<p><b>URL: </b><a class="externalLink" href="http://logging.apache.org/log4j/docs/">http://logging.apache.org/log4j/docs/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>org.mortbay.jetty:jetty:jar:6.1.21 (compile) <img id="_57210419" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_329520797', '_57210419' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_329520797" style="display:none"><table class="bodyTable"><tr class="a"><th>Jetty Server</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>Jetty server core</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/modules/jetty">http://www.eclipse.org/jetty/jetty-parent/project/modules/jetty</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache Software License - Version 2.0</a><a class="externalLink" href="http://www.eclipse.org/org/documents/epl-v10.php">Eclipse Public License - Version 1.0</a></p>
+</td>
+</tr>
+</table>
+</div><ul><li>org.mortbay.jetty:jetty-util:jar:6.1.21 (compile) <img id="_1878815018" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_448833132', '_1878815018' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_448833132" style="display:none"><table class="bodyTable"><tr class="a"><th>Jetty Utilities</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>Utility classes for Jetty</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/jetty-util">http://www.eclipse.org/jetty/jetty-parent/project/jetty-util</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache Software License - Version 2.0</a><a class="externalLink" href="http://www.eclipse.org/org/documents/epl-v10.php">Eclipse Public License - Version 1.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>org.mortbay.jetty:servlet-api:jar:2.5-20081211 (compile) <img id="_198326559" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1519273367', '_198326559' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1519273367" style="display:none"><table class="bodyTable"><tr class="a"><th>Servlet Specification API</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>Servlet Specification API</p>
+<p><b>URL: </b><a class="externalLink" href="http://jetty.mortbay.org/servlet-api">http://jetty.mortbay.org/servlet-api</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License Version 2.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+</ul>
+</li>
+<li>org.mortbay.jetty:start:jar:6.1.21 (compile) <img id="_1140039831" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1009918085', '_1140039831' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1009918085" style="display:none"><table class="bodyTable"><tr class="a"><th>Jetty start jar</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/modules/start">http://www.eclipse.org/jetty/jetty-parent/project/modules/start</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache Software License - Version 2.0</a><a class="externalLink" href="http://www.eclipse.org/org/documents/epl-v10.php">Eclipse Public License - Version 1.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>org.mortbay.jetty:jsp-2.1-jetty:jar:6.1.21 (compile) <img id="_1692519598" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_997850295', '_1692519598' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_997850295" style="display:none"><table class="bodyTable"><tr class="a"><th>Glassfish Jasper</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>JSP2.1 Jasper implementation from Glassfish</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/jsp-2.1-jetty">http://www.eclipse.org/jetty/jetty-parent/project/jsp-2.1-jetty</a></p>
+<p><b>Project License: </b><a class="externalLink" href="https://glassfish.dev.java.net/public/CDDLv1.0.html">CDDL 1.0</a></p>
+</td>
+</tr>
+</table>
+</div><ul><li>org.eclipse.jdt:core:jar:3.1.1 (compile) <img id="_1984594372" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1300436336', '_1984594372' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1300436336" style="display:none"><table class="bodyTable"><tr class="a"><th>Eclipse JDT Core</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jdt/">http://www.eclipse.org/jdt/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.eclipse.org/org/documents/epl-v10.php">Eclipse Public License v1.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>org.mortbay.jetty:jsp-api-2.1-glassfish:jar:9.1.1.B60.25.p2 (compile) <img id="_1885347451" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1155290903', '_1885347451' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1155290903" style="display:none"><table class="bodyTable"><tr class="a"><th>Glassfish :: Jasper API JSP 2.1</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>JSP2.1 API</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/jetty-jsp/jsp-api-2.1-glassfish">http://www.eclipse.org/jetty/jetty-parent/jetty-jsp/jsp-api-2.1-glassfish</a></p>
+<p><b>Project License: </b><a class="externalLink" href="https://glassfish.dev.java.net/public/CDDLv1.0.html">CDDL 1.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>org.mortbay.jetty:jsp-2.1-glassfish:jar:9.1.1.B60.25.p2 (compile) <img id="_2102653551" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1776823525', '_2102653551' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1776823525" style="display:none"><table class="bodyTable"><tr class="a"><th>Glassfish :: Jasper JSP 2.1</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>JSP2.1 Jasper implementation from Glassfish</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/jetty-jsp/jsp-2.1-glassfish">http://www.eclipse.org/jetty/jetty-parent/jetty-jsp/jsp-2.1-glassfish</a></p>
+<p><b>Project License: </b><a class="externalLink" href="https://glassfish.dev.java.net/public/CDDLv1.0.html">CDDL 1.0</a></p>
+</td>
+</tr>
+</table>
+</div><ul><li>org.eclipse.jdt:core:jar:3.1.1 (compile) <img id="_1540018762" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_528570991', '_1540018762' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_528570991" style="display:none"><table class="bodyTable"><tr class="a"><th>Eclipse JDT Core</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jdt/">http://www.eclipse.org/jdt/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.eclipse.org/org/documents/epl-v10.php">Eclipse Public License v1.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>org.mortbay.jetty:jsp-api-2.1-glassfish:jar:9.1.1.B60.25.p2 (compile) <img id="_532580482" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_625178384', '_532580482' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_625178384" style="display:none"><table class="bodyTable"><tr class="a"><th>Glassfish :: Jasper API JSP 2.1</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>JSP2.1 API</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/jetty-jsp/jsp-api-2.1-glassfish">http://www.eclipse.org/jetty/jetty-parent/jetty-jsp/jsp-api-2.1-glassfish</a></p>
+<p><b>Project License: </b><a class="externalLink" href="https://glassfish.dev.java.net/public/CDDLv1.0.html">CDDL 1.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>ant:ant:jar:1.6.5 (compile) <img id="_1533869504" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1225375925', '_1533869504' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1225375925" style="display:none"><table class="bodyTable"><tr class="a"><th>Unnamed - ant:ant:jar:1.6.5</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>Project License: </b>No project license is defined for this project.</p>
+</td>
+</tr>
+</table>
+</div></li>
+</ul>
+</li>
+<li>ant:ant:jar:1.6.5 (compile) <img id="_1214836302" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1135125939', '_1214836302' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1135125939" style="display:none"><table class="bodyTable"><tr class="a"><th>Unnamed - ant:ant:jar:1.6.5</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>Project License: </b>No project license is defined for this project.</p>
+</td>
+</tr>
+</table>
+</div></li>
+</ul>
+</li>
+<li>org.mortbay.jetty:jetty-naming:jar:6.1.21 (compile) <img id="_846350132" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1859234828', '_846350132' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1859234828" style="display:none"><table class="bodyTable"><tr class="a"><th>Jetty Naming</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>JNDI spi impl for java namespace</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/jetty-naming">http://www.eclipse.org/jetty/jetty-parent/project/jetty-naming</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache Software License - Version 2.0</a><a class="externalLink" href="http://www.eclipse.org/org/documents/epl-v10.php">Eclipse Public License - Version 1.0</a></p>
+</td>
+</tr>
+</table>
+</div><ul><li>javax.mail:mail:jar:1.4 (compile) <img id="_904130074" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1019209481', '_904130074' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1019209481" style="display:none"><table class="bodyTable"><tr class="a"><th>JavaMail API</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>The JavaMail API provides a platform-independent and protocol-independent framework to build mail and messaging applications.</p>
+<p><b>URL: </b><a class="externalLink" href="https://glassfish.dev.java.net/javaee5/mail/">https://glassfish.dev.java.net/javaee5/mail/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="https://glassfish.dev.java.net/public/CDDLv1.0.html">Common Development and Distribution License (CDDL) v1.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+</ul>
+</li>
+<li>org.mortbay.jetty:jetty-plus:jar:6.1.21 (compile) <img id="_1881608322" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_120559416', '_1881608322' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_120559416" style="display:none"><table class="bodyTable"><tr class="a"><th>Jetty Plus</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>Jetty JavaEE style services</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.eclipse.org/jetty/jetty-parent/project/jetty-plus">http://www.eclipse.org/jetty/jetty-parent/project/jetty-plus</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache Software License - Version 2.0</a><a class="externalLink" href="http://www.eclipse.org/org/documents/epl-v10.php">Eclipse Public License - Version 1.0</a></p>
+</td>
+</tr>
+</table>
+</div><ul><li>geronimo-spec:geronimo-spec-jta:jar:1.0.1B-rc4 (compile) <img id="_2117026496" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1271599435', '_2117026496' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1271599435" style="display:none"><table class="bodyTable"><tr class="a"><th>Unnamed - geronimo-spec:geronimo-spec-jta:jar:1.0.1B-rc4</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>There is currently no description associated with this project.</p>
+<p><b>Project License: </b>No project license is defined for this project.</p>
+</td>
+</tr>
+</table>
+</div></li>
+</ul>
+</li>
+<li>org.slf4j:slf4j-api:jar:1.5.8 (compile) <img id="_294477996" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_799924774', '_294477996' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_799924774" style="display:none"><table class="bodyTable"><tr class="a"><th>SLF4J API Module</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>The slf4j API</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
+<p><b>Project License: </b>No project license is defined for this project.</p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>org.slf4j:slf4j-log4j12:jar:1.5.8 (compile) <img id="_1313744308" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_414143251', '_1313744308' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_414143251" style="display:none"><table class="bodyTable"><tr class="a"><th>SLF4J LOG4J-12 Binding</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>The slf4j log4j-12 binding</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
+<p><b>Project License: </b>No project license is defined for this project.</p>
+</td>
+</tr>
+</table>
+</div><ul><li>org.slf4j:slf4j-api:jar:1.5.8 (compile) <img id="_1419065325" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1100444336', '_1419065325' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1100444336" style="display:none"><table class="bodyTable"><tr class="a"><th>SLF4J API Module</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>The slf4j API</p>
+<p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
+<p><b>Project License: </b>No project license is defined for this project.</p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>log4j:log4j:jar:1.2.14 (compile) <img id="_1705528989" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_176623541', '_1705528989' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_176623541" style="display:none"><table class="bodyTable"><tr class="a"><th>Log4j</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>Log4j</p>
+<p><b>URL: </b><a class="externalLink" href="http://logging.apache.org/log4j/docs/">http://logging.apache.org/log4j/docs/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+</ul>
+</li>
+<li>mysql:mysql-connector-java:jar:5.1.10 (compile) <img id="_1059682656" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_917204546', '_1059682656' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_917204546" style="display:none"><table class="bodyTable"><tr class="a"><th>MySQL java connector</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>MySQL java connector</p>
+<p><b>URL: </b><a class="externalLink" href="http://dev.mysql.com/usingmysql/java/">http://dev.mysql.com/usingmysql/java/</a></p>
+<p><b>Project License: </b><a class="externalLink" href="http://www.gnu.org/licenses/gpl.txt">The GNU General Public License, Version 2</a></p>
+</td>
+</tr>
+</table>
+</div></li>
+<li>org.semispace:semimeter-webapp:war:0.1-SNAPSHOT (compile) <img id="_28168994" src="./images/icon_info_sml.gif" alt="Information" onclick="toggleDependencyDetail( '_1992831233', '_28168994' );" style="cursor: pointer;vertical-align:text-bottom;"></img><div id="_1992831233" style="display:none"><table class="bodyTable"><tr class="a"><th>semimeter-webapp</th>
+</tr>
+<tr class="b"><td><p><b>Description: </b>Serve a blank gif, and count the access number</p>
+<p><b>Project License: </b>No project license is defined for this project.</p>
+</td>
+</tr>
+</table>
+</div></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<a name="Licenses"></a><div class="section"><h2>Licenses</h2>
+<p><b>CDDL 1.0: </b>Glassfish :: Jasper API JSP 2.1, Glassfish :: Jasper JSP 2.1, Glassfish Jasper</p>
+<p><b>Eclipse Public License - Version 1.0: </b>Jetty Naming, Jetty Plus, Jetty Server, Jetty Utilities, Jetty start jar</p>
+<p><b>Unknown: </b>SLF4J API Module, SLF4J LOG4J-12 Binding, Unnamed - ant:ant:jar:1.6.5, Unnamed - geronimo-spec:geronimo-spec-jta:jar:1.0.1B-rc4, semimeter-app, semimeter-webapp</p>
+<p><b>Apache Software License - Version 2.0: </b>Jetty Naming, Jetty Plus, Jetty Server, Jetty Utilities, Jetty start jar</p>
+<p><b>Eclipse Public License v1.0: </b>Eclipse JDT Core</p>
+<p><b>The Apache Software License, Version 2.0: </b>Log4j</p>
+<p><b>Common Development and Distribution License (CDDL) v1.0: </b>JavaMail API</p>
+<p><b>The GNU General Public License, Version 2: </b>MySQL java connector</p>
+<p><b>Apache License Version 2.0: </b>Servlet Specification API</p>
+</div>
+<a name="Dependency_File_Details"></a><div class="section"><h2>Dependency File Details</h2>
+<table class="bodyTable"><tbody><tr class="a"><th align="left">Filename</th>
+<th align="right">Size</th>
+<th align="right">Entries</th>
+<th align="right">Classes</th>
+<th align="right">Packages</th>
+<th align="center">JDK Rev</th>
+<th align="center">Debug</th>
+</tr>
+<tr class="b"><td align="left">ant-1.6.5.jar</td>
+<td align="right">1,009.81 kB</td>
+<td align="right">616</td>
+<td align="right">576</td>
+<td align="right">25</td>
+<td align="center">1.2</td>
+<td align="center">debug</td>
+</tr>
+<tr class="a"><td align="left">geronimo-spec-jta-1.0.1B-rc4.jar</td>
+<td align="right">13.15 kB</td>
+<td align="right">23</td>
+<td align="right">17</td>
+<td align="right">2</td>
+<td align="center">1.4</td>
+<td align="center">debug</td>
+</tr>
+<tr class="b"><td align="left">mail-1.4.jar</td>
+<td align="right">379.75 kB</td>
+<td align="right">273</td>
+<td align="right">250</td>
+<td align="right">12</td>
+<td align="center">1.4</td>
+<td align="center">debug</td>
+</tr>
+<tr class="a"><td align="left">log4j-1.2.14.jar</td>
+<td align="right">358.83 kB</td>
+<td align="right">288</td>
+<td align="right">256</td>
+<td align="right">19</td>
+<td align="center">1.1</td>
+<td align="center">debug</td>
+</tr>
+<tr class="b"><td align="left">mysql-connector-java-5.1.10.jar</td>
+<td align="right">707.25 kB</td>
+<td align="right">260</td>
+<td align="right">227</td>
+<td align="right">11</td>
+<td align="center">1.6</td>
+<td align="center">debug</td>
+</tr>
+<tr class="a"><td align="left">core-3.1.1.jar</td>
+<td align="right">3.40 MB</td>
+<td align="right">1,343</td>
+<td align="right">1,256</td>
+<td align="right">43</td>
+<td align="center">1.2</td>
+<td align="center">debug</td>
+</tr>
+<tr class="b"><td align="left">jetty-util-6.1.21.jar</td>
+<td align="right">171.91 kB</td>
+<td align="right">120</td>
+<td align="right">105</td>
+<td align="right">6</td>
+<td align="center">1.4</td>
+<td align="center">debug</td>
+</tr>
+<tr class="a"><td align="left">jsp-2.1-glassfish-9.1.1.B60.25.p2.jar</td>
+<td align="right">1,001.69 kB</td>
+<td align="right">679</td>
+<td align="right">585</td>
+<td align="right">44</td>
+<td align="center">1.5</td>
+<td align="center">debug</td>
+</tr>
+<tr class="b"><td align="left">jsp-api-2.1-glassfish-9.1.1.B60.25.p2.jar</td>
+<td align="right">131.72 kB</td>
+<td align="right">134</td>
+<td align="right">107</td>
+<td align="right">8</td>
+<td align="center">1.5</td>
+<td align="center">debug</td>
+</tr>
+<tr class="a"><td align="left">servlet-api-2.5-20081211.jar</td>
+<td align="right">130.99 kB</td>
+<td align="right">79</td>
+<td align="right">42</td>
+<td align="right">2</td>
+<td align="center">1.4</td>
+<td align="center">debug</td>
+</tr>
+<tr class="b"><td align="left">semimeter.war</td>
+<td align="right">5.79 MB</td>
+<td align="right">78</td>
+<td align="right">9</td>
+<td align="right">5</td>
+<td align="center">1.6</td>
+<td align="center">debug</td>
+</tr>
+<tr class="a"><td align="left">slf4j-api-1.5.8.jar</td>
+<td align="right">22.90 kB</td>
+<td align="right">32</td>
+<td align="right">21</td>
+<td align="right">3</td>
+<td align="center">1.3</td>
+<td align="center">debug</td>
+</tr>
+<tr class="b"><td align="left">slf4j-log4j12-1.5.8.jar</td>
+<td align="right">9.45 kB</td>
+<td align="right">16</td>
+<td align="right">6</td>
+<td align="right">1</td>
+<td align="center">1.3</td>
+<td align="center">debug</td>
+</tr>
+<tr class="a"><td align="left">jetty-6.1.21.jar</td>
+<td align="right">521.67 kB</td>
+<td align="right">264</td>
+<td align="right">234</td>
+<td align="right">14</td>
+<td align="center">1.4</td>
+<td align="center">debug</td>
+</tr>
+<tr class="b"><td align="left">jetty-naming-6.1.21.jar</td>
+<td align="right">27.80 kB</td>
+<td align="right">29</td>
+<td align="right">15</td>
+<td align="right">4</td>
+<td align="center">1.4</td>
+<td align="center">debug</td>
+</tr>
+<tr class="a"><td align="left">jetty-plus-6.1.21.jar</td>
+<td align="right">58.01 kB</td>
+<td align="right">57</td>
+<td align="right">39</td>
+<td align="right">7</td>
+<td align="center">1.4</td>
+<td align="center">debug</td>
+</tr>
+<tr class="b"><td align="left">jsp-2.1-jetty-6.1.21.jar</td>
+<td align="right">4.79 kB</td>
+<td align="right">15</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="center">1.5</td>
+<td align="center">debug</td>
+</tr>
+<tr class="a"><td align="left">start-6.1.21.jar</td>
+<td align="right">16.83 kB</td>
+<td align="right">16</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="center">1.4</td>
+<td align="center">debug</td>
+</tr>
+<tr class="b"><th align="left">Total</th>
+<th align="right">Size</th>
+<th align="right">Entries</th>
+<th align="right">Classes</th>
+<th align="right">Packages</th>
+<th align="center">JDK Rev</th>
+<th align="center">Debug</th>
+</tr>
+<tr class="a"><td align="right">18</td>
+<td align="right">13.65 MB</td>
+<td align="right">4,322</td>
+<td align="right">3,751</td>
+<td align="right">208</td>
+<td align="center">1.6</td>
+<td align="right">18</td>
+</tr>
+<tr class="b"><td align="right">compile: 18</td>
+<td align="right">compile: 13.65 MB</td>
+<td align="right">compile: 4,322</td>
+<td align="right">compile: 3,751</td>
+<td align="right">compile: 208</td>
+<td align="center">-</td>
+<td align="right">compile: 18</td>
+</tr>
+</tbody>
+</table>
+</div>
+<a name="Dependency_Repository_Locations"></a><div class="section"><h2>Dependency Repository Locations</h2>
+<table class="bodyTable"><tbody><tr class="a"><th align="left">Repo ID</th>
+<th align="left">URL</th>
+<th align="center">Release</th>
+<th align="center">Snapshot</th>
+</tr>
+<tr class="b"><td align="left">oss.sonatype.org</td>
+<td align="left"><a class="externalLink" href="http://oss.sonatype.org/content/repositories/jetty-snapshots/">http://oss.sonatype.org/content/repositories/jetty-snapshots/</a></td>
+<td align="center">-</td>
+<td align="center">Yes</td>
+</tr>
+<tr class="a"><td align="left">codehaus.org</td>
+<td align="left"><a class="externalLink" href="http://snapshots.repository.codehaus.org">http://snapshots.repository.codehaus.org</a></td>
+<td align="center">-</td>
+<td align="center">Yes</td>
+</tr>
+<tr class="b"><td align="left">java.net</td>
+<td align="left"><a class="externalLink" href="http://download.java.net/maven/2">http://download.java.net/maven/2</a></td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">m1.java.net</td>
+<td align="left"><a class="externalLink" href="http://download.java.net/maven/1">http://download.java.net/maven/1</a></td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">central</td>
+<td align="left"><a class="externalLink" href="http://repo1.maven.org/maven2">http://repo1.maven.org/maven2</a></td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">dev.java.net</td>
+<td align="left"><a class="externalLink" href="http://download.java.net/maven/1">http://download.java.net/maven/1</a></td>
+<td align="center">Yes</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">Codehaus Snapshots</td>
+<td align="left"><a class="externalLink" href="http://snapshots.repository.codehaus.org/">http://snapshots.repository.codehaus.org/</a></td>
+<td align="center">-</td>
+<td align="center">Yes</td>
+</tr>
+</tbody>
+</table>
+<p>Repository locations for each of the Dependencies.</p>
+<table class="bodyTable"><tbody><tr class="a"><th align="left">Artifact</th>
+<th align="center">oss.sonatype.org</th>
+<th align="center">codehaus.org</th>
+<th align="center">java.net</th>
+<th align="center">m1.java.net</th>
+<th align="center">central</th>
+<th align="center">dev.java.net</th>
+<th align="center">Codehaus Snapshots</th>
+</tr>
+<tr class="b"><td align="left">ant:ant:jar:1.6.5</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/ant/ant/1.6.5/ant-1.6.5.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">geronimo-spec:geronimo-spec-jta:jar:1.0.1B-rc4</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/geronimo-spec/geronimo-spec-jta/1.0.1B-rc4/geronimo-spec-jta-1.0.1B-rc4.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">javax.mail:mail:jar:1.4</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://download.java.net/maven/1/javax.mail/jars/mail-1.4.jar"><img alt="Found at http://download.java.net/maven/1" src="images/icon_success_sml.gif" /></a></td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/javax/mail/mail/1.4/mail-1.4.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center"><a class="externalLink" href="http://download.java.net/maven/1/javax.mail/jars/mail-1.4.jar"><img alt="Found at http://download.java.net/maven/1" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">log4j:log4j:jar:1.2.14</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/log4j/log4j/1.2.14/log4j-1.2.14.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">mysql:mysql-connector-java:jar:5.1.10</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.10/mysql-connector-java-5.1.10.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">org.eclipse.jdt:core:jar:3.1.1</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/eclipse/jdt/core/3.1.1/core-3.1.1.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">org.mortbay.jetty:jetty-util:jar:6.1.21</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-util/6.1.21/jetty-util-6.1.21.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">org.mortbay.jetty:jsp-2.1-glassfish:jar:9.1.1.B60.25.p2</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/mortbay/jetty/jsp-2.1-glassfish/9.1.1.B60.25.p2/jsp-2.1-glassfish-9.1.1.B60.25.p2.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">org.mortbay.jetty:jsp-api-2.1-glassfish:jar:9.1.1.B60.25.p2</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/mortbay/jetty/jsp-api-2.1-glassfish/9.1.1.B60.25.p2/jsp-api-2.1-glassfish-9.1.1.B60.25.p2.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">org.mortbay.jetty:servlet-api:jar:2.5-20081211</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/mortbay/jetty/servlet-api/2.5-20081211/servlet-api-2.5-20081211.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">org.semispace:semimeter-webapp:war:0.1-SNAPSHOT</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">org.slf4j:slf4j-api:jar:1.5.8</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.5.8/slf4j-api-1.5.8.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">org.slf4j:slf4j-log4j12:jar:1.5.8</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.5.8/slf4j-log4j12-1.5.8.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">org.mortbay.jetty:jetty:jar:6.1.21</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty/6.1.21/jetty-6.1.21.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">org.mortbay.jetty:jetty-naming:jar:6.1.21</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-naming/6.1.21/jetty-naming-6.1.21.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">org.mortbay.jetty:jetty-plus:jar:6.1.21</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/mortbay/jetty/jetty-plus/6.1.21/jetty-plus-6.1.21.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><td align="left">org.mortbay.jetty:jsp-2.1-jetty:jar:6.1.21</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/mortbay/jetty/jsp-2.1-jetty/6.1.21/jsp-2.1-jetty-6.1.21.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="a"><td align="left">org.mortbay.jetty:start:jar:6.1.21</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center">-</td>
+<td align="center"><a class="externalLink" href="http://repo1.maven.org/maven2/org/mortbay/jetty/start/6.1.21/start-6.1.21.jar"><img alt="Found at http://repo1.maven.org/maven2" src="images/icon_success_sml.gif" /></a></td>
+<td align="center">-</td>
+<td align="center">-</td>
+</tr>
+<tr class="b"><th align="left">Total</th>
+<th align="center">oss.sonatype.org</th>
+<th align="center">codehaus.org</th>
+<th align="center">java.net</th>
+<th align="center">m1.java.net</th>
+<th align="center">central</th>
+<th align="center">dev.java.net</th>
+<th align="center">Codehaus Snapshots</th>
+</tr>
+<tr class="a"><td align="left">18 (compile: 18)</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">17</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2009
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

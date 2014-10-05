@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - SemiSpace</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+    <script src="./js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+          <meta name="author" content="Erlend Nossum" />
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href=".." id="bannerLeft">
+    
+                                            <img src="images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="semispace-main/semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-main/semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+                        <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+              <h5>Modules</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="semispace-main/index.html">semispace-main</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-wsdef/index.html">semispace-wsdef</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-war/index.html">semispace-war</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-wsclient/index.html">semispace-wsclient</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-tutorials/index.html">semispace-tutorials</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-tim/index.html">semispace-tim</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-comet/index.html">semispace-comet</a>
+          </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <p>SemiSpace is a light weight Open Source interpretation of <b><a href="http://www.wikipedia.org/wiki/tuple_space" class="externalLink">Tuple Space / Object Space</a></b> based on ideas from <b><a href="http://www.jini.org/wiki/JavaSpaces_Specification" class="externalLink">JavaSpaces</a>.</b> It can be run as single, <b>stand alone,</b> space on one <a href="http://java.sun.com/javase/6/docs/" class="externalLink">J2SE 6.0</a> VM (or greater), or <b>clustered</b> with <a href="http://www.terracotta.org" class="externalLink">Terracotta</a> version 3.4.0.</p>
+<p>Please see the <a href="semispace-main/semispace-book">SemiSpace book</a> for in-depth information about installation and usage.</p>
+
+<p><b>Important:</b>The source code has now moved to github: 
+<a href="https://github.com/nostra/semispace">https://github.com/nostra/semispace</a></p>
+
+<p>Other information:</p>
+<ul><li>Tutorials and examples are included. You find them in <a href="semispace-tutorials/index.html">the tutorials project</a>, and the description in the <a href="semispace-main/semispace-book">SemiSpace book.</a></li>
+<li>Problems and limitations as far as they are known are listed <a href="semispace-main/semispace-book/beware.html">in a chapter in the book.</a></li>
+<!--li>The documentation for the current snapshot version: <br />
+<a href="../semispace-1.3.1-SNAPSHOT/">semispace-1.3.1-SNAPSHOT</a></li-->
+<li><a href="./changes.html">Changelist</a> since version 1.0.0. </li>
+</ul>
+<div class="section"><h2>SemiSpace offers</h2>
+<p>... a light weight JavaSpaces inspired tuple space which</p>
+<ul><li>is <b>non-intrusive</b>: You do not need to change existing code</li>
+<li>easy to <b>configure</b>: <a href="http://www.springframework.org" class="externalLink">Spring</a>-based configuration</li>
+<li>has very <b>few dependencies</b>: Basically just <a href="semispace-main/dependencies.html">XStream and logging</a></li>
+<li>easy to <b>integrate</b> into your J2EE or stand alone applications: You should easily be able to slip it into your standard J2EE stack</li>
+<li>supports <b>generics</b> for ease of usage</li>
+<li>can be <b>distributed</b>: <a href="semispace-main/semispace-book/terraconfig.html">Terracotta</a> can be used for distributing the space and contents therein.</li>
+<li>has a <a href="http://www.terracotta.org/confluence/display/docs/Terracotta+Integration+Modules+Manual" class="externalLink">Terracotta Integration Module</a> (TIM) included.</li>
+<li>can be distributed (or not) both from <b>console</b> applications and <b>J2EE</b> application servers: <a href="http://geronimo.apache.org" class="externalLink">Geronimo,</a> <a href="http://jetty.mortbay.org/jetty/" class="externalLink">Jetty,</a> or some other J2EE- or webapp-server, can easily contain SemiSpace </li>
+<li><b>does not need Jini</b> installed ... as SemiSpace do not use Jini. </li>
+<li>uses <b>getters</b> in addition to public fields: In difference to the JavaSpaces specification </li>
+<li>does <b>not</b> use the <tt>Entry</tt> mix-in interface: Allows any <a href="http://xstream.codehaus.org" class="externalLink">XStream</a>-able class to be put into the space. </li>
+<li>is <b>Open Source</b> and licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0" class="externalLink">Apache 2</a></li>
+<li>exposes statistics over <b>JMX</b> (if you use the webapp module)</li>
+<li>supplies a simple <b>actor pattern</b> framework</li>
+<li>a <a href="http://www.cometd.org/" class="externalLink">cometd-based</a> interface to a SemiSpace-enabled webapp</li>
+</ul>
+</div>
+<div class="section"><h2>Maven2 repository </h2>
+<p>SemiSpace resides in in Maven repo1, and the dependency reference is as follows - for stable versions:</p>
+<div class="source"><pre>		&lt;dependency&gt;
+			&lt;groupId&gt;org.semispace&lt;/groupId&gt;
+			&lt;artifactId&gt;semispace-main&lt;/artifactId&gt;
+			&lt;version&gt;1.3.1&lt;/version&gt;
+		&lt;/dependency&gt;
+</pre>
+</div>
+<div class="section"><h3>Accessing the repository directly</h3>
+<p>In order to obtain snapshot versions, or just a direct download of the packages, add the following to your pom:</p>
+<div class="source"><pre>&lt;repositories&gt;
+    &lt;repository&gt;
+        &lt;id&gt;semispace&lt;/id&gt;
+        &lt;name&gt;Space resides in semispace-repo&lt;/name&gt;
+        &lt;layout&gt;default&lt;/layout&gt;
+        &lt;url&gt;http://www.semispace.org/maven2&lt;/url&gt;
+        &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/snapshots&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;</pre>
+</div>
+</div>
+<div class="section"><h3>Source code and IDE integration</h3>
+<p>In order to download the source code (in the easiest manner), you can do something similar to the following:</p>
+<div class="source"><pre># If you already have an eclipse project, first do: mvn eclipse:clean 
+mvn -DdownloadSources=true eclipse:eclipse</pre>
+</div>
+<p>Invocations are similar if you use <a href="http://www.jetbrains.com/idea/index.html" class="externalLink">IntelliJ, </a> <tt>mvn idea:idea</tt> - or just open the pom file as a project. </p>
+</div>
+</div>
+<div class="section"><h2>Subversion Checkout</h2>
+<p>You can anonymously check out the project with an invocation similar to:</p>
+<div class="source"><pre>svn co http://www.semispace.org/svn/trunk/ space</pre>
+</div>
+<p>The source code compiles with <a href="http://maven.apache.org" class="externalLink">Maven-2.2.1,</a> and should also compile with later versions of Maven.</p>
+<p>The releases are tagged, and you can find them here: <a href="http://www.semispace.org/svn/tags" class="externalLink">http://www.semispace.org/svn/tags</a></p>
+</div>
+<div class="section"><h2>Alternatives</h2>
+<p>JavaSpace alternatives are:</p>
+<ul><li>The JavaSpace implementation Sun offers as a part of <a href="http://jini.org" class="externalLink">Jini</a></li>
+<li><a href="http://www.dancres.org/blitz/" class="externalLink">Blitz</a> </li>
+<li><a href="http://www.gigaspaces.com/" class="externalLink">GigaSpaces</a></li>
+<li><a href="http://incubator.apache.org/river/" class="externalLink">Apache River</a></li>
+<li><a href="http://lime.sourceforge.net/Lime/index.html" class="externalLink">Lime</a></li>
+<li><a href="http://www.almaden.ibm.com/cs/TSpaces/" class="externalLink">IBM TSpaces</a></li>
+<li><a href="http://gruple.codehaus.org/" class="externalLink">Gruple</a></li>
+<li><a href="http://code.google.com/p/terrastore/" class="externalLink">Terrastore</a></li>
+</ul>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Build and test times</title>
+    <style type="text/css" media="all">
+      @import url("./css/maven-base.css");
+      @import url("./css/maven-theme.css");
+      @import url("./css/site.css");
+    </style>
+    <link rel="stylesheet" href="./css/print.css" type="text/css" media="print" />
+    <script src="./js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href=".." id="bannerLeft">
+    
+                                            <img src="images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="semispace-main/semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-main/semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+                        <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+              <h5>Modules</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="semispace-main/index.html">semispace-main</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-wsdef/index.html">semispace-wsdef</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-war/index.html">semispace-war</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-wsclient/index.html">semispace-wsclient</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-tutorials/index.html">semispace-tutorials</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-tim/index.html">semispace-tim</a>
+          </li>
+              
+    <li class="none">
+                    <a href="semispace-comet/index.html">semispace-comet</a>
+          </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <p>Internal document in order to register changes in setup / build time.</p>
+<p>Total (test) build times without cometd modules.</p>
+<table class="bodyTable"><tbody><tr class="a"><th align="left">1.2.1-SNAPSHOT</th>
+<th align="left">Terracotta 3.3.0 / 3.4.0_1</th>
+</tr>
+<tr class="b"><td align="left">Total build time<br />
+semispace-main build time</td>
+<td align="left">2 min 41 sec (1000 it in ListenerStarvationTest)<br />
+38 sec (10 it in ListenerStarvationTest)</td>
+</tr>
+<tr class="a"><td align="left">TerraSpaceTest<br />
+testInsertionTime</td>
+<td align="left">~28 sec<br />
+(1 sec): 3982 items, 2603ms time</td>
+</tr>
+<tr class="b"><td align="left">SpaceTest</td>
+<td align="left">6.3 sec</td>
+</tr>
+<tr class="a"><td align="left">SemiSpaceTest</td>
+<td align="left">12.5 sec</td>
+</tr>
+<tr class="b"><td align="left">NotificationTest</td>
+<td align="left">22.2 sec</td>
+</tr>
+<tr class="a"><td align="left">ActorTest</td>
+<td align="left">30.5 sec</td>
+</tr>
+<tr class="b"><td align="left">ListenerStarvationTest</td>
+<td align="left">Basic (10 it): 4.7, 1000 it: 44.8 sec</td>
+</tr>
+</tbody>
+</table>
+<table class="bodyTable"><tbody><tr class="a"><th align="left">1.2.1-SNAPSHOT</th>
+<th align="left">Terracotta 3.4.0_1 without admin module</th>
+</tr>
+<tr class="b"><td align="left">TerraSpaceTest<br />
+testInsertionTime</td>
+<td align="left">~25 sec<br />
+(1 sec): 4258 items, 2314ms time</td>
+</tr>
+<tr class="a"><td align="left">SpaceTest</td>
+<td align="left">6.3 sec</td>
+</tr>
+<tr class="b"><td align="left">SemiSpaceTest</td>
+<td align="left">11.6 sec (with failures)</td>
+</tr>
+<tr class="a"><td align="left">NotificationTest</td>
+<td align="left">21.8 sec</td>
+</tr>
+<tr class="b"><td align="left">ActorTest</td>
+<td align="left">4,3 sec (with errors, which may influence number)</td>
+</tr>
+<tr class="a"><td align="left">ListenerStarvationTest</td>
+<td align="left">Basic (10 it): 4.6, 100 it: 8.7, 1000 it: 44.8 sec</td>
+</tr>
+</tbody>
+</table>
+<div class="section"><h2>With Chris' changes:</h2>
+<table class="bodyTable"><tbody><tr class="b"><th align="left">1.2.1-SNAPSHOT</th>
+<th align="left">3.4.0_1</th>
+</tr>
+<tr class="a"><td align="left">TerraSpaceTest<br />
+testInsertionTime</td>
+<td align="left">~18 sec<br />
+(1 sec): 18263 items, 2094 ms time</td>
+</tr>
+<tr class="b"><td align="left">SpaceTest</td>
+<td align="left">5.6 sec</td>
+</tr>
+<tr class="a"><td align="left">SemiSpaceTest</td>
+<td align="left">12.6 sec (failure in testStatistics)</td>
+</tr>
+<tr class="b"><td align="left">NotificationTest</td>
+<td align="left">23.3 sec (sometime errors)</td>
+</tr>
+<tr class="a"><td align="left">ActorTest</td>
+<td align="left">6.5 sec</td>
+</tr>
+<tr class="b"><td align="left">ListenerStarvationTest</td>
+<td align="left">Basic (10 it): 3.9, 100 it: 6.6, 1000 it: 24.2 sec (with error)</td>
+</tr>
+</tbody>
+</table>
+<table class="bodyTable"><tbody><tr class="a"><th align="left">1.2.1-SNAPSHOT</th>
+<th align="left">3.4.1 Re-test with svn-sources (and semispce tc-config)</th>
+</tr>
+<tr class="b"><td align="left">TerraSpaceTest<br />
+testInsertionTime</td>
+<td align="left">~21.7 sec<br />
+(1 sec): 5798 items, 1793 ms time</td>
+</tr>
+<tr class="a"><td align="left">SpaceTest</td>
+<td align="left">6.0 sec</td>
+</tr>
+<tr class="b"><td align="left">SemiSpaceTest</td>
+<td align="left">13.3 sec</td>
+</tr>
+<tr class="a"><td align="left">NotificationTest</td>
+<td align="left">27.8 sec</td>
+</tr>
+<tr class="b"><td align="left">ActorTest</td>
+<td align="left">9.2 sec</td>
+</tr>
+<tr class="a"><td align="left">ListenerStarvationTest</td>
+<td align="left">Basic (10 it): 4,4 100 it: 6.6, 1000 it: 34.2</td>
+</tr>
+</tbody>
+</table>
+<table class="bodyTable"><tbody><tr class="b"><th align="left">1.2.1-SNAPSHOT</th>
+<th align="left">3.4.1 Re-test with svn-sources (<tt>without</tt> semispce tc-config)</th>
+</tr>
+<tr class="a"><td align="left">TerraSpaceTest<br />
+testInsertionTime</td>
+<td align="left">18.0 sec<br />
+(1 sec): 19115 items, 2127 ms time</td>
+</tr>
+<tr class="b"><td align="left">SpaceTest</td>
+<td align="left">5.6 sec</td>
+</tr>
+<tr class="a"><td align="left">SemiSpaceTest</td>
+<td align="left">12.7 sec</td>
+</tr>
+<tr class="b"><td align="left">NotificationTest</td>
+<td align="left">23.2 sec</td>
+</tr>
+<tr class="a"><td align="left">ActorTest</td>
+<td align="left">6.7 sec</td>
+</tr>
+<tr class="b"><td align="left">ListenerStarvationTest</td>
+<td align="left">Basic (10 it): 3.9 100 it: 6.6, 1000 it: 33.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section"><h2>Removing SemiSpace as root</h2>
+<table class="bodyTable"><tbody><tr class="a"><th align="left">1.2.1-SNAPSHOT</th>
+<th align="left">3.4_01</th>
+</tr>
+<tr class="b"><td align="left">semispace-main build time</td>
+<td align="left">43 sec (10 it in ListenerStarvationTest)</td>
+</tr>
+<tr class="a"><td align="left">TerraSpaceTest<br />
+testInsertionTime</td>
+<td align="left">23.5 sec<br />
+(1 sec): 6413 items, 2356 ms time</td>
+</tr>
+<tr class="b"><td align="left">SpaceTest</td>
+<td align="left">6.2 sec</td>
+</tr>
+<tr class="a"><td align="left">SemiSpaceTest</td>
+<td align="left">12.6 sec</td>
+</tr>
+<tr class="b"><td align="left">NotificationTest</td>
+<td align="left">15.5 sec</td>
+</tr>
+<tr class="a"><td align="left">ActorTest</td>
+<td align="left">26.4 sec</td>
+</tr>
+<tr class="b"><td align="left">ListenerStarvationTest</td>
+<td align="left">Basic (10 it): 4.6, 1000 it: 43.5 sec</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section"><h2>Header structure retains head element longer</h2>
+<table class="bodyTable"><tbody><tr class="a"><th align="left">1.2.1-SNAPSHOT</th>
+<th align="left">3.4_01</th>
+</tr>
+<tr class="b"><td align="left">semispace-main build time</td>
+<td align="left">42 sec (10 it in ListenerStarvationTest)</td>
+</tr>
+<tr class="a"><td align="left">TerraSpaceTest<br />
+testInsertionTime</td>
+<td align="left">23.4 sec<br />
+(1 sec): 5603 items, 1847 ms time</td>
+</tr>
+<tr class="b"><td align="left">SpaceTest</td>
+<td align="left">6.1 sec</td>
+</tr>
+<tr class="a"><td align="left">SemiSpaceTest</td>
+<td align="left">12.3 sec</td>
+</tr>
+<tr class="b"><td align="left">NotificationTest</td>
+<td align="left">14.5 sec</td>
+</tr>
+<tr class="a"><td align="left">ActorTest</td>
+<td align="left">9.4 sec</td>
+</tr>
+<tr class="b"><td align="left">ListenerStarvationTest</td>
+<td align="left">Basic (10 it): 4.3, 1000 it: 34.6 sec</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section"><h2>Using Chris' wait instead of blocking listener</h2>
+<table class="bodyTable"><tbody><tr class="a"><th align="left">1.2.1-SNAPSHOT</th>
+<th align="left">3.4_01</th>
+</tr>
+<tr class="b"><td align="left">semispace-main build time</td>
+<td align="left">42 sec (10 it in ListenerStarvationTest)</td>
+</tr>
+<tr class="a"><td align="left">TerraSpaceTest<br />
+testInsertionTime</td>
+<td align="left">23.2 sec<br />
+(1 sec): 5011 items, 1967 ms time</td>
+</tr>
+<tr class="b"><td align="left">SpaceTest</td>
+<td align="left">6.0 sec</td>
+</tr>
+<tr class="a"><td align="left">SemiSpaceTest</td>
+<td align="left">12.2 sec</td>
+</tr>
+<tr class="b"><td align="left">NotificationTest</td>
+<td align="left">15.5 sec</td>
+</tr>
+<tr class="a"><td align="left">ActorTest</td>
+<td align="left">9.4 sec</td>
+</tr>
+<tr class="b"><td align="left">ListenerStarvationTest</td>
+<td align="left">Basic (10 it): 4.3, 1000 it: 34.6 sec</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="./images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

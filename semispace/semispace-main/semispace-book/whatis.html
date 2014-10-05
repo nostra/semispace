@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - What is SemiSpace</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="introduction.html">Introduction</a></td>
+<td>Up: <a href="introduction.html">Introduction</a></td>
+<td>Next: <a href="solvable.html">Problems suitable for a Tuple Space</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<div class="section"><h2><a name="Introduction"></a>Introduction</h2>
+<p>SemiSpace is a tuple space oriented towards being easy to integrate with existing technology. The module <a href="../../semispace-main/">semispace-main</a> is the only module that you really need to have a dependency to, and the <a href="../../semispace-main/dependencies.html">libraries that this module depends on,</a> are intended to be few.</p>
+<p>This document will explain different configuration and usage strategies, and present a tutorial which is a practical guide.</p>
+<p>SemiSpace contains many modules and usage models. Try not to let that confuse you; Only <tt>semispace-main</tt> is mandatory, the other modules are used on a <i>need to have</i> basis: If you do not need the web services interface, disregard the module. If you do not want to use, or need, <a href="http://www.springframework.org/" class="externalLink">Spring,</a> use standard POJO code for your configuration.</p>
+<div class="section"><h3><a name="Differences_from_traditional_implementations."></a>Differences from traditional implementations.</h3>
+<p><a href="http://en.wikipedia.org/wiki/Tuple_space" class="externalLink">Wikipedia gives an in depth discussion of what a Tuple Space</a> is. SemiSpace's has a focus that is slightly different from the the traditional implementations as the space itself is not perceived to be separate from the client(s) VM(s). How you <i>use</i> it, is analogous, though. When having more than one VM, <a href="http://www.terracotta.org/" class="externalLink">Terracotta</a> takes care of the distribution.</p>
+<p>SemiSpace <b>does not use the concept of client and server.</b> Rather, the space is distributed over the nodes present in the space. </p>
+<p><b>Getter objects are supported</b> as well as public fields. The JavaSpace standard only lets you play with public fields, which is a nuisance if you want to use (possibly) auto-generated <a href="http://www.hibernate.org" class="externalLink">Hibernate</a> objects.</p>
+<p>As long as your class can be streamed with <a href="http://xstream.codehaus.org" class="externalLink">XStream,</a> you can put it into SemiSpace.</p>
+<h4>SemiSpace does not use Jini</h4>
+<p>SemiSpace <b>does not require installation of a Jini server.</b></p>
+<p><a href="http://www.jini.org" class="externalLink">Jini</a> is the crux of the standard JavaSpaces - which are the ones that implement the <a href="http://www.jini.org/wiki/JavaSpaces_Specification" class="externalLink">JavaSpace interface.</a> Jini uses JERI, which is a re-implementation of RMI. JERI supports dynamic stub generation, which is useful if you are adhering to the client / server idiom.</p>
+<p>The methods you find in the SemiSpace interface, however, are analogous to the methods you find in the JavaSpace interface. Presently JavaSpace05 is not considered. The differences between the SemiSpace and JavaSpace interface, is mainly that the transaction object has been removed, and that the return types may be different. </p>
+<h4>Terracotta is used for distribution </h4>
+<p>SemiSpace is bundled with a <a href="http://www.terracotta.org" class="externalLink">Terracotta</a> Integration Module (<a href="http://www.terracotta.org/confluence/display/docs/Terracotta+Integration+Modules+Manual" class="externalLink">TIM</a>), which you can use in order to distribute the contents of your space. Besides distribution, you have the benefit of not having to create the configuration yourself.</p>
+<h4>SemiSpace uses XML </h4>
+<p>The transport and internal storage layer of SemiSpace is XML. This has the disadvantage of bloating and transformation, but the <b>advantage</b> of not needing any dependencies on Java objects when treating and using the space. This means that you can use the same space for several purposes without worrying about getting ClassCastExceptions.</p>
+<p>When you are using Java code directly on the space, the XML layer is hidden, and you can concentrate on using the space in a manner which is the same as if you would use a <a href="http://www.jini.org" class="externalLink">Jini</a> based implementation. </p>
+<h4>Query on first level depth </h4>
+<p>SemiSpace allows a nested object structure, but queries are only performed on the <b>first</b> level. This has the advantage have rather fat holder objects, whilst retaining the speed and functionality of the space. This make the space usable for caching.</p>
+<p>This implies, however, that you should model the holder objects of the space carefully, preparing them with structures that contain <b>record-like data,</b> such as String and Integer. Large byte arrays, for instance, on the first level is discouraged as it becomes one of the fields that are used for identification - and as such is propagated over your servers.</p>
+<h4>All this implies:</h4>
+<ul><li>You can interface the space from <b>different languages</b> (such as <a href="http://www.ruby-lang.org" class="externalLink">Ruby</a>) without having to think about Java Objects. The interfacing is performed with web services, in this case, and you will need to set up the web service end point.</li>
+<li>Java implementation on different nodes do <b>not need to have the same libraries available.</b></li>
+<li>Use of SemiSpace is easy to junit test, as the space works well on a single VM.</li>
+<li>When distributing with Terracotta, you do <b>not be too concerned about</b><tt>tc-config.xml</tt> (the Terracotta configuration file).</li>
+<li>You can distribute Objects without taking the object depth into consideration. In other words, can you have <b>arbitrarily large and / or nested objects.</b> Only the <i>first level</i> is used in matching, though, and you still need to pay heed to network traffic overhead.</li>
+</ul>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="introduction.html">Introduction</a></td>
+<td>Up: <a href="introduction.html">Introduction</a></td>
+<td>Next: <a href="solvable.html">Problems suitable for a Tuple Space</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

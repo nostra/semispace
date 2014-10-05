@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Hints and tips</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="usage.html">Usage</a></td>
+<td>Up: <a href="usage.html">Usage</a></td>
+<td>Next: <a href="springconfig.html">Spring configuration</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<div class="section"><h2><a name="Space_interaction"></a>Space interaction</h2>
+<p>It is sometimes slightly confusing to use space based logic. This chapter contains some hints and pointers.</p>
+<div class="section"><h3><a name="Space_is_not_intended_to_be_used_for_long_term_storage"></a>Space is not intended to be used for long term storage</h3>
+<p>A tuple space is not intended to be used for long living data. If you have needs in this direction, an <a href="http://en.wikipedia.org/wiki/Object-relational_mapping" class="externalLink">ORM</a> such as <a href="http://www.hibernate.org" class="externalLink">Hibernate</a> will solve this better for you. </p>
+<p>There is nothing wrong with mixing strategies, however. </p>
+</div>
+<div class="section"><h3><a name="Query_timeout"></a>Query timeout</h3>
+<p>When you are using the master / worker pattern, you will benefit from letting the query for the master <b>answer</b> live slightly longer the life time of the <b>query</b> itself.</p>
+<p>The reason for the slightly longer life of the wait for answer, is that you need to consider the worst case time, which also includes the network traffic time, and the processing time. If you intend to have the query live shorter, decrease both timeout values, not only one.</p>
+</div>
+<div class="section"><h3><a name="Space_objects_are_serialized"></a>Space objects are serialized</h3>
+<p>The object identity is lost when you put the objects into the space. This can be used for simplifying the queries, as you can reuse the object.</p>
+</div>
+<div class="section"><h3><a name="Make_allowances_for_asynchronous_operations"></a>Make allowances for asynchronous operations</h3>
+<p>When programming against the space, try to make allowances for the operations being asynchronous. When you are treating elements, they may appear out of order as you may have more than one set of clients. If your are dependent on a certain order, you may need two keys, representing a counter and the other an operation ID.</p>
+</div>
+<div class="section"><h3><a name="Use_objects_and_not_primitives"></a>Use objects and not primitives</h3>
+<p>In your holder object, do not use primitives, use objects instead. Otherwise, you will <i>always</i> query on the primitive value, which for <tt>int</tt> will be 0 (zero). If you use <tt>Integer</tt> for <tt>int</tt>, you can omit the value, and query on anything, as it is <tt>null.</tt></p>
+</div>
+<div class="section"><h3><a name="Do_not_query_on_interfaces_and_sub_class_types"></a>Do not query on interfaces and sub class types</h3>
+<p>When you perform a query, you essentially fill out a object which shall be matched on all fields that are filled out for a given object type. The matching is <b>not</b> performed on class hierarchies, i.e., you cannot query with a parent class and get results of a sub class type. Interfaces are also disregarded as well.</p>
+<p>The reason for this, is to support other languages / structures, such as ruby or php.</p>
+</div>
+<div class="section"><h3><a name="Make_allowances_for_failure_when_using_webservices"></a>Make allowances for failure when using webservices</h3>
+<p>You need to make your application tolerate failures when running against the SemiSpace webservices, as the webservices may not always be present. The problem you try to solve, is that random outages create an exception which in effect stops your program.</p>
+<p>Write your catch in a manner similar to the following:</p>
+<div class="source"><pre>} catch (SemiSpaceProxyException exception) {
+    log.warn(&quot;Got a problem with SemiSpace connection.&quot;, exception);
+    // need to sleep in order not to hammer connection, which
+    // is relevant if you are in a loop.
+    try {
+        Thread.sleep(10000);
+    } catch (InterruptedException e) {
+        // Ignored
+    }
+}</pre>
+</div>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="usage.html">Usage</a></td>
+<td>Up: <a href="usage.html">Usage</a></td>
+<td>Next: <a href="springconfig.html">Spring configuration</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

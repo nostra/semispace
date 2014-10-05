@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Issues</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="security.html">Security considerations</a></td>
+<td>Up: <a href="usage.html">Usage</a></td>
+<td>Next: <a href="license.html">License</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<div class="section"><h2><a name="Issues_and_limitations"></a>Issues and limitations</h2>
+<p><b>Disappearance of admin server</b><br />
+If the admin server disappears or is changed, you may experience time skew problems. This is as resynchronization takes the time from the instance identified as admin. If the difference in skew is large, you may experience some incorrect lifetimes. This is only relevant when distributing with Terracotta.</p>
+<p><b>Webapp and console apps</b><br />
+Notice when having a heterogeneous system with a webapp and a console application, you need to configure the the applications in your <tt>tc-config.xml</tt> file. More details can be found here: <a href="http://www.terracotta.org/kit/reflector?kitID=3.2&amp;pageID=ConfigGuideAndRef" class="externalLink">Terracotta configuration manual</a>.</p>
+<p><b>Spring loaded or class loaded</b><br />
+You can not mix whether you load the SemiSpace with <a href="http://www.springframework.org" class="externalLink">Spring</a> or with from the java objects directly, and need to choose one or the other.</p>
+<p><b>More than one terracotta-loaded webapp on the same server</b><br />
+You can not deploy more than one SemiSpace-enabled war on one server, unless you use different roots in the <tt>tc-config.xml</tt> file. The error terracotta gives you is: &quot;<i>Perhaps you have the same root name assigned more than once to variables of different types.</i>&quot; This problem is due to the webapp class loader. In the tutorial project, this problem is solved by using webservices locally.</p>
+<p>You can solve this problem with grouping your web applications in the <tt>tc-config.xml</tt> file.</p>
+<p>Even though you can share classes between a standalone app and a webapp (and several standalone webapps), you still cannot share objects between webapps in the same container. Please see:</p>
+<ul><li><a href="https://jira.terracotta.org/jira/browse/CDV-112" class="externalLink">https://jira.terracotta.org/jira/browse/CDV-112</a> (Marked as closed)</li>
+<li><a href="https://jira.terracotta.org/jira/browse/CDV-272" class="externalLink">https://jira.terracotta.org/jira/browse/CDV-272</a> (Marked as solved)</li>
+<li><a href="https://jira.terracotta.org/jira/browse/CDV-81" class="externalLink">https://jira.terracotta.org/jira/browse/CDV-81</a></li>
+</ul>
+<p>A simple <b>workaround</b> is to use different processes for each war. The only problem with this, is that the shared wars need to be equal. This should not be necessary, but as of Terracotta version 3.0.1, I did not manage to get it to work. Even when having an <tt>app-groups</tt> configuration. This may have something to do with the spring configuration.</p>
+<p>This boils down to the following: <b>When having a complex setup with many different applications, make sure they can be distributed early.</b> If you wait to long before running into a problem, you have a real risk of having to modify your archetecture on an ad hoc basis, which is suboptimal - to say the least.</p>
+<p><b>You may need to download sun jars </b><br />
+Some of the dependencies, may demand that you have downloaded some 3rd party jars from Sun. If you only use <tt>semispace-main,</tt> this is not relevant, as it does not have any such dependencies. Read more about this in <a href="http://maven.apache.org/guides/mini/guide-coping-with-sun-jars.html" class="externalLink">Mavens guide for coping with sun jars.</a></p>
+<p><b>Changed fields during class upgrade will break your runtime </b><br />
+The data which is stored in semispace, is your objects as XML. Therefore, a change in, lets say, field names will result in an error when the object has been read from the space. If you are making changes to your object, which is not compatible with existing contents in the space, you need to remove all relevant elements from the space first. </p>
+<p><b>Do not insert inner classes</b><br />
+When inserting inner classes, XStream will add a reference to the outer class - in toto. This can lead to <b>unexpected and devastating results,</b> particularly when using the persistence add-on. In the best case, you just get an unexpected increase of size. Worst case, you get severe faults due to non-serializability of the element.</p>
+<p><b>Be careful with protected fields</b><br />
+In order to reduce visibility for a (transport) class, it may be tempting to change a field to protected. This will make SemiSpace disregard the field in total, which leads to confusing query results, as the field would not be part of a query. Remember: All fields that are going to be used for queries <b>need to be public.</b> However, you can have as many private and protected fields as you like - as long as they are not part of a query. </p>
+<p><b>XML will expose all variables</b><br />
+When transporting an object over the web services interface, all fields will be exposed, as XML does not differentiate between private and public fields. Bear this in mind when constructing transport objects, as you could introduce side effects when querying on the space with XML.</p>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="security.html">Security considerations</a></td>
+<td>Up: <a href="usage.html">Usage</a></td>
+<td>Next: <a href="license.html">License</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

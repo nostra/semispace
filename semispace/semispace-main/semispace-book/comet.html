@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - semispace-comet</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="comet.html">SemiSpace and Cometd</a></td>
+<td>Up: <a href="comet.html">SemiSpace and Cometd</a></td>
+<td>Next: <a href="ctechnical.html">Technical overview</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<p>SemiSpace has a module which allows JavaScript to communicate to an <a href="http://www.cometd.org/" class="externalLink">cometd</a>-enabled webserver. The javascript interface mimics the <a href="../apidocs/org/semispace/SemiSpaceInterface.html">Java interface</a> as closely as possible.</p>
+<p>We are presently using Cometd-2.x.</p>
+<div class="section"><h2><a name="Overview_of_semispace-comet"></a>Overview of semispace-comet</h2>
+<p>The semispace-comet module of SemiSpace consists of the following parts:</p>
+<table class="bodyTable"><tr class="b"><td>semispace-comet-server</td>
+<td>The webapp which will answer the JavaScript queries</td>
+</tr>
+<tr class="a"><td>semispace-comet-client</td>
+<td>An emulation of the JavaScript client behaviour. Can be used for emulating a client for test purposes, or for bridging two server implementations</td>
+</tr>
+<tr class="b"><td>semispace-comet-common</td>
+<td>Transport objects and functionality shared between the client and server implementation</td>
+</tr>
+<tr class="a"><td>semispace-comet-webapp</td>
+<td>An example webapp, which gives you inspiration of how to configure your own</td>
+</tr>
+<tr class="b"><td>semispace-comet-app</td>
+<td>A standalone jetty server which you can easily run on the command line</td>
+</tr>
+<tr class="a"><td>JavaScript</td>
+<td>The web client functionality resides in JavaScript which you simply downloaded and add to your webapp</td>
+</tr>
+</table>
+</div>
+<div class="section"><h2><a name="Installation"></a>Installation</h2>
+<p>When using semispace-comet, you need to install / prepare the server side and the JavaScript side. On the server side is a matter of setting up the webapp with dependencies in a manner similar to semispace-comet-webapp (which indeed is an example). On the client side, you need to copy down the JavaScript files, and put them in the correct directories.</p>
+<p>A good starting point is to examine the projects in semispace-comet, and semispace-comet-webapp in particular. That sub project contains examples of use. </p>
+</div>
+<div class="section"><h2><a name="Instructions_for_use:_TBA"></a>Instructions for use: TBA</h2>
+<p>We are on the way of consolidating and organizing the examples in a manner that will suit a presentation like this better. However, we have not got around to do it yet. Sorry.</p>
+<div class="section"><h3><a name="Dojo_binding"></a>Dojo binding</h3>
+<p>TBA</p>
+</div>
+<div class="section"><h3><a name="JQuery_binding"></a>JQuery binding</h3>
+<p>TBA</p>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="comet.html">SemiSpace and Cometd</a></td>
+<td>Up: <a href="comet.html">SemiSpace and Cometd</a></td>
+<td>Next: <a href="ctechnical.html">Technical overview</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

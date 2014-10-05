@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Problems suitable for a Tuple Space</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="whatis.html">What is SemiSpace</a></td>
+<td>Up: <a href="introduction.html">Introduction</a></td>
+<td>Next: <a href="installation.html">Installation</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<div class="section"><h2><a name="Do_not_distribute_for_its_own_sake"></a>Do not distribute for its own sake</h2>
+<p>Much of the traditional view of tuple spaces concentrate on distribution of workload. Whereas this <i>can</i> be a benefit, I often find it overrated. In order to benefit from distribution, you need an problem which is scalable in itself. <a href="http://en.wikipedia.org/wiki/Amdahls_law" class="externalLink">Amdahl's law</a> explains that the speedup of a program using multiple processors in parallel computing is limited by the sequential fraction of the program.</p>
+<p>Additionally, you have the question of network pipe. Let's say you want to distribute image scaling. With images having a &quot;normal&quot; compact camera size, you quickly begin to test the network instead. On the other hand, you may remove load from the from end servers.</p>
+<p>Everything has to be done for a reason, and figuring those reasons out in advance has it's benefit. </p>
+<div class="section"><h3><a name="Not_everything_is_a_nail"></a>Not everything is a nail</h3>
+<p>It might be tempting to use tuple oriented problem solving on everything that needs distribution. For instance, if you need a distributed file system and distributed processing, <a href="http://hadoop.apache.org" class="externalLink">Hadoop</a> with its <a href="http://en.wikipedia.org/wiki/Map_reduce" class="externalLink">Map Reduce</a> implementation might be more suitable. The converse is also true, of course. Map reduce has its benefits, but is not suitable for all problems.</p>
+</div>
+</div>
+<div class="section"><h2><a name="Reasons_for_using_SemiSpace"></a>Reasons for using SemiSpace</h2>
+<p>Even though you can use SemiSpace on a standalone server, you benefit the most when you distribute.</p>
+<p>Distribution idioms are easy to implement and maintain, whether this is used for caching, information gathering or maintenance of session information. </p>
+<div class="section"><h3><a name="Failover_and_load_balancing"></a>Failover and load balancing</h3>
+<p>A fairly standard setup, is to have two or more front end servers accepting queries in a load balanced manner. SemiSpace can be set up in order to make the the impact of adding a new node minimal.</p>
+<p>When having back end servers treating queries and data, you can add specialized processing machines for treating workloads that are large. Consider having 5 nodes, and figuring out that graph generation takes a lot of time. Re-assign one of the nodes, or add a new one, which is dedicated to only graph generation. This can be quite simple if the task is not too interconnected with the rest of the application.</p>
+</div>
+<div class="section"><h3><a name="Time_bound_processing"></a>Time bound processing</h3>
+<p>SemiSpace is similar to JavaSpace in that processing can be time bound. This has the benefit that you can guarantee an answer (as no answer also is an answer). Lets say you have 10 elements that need to be processed for you web page, and only the content retrieval is critical. The other parts may be graphs, statistics or other non-critical information. You can setup your application to await the content bulk, but disregard the rest if it has not finished processing.</p>
+<p>Time bound processing is also useful when dealing with animations and other data that need to be supplied in a tick-tock manner, i.e. regularly. You need to move the animation even if not all the data is present. </p>
+</div>
+<div class="section"><h3><a name="Avoiding_spiraling_death"></a>Avoiding spiraling death</h3>
+<p>Let's say you have 5 front end servers. One of them gets a problem due to workload and goes down. If this makes the other 4 servers fail, you have a spiraling death problem, and in effect, you may need to take all servers out of commission while you correct the problem. (This actually is a lot more common than you think.) </p>
+<p>That servers bounce up and down is normal. The impact on the overall service should be minimized. This can be done by having (that is, changing an existing) architecture to degrade gracefully.</p>
+<p>Lets say you have two components, content generation and graph generation. Content is critical, and graph generation is not - even if it generates the most load. Let both generate their content in a master / worker manner. Give content generation 10 workers and graph generation only 2 (multiply with factors as you see fit). The timeout for waiting for a graph should be reasonable. As the graph generation now is load bound, one missing server does not take the other servers down.</p>
+</div>
+<div class="section"><h3><a name="Inherent_caching"></a>Inherent caching</h3>
+<p>If you are distributing queries, you may get an out-of-the box cache by simply first querying to find if an equal query has already given a result. This is performed by not performing a <tt>take</tt> on the space, but rather a <tt>read.</tt></p>
+</div>
+<div class="section"><h3><a name="Divide_and_conquer_your_program"></a>Divide and conquer your program</h3>
+<p>Even when you are not having load or distribution problems, you will benefit from dividing your program into separate autonomous parts. This makes it easier for multiple programmers to divide tasks between themselves.</p>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="whatis.html">What is SemiSpace</a></td>
+<td>Up: <a href="introduction.html">Introduction</a></td>
+<td>Next: <a href="installation.html">Installation</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

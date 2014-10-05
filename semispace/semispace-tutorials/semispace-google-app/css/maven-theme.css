@@ -1,0 +1,418 @@
+body, th, td {
+	font-family:Verdana,sans-serif;
+	font-size:12px;
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:1.4em;
+}
+
+body {
+	background:white none repeat scroll 0 0;
+	color:black;
+	margin:0;
+	padding:0;
+}
+
+h2, h3, h4, h5, h6 {
+	font-family:"Trebuchet MS",sans-serif;
+	font-weight:normal;
+    color: #539126;
+}
+
+h2 {
+    font-size: 30px;
+	margin-bottom:28px;
+}
+
+h3 {
+    padding: 4px 4px 4px 0px;
+    border-bottom:1px solid #ccc;
+    font-weight: bold;
+    font-size: 170%;
+}
+
+h4 {
+    border-bottom: 1px solid #aaaaaa;
+    font-size: 150%;
+}
+
+h5 {
+    font-size: 140%;
+    border-bottom: 1px solid #aaaaaa;
+    color: #000;
+}
+
+h6 {
+    font-size: 130%;
+    color: #000;
+}
+
+table.bodyTable th {
+    color: white;
+    background-color: #bbb;
+    text-align: left;
+    font-weight: bold;
+}
+
+table.bodyTable th,table.bodyTable td {
+    font-size: 11px;
+}
+
+table.bodyTable tr.a, table.bodyTable tr.b {
+background-image: url(../images/breadcrumbs.jpg);
+}
+
+table.bodyTable tr.a td, table.bodyTable tr.b td {
+	width: 33%;
+}
+
+p {
+    line-height: 1.3em;
+    font-size: 12px;
+    color: #000;
+}
+
+
+#banner{
+	width: 100%;
+	height: 88px;
+	overflow: hidden;
+	background-color: #464646;
+}
+
+#bannerLeft{
+	display: block;
+	width: 50%;
+	float: left;
+	margin: 28px;
+	color: #fff;
+	font-family:"Trebuchet MS",sans-serif;
+	font-size: 30px;
+	font-weight:normal;
+}
+
+#banner a{
+	display: block;
+	float: right;
+}
+
+#banner hr{
+	display: none;
+}
+
+#breadcrumbs {
+    height: 13px;
+    background-image: url(../images/breadcrumbs.jpg);
+    padding: 5px 10px 14px 20px;
+    font-size: 12px;
+}
+
+#breadcrumbs a{
+	font-weight: normal;
+	text-decoration: none ;
+	color: #000;
+}
+
+#breadcrumbs a:hover {
+    color: darkorange;
+}
+
+
+#leftColumn,#navcolumn {
+    background-color: #F4F4F4;
+}
+
+#leftColumn {
+    margin: 10px 0 10px 0;
+    border-top-color: #ccc;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-right-color: #ccc;
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-bottom-color: #ccc;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+#navcolumn h5 {
+    border-bottom: 2px solid #999;
+    padding-top: 4px;
+    padding-top: 2px;
+    padding-left: 9px;
+    color: #fff;
+    background-color: #539126;
+    font-family:"Trebuchet MS",sans-serif;
+}
+
+
+#navcolumn ul {
+    margin: 5px 0 15px -0em;
+}
+
+#navcolumn ul a {
+    color: #333333;
+}
+
+#navcolumn ul a:hover {
+    color: #539126;
+}
+
+#footer {
+    padding: 10px;
+    margin: 20px 0px 20px 0px;
+    border-top: solid #ccc 1px;
+    color: #333333;
+}
+
+
+#intro {
+    border: solid #ccc 1px;
+    margin: 6px 0px 0px 0px;
+    padding: 10px 40px 10px 40px;
+}
+
+.subsection {
+    margin-left: 3px;
+    color: #333333;
+}
+
+.subsection p {
+    font-size: 12px;
+}
+
+
+
+.errormark,.warningmark,.donemark,.infomark {
+    background: url(../images/icon_error_sml.gif) no-repeat;
+}
+
+.warningmark {
+    background-image: url(../images/icon_warning_sml.gif);
+}
+
+.donemark {
+    background-image: url(../images/icon_success_sml.gif);
+}
+
+.infomark {
+    background-image: url(../images/icon_info_sml.gif);
+}
+
+.info,.warn {
+    display: block;
+    clear: right;
+    margin-bottom: 0.8em;
+    margin-right: 20%;
+    margin-left: 20px;
+    margin-top: 8px;
+    border-left: 1px solid #efefef;
+    border-top: 1px solid #efefef;
+    border-bottom: 1px solid #aaa;
+    border-right: 1px solid #aaa;
+    -moz-border-radius: 0.7em;
+    background: #ffffff;
+}
+
+.info p, .warn p {
+    padding: 0.5em 1em 0.5em 1em;
+    margin: 0;
+    line-height: 1.4em;
+}
+
+.info strong, .warn strong {
+    background: #6888B0 url(../images/icon_info_sml.gif) left center no-repeat;
+    background-position: 0.2em;
+    display: block;
+    width: inherit;
+    color: #E5E5E5;
+    padding: 0.3em 0.5em 0.3em 1.6em;
+    -moz-border-radius-topleft: 0.6em;
+    -moz-border-radius-topright: 0.6em;
+}
+
+.warn strong {
+    background: #D6BD7E url(../images/icon_warning_sml.gif) left center no-repeat;
+    background-position: 0.3em;
+    color: #000000;
+}
+
+.section p a {
+    color: #539126;
+}
+
+.section p a:hover {
+    text-decoration: underline;
+}
+
+code {
+    border: 1px dotted #aaa;
+    background: #efefef;
+    padding: 1px;
+}
+
+.source {
+    border: 1px solid #999;
+    overflow: auto;
+    background: #FFFFDD;
+}
+
+dt {
+    padding: 4px 4px 4px 24px;
+    color: #333333;
+    background-color: #efefef;
+    border-bottom:1px solid #ccc;
+    font-weight: bold;
+    font-size: 14px;
+    background-image: url(../images/h3.jpg);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+}
+
+.subsectionTitle {
+    font-size: 13px;
+    font-weight: bold;
+    color: #666;
+}
+
+
+#legend li.externalLink {
+    background: url(../images/external.png) left top no-repeat;
+    padding-left: 18px;
+}
+
+a.externalLink,a.externalLink:link,a.externalLink:visited,a.externalLink:active,a.externalLink:hover
+{
+    background: url(../images/external.png) right center no-repeat;
+    padding-right: 18px;
+}
+
+#legend li.newWindow {
+    background: url(../images/newwindow.png) left top no-repeat;
+    padding-left: 18px;
+}
+
+a.newWindow,a.newWindow:link,a.newWindow:visited,a.newWindow:active,a.newWindow:hover
+{
+    background: url(../images/newwindow.png) right center no-repeat;
+    padding-right: 18px;
+}
+
+a.externalLink, a.externalLink:link, a.externalLink:visited, a.externalLink:active, a.externalLink:hover {
+    background: none;
+    padding-right: 0;
+}
+
+
+/*
+Description: Magula style for highligh.js
+Author: Ruslan Keba <rukeba@gmail.com>
+Website: http://rukeba.com/
+Version: 1.0
+Date: 2009-01-03
+Music: Aphex Twin / Xtal
+*/
+
+div.source {
+	margin: .5em; padding: .5em;
+	background-color: #f4f4f4;
+}
+
+div.source pre,
+.ruby .subst,
+.lisp .title {
+	color: black;
+}
+
+.string,
+.title,
+.parent,
+.tag .attribute .value,
+.rules .value,
+.rules .value .number,
+.preprocessor,
+.ruby .symbol,
+.instancevar,
+.aggregate,
+.template_tag,
+.django .variable,
+.smalltalk .class,
+.addition,
+.flow,
+.stream,
+.bash .variable,
+.apache .cbracket {
+	color: #050;
+}
+
+.comment,
+.annotation,
+.template_comment,
+.diff .header,
+.chunk {
+	color: #777;
+}
+
+.number,
+.date,
+.regexp,
+.literal,
+.smalltalk .symbol,
+.smalltalk .char,
+.change {
+	color: #800;
+}
+
+.label,
+.javadoc,
+.ruby .string,
+.decorator,
+.filter .argument,
+.localvars,
+.array,
+.attr_selector,
+.pi,
+.doctype,
+.deletion,
+.envvar,
+.shebang,
+.apache .sqbracket {
+	color: #00e;
+}
+
+.keyword,
+.id,
+.phpdoc,
+.title,
+.vbscript .built_in,
+.rsl .built_in,
+.cpp .built_in,
+.avrasm .built_in,
+.aggregate,
+.smalltalk .class,
+.winutils,
+.bash .variable,
+.apache .tag,
+.xml .tag,
+.xml .title {
+	font-weight: bold;
+	color: navy;
+}
+
+.html .css,
+.html .javascript,
+.html .vbscript {
+	opacity: 0.5;
+}
+
+/* --- */
+.apache .tag {
+	font-weight: bold;
+	color: blue;
+}
+

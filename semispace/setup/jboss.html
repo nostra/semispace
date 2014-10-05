@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - </title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href=".." id="bannerLeft">
+    
+                                            <img src="../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-main/semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-main/semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+                        <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+              <h5>Modules</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-main/index.html">semispace-main</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-wsdef/index.html">semispace-wsdef</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-war/index.html">semispace-war</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-wsclient/index.html">semispace-wsclient</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-tutorials/index.html">semispace-tutorials</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-tim/index.html">semispace-tim</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-comet/index.html">semispace-comet</a>
+          </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>JBoss-3.2.5 adjustement</h2>
+<p>JBoss has deployed an incompatible version of commons-collections. This needs to be removed for the mule system to work.</p>
+<p>The paths of the following will need to be adjusted to your local version:</p>
+<div class="source"><pre>cd 
+mkdir del200610jbossorig/
+mv /var/lib/jboss/all/deploy/jbossweb-tomcat50.sar/commons-collections.jar    del200610jbossorig/
+rm /var/lib/jboss/default/deploy/jbossweb-tomcat50.sar/commons-collections.jar
+cp /opt/home/erlend/.m2/repository/commons-collections/commons-collections/3.2/commons-collections-3.2.jar /var/lib/jboss/all/deploy/jbossweb-tomcat50.sar/commons-collections.jar
+cp /opt/home/erlend/.m2/repository/commons-collections/commons-collections/3.2/commons-collections-3.2.jar /var/lib/jboss/default/deploy/jbossweb-tomcat50.sar/commons-collections.jar</pre>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

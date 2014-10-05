@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - </title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href=".." id="bannerLeft">
+    
+                                            <img src="../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-main/semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-main/semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+                        <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+              <h5>Modules</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-main/index.html">semispace-main</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-wsdef/index.html">semispace-wsdef</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-war/index.html">semispace-war</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-wsclient/index.html">semispace-wsclient</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-tutorials/index.html">semispace-tutorials</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-tim/index.html">semispace-tim</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-comet/index.html">semispace-comet</a>
+          </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2>Setup of postresql database</h2>
+<p>Add user space with a password</p>
+<div class="source"><pre>createuser space
+psql template1 -c &quot;alter user space with password 'spock472';&quot;</pre>
+</div>
+<p>Create database intraspace</p>
+<div class="source"><pre>createdb --encoding UNICODE intraspace
+psql intraspace -c &quot;GRANT ALL on database intraspace TO  space;&quot;</pre>
+</div>
+<p>Sql for HILO generation. (Will be created automatically if not present.)</p>
+<div class="source"><pre>-- Create the HILO table which shall contain support elements for 
+-- ID creation.
+CREATE TABLE HILO (
+  sequence_name varchar(255),
+  sequence_next_hi_value int
+);
+GRANT ALL on HILO to space;</pre>
+</div>
+</div>
+<div class="section"><h2>Creating java objects from definition XML</h2>
+<p>Possibly this must be called from the hbm project. This is due to an error in the hibernate plugin.</p>
+<div class="source"><pre>mvn hibernate3:hbm2java</pre>
+</div>
+<div class="source"><pre>mvn clean hibernate3:hbm2java compile package</pre>
+</div>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

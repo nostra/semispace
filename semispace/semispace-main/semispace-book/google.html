@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Google map address lookup</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="simple.html">Terracotta interaction</a></td>
+<td>Up: <a href="tutorials.html">Tutorials</a></td>
+<td>Next: <a href="terragoogle.html">Terracotta and google lookup</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<div class="section"><h2><a name="Case_study:_Google_maps"></a>Case study: Google maps</h2>
+<p>The purpose of this tutorial is to illustrate SemiSpace usage and space interaction, by making a server able to query and use <a href="http://code.google.com/apis/maps/" class="externalLink">Google maps API</a>. In order to query Google, you need have a <a href="http://code.google.com/apis/maps/signup.html" class="externalLink">Google maps key.</a><i>You can still follow the example, even if you do not have a key yet; You can see the interaction in the logs.</i></p>
+<p>The tutorial explains how you can set up a server that takes care of the google communication. It also demonstrates how you can limit which clients that are allowed to use the server.</p>
+<p>The swing client also demonstrates how you can use the <a href="http://en.wikipedia.org/wiki/Actor_model" class="externalLink">actor pattern</a> for internal communication. </p>
+<p>None of the examples are particularly refined, but they should offer a starting point of understanding the SemiSpace technology, and what you can do with it.</p>
+</div>
+<div class="section"><h2><a name="The_webapp_server"></a>The webapp server</h2>
+<p>The purpose of the webapp server, is to create the a control application for google map search. Since all searches are performed on a single server, you can:</p>
+<ul><li>Keep your google application key private</li>
+<li>Cache content lookup</li>
+<li>Refine existing search result by modifying the cache</li>
+<li>Control which clients that are allowed to connect and use the service</li>
+<li>Control to content lookup rate, for instance disallow more than 1 lookup per second</li>
+</ul>
+</div>
+<div class="section"><h2><a name="The_swing_client"></a>The swing client</h2>
+<p>The swing client offers a simple interface, which allows you to log in onto the webapp server. Once logged in, you can perform address lookup queries that are performed on the server. The communication is performed over web services.</p>
+<p>The swing setup is performed with <a href="http://www.swixml.org" class="externalLink">SwiXML,</a> which is a sensible and pragmatic <a href="http://en.wikipedia.org/wiki/XUL" class="externalLink">XUL</a> framework.</p>
+</div>
+<div class="section"><h2><a name="Starting_the_webapp_and_client"></a>Starting the webapp and client</h2>
+<p>The following explains startup of a standalone (development) server without terracotta. Presumably you have, in the top level directory, successfully run</p>
+<div class="source"><pre>mvn clean install</pre>
+</div>
+<div class="section"><h3><a name="Starting_the_webapp"></a>Starting the webapp</h3>
+<p>In order to start the webapp, either put the war file in a suitable webapp container, or run the following:</p>
+<div class="source"><pre>cd semispace-tutorials/semispace-google-webapp
+mvn jetty:run</pre>
+</div>
+<p>When you look at <a href="http://localhost:8080/semispace-google/" class="externalLink">http://localhost:8080/semispace-google/</a> you should see an entry page. This page allows you to enter users and google key. Notice the link to the WSDL file: <a href="http://localhost:8080/semispace-google/services/tokenspace?wsdl" class="externalLink">http://localhost:8080/semispace-google/services/tokenspace?wsdl</a> This is the endpoint when connecting to the webapp from the standalone application.</p>
+<h4>Alternative to mvn jetty:run</h4>
+<p>A standalone application has been created as part of the build. Take a peek in the <a href="./terragoogle.html">Jetty / Terracotta integration chapter</a> for how to run it.</p>
+</div>
+<div class="section"><h3><a name="Starting_the_client"></a>Starting the client</h3>
+<p>Enter the directory where the client reside, and find the target directory:</p>
+<div class="source"><pre>cd semispace-tutorials/semispace-google-client/target</pre>
+</div>
+<p>You should find a zip file in this directory, which can be used in the following manner:</p>
+<div class="source"><pre>mkdir some_directory
+cd some_directory
+unzip ../google-client.zip
+chmod a+x gclient.sh </pre>
+</div>
+<p>If you do not run a unix-based operating system, you need to create your own startup script.</p>
+<p>Start the client with:</p>
+<div class="source"><pre>./gclient.sh http://localhost:8080/semispace-google/services/tokenspace</pre>
+</div>
+<p>This shall give you the login page.</p>
+</div>
+<div class="section"><h3><a name="Client__server_interaction"></a>Client / server interaction </h3>
+<p>Without having registered neither users nor google key in the webapp, try enter a (spurious) name and password in the login box, and press login. Notice the log messages.</p>
+<p>Now, register a name and password in the webapp. Then try to log in again with the client. The screen should change to allow search expressions.</p>
+<p>Enter an address to search - the same way you would do it in <a href="http://maps.google.com" class="externalLink">Google maps</a> for and press <tt>submit.</tt> Try, for example, </p>
+<div class="source"><pre>Kongensgate 14, Oslo, Norway</pre>
+</div>
+<p>The server should log the query, but as no google map key has yet been registered, you naturally do not get a search result. On the client, the query times out because not answer is received.</p>
+<p>Register a key and try to search again. You should see the search expression in the server log, and the client should display the information that was retrieved from google. </p>
+<p>Notice that if you try to search again with the same key, you receive the cached version from the server.</p>
+<p>Try and remove the user by registering a user with the same name as an existing user, but with an empty password. When you try to search in the application, the login box appears again, as the user is no longer authenticated.</p>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="simple.html">Terracotta interaction</a></td>
+<td>Up: <a href="tutorials.html">Tutorials</a></td>
+<td>Next: <a href="terragoogle.html">Terracotta and google lookup</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>

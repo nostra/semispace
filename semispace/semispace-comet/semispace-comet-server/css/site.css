@@ -1,0 +1,12 @@
+/*
+    Dark blue as in heading : color: #3060c8;
+Light blue: #3292fe;
+Silver as i border: #b3b1af;
+Dark font color: #333;
+Light font color as in copyright: #999;
+*/
+
+#banner a {
+  display:block;
+  float:left;
+}

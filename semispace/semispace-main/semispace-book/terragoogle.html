@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+
+
+
+
+
+
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>SemiSpace - Terracotta and google lookup</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="../css/print.css" type="text/css" media="print" />
+    <script src="../js/highlight.js"></script>
+    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script> 
+ 
+        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      </head>
+  <body class="composite">
+    <div id="banner">
+                  <a href="../.." id="bannerLeft">
+    
+                                            <img src="../../images/semispace.png" alt="SemiSpace" />
+    
+            </a>
+                    <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="breadcrumbs">
+          
+  
+
+  
+    
+  
+  
+    
+              <div class="xright">            <a href="../..">SemiSpace home</a>
+            
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+           
+  
+
+  
+    
+  
+  
+    
+                   <h5>SemiSpace book</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../semispace-book/">Browseable book</a>
+          </li>
+              
+    <li class="none">
+                    <a href="../semispace-book.pdf">PDF book</a>
+          </li>
+          </ul>
+              <h5>Parent Project</h5>
+            <ul>
+              
+    <li class="none">
+                    <a href="../../index.html">semispace</a>
+          </li>
+          </ul>
+              <h5>Project Documentation</h5>
+            <ul>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-info.html">Project Information</a>
+                </li>
+              
+                
+              
+      
+            
+      
+            
+      
+            
+      
+            
+      
+            
+      
+              
+        <li class="collapsed">
+                    <a href="../project-reports.html">Project Reports</a>
+                </li>
+          </ul>
+                 
+  
+
+  
+    
+  
+  
+    
+            <div id="lastPublished">
+        Last Published: 08/01 2012
+              </div>
+            </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+        <div class="section"><h2><a name=""></a></h2>
+<table class="bodyTable"><tr class="a"><td>Previous: <a href="google.html">Google map address lookup</a></td>
+<td>Up: <a href="tutorials.html">Tutorials</a></td>
+<td>Next: <a href="comet.html">SemiSpace and Cometd</a></td>
+</tr>
+</table>
+<hr />
+</div>
+<p>If you do not wish to communicate over webservices, the alternative is to connect up your space with terracotta.</p>
+<p>There are many was to do this, depending on how you designed your application. The way that is chosen here, is to use a webapp container - simply because the lookup application is designed as a webapp. </p>
+<div class="section"><h2><a name="Terracotta"></a>Terracotta</h2>
+<p>You need Terracotta with the the jetty TIM module. This has been explained in the <a href="./terraconfig.html">installation chapter.</a></p>
+</div>
+<div class="section"><h2><a name="Jetty"></a>Jetty</h2>
+<p>For your convenience, a bundled version of jetty has been created. You could, of course, choose a different app server. But these instructions are for jetty.</p>
+<p>If you like to set up your own jetty server and instance, you find instructions here: <a href="http://www.terracotta.org/documentation/ga/product-documentation-12.html" class="externalLink"> Clustering Web Applications.</a></p>
+<div class="section"><h3><a name="Unpacking_jetty_application"></a>Unpacking jetty application</h3>
+<p>For your convenience, a bundled jetty application has been created in <tt>semispace-google-app</tt>. Unpack the zip file and run the preliminary installation script:</p>
+<div class="source"><pre>mkdir somewhere
+cd somewhere
+unzip &lt;wereever&gt;/google-app.zip
+cd bin
+chmod a+x afterInstallation.sh
+./afterInstallation.sh</pre>
+</div>
+<p>Notice that you get informed to set some environment variables. These are needed for Jetty to run. The bundled Jetty script is the same script that follows the standard distribution, with the addition of Terracotta specific variables, as explained below.</p>
+<p>If you do <b>not</b> add the Terracotta variables, the Jetty instance runs as a standalone server. </p>
+</div>
+<div class="section"><h3><a name="Environment_variables"></a>Environment variables</h3>
+<p>You need the following environment variables for connecting to the Terracotta server:</p>
+<div class="source"><pre>export TC_INSTALL_DIR=&lt;path_to_local_Terracotta_home&gt;
+export TC_CONFIG_PATH=&quot;localhost:9510&quot;</pre>
+</div>
+<p>These variables are needed for all instances that shall communicate over Terracotta.</p>
+</div>
+</div>
+<div class="section"><h2><a name="Distributing_jetty_instances"></a>Distributing jetty instances</h2>
+<p>You need to have unzipped the <tt>google-app.zip</tt> in two different directories, lets call them A and B. You also need to have started the Terracotta server, as explained in <a href="./terraconfig.html">Terracotta configuration</a> chapter.</p>
+<p>Recap:</p>
+<div class="source"><pre>export TC_INSTALL_DIR=&lt;where terracotta is installed&gt;
+${TC_INSTALL_DIR}/bin/start-tc-server.sh -f some/path/to/config/tc-config.xml </pre>
+</div>
+<div class="section"><h3><a name="Starting_up_the_first_jetty_instance"></a>Starting up the first jetty instance</h3>
+<p>It is presumed that you already have configured the paths as applicable to your environment, i.e. exported the variables that are printed after running <tt>afterInstallation.sh</tt> and exporting <tt>TC_INSTALL_DIR</tt> and <tt>TC_CONFIG_PATH</tt>.</p>
+<p>Run in the jetty bin directory:</p>
+<div class="source"><pre>./jetty.sh start</pre>
+</div>
+<p>You should see something similar to:</p>
+<div class="source"><pre>Using Terracotta
+Starting BootJarTool...
+2009-06-23 13:09:30,165 INFO - Terracotta 3.2.0, as of ....</pre>
+</div>
+</div>
+<div class="section"><h3><a name="Starting_up_the_second_jetty_instance"></a>Starting up the second jetty instance</h3>
+<p>Unzip <tt>google-app.zip</tt> into a different directory. You need to use a different port as we are running the service on the same machine. If you use two different machines, this, naturally, does not apply. (However, your configuration references would need to be tailored to support this.)</p>
+<p>Change the jetty port in <tt>etc/jetty.xml</tt> from</p>
+<div class="source"><pre>&lt;Set name=&quot;port&quot;&gt;&lt;SystemProperty name=&quot;jetty.port&quot; default=&quot;8080&quot;/&gt;&lt;/Set&gt;</pre>
+</div>
+<p>to</p>
+<div class="source"><pre>&lt;Set name=&quot;port&quot;&gt;&lt;SystemProperty name=&quot;jetty.port&quot; default=&quot;8081&quot;/&gt;&lt;/Set&gt;</pre>
+</div>
+</div>
+</div>
+<div class="section"><h2><a name="Testing_the_application:"></a>Testing the application:</h2>
+<p>Open two browser windows: <a href="http://localhost:8080/semispace-google/index.html" class="externalLink">http://localhost:8080/semispace-google/index.html</a> and <a href="http://localhost:8081/semispace-google/index.html" class="externalLink">http://localhost:8081/semispace-google/index.html</a></p>
+<p>This represents your two servers A and B, and should present the same entry page.</p>
+<p>Submit a new user in one of the windows. You see the user list is updated with the user. Now, press the <tt>index</tt> button in the other window. You shall see the same user in that window.</p>
+<div class="section"><h3><a name="Using_the_client"></a>Using the client</h3>
+<p>You can use the client application over webservices on either servers. The respective endpoints would be: <a href="http://localhost:8080/semispace-google/services/tokenspace" class="externalLink">http://localhost:8080/semispace-google/services/tokenspace</a> and <a href="http://localhost:8081/semispace-google/services/tokenspace" class="externalLink">http://localhost:8081/semispace-google/services/tokenspace</a></p>
+<p>Example:</p>
+<div class="source"><pre>./gclient.sh http://localhost:8080/semispace-google/services/tokenspace</pre>
+</div>
+<h4>Integrating directly from the client</h4>
+<p>Direct integration from the client is as of Terracotta version 3.x not possible. The problem is that the client does not use spring for setting up the SemiSpace connection, whereas the webapp does, and this does not mix well.</p>
+</div>
+<div class="section"><h3><a name="Stopping_the_server"></a>Stopping the server</h3>
+<p>In the Jetty bin directory do:</p>
+<div class="source"><pre>./jetty.sh stop</pre>
+</div>
+</div>
+</div>
+<div class="section"><h2><a name=""></a></h2>
+<hr />
+<table class="bodyTable"><tr class="b"><td>Previous: <a href="google.html">Google map address lookup</a></td>
+<td>Up: <a href="tutorials.html">Tutorials</a></td>
+<td>Next: <a href="comet.html">SemiSpace and Cometd</a></td>
+</tr>
+</table>
+</div>
+
+      </div>
+    </div>
+    <div class="clear">
+      <hr/>
+    </div>
+    <div id="footer">
+      <div class="xleft">                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
+            <img alt="Built by Maven" src="../images/logos/maven-feather.png"></img>
+          </a>
+            </div>
+      <div class="xright">&#169;  
+          2008-2012
+    
+          
+  
+
+  
+    
+  
+  
+    
+  </div>
+      <div class="clear">
+        <hr/>
+      </div>
+    </div>
+    <script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-342393-3");
+	pageTracker._initData();
+	pageTracker._trackPageview();
+</script>
+  </body>
+</html>
