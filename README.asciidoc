@@ -3,4 +3,3 @@ semispace
 
 SemiSpace is a light weight Open Source interpretation of Tuple Space / Object Space based on ideas from JavaSpaces. 
 
-*NB*: In process of being moved to github. This project was most actively maintained in 2010. 
