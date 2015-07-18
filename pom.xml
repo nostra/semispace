@@ -34,14 +34,10 @@
     </developers>
 
     <scm>
-    	<url>http://www.semispace.org/svn/trunk/</url>
-        <connection>scm:svn:http://www.semispace.org/svn/trunk/</connection>
-        <developerConnection>scm:svn:svn+ssh://semispace.org/opt/spacerepo/trunk/space</developerConnection>
+        <connection>scm:git:ssh://git@github.com/amedia/semispace.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/amedia/semispace.git</developerConnection>
+        <url>git@github.com:amedia/semispace.git</url>
     </scm>
-    <!--<ciManagement>
-        <system>continuum</system>
-        <url>http://www.dynamicus.org/continuum/</url>
-    </ciManagement>-->
 
     <properties>
         <springframework.version>3.1.0.RELEASE</springframework.version>
