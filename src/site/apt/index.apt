@@ -84,15 +84,6 @@ SemiSpace offers
  []
 
 
-~~~~~~~~~~~~~~~~~
-Maven2 repository 
-~~~~~~~~~~~~~~~~~
-
- SemiSpace resides in in Maven repo1, and the
- dependency reference is as follows - for stable versions:
- 
-%{snippet|id=semispaceDependency|file=semispace-tutorials/semispace-tutorial/pom.xml}
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 * Accessing the repository directly
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,66 +91,6 @@ Maven2 repository
  In order to obtain snapshot versions, or just a direct download of 
  the packages, add the following to your pom:
  
-~~~ %{snippet|id=dynamicusRepo|file=semispace-tutorials/pom.xml}
-
-+--------------------------------+
-<repositories>
-    <repository>
-        <id>semispace</id>
-        <name>Space resides in semispace-repo</name>
-        <layout>default</layout>
-        <url>http://www.semispace.org/maven2</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-</repositories>
-+--------------------------------+
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* Source code and IDE integration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
- In order to download the source code (in the easiest manner), you can
- do something similar to the following:
- 
-+---------------------------------+
-# If you already have an eclipse project, first do: mvn eclipse:clean 
-mvn -DdownloadSources=true eclipse:eclipse
-+---------------------------------+
-
- Invocations are similar if you use 
- {{{http://www.jetbrains.com/idea/index.html}IntelliJ, }}
- <<<mvn idea:idea>>> - or just 
- open the pom file as a project. 
- 
-~~~~~~~~~~~~
-Subversion Checkout
-~~~~~~~~~~~~
-
- You can anonymously check out the project with an invocation similar to:
-
-+----------------------------------+
-svn co http://www.semispace.org/svn/trunk/ space
-+----------------------------------+
-
- The source code compiles with {{{http://maven.apache.org}Maven-2.2.1,}} and
- should also compile with later versions of Maven.
-
- The releases are tagged, and you can find them here:
- {{http://www.semispace.org/svn/tags}}
-
-~~~~~~~
-~~Sources
-~~~~~~~
-
- ~~If having the sources attached with Maven is not sufficient for your 
- ~~purposes, download the complete source set from the following URL:
- 
- ~~* {{{http://www.dynamicus.org/artifacts/}http://www.dynamicus.org/artifacts/}}
- 
-~~ * Or more specifically: \
-~~   {{{http://www.dynamicus.org/artifacts/space-latest.tar.gz}http://www.dynamicus.org/artifacts/space-latest.tar.gz}}
 
 
 ~~~~~~~~~~~~

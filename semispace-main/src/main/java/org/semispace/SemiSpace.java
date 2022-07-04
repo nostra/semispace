@@ -767,10 +767,8 @@ public class SemiSpace implements SemiSpaceInterface {
      * For the benefit of junit test(s) - defensively copied statistics
      */
     protected SemiSpaceStatistics getStatistics() {
-        SemiSpaceStatistics stats;
         // Defensive copied statistics
-        stats = (SemiSpaceStatistics) xmlToObject(objectToXml(statistics));
-        return stats;
+        return statistics.copy();
     }
 
     protected boolean cancelListener(ListenerHolder holder) {

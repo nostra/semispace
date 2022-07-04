@@ -8,7 +8,6 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.semispace</groupId>
     <artifactId>semispace-war</artifactId>
     <packaging>war</packaging>
     <version>1.3.2-SNAPSHOT</version>
@@ -82,13 +81,6 @@
     <build>
         <finalName>semispace-war</finalName>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>

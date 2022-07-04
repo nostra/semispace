@@ -40,7 +40,20 @@ public class SemiSpaceStatistics {
     private AtomicInteger blockingRead = new AtomicInteger();
     private AtomicInteger blockingTake = new AtomicInteger();
     private AtomicInteger numberOfListeners = new AtomicInteger();
-    
+
+    protected SemiSpaceStatistics copy() {
+        SemiSpaceStatistics copy = new SemiSpaceStatistics();
+        copy.read.set(read.get());
+        copy.take.set(take.get());
+        copy.write.set(write.get());
+        copy.missedTake.set(missedTake.get());
+        copy.missedRead.set(missedRead.get());
+        copy.blockingRead.set(blockingRead.get());
+        copy.blockingTake.set(blockingTake.get());
+        copy.numberOfListeners.set(numberOfListeners.get());
+        return copy;
+    }
+
     public int getRead() {
         return this.read.get();
     }

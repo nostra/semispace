@@ -6,12 +6,11 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.semispace</groupId>
     <artifactId>semispace-main</artifactId>
 	 <packaging>jar</packaging>
     <name>semispace-main</name>
     <version>1.3.2-SNAPSHOT</version>
-    <description>The main SemiSpace project, everything needed for running a (potentially) distributed JavaSpaces inspired space.</description>
+    <description>The main SemiSpace project, a JavaSpaces inspired space.</description>
     <url>http://www.semispace.org/semispace/semispace-main</url>
 
     <dependencies>
@@ -19,6 +18,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -33,12 +33,6 @@
             <groupId>xpp3</groupId>
             <artifactId>xpp3_min</artifactId>
         </dependency>
-        <!-- If you need terracotta-toolkit:
-       <dependency>
-            <groupId>org.terracotta.toolkit</groupId>
-		      <artifactId>terracotta-toolkit-1.0</artifactId>
-	    </dependency>
-        -->
     </dependencies>
 
     <!--
@@ -47,12 +41,33 @@
     <build>
         <plugins>
             <plugin>
-                <!-- Book plugin resides here due to reference problems when 
-                    residing in parent pom.
-                -->
+                    <!-- Book plugin resides here due to reference problems when
+                    residing in parent pom.xml -->
                 <groupId>org.apache.maven.doxia</groupId>
                 <artifactId>doxia-maven-plugin</artifactId>
-                <version>1.1.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.11.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                        <version>${asciidoctor.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-xdoc</artifactId>
+                        <version>1.11.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-site-renderer</artifactId>
+                        <version>1.11.1</version>
+                    </dependency>
+                </dependencies>
+                <!--
                 <executions>
                     <execution>
                         <phase>pre-site</phase>
@@ -60,16 +75,13 @@
                             <goal>render-books</goal>
                         </goals>
                     </execution>
-                </executions>
+                </executions>-->
                 <configuration>
                     <books>
                         <book>
                             <directory>src/book</directory>
                             <descriptor>src/book/semispace-book.xml</descriptor>
                             <formats>
-                                <format>
-                                    <id>pdf</id>
-                                </format>
                                 <format>
                                     <id>xdoc</id>
                                 </format>
@@ -78,11 +90,10 @@
                     </books>
                 </configuration>
             </plugin>
-            <plugin>
-                <!-- Need to copy over pdf book to site area -->
+            <!--plugin>
+                Need to copy over pdf book to site area
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.3</version>
                 <executions>
                     <execution>
                         <id>pdfbook</id>
@@ -97,7 +108,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
         </plugins>
     </build>
 </project>

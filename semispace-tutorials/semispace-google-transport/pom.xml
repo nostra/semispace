@@ -8,7 +8,6 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.semispace</groupId>
     <artifactId>semispace-google-transport</artifactId>
     <packaging>jar</packaging>
     <version>1.3.2-SNAPSHOT</version>

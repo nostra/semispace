@@ -27,6 +27,7 @@
 package org.semispace.notification;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 import org.semispace.AlternateButEqual;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiSpace;
