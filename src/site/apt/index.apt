@@ -11,14 +11,13 @@
 ~~~~~~~~~~~~~~~~~~~~
 
 
+  <<NOTICE: This document is OLD and need to be revised.>>
+
   SemiSpace is a light weight Open Source interpretation of
   <<{{{http://www.wikipedia.org/wiki/tuple_space}Tuple Space / Object Space}}>> 
   based on ideas from 
   <<{{{http://www.jini.org/wiki/JavaSpaces_Specification}JavaSpaces}}.>>
-  It can be run as single, <<stand alone,>> space on one 
-  {{{http://java.sun.com/javase/6/docs/}J2SE 6.0}} 
-  VM (or greater), or
-  <<clustered>> with {{{http://www.terracotta.org}Terracotta}} version 3.4.0.
+  It can be run as single, <<stand alone,>> spac.
 
   Please see the 
   {{{semispace-main/semispace-book}SemiSpace book}}
@@ -58,25 +57,14 @@ SemiSpace offers
 
  * supports <<generics>> for ease of usage
 
- * can be <<distributed>>: {{{semispace-main/semispace-book/terraconfig.html}Terracotta}} can be used for distributing the space and contents therein.
-
- * has a {{{http://www.terracotta.org/confluence/display/docs/Terracotta+Integration+Modules+Manual}Terracotta Integration Module}} (TIM) included.
- 
- * can be distributed (or not) both from <<console>> applications and <<J2EE>> application servers: 
- {{{http://geronimo.apache.org}Geronimo,}}
- {{{http://jetty.mortbay.org/jetty/}Jetty,}}
-  or some other J2EE- or webapp-server, can easily contain SemiSpace   
- 
- * <<does not need Jini>> installed ... as SemiSpace do not use Jini. 
+ * <<does not need Jini>> installed ... as SemiSpace do not use Jini.
  
  * uses <<getters>> in addition to public fields: In difference to the JavaSpaces specification 
  
  * does <<not>> use the <<<Entry>>> mix-in interface: Allows any {{{http://xstream.codehaus.org}XStream}}-able class to be put into the space. 
  
  * is <<Open Source>> and licensed under {{{http://www.apache.org/licenses/LICENSE-2.0}Apache 2}}
- 
- * exposes statistics over <<JMX>> (if you use the webapp module)
- 
+
  * supplies a simple <<actor pattern>> framework
 
  * a {{{http://www.cometd.org/}cometd-based}} interface to a SemiSpace-enabled webapp

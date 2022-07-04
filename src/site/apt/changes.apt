@@ -10,6 +10,8 @@
 *----------------------------------+------------+
 || Change or bug || Change
 *----------------------------------+------------+
+| Remove modules | Larger revision as of 2022, aiming to remove old cruft |
+*----------------------------------+------------+
 | Updated dependencies | Maintenance library updates |
 *----------------------------------+------------+
 
