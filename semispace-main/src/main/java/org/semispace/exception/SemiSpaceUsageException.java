@@ -16,7 +16,7 @@
 package org.semispace.exception;
 
 /**
- * Probable usage error. 
+ * Probable usage error.
  */
 public class SemiSpaceUsageException extends SemiSpaceException {
     public SemiSpaceUsageException(String message) {

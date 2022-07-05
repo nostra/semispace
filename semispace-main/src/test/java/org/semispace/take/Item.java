@@ -81,9 +81,9 @@ public class Item {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += ( writer==null?13:writer.hashCode());
-        hash += ( value == null?19:value.hashCode());
-        hash += ( timestamp == null?23:timestamp.hashCode());
+        hash += (writer == null ? 13 : writer.hashCode());
+        hash += (value == null ? 19 : value.hashCode());
+        hash += (timestamp == null ? 23 : timestamp.hashCode());
         return hash;
     }
 

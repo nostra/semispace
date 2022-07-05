@@ -6,25 +6,35 @@
  *
  * Copyright 2008 Erlend Nossum
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  *  Description:  See javadoc below
  *
  *  Created:      16. feb.. 2008
- * ============================================================================ 
+ * ============================================================================
  */
 
 package org.semispace.admin;
+
+import com.thoughtworks.xstream.XStream;
+import org.semispace.DistributedEvent;
+import org.semispace.Holder;
+import org.semispace.NameValueQuery;
+import org.semispace.SemiSpace;
+import org.semispace.SemiSpaceInterface;
+import org.semispace.event.SemiAvailabilityEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,17 +46,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import org.semispace.DistributedEvent;
-import org.semispace.Holder;
-import org.semispace.NameValueQuery;
-import org.semispace.SemiSpace;
-import org.semispace.SemiSpaceInterface;
-import org.semispace.event.SemiAvailabilityEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.thoughtworks.xstream.XStream;
 
 public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     private static final Logger log = LoggerFactory.getLogger(SemiSpaceAdmin.class);
@@ -64,7 +63,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     private ExecutorService pool;
 
     private Thread shutDownHook;
-    
+
     private PeriodicHarvest periodicHarvest;
 
     public SemiSpaceAdmin(SemiSpaceInterface terraSpace) {
@@ -90,9 +89,9 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     protected int getSpaceId() {
         return spaceId;
     }
-    
+
     /**
-     * @return space configured for this admin. Beneficiary for subclasses. 
+     * @return space configured for this admin. Beneficiary for subclasses.
      */
     protected SemiSpaceInterface getSpace() {
         return space;
@@ -125,7 +124,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
             return;
         }
         beenInitialized = true;
-        
+
         Runnable hook = new Runnable() {
             @Override
             @SuppressWarnings("synthetic-access")
@@ -134,7 +133,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
                 shutdownAndAwaitTermination();
             }
         };
-        shutDownHook = new Thread( hook);
+        shutDownHook = new Thread(hook);
         Runtime.getRuntime().addShutdownHook(shutDownHook);
 
         //
@@ -162,7 +161,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         queryForMasterTime();
         // log.info( "Calculate time, which should give an approximation of the master time, reports ["+new
         // Date(calculateTime())+"]");
-        
+
         periodicHarvest = new PeriodicHarvest(this);
         periodicHarvest.startReaper();
     }
@@ -183,7 +182,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         }
         if (masterFound == null) {
             log.info("I am master, as no other master was identified.");
-            assumeAdminResponsibility(! admins.isEmpty());
+            assumeAdminResponsibility(!admins.isEmpty());
         }
         return foundId;
     }
@@ -201,6 +200,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
 
     /**
      * Protected as it is used every once in a while from periodic object reaper
+     *
      * @param admins List to fill with the admin processes found
      * @return List of identified SemiSpace admin classes
      */
@@ -231,7 +231,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
             // Looping until we do not find any more admins
         } while (answer != null);
 
-        while ( space.takeIfExists(new IdentifyAdminQuery()) != null) { // NOSONAR
+        while (space.takeIfExists(new IdentifyAdminQuery()) != null) { // NOSONAR
             // Remove identity query from space as we do not need it anymore. If more than one present, we have a race condition (not likely)
         }
 
@@ -241,7 +241,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     /**
      * The very first query may take some time (when using terracotta), and it is therefore prudent to kick start the
      * connection.
-     * 
+     *
      * @return Time it took in ms for an answer to be obtained.
      */
     private long fireUpConnection() {
@@ -350,9 +350,9 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     @Override
     public void notifyAboutEvent(DistributedEvent event) {
         if (event.getEvent() instanceof SemiAvailabilityEvent) {
-            if (InternalQuery.class.getName().equals(event.getHolderClassName()) && space instanceof SemiSpace ) {
-                Holder holder = ((SemiSpace)space).readHolderById(event.getEvent().getId());
-                if ( holder != null ) {
+            if (InternalQuery.class.getName().equals(event.getHolderClassName()) && space instanceof SemiSpace) {
+                Holder holder = ((SemiSpace) space).readHolderById(event.getEvent().getId());
+                if (holder != null) {
                     notifyAboutInternalQuery((InternalQuery) new XStream().fromXML(holder.getXml()));
                 }
             }
@@ -365,7 +365,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
      * The method is protected for the benefit of subclasses.
      */
     protected void shutdownAndAwaitTermination() {
-        if ( pool.isShutdown() && periodicHarvest.isCancelled()) {
+        if (pool.isShutdown() && periodicHarvest.isCancelled()) {
             // Already had a shutdown notification.
             return;
         }
@@ -387,15 +387,15 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
             Thread.currentThread().interrupt();
         }
     }
-    
+
     /**
      * Remove shutdown hook which otherwise is run when the space is shut down.
      * Primarily used when exchanging this admin with another.
      */
     public void removeShutDownHook() {
         periodicHarvest.cancelReaper();
-        if ( shutDownHook != null ) {
-            Runtime.getRuntime().removeShutdownHook(shutDownHook);            
+        if (shutDownHook != null) {
+            Runtime.getRuntime().removeShutdownHook(shutDownHook);
         }
     }
 
