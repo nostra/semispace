@@ -20,8 +20,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
         
         <dependency>
@@ -45,6 +45,7 @@
                     residing in parent pom.xml -->
                 <groupId>org.apache.maven.doxia</groupId>
                 <artifactId>doxia-maven-plugin</artifactId>
+                <version>1.2</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.doxia</groupId>

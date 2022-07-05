@@ -64,8 +64,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * A tuple space implementation which can be distributed with terracotta. This is
@@ -77,7 +75,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
     private static final Logger log = LoggerFactory.getLogger(SemiSpace.class);
 
-    public static final long ONE_DAY = 86400 * 1000;
+    public static final long ONE_DAY = 86_400_000L;
 
     private static SemiSpace instance = null;
 
@@ -105,7 +103,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
     private SemiSpace() {
         elements = HolderContainer.retrieveContainer();
-        listeners = new ConcurrentHashMap<Long, ListenerHolder>();
+        listeners = new ConcurrentHashMap<>();
         statistics = new SemiSpaceStatistics();
         xStream = new XStream();
         setAdmin(new SemiSpaceAdmin(this));
@@ -178,7 +176,7 @@ public class SemiSpace implements SemiSpaceInterface {
      * Distributed notification method.
      */
     protected void notifyListeners(DistributedEvent distributedEvent) {
-        final List<SemiEventListener> toNotify = new ArrayList<SemiEventListener>();
+        final List<SemiEventListener> toNotify = new ArrayList<>();
         ListenerHolder[] listenerArray = listeners.values().toArray(new ListenerHolder[0]);
         Arrays.sort( listenerArray, new ShortestTtlComparator());
         for (ListenerHolder listener : listenerArray) {
@@ -228,6 +226,7 @@ public class SemiSpace implements SemiSpaceInterface {
         } catch (InterruptedException e) {
             log.error("Got exception", e);
             exception = e;
+            e.notifyAll();
         } catch (ExecutionException e) {
             log.error("Got exception", e);
             exception = e;
@@ -259,7 +258,6 @@ public class SemiSpace implements SemiSpaceInterface {
      * All values are expected to be non-null and valid upon entry.
      */
     public SemiLease writeToElements(String entryClassName, long leaseTimeMs, String xml, Map<String, String> searchMap) {
-        Holder holder = null;
         if ( !checkedClassSet.contains( entryClassName )) {
             checkedClassSet.add(entryClassName);
             if ( xml.contains("<outer-class>")) {
@@ -269,13 +267,13 @@ public class SemiSpace implements SemiSpaceInterface {
             }
         }
         // Need to add holder within lock. This indicates that HolderContainer has some thread safety issues
-        holder = elements.addHolder(xml, admin.calculateTime() + leaseTimeMs, entryClassName, searchMap);
+        Holder holder = elements.addHolder(xml, admin.calculateTime() + leaseTimeMs, entryClassName, searchMap);
 
         SemiLease lease = new ElementLease(holder, this);
         statistics.increaseWrite();
         
         SemiAvailabilityEvent semiEvent = new SemiAvailabilityEvent(holder.getId());
-        //notifyListeners(new EventDistributor(holder.getClassName(), semiEvent, holder.getSearchMap()));
+
         distributeEvent(new DistributedEvent(holder.getClassName(), semiEvent,
                 holder.getSearchMap()));
 
@@ -283,12 +281,7 @@ public class SemiSpace implements SemiSpaceInterface {
     }
     
     private void distributeEvent(final DistributedEvent distributedEvent) {
-        final Runnable distRunnable = new Runnable() {
-            @Override
-            public void run() {
-                eventDistributor.distributeEvent(distributedEvent);
-            }
-        };
+        final Runnable distRunnable = () -> eventDistributor.distributeEvent(distributedEvent);
         if (!getAdmin().getThreadPool().isShutdown()) {
             try {
                 admin.getThreadPool().execute(distRunnable);
@@ -361,10 +354,6 @@ public class SemiSpace implements SemiSpaceInterface {
      * @return Xml version of found object
      */
     private String findLeaseForTemplate(Map<String, String> templateSet, boolean isToTakeTheLease) {
-        Holder found = null;
-
-        List<Holder> toEvict = new ArrayList<Holder>();
-
         // Read all elements until element is found. Side effect is to generate eviction list.
         if ( templateSet.get("class") == null ) {
             throw new SemiSpaceObjectException("Did not expect classname to be null");
@@ -375,6 +364,8 @@ public class SemiSpace implements SemiSpaceInterface {
         }
 
         HolderElement next = elements.next(className);
+        Holder found = null;
+        List<Holder> toEvict = new ArrayList<>();
         if ( next != null ) {
             Iterator<Holder> it = next.iterator();
             while ( found == null && it.hasNext()) {
@@ -594,12 +585,8 @@ public class SemiSpace implements SemiSpaceInterface {
      * is the JavaSpace manner.
      */
     private Map<String, String> fillMapWithPublicFields(Object examine) {
-        Field[] fields = classFieldMap.get(examine.getClass().getName());
-        if ( fields == null ) {
-            fields = examine.getClass().getFields();
-            classFieldMap.put(examine.getClass().getName(), fields);
-        }
-        Map<String, String> map = new HashMap<String, String>();
+        Field[] fields = classFieldMap.computeIfAbsent(examine.getClass().getName(), k -> examine.getClass().getFields());
+        Map<String, String> map = new HashMap<>();
         for (Field field : fields) {
             try {
                 String name = field.getName();
@@ -683,7 +670,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
                 }
             }
-        List<Holder> beforeEvict = new ArrayList<Holder>();
+        List<Holder> beforeEvict = new ArrayList<>();
 
         String[] groups = elements.retrieveGroupNames();
         for ( String group : groups ) {
@@ -694,9 +681,9 @@ public class SemiSpace implements SemiSpaceInterface {
                     beforeEvict.add(elem);
                 }
             }
-            long afterSize = beforeEvict.size() - evictSize ;
+            long afterSize = beforeEvict.size() - evictSize;
             if ( afterSize > 0 ) {
-                List<Long>ids = new ArrayList<Long>();
+                List<Long>ids = new ArrayList<>();
                 for (Holder evict : beforeEvict) {
                     ids.add(Long.valueOf( evict.getId()) );
                 }
@@ -767,20 +754,20 @@ public class SemiSpace implements SemiSpaceInterface {
      * For the benefit of junit test(s) - defensively copied statistics
      */
     protected SemiSpaceStatistics getStatistics() {
-        // Defensive copied statistics
+        // Defensively copied statistics
         return statistics.copy();
     }
 
+    /**
+     * @return true if listener was removed
+     */
     protected boolean cancelListener(ListenerHolder holder) {
-        boolean success = false;
-
-        ListenerHolder listener = listeners.remove(Long.valueOf(holder.getId()));
-        if (listener != null) {
+        if (listeners.remove(Long.valueOf(holder.getId())) != null) {
             statistics.decreaseNumberOfListeners();
-            success = true;
+            return true;
         }
 
-        return success;
+        return false;
     }
 
     protected boolean renewListener(ListenerHolder holder, long duration) {
@@ -834,7 +821,6 @@ public class SemiSpace implements SemiSpaceInterface {
             success = true;
             distributeEvent(new DistributedEvent(elem.getClassName(), new SemiRenewalEvent(
                     elem.getId(), elem.getLiveUntil()), elem.getSearchMap()));
-            //notifyListeners(new EventDistributor(elem.getClassName(), new SemiRenewalEvent( elem.getId(), elem.getLiveUntil()), elem.getSearchMap()));
         }
 
         return success;
@@ -844,9 +830,7 @@ public class SemiSpace implements SemiSpaceInterface {
      * @see HolderContainer#findAllHolderIds
      */
     public Long[] findAllHolderIds() {
-        Long[] result = null;
-        result = elements.findAllHolderIds();
-        return result;
+        return elements.findAllHolderIds();
     }
 
     /**

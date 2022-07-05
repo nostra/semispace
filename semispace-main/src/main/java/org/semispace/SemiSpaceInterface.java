@@ -23,12 +23,14 @@
 
 package org.semispace;
 
+import org.semispace.event.SemiEvent;
+
 /**
  * Operations possible to perform on space, inspired by the JavaSpace interface.
  */
 public interface SemiSpaceInterface {
     /** 
-     * Write object into tuple space, with a life time
+     * Write object into tuple space, with a lifetime
      * given in ms.
      * @param obj Object to be written into the space
      * @param duration Life time in milliseconds of the written object
@@ -74,7 +76,7 @@ public interface SemiSpaceInterface {
      * @return An event registration or null
      */
     public SemiEventRegistration notify(Object template,
-            SemiEventListener listener,
+            SemiEventListener<? extends SemiEvent> listener,
             long duration);
 
 }
