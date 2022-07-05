@@ -1,8 +1,0 @@
-        ----
-        semispace-comet-app
-        ----
-
- The standalone app is presently not working. This is due to
- critical jars not being in a publicly available repository.
-
- See: {{http://wiki.eclipse.org/Jetty/FAQ#JSP_support_not_configured.3F}}
