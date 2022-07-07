@@ -17,18 +17,14 @@
   <<{{{http://www.wikipedia.org/wiki/tuple_space}Tuple Space / Object Space}}>> 
   based on ideas from 
   <<{{{http://www.jini.org/wiki/JavaSpaces_Specification}JavaSpaces}}.>>
-  It can be run as single, <<stand alone,>> spac.
+  It can be run as single, <<stand alone,>> space.
 
   Please see the 
   {{{semispace-main/semispace-book}SemiSpace book}}
   for in-depth information about installation and usage.
 
  Other information:
- 
- * Tutorials and examples are included. You find them in
-  {{{semispace-tutorials/index.html}the tutorials project}}, and
-  the description in the {{{semispace-main/semispace-book}SemiSpace book.}}
-  
+
  * Problems and limitations as far as they are known are listed
   {{{semispace-main/semispace-book/beware.html}in a chapter in 
   the book.}}
@@ -67,7 +63,6 @@ SemiSpace offers
 
  * supplies a simple <<actor pattern>> framework
 
- * a {{{http://www.cometd.org/}cometd-based}} interface to a SemiSpace-enabled webapp
 
  []
 
