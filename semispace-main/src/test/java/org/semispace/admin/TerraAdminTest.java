@@ -5,7 +5,7 @@ import org.semispace.SemiSpaceInterface;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TerraAdminTest  {
+public class TerraAdminTest {
 
     @Test
     public void testPerformInitializationAsMaster() {
@@ -27,14 +27,14 @@ public class TerraAdminTest  {
         iaq.id = new Integer(1);
         iaq.hasAnswered = Boolean.TRUE;
         ts.write(iaq, 1000);
-        
+
         TimeQuery tq = new TimeQuery();
         tq.isFinished = Boolean.TRUE;
-        
+
         SemiSpaceAdmin admin = new SemiSpaceAdmin(ts);
         admin.performInitialization();
         assertFalse(admin.isMaster());
-     
-        assertEquals(iaq.id.intValue() +1, admin.getSpaceId(), "Space id shall typically increase with one.");
+
+        assertEquals(iaq.id.intValue() + 1, admin.getSpaceId(), "Space id shall typically increase with one.");
     }
 }

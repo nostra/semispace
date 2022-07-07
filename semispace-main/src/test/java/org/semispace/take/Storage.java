@@ -56,7 +56,7 @@ public class Storage {
 
     public synchronized void removeItem(Item item) {
         if (!items.remove(item.getValue(), item)) {
-            errors.append("Item removal failed: " + item.getValue()+"\n");
+            errors.append("Item removal failed: " + item.getValue() + "\n");
         }
     }
 
@@ -68,6 +68,7 @@ public class Storage {
         }
         return count;
     }
+
     public synchronized String getErrors() {
         return errors.toString();
     }

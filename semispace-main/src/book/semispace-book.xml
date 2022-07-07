@@ -1,179 +1,179 @@
- <book xmlns="http://maven.apache.org/BOOK/1.0.0"
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/BOOK/1.0.0 http://maven.apache.org/xsd/book-1.0.0.xsd">
-  <id>semispace-book</id>
-  <title>SemiSpace manual</title>
-  <author>Erlend Nossum</author>
-  <chapters>
-    <chapter>
-      <id>introduction</id>
-      <title>Introduction</title>
-      <sections>
-        <section>
-          <id>whatis</id>
-          <title>Introduction to SemiSpace</title>
-        </section>
-        <section>
-          <id>solvable</id>
-        </section> 
-      </sections>
-    </chapter>
-    
-    <chapter>
-      <id>installation</id>
-      <title>Installation</title>
-      <sections>
-        <section>
-          <id>preliminaries</id>
-        </section>
-        <section>
-          <id>terraconfig</id>
-        </section>
-        <!-- 
-        <section>
-          <id>beware.apt</id>
-        </section> 
-        -->
-      </sections>
-    </chapter>
-    
-      <chapter>
-        <id>tutorials</id>
-        <title>Tutorials</title>
-        <sections>
-          <section>
-            <id>tutintro</id>
-          </section>
-          <section>
-            <id>coding</id>
-          </section>
-          <section>
-            <id>simple</id>
-          </section>
-          <section>
-            <id>google</id>
-          </section>
-          <section>
-            <id>terragoogle</id>
-          </section>
-        </sections>
-      </chapter>
+<book xmlns="http://maven.apache.org/BOOK/1.0.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://maven.apache.org/BOOK/1.0.0 http://maven.apache.org/xsd/book-1.0.0.xsd">
+    <id>semispace-book</id>
+    <title>SemiSpace manual</title>
+    <author>Erlend Nossum</author>
+    <chapters>
+        <chapter>
+            <id>introduction</id>
+            <title>Introduction</title>
+            <sections>
+                <section>
+                    <id>whatis</id>
+                    <title>Introduction to SemiSpace</title>
+                </section>
+                <section>
+                    <id>solvable</id>
+                </section>
+            </sections>
+        </chapter>
 
-      <chapter>
-        <id>comet</id>
-        <title>SemiSpace and Cometd</title>
-        <sections>
-            <section>
-              <id>comet</id>
-            </section>
-            <section>
-              <id>ctechnical</id>
-            </section>
-            <section>
-              <id>javascriptclient</id>
-            </section>
-        </sections>
-      </chapter>
+        <chapter>
+            <id>installation</id>
+            <title>Installation</title>
+            <sections>
+                <section>
+                    <id>preliminaries</id>
+                </section>
+                <section>
+                    <id>terraconfig</id>
+                </section>
+                <!--
+                <section>
+                  <id>beware.apt</id>
+                </section>
+                -->
+            </sections>
+        </chapter>
 
-    <chapter>
-      <id>usage</id>
-      <title>Usage</title>
-      <sections>
-        <section>
-          <id>hintsandtips</id>
-        </section>
-        <section>
-          <id>springconfig</id>
-        </section>
-          <section>
-            <id>actor</id>
-          </section>
-        <section>
+        <chapter>
+            <id>tutorials</id>
+            <title>Tutorials</title>
+            <sections>
+                <section>
+                    <id>tutintro</id>
+                </section>
+                <section>
+                    <id>coding</id>
+                </section>
+                <section>
+                    <id>simple</id>
+                </section>
+                <section>
+                    <id>google</id>
+                </section>
+                <section>
+                    <id>terragoogle</id>
+                </section>
+            </sections>
+        </chapter>
+
+        <chapter>
+            <id>comet</id>
+            <title>SemiSpace and Cometd</title>
+            <sections>
+                <section>
+                    <id>comet</id>
+                </section>
+                <section>
+                    <id>ctechnical</id>
+                </section>
+                <section>
+                    <id>javascriptclient</id>
+                </section>
+            </sections>
+        </chapter>
+
+        <chapter>
+            <id>usage</id>
+            <title>Usage</title>
+            <sections>
+                <section>
+                    <id>hintsandtips</id>
+                </section>
+                <section>
+                    <id>springconfig</id>
+                </section>
+                <section>
+                    <id>actor</id>
+                </section>
+                <section>
+                    <id>security</id>
+                </section>
+                <section>
+                    <id>beware</id>
+                </section>
+                <section>
+                    <id>license</id>
+                </section>
+            </sections>
+        </chapter>
+
+
+        <!--
+        <chapter>
           <id>security</id>
-        </section>
-        <section>
-          <id>beware</id>
-        </section>
-        <section>
-          <id>license</id>
-        </section>
-      </sections>
-    </chapter>
+          <title>Security</title>
+          <sections>
+            <section>
+              <id>security</id>
+            </section>
+          </sections>
+        </chapter>
+        * Installation
+        ** Eclipse
+        * For the developer
+        * Stand alone operation
+        * Distributed with terracotta
+        * Webapp and web services
+        ** Terracotta
+        ** Spring
+        * Security considerations
+        * Tutorials
+        * Extending semispace
 
 
-    <!-- 
-    <chapter>
-      <id>security</id>
-      <title>Security</title>
-      <sections>
-        <section>
-          <id>security</id>
-        </section>
-      </sections>
-    </chapter>
-    * Installation
-    ** Eclipse
-    * For the developer
-    * Stand alone operation
-    * Distributed with terracotta
-    * Webapp and web services
-    ** Terracotta
-    ** Spring
-    * Security considerations
-    * Tutorials
-    * Extending semispace
-    
-    
-    
-What is JavaSpace usable for
-- short lived states, not RDBMS
-- master / worker
-- distribution (to some extent)
-- time boxed queries
-- alleviate or predict load
-- proxying data from within internal net
 
-Implementational challenges
-- timing and clock skew
-- testing behaviour 
-- setup
+    What is JavaSpace usable for
+    - short lived states, not RDBMS
+    - master / worker
+    - distribution (to some extent)
+    - time boxed queries
+    - alleviate or predict load
+    - proxying data from within internal net
 
-Benefits with SemiSpace
-- Easily integratable modules
-- Main module has few elements
-- Easily testable
+    Implementational challenges
+    - timing and clock skew
+    - testing behaviour
+    - setup
 
-Tips
-- Use space for short lived values
-- Always use objects (never primitives)
-- Think through sequence issues
-- Use single Terracotta config
+    Benefits with SemiSpace
+    - Easily integratable modules
+    - Main module has few elements
+    - Easily testable
 
--
-Scalability - obscenely scalable problems
-- Not many problems are in this category
+    Tips
+    - Use space for short lived values
+    - Always use objects (never primitives)
+    - Think through sequence issues
+    - Use single Terracotta config
 
-- Separation of concerns
-- Distribution of problem, dedicated HW for single problems
-    
-    <chapter>
-      <id>transports</id>
-      <title>Transports</title>
-      <sections>
-        <section>
-          <id>transport-and-channel-api</id>
-        </section>
-        <section>
-          <id>http-transport</id>
-        </section>
-        <section>
-          <id>jms-transport</id>
-        </section>
-        <section>
-          <id>local-transport</id>
-        </section>
-      </sections>
-    </chapter>
-     -->
-  </chapters>
+    -
+    Scalability - obscenely scalable problems
+    - Not many problems are in this category
+
+    - Separation of concerns
+    - Distribution of problem, dedicated HW for single problems
+
+        <chapter>
+          <id>transports</id>
+          <title>Transports</title>
+          <sections>
+            <section>
+              <id>transport-and-channel-api</id>
+            </section>
+            <section>
+              <id>http-transport</id>
+            </section>
+            <section>
+              <id>jms-transport</id>
+            </section>
+            <section>
+              <id>local-transport</id>
+            </section>
+          </sections>
+        </chapter>
+         -->
+    </chapters>
 </book>

@@ -6,22 +6,22 @@
  *
  * Copyright 2008 Erlend Nossum
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  *  Description:  See javadoc below
  *
  *  Created:      Apr 27, 2008
- * ============================================================================ 
+ * ============================================================================
  */
 
 package org.semispace;
@@ -50,7 +50,7 @@ public class HolderContainer {
     private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
 
     private static HolderContainer instance = new HolderContainer();
-    
+
     private HolderContainer() {
         heads = new ConcurrentHashMap<String, HolderElement>();
     }
@@ -58,7 +58,7 @@ public class HolderContainer {
     public static synchronized HolderContainer retrieveContainer() {
         return instance;
     }
-    
+
     public HolderElement next(String className) {
         rwl.writeLock().lock();
         try {
@@ -73,11 +73,11 @@ public class HolderContainer {
         rwl.writeLock().lock();
         try {
             HolderElement head = heads.get(className);
-            if ( head == null ) {
+            if (head == null) {
                 return null;
             }
             toReturn = head.removeHolderById(id);
-            if ( (idseq.longValue() % 5000) == 0 && head.size() < 1 ) {
+            if ((idseq.longValue() % 5000) == 0 && head.size() < 1) {
                 // It may not be deterministic when this actually occurs, but that does not matter. 
                 removeEmptyHeads();
             }
@@ -94,13 +94,13 @@ public class HolderContainer {
      */
     private void removeEmptyHeads() {
         List<String> toPurge = new ArrayList<String>();
-        for ( String name : heads.keySet()) {
-            HolderElement head = heads.get( name);
-            if ( !head.isWaiting() && head.size() < 1 ) {
+        for (String name : heads.keySet()) {
+            HolderElement head = heads.get(name);
+            if (!head.isWaiting() && head.size() < 1) {
                 toPurge.add(name);
             }
         }
-        for ( String name : toPurge ) {
+        for (String name : toPurge) {
             heads.remove(name);
         }
     }
@@ -110,7 +110,7 @@ public class HolderContainer {
 
         try {
             HolderElement n = heads.get(className);
-            if ( n == null ) {
+            if (n == null) {
                 return null;
             }
             return n.findById(id);
@@ -128,13 +128,13 @@ public class HolderContainer {
             if (add == null) {
                 throw new SemiSpaceUsageException("Illegal to add null");
             }
-            if ( add.getClassName() == null ) {
-                throw new SemiSpaceObjectException("Need classname in holder with contents "+add.getXml());
+            if (add.getClassName() == null) {
+                throw new SemiSpaceObjectException("Need classname in holder with contents " + add.getXml());
             }
-            HolderElement head = heads.get( add.getClassName() );
+            HolderElement head = heads.get(add.getClassName());
             if (head == null) {
                 head = HolderElement.createNewCollection(add);
-                heads.put( add.getClassName(), head);
+                heads.put(add.getClassName(), head);
             } else {
                 head.addHolder(add);
             }
@@ -153,8 +153,8 @@ public class HolderContainer {
                 return 0;
             }
             int size = 0;
-            
-            for ( HolderElement head : heads.values() ) {
+
+            for (HolderElement head : heads.values()) {
                 size += head.size();
             }
             return size;
@@ -163,7 +163,7 @@ public class HolderContainer {
         }
 
     }
-    
+
     public String[] retrieveGroupNames() {
         rwl.readLock().lock();
         String[] result = null;
@@ -177,30 +177,30 @@ public class HolderContainer {
 
     public Holder readHolderWithId(long id) {
         String[] cnames = retrieveClassNames();
-        for (String lookup : cnames ) {
+        for (String lookup : cnames) {
             HolderElement next = next(lookup);
             Holder toReturn = next.findById(id);
-            if ( toReturn != null ) {
+            if (toReturn != null) {
                 return toReturn;
             }
         }
         return null;
     }
-    
+
     /**
      * Return all ids present. Notice that this method will
-     * be rather network expensive, and is only intended to 
+     * be rather network expensive, and is only intended to
      * be used for persistence purposes.
      */
     public Long[] findAllHolderIds() {
         List<Long> allIds = new ArrayList<Long>();
         String[] cnames = retrieveClassNames();
-        for (String lookup : cnames ) {
+        for (String lookup : cnames) {
             HolderElement next = next(lookup);
             rwl.readLock().lock();
             try {
-                for ( Holder elem : next.toArray()) {
-                    allIds.add(Long.valueOf( elem.getId() ));
+                for (Holder elem : next.toArray()) {
+                    allIds.add(Long.valueOf(elem.getId()));
                 }
 
             } finally {
@@ -209,7 +209,7 @@ public class HolderContainer {
         }
         return allIds.toArray(new Long[0]);
     }
-    
+
     private String[] retrieveClassNames() {
         rwl.readLock().lock();
         String[] cnames = null;

@@ -26,7 +26,7 @@ import java.util.concurrent.ThreadFactory;
 
 /**
  * A simple class which just wraps a thread factory in a manner
- * which makes all threads it creates become daemon threads. 
+ * which makes all threads it creates become daemon threads.
  */
 public final class DaemonDelegateFactory implements ThreadFactory {
     private ThreadFactory threadFactory;

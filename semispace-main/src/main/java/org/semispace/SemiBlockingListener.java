@@ -6,22 +6,22 @@
  *
  * Copyright 2008 Erlend Nossum
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  *  Description:  See javadoc below
  *
  *  Created:      30. des.. 2007
- * ============================================================================ 
+ * ============================================================================
  */
 
 package org.semispace;
@@ -41,7 +41,7 @@ public class SemiBlockingListener implements SemiEventListener<SemiAvailabilityE
     private transient CountDownLatch latch;
     private transient Boolean beenNotified;
 
-    public SemiBlockingListener( ) {
+    public SemiBlockingListener() {
         reset();
     }
 
@@ -60,7 +60,7 @@ public class SemiBlockingListener implements SemiEventListener<SemiAvailabilityE
     }
 
     private void unblock() {
-        if ( latch != null ) {
+        if (latch != null) {
             //log.debug("Un-block");
             latch.countDown();
         }
@@ -68,13 +68,14 @@ public class SemiBlockingListener implements SemiEventListener<SemiAvailabilityE
 
     /**
      * If re-blocking, call reset method first
-     * @see #reset() 
+     *
+     * @see #reset()
      */
     public void block(long msToWait) {
         latch = new CountDownLatch(1);
         try {
-            if ( ! beenNotified.booleanValue() ) {
-                latch.await(msToWait*1000, TimeUnit.NANOSECONDS);
+            if (!beenNotified.booleanValue()) {
+                latch.await(msToWait * 1000, TimeUnit.NANOSECONDS);
             }
         } catch (InterruptedException ignore) {
             log.error("Got interrupted exception (which unblocks await)");

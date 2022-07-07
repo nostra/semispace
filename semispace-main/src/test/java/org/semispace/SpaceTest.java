@@ -11,7 +11,7 @@
  *  Description:  See javadoc below
  *
  *  Created:      25. des.. 2007
- * ============================================================================ 
+ * ============================================================================
  */
 
 package org.semispace;
@@ -117,14 +117,14 @@ public class SpaceTest {
     public void testAdminQueryObject() throws InterruptedException {
         IdentifyAdminQuery iaq = new IdentifyAdminQuery();
         iaq.hasAnswered = Boolean.FALSE;
-        assertNull( space.takeIfExists(iaq));
-        
+        assertNull(space.takeIfExists(iaq));
+
         space.write(iaq, SemiSpace.ONE_DAY);
         Thread.sleep(1000);
-        assertNotNull(space.takeIfExists(iaq),  "Should not be eaten by space.");
+        assertNotNull(space.takeIfExists(iaq), "Should not be eaten by space.");
         iaq.hasAnswered = Boolean.TRUE;
-        
-        assertNotNull( space.takeIfExists(iaq), "Answer should have been put into space");
+
+        assertNotNull(space.takeIfExists(iaq), "Answer should have been put into space");
     }
 
     @Test
@@ -137,8 +137,8 @@ public class SpaceTest {
         want.hasAnswered = Boolean.TRUE;
 
         IdentifyAdminQuery answer = space.take(want, 6500);
-        assertNotNull(answer, "Admin element makes sure that identity queries are answered." );
-        assertNotNull( space.takeIfExists(iaq), "Need to remove query for admin element");
+        assertNotNull(answer, "Admin element makes sure that identity queries are answered.");
+        assertNotNull(space.takeIfExists(iaq), "Need to remove query for admin element");
     }
 
 
@@ -212,7 +212,7 @@ public class SpaceTest {
         protected boolean notified = false;
 
         public void notify(SemiEvent theEvent) {
-            if ( theEvent instanceof SemiAvailabilityEvent ) {
+            if (theEvent instanceof SemiAvailabilityEvent) {
                 // Testing only that elements are added
                 notified = true;
             }

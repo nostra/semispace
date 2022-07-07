@@ -413,7 +413,7 @@ public class TerraSpaceTest {
         b.join();
         c.join();
         d.join();
-        assertNull( problem, "Number of writers not finished: " + globalCounter + ". " + problem);
+        assertNull(problem, "Number of writers not finished: " + globalCounter + ". " + problem);
         FieldHolder fx = new FieldHolder();
         fx.setFieldA("a");
         fx = space.readIfExists(fx);

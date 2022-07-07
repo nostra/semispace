@@ -20,120 +20,120 @@ import static org.junit.jupiter.api.Assertions.*;
  * </p>
  */
 @TestInstance(Lifecycle.PER_CLASS)
-public class ListenerStarvationTest  {
+public class ListenerStarvationTest {
     private static final Logger log = LoggerFactory.getLogger(ListenerStarvationTest.class);
 
-	private SemiSpaceInterface space;
+    private SemiSpaceInterface space;
     private boolean hasError;
     private StringBuilder output;
     /**
      * When having an iteration number of 10000, the test will almost certainly fail.
      */
-    private static final int ITERATION_NUM=10;
+    private static final int ITERATION_NUM = 10;
 
     @BeforeAll
-	protected void setUp() throws Exception {
+    protected void setUp() throws Exception {
         hasError = false;
         output = new StringBuilder();
-		space = SemiSpace.retrieveSpace();
-	}
+        space = SemiSpace.retrieveSpace();
+    }
 
-	public static class TestObject {
-		private String a;
-		private Integer b;
+    public static class TestObject {
+        private String a;
+        private Integer b;
 
-		public TestObject() {
-		}
+        public TestObject() {
+        }
 
-		public TestObject(String a) {
-			this.a = a;
-		}
+        public TestObject(String a) {
+            this.a = a;
+        }
 
-		public String getA() {
-			return a;
-		}
+        public String getA() {
+            return a;
+        }
 
-		public void setA(String a) {
-			this.a = a;
-		}
+        public void setA(String a) {
+            this.a = a;
+        }
 
-		public Integer getB() {
-			return b;
-		}
+        public Integer getB() {
+            return b;
+        }
 
-		public void setB(Integer b) {
-			this.b = b;
-		}
+        public void setB(Integer b) {
+            this.b = b;
+        }
 
-		public void increment() {
-			this.b += 1;
-		}
-	}
+        public void increment() {
+            this.b += 1;
+        }
+    }
 
-	private Runnable makeReader(final String n, final TestObject tmpl) {
-		return new Runnable() {
+    private Runnable makeReader(final String n, final TestObject tmpl) {
+        return new Runnable() {
 
-			public void run() {
-				while (true) {
-					TestObject o = space.read(tmpl, 1000);
-					if (o != null) {
-						output.append("("+n+") read " + o.getB()+"\n");
+            public void run() {
+                while (true) {
+                    TestObject o = space.read(tmpl, 1000);
+                    if (o != null) {
+                        output.append("(" + n + ") read " + o.getB() + "\n");
                     } else {
                         hasError = true;
-                        fail("("+n+") read timeout (bug) Statistics:\n"+((SemiSpace)space).getStatistics());
+                        fail("(" + n + ") read timeout (bug) Statistics:\n" + ((SemiSpace) space).getStatistics());
                     }
-					//assertEquals("Missed reading value: " + i, i, o.getB());
-                    if (hasError ) {
+                    //assertEquals("Missed reading value: " + i, i, o.getB());
+                    if (hasError) {
                         break;
                     }
-                    if (o.getB() >= ITERATION_NUM ) {
-                        output.append("("+n+") Read last\n");
+                    if (o.getB() >= ITERATION_NUM) {
+                        output.append("(" + n + ") Read last\n");
                         break;
                     }
 
-					try {
-						// simulate work
-						Thread.sleep(25);
-					} catch (InterruptedException ex) {
-						log.warn("Inconsequential, but unexpected.", ex);
-					}
+                    try {
+                        // simulate work
+                        Thread.sleep(25);
+                    } catch (InterruptedException ex) {
+                        log.warn("Inconsequential, but unexpected.", ex);
+                    }
 
-				}
-			}
-		};
-	}
+                }
+            }
+        };
+    }
 
-	private Runnable makeTaker(final String n, final TestObject tmpl) {
-		return new Runnable() {
+    private Runnable makeTaker(final String n, final TestObject tmpl) {
+        return new Runnable() {
 
-			public void run() {
-				TestObject obj = null;
-				while ((obj == null || obj.getB() < ITERATION_NUM ) && !hasError ) {
-					obj = space.take(tmpl, 1000);
-					if (obj != null) {
-						obj.increment();
-						try {
-							// simulate update time
-							Thread.sleep(25);
-						} catch (InterruptedException ex) {
-							log.error("Exception", ex);
-						}
-						output.append("("+n+") writing " + obj.getB()+"  "+((SemiSpace)space).getStatistics()+"\n");
-						space.write(obj, 5000);
+            public void run() {
+                TestObject obj = null;
+                while ((obj == null || obj.getB() < ITERATION_NUM) && !hasError) {
+                    obj = space.take(tmpl, 1000);
+                    if (obj != null) {
+                        obj.increment();
+                        try {
+                            // simulate update time
+                            Thread.sleep(25);
+                        } catch (InterruptedException ex) {
+                            log.error("Exception", ex);
+                        }
+                        output.append("(" + n + ") writing " + obj.getB() + "  " + ((SemiSpace) space).getStatistics() + "\n");
+                        space.write(obj, 5000);
 
-						try {
-							Thread.sleep(10);
-						} catch (InterruptedException ex) {
-							log.error("Exception", ex);
-						}
-					} else {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            log.error("Exception", ex);
+                        }
+                    } else {
                         hasError = true;
-                        fail("("+n+") take timeout (bug) Statistics:\n"+((SemiSpace)space).getStatistics());
-					}
-				}
-			}
-		};
-	}
+                        fail("(" + n + ") take timeout (bug) Statistics:\n" + ((SemiSpace) space).getStatistics());
+                    }
+                }
+            }
+        };
+    }
 
 
     /**
@@ -141,55 +141,55 @@ public class ListenerStarvationTest  {
      * get starved when competing for resource.
      * In this test, this happens after 40 missed reads for a given reader.
      */
-	@Test
-	public void testStarvation() {
-		final TestObject tmpl = new TestObject("test");
+    @Test
+    public void testStarvation() {
+        final TestObject tmpl = new TestObject("test");
 
 
-		Thread r1 = new Thread(null, makeReader("1", tmpl));
-		Thread r2 = new Thread(null, makeReader("2", tmpl));
-		Thread r3 = new Thread(null, makeReader("3", tmpl));
+        Thread r1 = new Thread(null, makeReader("1", tmpl));
+        Thread r2 = new Thread(null, makeReader("2", tmpl));
+        Thread r3 = new Thread(null, makeReader("3", tmpl));
         Thread r4 = new Thread(null, makeReader("4", tmpl));
         Thread r5 = new Thread(null, makeReader("5", tmpl));
         Thread r6 = new Thread(null, makeReader("6", tmpl));
-		Thread t1 = new Thread(null, makeTaker("a", tmpl));
-		Thread t2 = new Thread(null, makeTaker("b", tmpl));
+        Thread t1 = new Thread(null, makeTaker("a", tmpl));
+        Thread t2 = new Thread(null, makeTaker("b", tmpl));
 
-		// write the singe object
-		TestObject obj = new TestObject("test");
-		obj.setB(0);
-		space.write(obj, 1000);
+        // write the singe object
+        TestObject obj = new TestObject("test");
+        obj.setB(0);
+        space.write(obj, 1000);
 
-		r1.start();
-		r2.start();
-		r3.start();
+        r1.start();
+        r2.start();
+        r3.start();
         r4.start();
         r5.start();
         r6.start();
-		t1.start();
-		t2.start();
+        t1.start();
+        t2.start();
 
-		try {
-			t1.join();
-			t2.join();
-			r1.join();
-			r2.join();
+        try {
+            t1.join();
+            t2.join();
+            r1.join();
+            r2.join();
             r3.join();
             r4.join();
             r5.join();
             r6.join();
-		} catch (InterruptedException ex) {
-			log.error("Unexpected", ex);
-		}
-        if ( hasError ) {
+        } catch (InterruptedException ex) {
+            log.error("Unexpected", ex);
+        }
+        if (hasError) {
             log.error(output.toString());
-            log.error("Statistics:\n"+((SemiSpace)space).getStatistics());
+            log.error("Statistics:\n" + ((SemiSpace) space).getStatistics());
         }
         assertFalse(hasError, "State of starvation has been achieved. This does not really indicate an error " +
                 "as the behaviour for this to happen is intrinsically correct: The timeout values " +
                 "(in milliseconds) have stabilized into the same value. This test is basically made " +
                 "for caching if this happens more often than should be expected. It may happen sporadically " +
-                "when building with tests, particularly (I expect) when having a quick computer.\n"+output);
+                "when building with tests, particularly (I expect) when having a quick computer.\n" + output);
         assertNotNull(space.takeIfExists(tmpl), "Presumed the template to be present in space at end of test");
-	}
+    }
 }

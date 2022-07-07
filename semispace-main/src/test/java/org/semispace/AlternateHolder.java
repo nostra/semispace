@@ -11,7 +11,7 @@
  *  Description:  See javadoc below
  *
  *  Created:      30. des.. 2007
- * ============================================================================ 
+ * ============================================================================
  */
 
 package org.semispace;
@@ -19,9 +19,9 @@ package org.semispace;
 public class AlternateHolder {
     public String fieldA;
     public String fieldB;
-    
+
     @Override
     public String toString() {
-        return "AlternateHolder[fieldA:"+fieldA+"][fieldB:"+fieldB+"]";
+        return "AlternateHolder[fieldA:" + fieldA + "][fieldB:" + fieldB + "]";
     }
 }

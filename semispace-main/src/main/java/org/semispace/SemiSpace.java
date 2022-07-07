@@ -6,22 +6,22 @@
  *
  * Copyright 2008 Erlend Nossum
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  *  Description:  See javadoc below
  *
  *  Created:      23. des.. 2007
- * ============================================================================ 
+ * ============================================================================
  */
 
 package org.semispace;
@@ -92,7 +92,7 @@ public class SemiSpace implements SemiSpaceInterface {
     private SemiSpaceStatistics statistics;
 
     private transient XStream xStream;
-    
+
     private EventDistributor eventDistributor = EventDistributor.getInstance();
 
 
@@ -124,9 +124,9 @@ public class SemiSpace implements SemiSpaceInterface {
 
     /**
      * None of the parameters can be null
-     * 
+     *
      * @return Returning null if something went wrong or was wrong, a registration object otherwise.
-     * @see org.semispace.SemiSpaceInterface#notify(Object, SemiEventListener, long)  
+     * @see org.semispace.SemiSpaceInterface#notify(Object, SemiEventListener, long)
      */
     @Override
     public SemiEventRegistration notify(Object tmpl, SemiEventListener listener, long duration) {
@@ -142,7 +142,7 @@ public class SemiSpace implements SemiSpaceInterface {
     /**
      * Basically the same as the notify method demanded by the interface, except that it accepts search properties
      * directly. Used from the web services class. None of the parameters can be null
-     * 
+     *
      * @return Returning null if something went wrong or was wrong, a registration object otherwise.
      */
     public SemiEventRegistration notify(Map<String, String> searchProps, SemiEventListener listener, long duration) {
@@ -163,8 +163,8 @@ public class SemiSpace implements SemiSpaceInterface {
         listenerId++;
         holder = new ListenerHolder(listenerId, listener, duration + admin.calculateTime(),
                 searchProps);
-        if ( listeners.put(Long.valueOf(holder.getId()), holder) != null ) {
-            throw new SemiSpaceInternalException("Internal assertion error. Listener map already had element with id "+holder.getId());
+        if (listeners.put(Long.valueOf(holder.getId()), holder) != null) {
+            throw new SemiSpaceInternalException("Internal assertion error. Listener map already had element with id " + holder.getId());
         }
         statistics.increaseNumberOfListeners();
         SemiLease lease = new ListenerLease(holder, this);
@@ -178,11 +178,11 @@ public class SemiSpace implements SemiSpaceInterface {
     protected void notifyListeners(DistributedEvent distributedEvent) {
         final List<SemiEventListener> toNotify = new ArrayList<>();
         ListenerHolder[] listenerArray = listeners.values().toArray(new ListenerHolder[0]);
-        Arrays.sort( listenerArray, new ShortestTtlComparator());
+        Arrays.sort(listenerArray, new ShortestTtlComparator());
         for (ListenerHolder listener : listenerArray) {
             if (listener.getLiveUntil() < admin.calculateTime()) {
 
-                cancelListener( listener );
+                cancelListener(listener);
 
             } else if (hasSubSet(distributedEvent.getEntrySet(), listener.getSearchMap())) {
                 SemiEventListener notifyMe = listener.getListener();
@@ -191,21 +191,21 @@ public class SemiSpace implements SemiSpaceInterface {
         }
         final SemiEvent event = distributedEvent.getEvent();
         for (SemiEventListener notify : toNotify) {
-                try {
-                    notify.notify(event);
-                } catch (ClassCastException ignored ) {
-                    // Sadly enough, I need to ignore this due to type erasure.
-                }
+            try {
+                notify.notify(event);
+            } catch (ClassCastException ignored) {
+                // Sadly enough, I need to ignore this due to type erasure.
+            }
         }
 
-        
+
         admin.notifyAboutEvent(distributedEvent);
     }
 
     /**
      * Notice that the lease time is the time in milliseconds the element is wants to live, <b>not</b> the system time
      * plus the time to live.
-     * 
+     *
      * @return Either the resulting lease or null if an error
      */
     @Override
@@ -215,14 +215,14 @@ public class SemiSpace implements SemiSpaceInterface {
         }
 
         WrappedInternalWriter write = new WrappedInternalWriter(entry, leaseTimeMs);
-        
+
         Future<?> future = admin.getThreadPool().submit(write);
         Exception exception = null;
         try {
             future.get();
-        } catch ( CancellationException e ) {
+        } catch (CancellationException e) {
             log.error("Got exception", e);
-            exception = e;            
+            exception = e;
         } catch (InterruptedException e) {
             log.error("Got exception", e);
             exception = e;
@@ -230,12 +230,12 @@ public class SemiSpace implements SemiSpaceInterface {
         } catch (ExecutionException e) {
             log.error("Got exception", e);
             exception = e;
-        } 
-        
+        }
+
         if (write.getException() != null || exception != null) {
             String error = " Writing object (of type " + entry.getClass().getName()
                     + ") to space gave exception. XML version: " + objectToXml(entry);
-            if ( write.getException() != null ) {
+            if (write.getException() != null) {
                 exception = write.getException();
             }
             throw new SemiSpaceObjectException(error, exception);
@@ -258,10 +258,10 @@ public class SemiSpace implements SemiSpaceInterface {
      * All values are expected to be non-null and valid upon entry.
      */
     public SemiLease writeToElements(String entryClassName, long leaseTimeMs, String xml, Map<String, String> searchMap) {
-        if ( !checkedClassSet.contains( entryClassName )) {
+        if (!checkedClassSet.contains(entryClassName)) {
             checkedClassSet.add(entryClassName);
-            if ( xml.contains("<outer-class>")) {
-                log.warn("It seems that "+entryClassName+" is an inner class. This is DISCOURAGED as it WILL serialize the outer " +
+            if (xml.contains("<outer-class>")) {
+                log.warn("It seems that " + entryClassName + " is an inner class. This is DISCOURAGED as it WILL serialize the outer " +
                         "class as well. If you did not intend this, note that what you store MAY be significantly larger than you " +
                         "expected. This warning is printed once for each class type.");
             }
@@ -271,7 +271,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
         SemiLease lease = new ElementLease(holder, this);
         statistics.increaseWrite();
-        
+
         SemiAvailabilityEvent semiEvent = new SemiAvailabilityEvent(holder.getId());
 
         distributeEvent(new DistributedEvent(holder.getClassName(), semiEvent,
@@ -279,14 +279,14 @@ public class SemiSpace implements SemiSpaceInterface {
 
         return lease;
     }
-    
+
     private void distributeEvent(final DistributedEvent distributedEvent) {
         final Runnable distRunnable = () -> eventDistributor.distributeEvent(distributedEvent);
         if (!getAdmin().getThreadPool().isShutdown()) {
             try {
                 admin.getThreadPool().execute(distRunnable);
-            } catch ( RejectedExecutionException e ) {
-                log.error("Could not schedule notification",e);
+            } catch (RejectedExecutionException e) {
+                log.error("Could not schedule notification", e);
             }
         } else {
             log.warn("Thread pool is shut down, not relaying event");
@@ -300,13 +300,13 @@ public class SemiSpace implements SemiSpaceInterface {
         if (tmpl != null) {
             found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, false);
         }
-        return (T)xmlToObject(found);
+        return (T) xmlToObject(found);
     }
 
     /**
      * Public for the benefit of the webservices interface.
      *
-     * @param timeout how long to wait in milliseconds. If timeout is zero or negative, query once. 
+     * @param timeout          how long to wait in milliseconds. If timeout is zero or negative, query once.
      * @param isToTakeTheLease true if the element shall be marked as taken.
      * @return XML version of data, if found, or null
      */
@@ -314,9 +314,9 @@ public class SemiSpace implements SemiSpaceInterface {
         final long until = admin.calculateTime() + timeout;
         long systime = admin.calculateTime();
         String className = templateSet.get("class");
-		if (templateSet.get(SemiSpace.ADMIN_GROUP_IS_FLAGGED) != null) {
-			className = InternalQuery.class.getName();
-		}
+        if (templateSet.get(SemiSpace.ADMIN_GROUP_IS_FLAGGED) != null) {
+            className = InternalQuery.class.getName();
+        }
         String found = null;
         long subtract = 0;
         do {
@@ -329,7 +329,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
             found = findLeaseForTemplate(templateSet, isToTakeTheLease);
 
-            if ( found == null && duration > 0) {
+            if (found == null && duration > 0) {
                 elements.waitHolder(className, duration);
             }
             if (isToTakeTheLease) {
@@ -339,9 +339,9 @@ public class SemiSpace implements SemiSpaceInterface {
             }
 
             final long now = getAdmin().calculateTime();
-			subtract += now - systime;
-			systime = now;
-        } while (found == null && systime < until );
+            subtract += now - systime;
+            systime = now;
+        } while (found == null && systime < until);
         return found;
     }
 
@@ -355,20 +355,20 @@ public class SemiSpace implements SemiSpaceInterface {
      */
     private String findLeaseForTemplate(Map<String, String> templateSet, boolean isToTakeTheLease) {
         // Read all elements until element is found. Side effect is to generate eviction list.
-        if ( templateSet.get("class") == null ) {
+        if (templateSet.get("class") == null) {
             throw new SemiSpaceObjectException("Did not expect classname to be null");
         }
         String className = templateSet.get("class");
-        if ( templateSet.get(SemiSpace.ADMIN_GROUP_IS_FLAGGED) != null ) {
+        if (templateSet.get(SemiSpace.ADMIN_GROUP_IS_FLAGGED) != null) {
             className = InternalQuery.class.getName();
         }
 
         HolderElement next = elements.next(className);
         Holder found = null;
         List<Holder> toEvict = new ArrayList<>();
-        if ( next != null ) {
+        if (next != null) {
             Iterator<Holder> it = next.iterator();
-            while ( found == null && it.hasNext()) {
+            while (found == null && it.hasNext()) {
                 Holder elem = it.next();
                 if (elem.getLiveUntil() < admin.calculateTime()) {
                     toEvict.add(elem);
@@ -425,14 +425,15 @@ public class SemiSpace implements SemiSpaceInterface {
 
     /**
      * Used for retrieving element with basis in id
+     *
      * @return Element with given holder id, or null if not found (or expired
      */
-    public Holder readHolderById( long hId ) {
+    public Holder readHolderById(long hId) {
         Holder result = null;
         result = elements.readHolderWithId(hId);
         return result;
     }
-    
+
     private boolean hasSubSet(Set<Entry<String, String>> containerEntrySet, Map<String, String> templateSubSet) {
         if (templateSubSet == null) {
             throw new SemiSpaceUsageException("Did not expect template sub set to be null");
@@ -447,7 +448,7 @@ public class SemiSpace implements SemiSpaceInterface {
         if (tmpl != null) {
             found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, true);
         }
-        return (T)xmlToObject(found);
+        return (T) xmlToObject(found);
     }
 
     @Override
@@ -478,70 +479,70 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     private static class PreprocessedTemplate {
-       private Object object;
-       private Map<String, String> cachedSet;
-       
-       public PreprocessedTemplate(Object object, Map<String, String> cachedSet) {
-          this.object = object;
-          this.cachedSet = cachedSet;
-       }
-       
-       public Map<String, String> getCachedSet() {
-          return cachedSet;
-       }
-       
-       public void setCachedSet(Map<String, String> cachedSet) {
-          this.cachedSet = cachedSet;
-       }
-       
-       public Object getObject() {
-          return object;
-       }
-       
-       public void setObject(Object object) {
-          this.object = object;
-       }
+        private Object object;
+        private Map<String, String> cachedSet;
+
+        public PreprocessedTemplate(Object object, Map<String, String> cachedSet) {
+            this.object = object;
+            this.cachedSet = cachedSet;
+        }
+
+        public Map<String, String> getCachedSet() {
+            return cachedSet;
+        }
+
+        public void setCachedSet(Map<String, String> cachedSet) {
+            this.cachedSet = cachedSet;
+        }
+
+        public Object getObject() {
+            return object;
+        }
+
+        public void setObject(Object object) {
+            this.object = object;
+        }
     }
 
     /**
      * Create a pre-processed template object that can be used to reduce the amount of
-     * work required to match templates during a take.  Applications that take a lot of 
+     * work required to match templates during a take.  Applications that take a lot of
      * objects using the same template instance, a noticeable performance improvement
      * can be had.
-     * 
+     *
      * @param template The object to preprocess
      * @return A pre-processed object that can be passed to read/take
      */
     public Object processTemplate(Object template) {
-       PreprocessedTemplate toReturn = null;
-       if (template != null) {
-          toReturn = new PreprocessedTemplate(template, retrievePropertiesFromObject(template));
-       }
-       return toReturn;
+        PreprocessedTemplate toReturn = null;
+        if (template != null) {
+            toReturn = new PreprocessedTemplate(template, retrievePropertiesFromObject(template));
+        }
+        return toReturn;
     }
 
     private Map<String, String> getPropertiesForObject(Object object) {
-       if (object instanceof PreprocessedTemplate) {
-          return ((PreprocessedTemplate)object).getCachedSet();
-       }
-       return retrievePropertiesFromObject(object);
+        if (object instanceof PreprocessedTemplate) {
+            return ((PreprocessedTemplate) object).getCachedSet();
+        }
+        return retrievePropertiesFromObject(object);
     }
 
     /**
      * Protected for the benefit of junit test(s)
-     * 
+     *
      * @param examine Non-null object
      */
     protected Map<String, String> retrievePropertiesFromObject(Object examine) {
         Map<String, String> map = fillMapWithPublicFields(examine);
         addGettersToMap(examine, map);
 
-        if ( examine instanceof InternalQuery ) {
+        if (examine instanceof InternalQuery) {
             map.put(SemiSpace.ADMIN_GROUP_IS_FLAGGED, "true");
         }
         // Need to rename class entry in order to separate on class elements.
         String className = map.remove("class");
-        map.put("class", className.substring("class ".length()) );
+        map.put("class", className.substring("class ".length()));
         return map;
     }
 
@@ -553,19 +554,19 @@ public class SemiSpace implements SemiSpaceInterface {
         final Method[] methods = examine.getClass().getMethods();
         final Map<String, Method> keyedMethod = new HashMap<String, Method>();
         final Map<String, String> keyedMethodName = new HashMap<String, String>();
-        for ( Method method : methods ) {
+        for (Method method : methods) {
             final String name = method.getName();
             final int parameterLength = method.getTypeParameters().length;
-            if ( parameterLength == 0 && name.startsWith("get")) {
+            if (parameterLength == 0 && name.startsWith("get")) {
                 // Equalize key to [get][set][X]xx
-                String normalized = name.substring(3,4).toLowerCase() + name.substring(4);
+                String normalized = name.substring(3, 4).toLowerCase() + name.substring(4);
                 getters.add(normalized);
-                keyedMethod.put( name, method );
-                keyedMethodName.put( normalized, name );
+                keyedMethod.put(name, method);
+                keyedMethodName.put(normalized, name);
                 //log.info("Got name "+name+" which was normalized to "+normalized);
             }
         }
-        for ( String name : getters) {
+        for (String name : getters) {
             try {
                 Object value = keyedMethod.get(keyedMethodName.get(name)).invoke(examine, null);
                 //log.info(">> want to insert "+name+"="+value);
@@ -573,9 +574,9 @@ public class SemiSpace implements SemiSpaceInterface {
                     map.put(name, "" + value);
                 }
             } catch (IllegalAccessException e) {
-                log.error("Could not access method g"+name+". Got (masked exception) "+e.getMessage());
+                log.error("Could not access method g" + name + ". Got (masked exception) " + e.getMessage());
             } catch (InvocationTargetException e) {
-                log.error("Could not access method g"+name+". Got (masked exception) "+e.getMessage());
+                log.error("Could not access method g" + name + ". Got (masked exception) " + e.getMessage());
             }
         }
     }
@@ -659,21 +660,21 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     /**
-     * Harvest old elements from diverse listeners. Used from 
+     * Harvest old elements from diverse listeners. Used from
      * the periodic harvester and junit tests.
      */
     public void harvest() {
 
-            for (ListenerHolder listener : listeners.values()) {
-                if (listener.getLiveUntil() < admin.calculateTime()) {
-                    cancelListener(listener);
+        for (ListenerHolder listener : listeners.values()) {
+            if (listener.getLiveUntil() < admin.calculateTime()) {
+                cancelListener(listener);
 
-                }
             }
+        }
         List<Holder> beforeEvict = new ArrayList<>();
 
         String[] groups = elements.retrieveGroupNames();
-        for ( String group : groups ) {
+        for (String group : groups) {
             int evictSize = beforeEvict.size();
             HolderElement hc = elements.next(group);
             for (Holder elem : hc) {
@@ -682,17 +683,17 @@ public class SemiSpace implements SemiSpaceInterface {
                 }
             }
             long afterSize = beforeEvict.size() - evictSize;
-            if ( afterSize > 0 ) {
-                List<Long>ids = new ArrayList<>();
+            if (afterSize > 0) {
+                List<Long> ids = new ArrayList<>();
                 for (Holder evict : beforeEvict) {
-                    ids.add(Long.valueOf( evict.getId()) );
+                    ids.add(Long.valueOf(evict.getId()));
                 }
                 String moreInfo = "";
-                if ( ids.size() < 30 ) {
+                if (ids.size() < 30) {
                     Collections.sort(ids);
-                    moreInfo = "Ids: "+ids;
+                    moreInfo = "Ids: " + ids;
                 }
-                log.debug("Testing group "+group+" gave "+afterSize+" element(s) to evict. "+moreInfo);
+                log.debug("Testing group " + group + " gave " + afterSize + " element(s) to evict. " + moreInfo);
             }
         }
         for (Holder evict : beforeEvict) {
@@ -710,42 +711,58 @@ public class SemiSpace implements SemiSpaceInterface {
         return size;
     }
 
-    /** Need present statistics here due to spring JMX configuration. */
+    /**
+     * Need present statistics here due to spring JMX configuration.
+     */
     public int numberOfBlockingRead() {
         return statistics.getBlockingRead();
     }
 
-    /** Need present statistics here due to spring JMX configuration. */
+    /**
+     * Need present statistics here due to spring JMX configuration.
+     */
     public int numberOfBlockingTake() {
         return statistics.getBlockingTake();
     }
 
-    /** Need present statistics here due to spring JMX configuration. */
+    /**
+     * Need present statistics here due to spring JMX configuration.
+     */
     public int numberOfMissedRead() {
         return statistics.getMissedRead();
     }
 
-    /** Need present statistics here due to spring JMX configuration. */
+    /**
+     * Need present statistics here due to spring JMX configuration.
+     */
     public int numberOfMissedTake() {
         return statistics.getMissedTake();
     }
 
-    /** Need present statistics here due to spring JMX configuration. */
+    /**
+     * Need present statistics here due to spring JMX configuration.
+     */
     public int numberOfNumberOfListeners() {
         return statistics.getNumberOfListeners();
     }
 
-    /** Need present statistics here due to spring JMX configuration. */
+    /**
+     * Need present statistics here due to spring JMX configuration.
+     */
     public int numberOfRead() {
         return statistics.getRead();
     }
 
-    /** Need present statistics here due to spring JMX configuration. */
+    /**
+     * Need present statistics here due to spring JMX configuration.
+     */
     public int numberOfTake() {
         return statistics.getTake();
     }
 
-    /** Need present statistics here due to spring JMX configuration. */
+    /**
+     * Need present statistics here due to spring JMX configuration.
+     */
     public int numberOfWrite() {
         return statistics.getWrite();
     }
@@ -790,8 +807,8 @@ public class SemiSpace implements SemiSpaceInterface {
 
         Holder elem = elements.removeHolderById(id.longValue(), className);
         if (elem != null) {
-            if ( elem.getId() != id.longValue()) {
-                throw new SemiSpaceInternalException("Sanity problem. Removed "+id.longValue()+" and got back element with id "+elem.getId());
+            if (elem.getId() != id.longValue()) {
+                throw new SemiSpaceInternalException("Sanity problem. Removed " + id.longValue() + " and got back element with id " + elem.getId());
             }
             success = true;
             SemiEvent semiEvent = null;
@@ -825,7 +842,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
         return success;
     }
-    
+
     /**
      * @see HolderContainer#findAllHolderIds
      */
@@ -835,6 +852,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
     /**
      * Exposing xstream instance in order to allow outside manipulation of aliases and classloader affiliation.
+     *
      * @return The xstream instance used.
      */
     public XStream getXStream() {
@@ -844,7 +862,7 @@ public class SemiSpace implements SemiSpaceInterface {
     private static class ShortestTtlComparator implements Comparator<ListenerHolder>, Serializable {
         @Override
         public int compare(ListenerHolder o1, ListenerHolder o2) {
-            if ( o1 == null || o2 == null ) {
+            if (o1 == null || o2 == null) {
                 throw new SemiSpaceUsageException("Did not expect any null values for listenerHolder.");
             }
             return (int) (o1.getLiveUntil() - o2.getLiveUntil());
