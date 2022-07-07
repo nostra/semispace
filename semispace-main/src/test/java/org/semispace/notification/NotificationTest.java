@@ -26,8 +26,11 @@
 
 package org.semispace.notification;
 
-import junit.framework.TestCase;
-import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.semispace.AlternateButEqual;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiSpace;
@@ -42,18 +45,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class NotificationTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestInstance(Lifecycle.PER_CLASS)
+public class NotificationTest  {
     private static final Logger log = LoggerFactory.getLogger(NotificationTest.class);
     private SemiSpaceInterface space;
     private ThreadPoolExecutor tpe;
 
-    @Override
+    @BeforeAll
     protected void setUp() {
         space = SemiSpace.retrieveSpace();
         tpe = (ThreadPoolExecutor) ((SemiSpace)space).getAdmin().getThreadPool();
     }
 
-    @Override
+    @AfterEach
     protected void tearDown()  {
         // Just remove any superfluous elements. Not really testing the data
         // type - it is the notification which is interesting here
@@ -191,8 +197,8 @@ public class NotificationTest extends TestCase {
 
             
         for ( int i=0 ; i < a.length ; i++ ) {
-            assertEquals("At element a"+i+" notified number had a discrepancy. Element b"+i+", incidentally, was "+b[i].getNotified()+".", numinserts, a[i].getNotified());
-            assertEquals("At element b"+i+" notified number had a discrepancy. Element a"+i+", incidentally, was "+a[i].getNotified()+".", numinserts, b[i].getNotified());
+            assertEquals(numinserts, a[i].getNotified(), "At element a"+i+" notified number had a discrepancy. Element b"+i+", incidentally, was "+b[i].getNotified()+".");
+            assertEquals( numinserts, b[i].getNotified(), "At element b"+i+" notified number had a discrepancy. Element a"+i+", incidentally, was "+a[i].getNotified()+".");
         }
         NoticeA aTaken;
         NoticeB bTaken;
@@ -228,16 +234,17 @@ public class NotificationTest extends TestCase {
     /**
      * Expiration of listener
      */
+    @Test
     public void testListenerExpiration() {
         ToBeNotified a = new ToBeNotified(false);
 
         SemiEventRegistration notifyA = space.notify(new NoticeA(), a, 150);
         a.setNotify( notifyA );
 
-        assertNull( "Forcing notification object time out", space.take(new NoticeA(),160));
+        assertNull( space.take(new NoticeA(),160), "Forcing notification object time out");
         insertIntoSpace(space, 101010);
-        assertNotNull("Recently inserted element should not be null", space.takeIfExists(new NoticeA()) );
-        assertFalse("When cancelling a timed out lease, the result should be false", notifyA.getLease().cancel());
+        assertNotNull(space.takeIfExists(new NoticeA()), "Recently inserted element should not be null" );
+        assertFalse(notifyA.getLease().cancel(), "When cancelling a timed out lease, the result should be false");
     }
 
     /**

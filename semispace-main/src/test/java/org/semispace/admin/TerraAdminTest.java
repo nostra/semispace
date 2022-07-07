@@ -1,10 +1,13 @@
 package org.semispace.admin;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.semispace.SemiSpaceInterface;
 
-public class TerraAdminTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
 
+public class TerraAdminTest  {
+
+    @Test
     public void testPerformInitializationAsMaster() {
         SemiSpaceInterface ts = new JunitSpace();
         SemiSpaceAdmin admin = new SemiSpaceAdmin(ts);
@@ -16,6 +19,7 @@ public class TerraAdminTest extends TestCase {
         assertEquals(1, admin.getSpaceId());
     }
 
+    @Test
     public void testIncreaseOfSpaceId() {
         SemiSpaceInterface ts = new JunitSpace();
         IdentifyAdminQuery iaq = new IdentifyAdminQuery();
@@ -31,6 +35,6 @@ public class TerraAdminTest extends TestCase {
         admin.performInitialization();
         assertFalse(admin.isMaster());
      
-        assertEquals("Space id shall typically increase with one.", iaq.id.intValue() +1, admin.getSpaceId());
+        assertEquals(iaq.id.intValue() +1, admin.getSpaceId(), "Space id shall typically increase with one.");
     }
 }

@@ -26,25 +26,29 @@
 
 package org.semispace;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.semispace.event.SemiEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 /**
  * This is basically a benchmark test. The assertion parts of this is not really interesting.
  */
+@TestInstance(Lifecycle.PER_CLASS)
 public class ManyListenersTest {
     private static final Logger log = LoggerFactory.getLogger(ManyListenersTest.class);
 
     private SemiSpaceInterface space;
 
-    @Before
+    @BeforeAll
     public void setUp() throws Exception {
         space = SemiSpace.retrieveSpace();
     }
@@ -79,8 +83,8 @@ public class ManyListenersTest {
             registrations[i].getLease().cancel();
         }
         for ( int i=0 ; i < 3 ; i++ ) {
-            Assert.assertNotNull("Expecting to be quick enough to trigger events within a second",
-                    space.takeIfExists(new FieldHolder()));
+            assertNotNull(space.takeIfExists(new FieldHolder()),
+                    "Expecting to be quick enough to trigger events within a second");
         }
     }
 

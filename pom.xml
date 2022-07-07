@@ -45,18 +45,28 @@
 
     <properties>
         <slf4j.version>1.7.36</slf4j.version>
-        <junit.version>4.13.2</junit.version>
         <!-- TODO: Later upgrade past 1.4.17. Cannot at the moment as it needs insecure vm setting -->
         <xstream.version>1.4.17</xstream.version>
-        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
         <maven-javadoc-plugin.version>3.4.0</maven-javadoc-plugin.version>
         <asciidoctor.version>2.2.2</asciidoctor.version>
-        <file.encoding>UTF-8</file.encoding>
-    </properties>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 
-    <prerequisites>
-        <maven>3.6.3</maven>
-    </prerequisites>
+        <file.encoding>UTF-8</file.encoding>
+
+        <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
+        <logback-classic.version>1.2.11</logback-classic.version>
+        <xpp3_min.version>1.1.4c</xpp3_min.version>
+        <wagon-ssh-external.version>3.5.2</wagon-ssh-external.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <maven-release-plugin.version>2.5.2</maven-release-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <doxia-maven-plugin.version>1.2</doxia-maven-plugin.version>
+        <doxia-module-xdoc.version>1.11.1</doxia-module-xdoc.version>
+        <doxia-module-markdown.version>${doxia-module-xdoc.version}</doxia-module-markdown.version>
+        <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
+        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+    </properties>
 
     <!--
         DEPENDENCIES
@@ -64,9 +74,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit-jupiter.version}</version>
             </dependency>
 
             <dependency>
@@ -75,17 +85,11 @@
                 <version>${xstream.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.codehaus.jettison</groupId>
-                <artifactId>jettison</artifactId>
-                <version>1.5.0</version>
-            </dependency>
-
             <!--START SNIPPET: xpp3Dependency -->
             <dependency>
                 <groupId>xpp3</groupId>
                 <artifactId>xpp3_min</artifactId>
-                <version>1.1.4c</version>
+                <version>${xpp3_min.version}</version>
             </dependency>
             <!--END SNIPPET: xpp3Dependency -->
 
@@ -105,15 +109,15 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.11</version>
+                <version>${logback-classic.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -128,9 +132,10 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh-external</artifactId>
-                <version>3.5.2</version>
+                <version>${wagon-ssh-external.version}</version>
             </extension>
         </extensions>
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -142,10 +147,11 @@
                         <javadocVersion>1.8</javadocVersion>
                     </configuration>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.2</version>
+                    <version>${maven-surefire-plugin.version}</version>
                     <configuration>
                         <!--runOrder>random</runOrder-->
                         <!--properties>
@@ -156,12 +162,13 @@
                         </properties-->
                     </configuration>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-report-plugin</artifactId>
-                    <!-- See above-->
-                    <version>2.22.2</version>
+                    <version>${maven-surefire-plugin.version}</version>
                 </plugin>
+
                 <plugin>
                     <groupId>org.asciidoctor</groupId>
                     <artifactId>asciidoctor-maven-plugin</artifactId>
@@ -176,10 +183,11 @@
                         </execution>
                     </executions>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.1</version>
+                    <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <source>17</source>
                         <target>17</target>
@@ -189,18 +197,12 @@
                             <arg>-Xlint:all</arg>
                         </compilerArgs>
                     </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.codehaus.plexus</groupId>
-                            <artifactId>plexus-compiler-javac</artifactId>
-                            <version>2.2</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.2</version>
+                    <version>${maven-release-plugin.version}</version>
                     <dependencies>
                         <dependency>
                             <groupId>org.apache.maven.scm</groupId>
@@ -215,13 +217,38 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce</id>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.3</version>
+                                </requireMavenVersion>
+                                <dependencyConvergence/>
+                                <requireJavaVersion>
+                                    <version>1.17</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>${maven-source-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -241,7 +268,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.2</version>
+                <version>${maven-surefire-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -255,31 +282,25 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>${jacoco-maven-plugin.version}</version>
+                <configuration>
+                    <append>true</append>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>default-prepare-agent</id>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>default-report</id>
-                        <phase>prepare-package</phase>
+                        <id>report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules/>
-                        </configuration>
-                    </execution>
                 </executions>
+
             </plugin>
         </plugins>
     </build>
@@ -320,7 +341,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>${maven-javadoc-plugin.version}</version>
             </plugin>
 
             <plugin>

@@ -27,7 +27,10 @@
 package org.semispace.actor;
 
 import com.thoughtworks.xstream.XStream;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiSpace;
 import org.semispace.actor.example.Ping;
@@ -35,10 +38,13 @@ import org.semispace.actor.example.PingActor;
 import org.semispace.actor.example.PongActor;
 import org.semispace.event.SemiAvailabilityEvent;
 
-public class ActorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestInstance(Lifecycle.PER_CLASS)
+public class ActorTest  {
 	private SemiSpace space ;
 	
-	@Override
+	@BeforeAll
 	public void setUp() {
 		space = (SemiSpace) SemiSpace.retrieveSpace();
 	}
@@ -47,6 +53,7 @@ public class ActorTest extends TestCase {
 	 * This test was used to find a bug which was introduced when
 	 * the scope of a getter was mistakenly set to protected.
 	 */
+	@Test
 	public void testGiveAndTake() {
 	    ActorMessage template = new ActorMessage();
 	    template.setAddress(Long.valueOf(8));
@@ -61,11 +68,12 @@ public class ActorTest extends TestCase {
         ActorMessage match = space.takeIfExists(template);
         XStream xstream = new XStream();
         
-	    assertNull("The take template should not match any element in space. Template: \n"+xstream.toXML(template)+"\n... should not match match...\n"+xstream.toXML(match), match);
+	    assertNull( match, "The take template should not match any element in space. Template: \n"+xstream.toXML(template)+"\n... should not match match...\n"+xstream.toXML(match));
 	    assertNotNull(space.takeIfExists(msg));
 	    
 	}
 	
+	@Test
 	public void testSimpleActor() throws InterruptedException {
 		int listenerNum = space.numberOfNumberOfListeners();
 		PingActor pingActor = new PingActor(10, space);
@@ -79,6 +87,7 @@ public class ActorTest extends TestCase {
 		assertEquals(10, pongActor.getPongCount());
 	}
 	
+	@Test
 	public void testManyCallsForActor() throws InterruptedException {
 		int listenerNum = space.numberOfNumberOfListeners();
 		PingActor pingActor = new PingActor(2000, space);
@@ -94,10 +103,11 @@ public class ActorTest extends TestCase {
 		} while ( count != updt );
 		Thread.sleep(200);
 		
-		assertEquals("Testing removal of listeners.", listenerNum, space.numberOfNumberOfListeners());
+		assertEquals(listenerNum, space.numberOfNumberOfListeners());
 		assertEquals(2000, pongActor.getPongCount());
 	}
 
+	@Test
 	public void testListeningForPing() throws InterruptedException {
 		NotificationTestListener listener = new NotificationTestListener();
 		space.notify(new Ping(), listener, 1000);
@@ -106,6 +116,7 @@ public class ActorTest extends TestCase {
 		Thread.sleep(95);
 		assertTrue(listener.notified);
 	}
+
     protected class NotificationTestListener implements SemiEventListener<SemiAvailabilityEvent> {
         protected boolean notified = false;
 

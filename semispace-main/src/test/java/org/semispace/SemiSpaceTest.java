@@ -26,7 +26,10 @@
 
 package org.semispace;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.semispace.admin.IdentifyAdminQuery;
 import org.semispace.admin.SemiSpaceAdmin;
 import org.semispace.event.SemiAvailabilityEvent;
@@ -34,7 +37,10 @@ import org.semispace.event.SemiEvent;
 
 import java.util.Map;
 
-public class SemiSpaceTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestInstance(Lifecycle.PER_CLASS)
+public class SemiSpaceTest{
     protected static class JunitIdListener implements SemiEventListener {
         private long id;
 
@@ -52,10 +58,10 @@ public class SemiSpaceTest extends TestCase {
     }
 
     private SemiSpace space;
-    
-    @Override
+
+    // TODO If I choose beforeall, a problem occurs with notifications. This is fishy.
+    @BeforeEach
     protected void setUp() throws Exception {
-        super.setUp();
         // Need to cast, as some internal methods are tested.
         space = (SemiSpace) SemiSpace.retrieveSpace();
     }
@@ -65,6 +71,7 @@ public class SemiSpaceTest extends TestCase {
      * does not have any meaning if not running within terracotta.
      * (Terracotta ran this test green in 2.5.2)
      */
+    @Test
     public void testThatAdminCanBeSet() {
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("a");
@@ -79,6 +86,7 @@ public class SemiSpaceTest extends TestCase {
     }
 
 
+    @Test
     public void testIssueWithMaxLong() {
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("a");
@@ -86,10 +94,11 @@ public class SemiSpaceTest extends TestCase {
         SemiLease lease = space.write(fh, Long.MAX_VALUE);
         space.setAdmin(new SemiSpaceAdmin(space));
 
-        assertNull( "If this test actually returns an object, an issue has been CORRECTED. As of now " +
-                "null is erroneously returned. Probably due to calculations on lease time.", space.takeIfExists(fh));
+        assertNull(space.takeIfExists(fh),  "If this test actually returns an object, an issue has been CORRECTED. As of now " +
+                "null is erroneously returned. Probably due to calculations on lease time.");
     }
 
+    @Test
     public void testRetrievalOfHolderById() throws InterruptedException {
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("a");
@@ -107,9 +116,10 @@ public class SemiSpaceTest extends TestCase {
         
         // Clean up
         space.takeIfExists(fh);
-        assertTrue("Failed to cancel notify lease", reg.getLease().cancel());
+        assertTrue(reg.getLease().cancel(), "Failed to cancel notify lease");
     }
     
+    @Test
     public void testRetrievePropertiesFromObject() {
         AlternateHolder holder = new AlternateHolder();
         holder.fieldA = "x";
@@ -120,11 +130,12 @@ public class SemiSpaceTest extends TestCase {
         assertEquals( holder.getClass().getName(), props.get("class"));
     }
     
+    @Test
     public void testRetrieveAdminPropertiesFromObject() {
         IdentifyAdminQuery iaq = new IdentifyAdminQuery();
         iaq.hasAnswered = Boolean.FALSE;
         Map<String, String> props = space.retrievePropertiesFromObject( iaq );
-        assertEquals("Admin element has an extra (internal) entry", 3, props.size());
+        assertEquals(3, props.size(), "Admin element has an extra (internal) entry");
         assertNotNull( props.get("class"));
         assertEquals( iaq.getClass().getName(), props.get("class"));
     }
@@ -132,6 +143,7 @@ public class SemiSpaceTest extends TestCase {
     /**
      * None of these operations should give NPE
      */
+    @Test
     public void testThatOperationsWithNullValuesAreNotFatal() {
         assertNull( space.read(null, 100) );
         assertNull( space.readIfExists(null));
@@ -141,6 +153,7 @@ public class SemiSpaceTest extends TestCase {
         
     }
     
+    @Test
     public void testSimpleWrite() {
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("a");
@@ -158,10 +171,11 @@ public class SemiSpaceTest extends TestCase {
         
         assertNotNull(space.takeIfExists(fh));
         assertEquals(before+1, space.numberOfSpaceElements());
-        assertNotNull("I put two elements in space, and both should exist.", space.takeIfExists(fh));
+        assertNotNull(space.takeIfExists(fh), "I put two elements in space, and both should exist.");
         assertNull(space.readIfExists(fh));
     }
     
+    @Test
     public void testSimpleWriteOf3Elements() {
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("a");
@@ -179,13 +193,14 @@ public class SemiSpaceTest extends TestCase {
         assertNotNull(space.takeIfExists(fh));
         assertNotNull(space.takeIfExists(fh));
         assertEquals(before+1, space.numberOfSpaceElements());
-        assertNotNull("I put three elements in space, and all should exist.", space.takeIfExists(fh));
+        assertNotNull(space.takeIfExists(fh), "I put three elements in space, and all should exist.");
         assertNull(space.readIfExists(fh));
     }
 
     /**
      * 
      */
+    @Test
     public void testStatistics() {
         space.harvest();
         // I know the stats are defensively copied
@@ -216,6 +231,8 @@ public class SemiSpaceTest extends TestCase {
     /**
      * Add notification size test when having a lease which can be canceled.
      */
+
+    @Test
     public void testNotificationStatistics() throws InterruptedException {
         // I know the stats are defensively copied
         SemiSpaceStatistics before = space.getStatistics();
@@ -241,6 +258,8 @@ public class SemiSpaceTest extends TestCase {
      * when it does not exist anymore. 
      * @throws InterruptedException 
      */
+    @Test
+
     public void testTakeDuringNotify() throws InterruptedException {
         space.harvest();
         SemiSpaceStatistics before = space.getStatistics();
@@ -264,14 +283,16 @@ public class SemiSpaceTest extends TestCase {
         assertTrue(reg3.getLease().cancel());
         
         after = space.getStatistics();
-        assertEquals("Number of listeners should now be on same level", before.getNumberOfListeners(), after.getNumberOfListeners());
+        assertEquals(before.getNumberOfListeners(), after.getNumberOfListeners(), "Number of listeners should now be on same level");
         
         Thread.sleep(100);
-        assertNull("Element should have been taken by listener", space.takeIfExists(fh));
+        assertNull(space.takeIfExists(fh), "Element should have been taken by listener");
         assertEquals(1, listener1.getCount());
         assertEquals(1, listener2.getCount());
         assertEquals(1, listener3.getCount());
     }
+
+    @Test
 
     public void testExtensionOfListener() throws InterruptedException {
         FieldHolder fh = new FieldHolder();
@@ -283,15 +304,16 @@ public class SemiSpaceTest extends TestCase {
         space.write( fh, 210 );
         Thread.sleep(90);
 
-        assertTrue("Should be allowed to renew lease", reg.getLease().renew(250) );
+        assertTrue(reg.getLease().renew(250) , "Should be allowed to renew lease");
         Thread.sleep(140);
         // Write element once more in order to be taken once more
         space.write( fh, 210 );
         Thread.sleep(50);
-        assertEquals("Listener should have been triggered twice.", 2, listener.getCount());
+        assertEquals( 2, listener.getCount(), "Listener should have been triggered twice.");
         assertTrue(reg.getLease().cancel());
     }
 
+    @Test
     public void testLeaseCancel() throws InterruptedException {
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("a");
@@ -305,6 +327,7 @@ public class SemiSpaceTest extends TestCase {
         assertFalse(lease.cancel());        
     }
     
+    @Test
     public void testLeaseRenew() throws InterruptedException {
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("a");
@@ -314,7 +337,7 @@ public class SemiSpaceTest extends TestCase {
         Thread.sleep(100);
         assertTrue(lease.renew(500));
         Thread.sleep(120);
-        assertNotNull( "Element should still exist even if original lease has expired ", space.readIfExists(fh));
+        assertNotNull(space.readIfExists(fh),  "Element should still exist even if original lease has expired ");
         assertTrue(lease.cancel());
         assertNull( space.readIfExists(fh));
     }
@@ -323,6 +346,7 @@ public class SemiSpaceTest extends TestCase {
     protected static class JunitEventListener implements SemiEventListener {
         private int count=0;
         @Override
+        @Test
         public void notify(SemiEvent theEvent) {
             if ( theEvent instanceof SemiAvailabilityEvent ) {
                 count++;
@@ -336,6 +360,7 @@ public class SemiSpaceTest extends TestCase {
     protected class JunitTakingListener implements SemiEventListener {
         private int count=0;
         @Override
+        @Test
         public void notify(SemiEvent theEvent) {
             FieldHolder fh = new FieldHolder();
             fh.setFieldA("a");

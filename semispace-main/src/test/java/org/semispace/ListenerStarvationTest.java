@@ -1,8 +1,13 @@
 package org.semispace;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -14,7 +19,8 @@ import org.slf4j.LoggerFactory;
  * time of writing.
  * </p>
  */
-public class ListenerStarvationTest extends TestCase {
+@TestInstance(Lifecycle.PER_CLASS)
+public class ListenerStarvationTest  {
     private static final Logger log = LoggerFactory.getLogger(ListenerStarvationTest.class);
 
 	private SemiSpaceInterface space;
@@ -24,18 +30,9 @@ public class ListenerStarvationTest extends TestCase {
      * When having an iteration number of 10000, the test will almost certainly fail.
      */
     private static final int ITERATION_NUM=10;
-    /**
-	 * Create the test case
-	 *
-	 * @param testName name of the test case
-	 */
-	public ListenerStarvationTest( String testName ) {
-		super( testName );
-	}
 
-    @Override
+    @BeforeAll
 	protected void setUp() throws Exception {
-		super.setUp();
         hasError = false;
         output = new StringBuilder();
 		space = SemiSpace.retrieveSpace();
@@ -144,6 +141,7 @@ public class ListenerStarvationTest extends TestCase {
      * get starved when competing for resource.
      * In this test, this happens after 40 missed reads for a given reader.
      */
+	@Test
 	public void testStarvation() {
 		final TestObject tmpl = new TestObject("test");
 
@@ -187,11 +185,11 @@ public class ListenerStarvationTest extends TestCase {
             log.error(output.toString());
             log.error("Statistics:\n"+((SemiSpace)space).getStatistics());
         }
-        assertFalse("State of starvation has been achieved. This does not really indicate an error " +
+        assertFalse(hasError, "State of starvation has been achieved. This does not really indicate an error " +
                 "as the behaviour for this to happen is intrinsically correct: The timeout values " +
                 "(in milliseconds) have stabilized into the same value. This test is basically made " +
                 "for caching if this happens more often than should be expected. It may happen sporadically " +
-                "when building with tests, particularly (I expect) when having a quick computer.\n"+output, hasError );
-        assertNotNull("Presumed the template to be present in space at end of test", space.takeIfExists(tmpl));
+                "when building with tests, particularly (I expect) when having a quick computer.\n"+output);
+        assertNotNull(space.takeIfExists(tmpl), "Presumed the template to be present in space at end of test");
 	}
 }

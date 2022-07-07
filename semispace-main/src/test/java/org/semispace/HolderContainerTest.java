@@ -26,19 +26,22 @@
 
 package org.semispace;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
-public class HolderContainerTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class HolderContainerTest {
     private static final Logger log = LoggerFactory.getLogger(HolderContainerTest.class);
     private long id = 0;
 
+    @Test
     public void testAlmostEmptyHolderContainer() {
         HolderContainer hc = HolderContainer.retrieveContainer();
-        assertEquals("This test requires that the other tests cleaned up after themselves. Types: "+ Arrays.asList(hc.retrieveGroupNames()), 0, hc.size());
+        assertEquals(0, hc.size(), "This test requires that the other tests cleaned up after themselves. Types: "+ Arrays.asList(hc.retrieveGroupNames()));
         Holder a = createHolder();
         final int orgsize = hc.size();
         hc.addHolder(a);
@@ -52,9 +55,10 @@ public class HolderContainerTest extends TestCase {
         assertNull( hc.removeHolderById(id+100, a.getClassName()) );
     }
 
+    @Test
     public void testHolderContainerWith2Elements() {
         HolderContainer hc = HolderContainer.retrieveContainer();
-        assertEquals("This test requires that the other tests cleaned up after themselves.", 0, hc.size());
+        assertEquals(0, hc.size(), "This test requires that the other tests cleaned up after themselves.");
         Holder a = createHolder();
         Holder b = createHolder();
         final int orgsize = hc.size();
@@ -72,12 +76,12 @@ public class HolderContainerTest extends TestCase {
         
         assertNotNull( hc.removeHolderById(a.getId(), a.getClassName()) );
         assertEquals(orgsize+1, hc.size());
-        assertTrue("Size 1 indicates that next is present.", hc.next(b.getClassName()) != null);
+        assertTrue(hc.next(b.getClassName()) != null);
         assertEquals(b.getId(), hc.readHolderWithId(b.getId()).getId());
         assertNotNull( hc.removeHolderById(b.getId(), b.getClassName()) );
         HolderElement next = hc.next(b.getClassName());
         if ( next != null ) {
-            assertEquals("Expecting holder element to be empty, if it exists.", 0, next.size());
+            assertEquals( 0, next.size(), "Expecting holder element to be empty, if it exists.");
         } 
         assertEquals(orgsize, hc.size());
 
@@ -87,6 +91,7 @@ public class HolderContainerTest extends TestCase {
     }
 
     
+    @Test
     public void testHolderContainer() {
         HolderContainer hc = HolderContainer.retrieveContainer();
         Holder a = createHolder();
@@ -138,9 +143,10 @@ public class HolderContainerTest extends TestCase {
         return holder;
     }
 
+    @Test
     public void testIdentityOfRemovedElement() {
         HolderContainer hc = HolderContainer.retrieveContainer();
-        assertEquals("This test requires that the other tests cleaned up after themselves.", 0, hc.size());
+        assertEquals(0, hc.size(), "This test requires that the other tests cleaned up after themselves.");
         Holder a = createHolder();
         Holder b = createHolder();
         Holder c = createHolder();
@@ -166,10 +172,10 @@ public class HolderContainerTest extends TestCase {
         assertEquals(orgsize, hc.size());
     }
 
+    @Test
     public void testHavingFewElements() {
         HolderContainer hc = HolderContainer.retrieveContainer();
-        assertEquals("This test requires that the other tests cleaned up after themselves.", 0, hc.size());
-        // TODO Check: assertEquals("This test requires that the other tests cleaned up after themselves.", 0, hc.size());
+        assertEquals(0, hc.size(), "This test requires that the other tests cleaned up after themselves.");
         final int orgsize = hc.size(); // Using variable as it is cleaner
         Holder a = createHolder();
         Holder b = createHolder();
@@ -197,6 +203,7 @@ public class HolderContainerTest extends TestCase {
      * elements that can be inserted and removed. Note that I
      * <b>do</b> test whether the same number was removed as inserted.
      */
+    @Test
     public void testInsertionRate() {
         HolderContainer hc = HolderContainer.retrieveContainer();
         final int orgsize = hc.size();
@@ -218,12 +225,12 @@ public class HolderContainerTest extends TestCase {
 
         int takenCounter = 0;
         for ( long i=startingId ; i < id ; i++) {
-            assertNotNull("Expecting to be able to remove element "+i, hc.removeHolderById(i, "junit"));
+            assertNotNull(hc.removeHolderById(i, "junit"), "Expecting to be able to remove element "+i);
             takenCounter++;
         }
         log.debug("Total running time "+(System.currentTimeMillis() - startTime)+" ms, inserted (and hopefully took) "+counter+" items.");
 
-        assertEquals("Should be able to take as many elements as was inserted.", counter, takenCounter);
+        assertEquals( counter, takenCounter, "Should be able to take as many elements as was inserted.");
         assertEquals(orgsize, hc.size());        
     }
 
