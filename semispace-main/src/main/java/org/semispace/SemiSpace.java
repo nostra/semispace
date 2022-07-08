@@ -26,8 +26,6 @@
 
 package org.semispace;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.CompactWriter;
 import org.semispace.admin.InternalQuery;
 import org.semispace.admin.SemiSpaceAdmin;
 import org.semispace.admin.SemiSpaceAdminInterface;
@@ -43,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -91,7 +88,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
     private SemiSpaceStatistics statistics;
 
-    private transient XStream xStream;
+    private transient SemiSpaceSerializer serializer;
 
     private EventDistributor eventDistributor = EventDistributor.getInstance();
 
@@ -105,8 +102,19 @@ public class SemiSpace implements SemiSpaceInterface {
         elements = HolderContainer.retrieveContainer();
         listeners = new ConcurrentHashMap<>();
         statistics = new SemiSpaceStatistics();
-        xStream = new XStream();
-        setAdmin(new SemiSpaceAdmin(this));
+        serializer = resolveSerializer();
+        setAdmin(new SemiSpaceAdmin(this, serializer));
+    }
+
+    private static SemiSpaceSerializer resolveSerializer() {
+        try {
+            Class.forName("com.fasterxml.jackson.databind.ObjectMapper", false, SemiSpace.class.getClassLoader());
+            return new JacksonSerializer();
+
+        } catch (ClassNotFoundException e) {
+            log.warn("Jackson serializer not found. Using insecure XStream instead.");
+            return new XStreamSerializer();
+        }
     }
 
     /**
@@ -234,7 +242,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
         if (write.getException() != null || exception != null) {
             String error = " Writing object (of type " + entry.getClass().getName()
-                    + ") to space gave exception. XML version: " + objectToXml(entry);
+                    + ") to space gave exception. XML version: " + serializer.objectToXml(entry);
             if (write.getException() != null) {
                 exception = write.getException();
             }
@@ -248,7 +256,7 @@ public class SemiSpace implements SemiSpaceInterface {
         if (entry instanceof InternalQuery) {
             entryClassName = InternalQuery.class.getName();
         }
-        String xml = objectToXml(entry);
+        String xml = serializer.objectToXml(entry);
         Map<String, String> searchMap = retrievePropertiesFromObject(entry);
         return writeToElements(entryClassName, leaseTimeMs, xml, searchMap);
     }
@@ -300,7 +308,7 @@ public class SemiSpace implements SemiSpaceInterface {
         if (tmpl != null) {
             found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, false);
         }
-        return (T) xmlToObject(found);
+        return (T) serializer.xmlToObject(found);
     }
 
     /**
@@ -448,34 +456,12 @@ public class SemiSpace implements SemiSpaceInterface {
         if (tmpl != null) {
             found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, true);
         }
-        return (T) xmlToObject(found);
+        return (T) serializer.xmlToObject(found);
     }
 
     @Override
     public <T> T takeIfExists(T tmpl) {
         return take(tmpl, 0);
-    }
-
-    private String objectToXml(Object obj) {
-        StringWriter writer = new StringWriter();
-        xStream.marshal(obj, new CompactWriter(writer));
-        return writer.toString();
-    }
-
-    private Object xmlToObject(String xml) {
-        if (xml == null || "".equals(xml)) {
-            return null;
-        }
-        Object result = null;
-        try {
-            result = xStream.fromXML(xml);
-        } catch (Exception e) {
-            // Not sure if masking exception is the most correct way of dealing with it.
-            log.error("Got exception unmarshalling. Not throwing the exception up, but rather returning null. "
-                    + "This is as the cause may be a change in the object which is sent over. "
-                    + "The XML was read as\n" + xml, e);
-        }
-        return result;
     }
 
     private static class PreprocessedTemplate {
@@ -536,6 +522,12 @@ public class SemiSpace implements SemiSpaceInterface {
     protected Map<String, String> retrievePropertiesFromObject(Object examine) {
         Map<String, String> map = fillMapWithPublicFields(examine);
         addGettersToMap(examine, map);
+        // TODO : Delete (probably)
+        /*
+        if (!map.getOrDefault("class", "").startsWith("class ")) {
+            // Workaround to make jackson serializer compatible with xstream same.
+            map.put("class", "class "+examine.getClass().toString());
+        }*/
 
         if (examine instanceof InternalQuery) {
             map.put(SemiSpace.ADMIN_GROUP_IS_FLAGGED, "true");
@@ -855,8 +847,8 @@ public class SemiSpace implements SemiSpaceInterface {
      *
      * @return The xstream instance used.
      */
-    public XStream getXStream() {
-        return xStream;
+    public SemiSpaceSerializer getXStream() {
+        return serializer;
     }
 
     private static class ShortestTtlComparator implements Comparator<ListenerHolder>, Serializable {

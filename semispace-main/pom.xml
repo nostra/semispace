@@ -28,11 +28,19 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>xpp3</groupId>
             <artifactId>xpp3_min</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
