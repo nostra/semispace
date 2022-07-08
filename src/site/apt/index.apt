@@ -10,30 +10,17 @@
 ~~ http://maven.apache.org/guides/mini/guide-snippet-macro.html
 ~~~~~~~~~~~~~~~~~~~~
 
-
-  <<NOTICE: This document is OLD and need to be revised.>>
-
   SemiSpace is a light weight Open Source interpretation of
   <<{{{http://www.wikipedia.org/wiki/tuple_space}Tuple Space / Object Space}}>> 
   based on ideas from 
   <<{{{http://www.jini.org/wiki/JavaSpaces_Specification}JavaSpaces}}.>>
   It can be run as single, <<stand alone,>> space.
 
-  Please see the 
-  {{{semispace-main/semispace-book}SemiSpace book}}
-  for in-depth information about installation and usage.
+  Historically, it was created in order to support distribution under Terracotta.
 
- Other information:
+ {{{./changes.html}Changelist}} since version 1.0.0.
 
- * Problems and limitations as far as they are known are listed
-  {{{semispace-main/semispace-book/beware.html}in a chapter in 
-  the book.}}
-  
- * The documentation for the 
-  current snapshot version: \
-  {{{../semispace-1.3.2-SNAPSHOT/}semispace-1.3.2-SNAPSHOT}}
-
- * {{{./changes.html}Changelist}} since version 1.0.0. 
+ For usage, please see the {{{https://github.com/nostra/semispace/}SemiSpace entry page on GitHub}}.
 
  []
 
@@ -67,35 +54,29 @@ SemiSpace offers
  []
 
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* Accessing the repository directly
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
- In order to obtain snapshot versions, or just a direct download of 
- the packages, add the following to your pom:
- 
-
-
 ~~~~~~~~~~~~
 Alternatives
 ~~~~~~~~~~~~
 
-  JavaSpace alternatives are:
+  Historically, JavaSpace alternatives have been at least the following, but currently
+  few projects are still available:
   
-  * The JavaSpace implementation Sun offers as a part of {{{http://jini.org}Jini}}
+  * The JavaSpace implementation Sun offers as a part of Jini (http://jini.org)
   
-  * {{{http://www.dancres.org/blitz/}Blitz}} 
+  * Blitz (http://www.dancres.org/blitz/)
   
-  * {{{http://www.gigaspaces.com/}GigaSpaces}}
+  * {{{http://www.gigaspaces.com/}GigaSpaces}} where
+    {{{https://www.gigaspaces.com/technology/event-driven-architecture/}Event Driven Architecture}} seems to be a
+    remnant of JavaSpaces technology
 
-  * {{{http://incubator.apache.org/river/}Apache River}}
+  * {{{http://incubator.apache.org/river/}Apache River}} (retired)
 
-  * {{{http://lime.sourceforge.net/Lime/index.html}Lime}}
+  * {{{http://lime.sourceforge.net/Lime/index.html}Lime}} (which looks abandoned: https://sourceforge.net/projects/lime/ )
   
-  * {{{http://www.almaden.ibm.com/cs/TSpaces/}IBM TSpaces}}
+  * IBM TSpaces (http://www.almaden.ibm.com/cs/TSpaces/)
 
-  * {{{http://gruple.codehaus.org/}Gruple}}
+  * Gruple (http://gruple.codehaus.org/)
 
-  * {{{http://code.google.com/p/terrastore/}Terrastore}}
+  * {{{http://code.google.com/p/terrastore/}Terrastore}} which can now be found in Google Archive.
 
   []

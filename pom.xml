@@ -51,6 +51,8 @@
         <asciidoctor.version>2.2.2</asciidoctor.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <file.encoding>UTF-8</file.encoding>
 
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
@@ -66,6 +68,9 @@
         <doxia-module-markdown.version>${doxia-module-xdoc.version}</doxia-module-markdown.version>
         <maven-enforcer-plugin.version>3.1.0</maven-enforcer-plugin.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <maven-scm-provider-gitexe.version>1.13.0</maven-scm-provider-gitexe.version>
+        <java.version>1.${java.compiler.version}</java.version>
+        <java.compiler.version>17</java.compiler.version>
     </properties>
 
     <!--
@@ -189,8 +194,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
                     <configuration>
-                        <source>17</source>
-                        <target>17</target>
+                        <source>${java.compiler.version}</source>
+                        <target>${java.compiler.version}</target>
                         <encoding>UTF-8</encoding>
                         <compilerArgs>
                             <!--arg>-Werror</arg-->
@@ -207,7 +212,7 @@
                         <dependency>
                             <groupId>org.apache.maven.scm</groupId>
                             <artifactId>maven-scm-provider-gitexe</artifactId>
-                            <version>1.9.2</version>
+                            <version>${maven-scm-provider-gitexe.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -225,11 +230,11 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.6.3</version>
+                                    <version>3.6.1</version>
                                 </requireMavenVersion>
                                 <dependencyConvergence/>
                                 <requireJavaVersion>
-                                    <version>1.17</version>
+                                    <version>${java.version}</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -316,7 +321,7 @@
                 <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
                     <!-- Trying to create doc java-1.8 only -->
-                    <javadocVersion>1.17</javadocVersion>
+                    <javadocVersion>${java.version}</javadocVersion>
                     <minmemory>128m</minmemory>
                     <maxmemory>768m</maxmemory>
                     <breakiterator>true</breakiterator>
