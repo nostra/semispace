@@ -26,12 +26,12 @@
 
 package org.semispace.admin;
 
-import com.thoughtworks.xstream.XStream;
 import org.semispace.DistributedEvent;
 import org.semispace.Holder;
 import org.semispace.NameValueQuery;
 import org.semispace.SemiSpace;
 import org.semispace.SemiSpaceInterface;
+import org.semispace.SemiSpaceSerializer;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +50,8 @@ import java.util.concurrent.TimeUnit;
 public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     private static final Logger log = LoggerFactory.getLogger(SemiSpaceAdmin.class);
 
+    private final SemiSpaceSerializer serializer;
+
     private boolean master;
 
     private SemiSpaceInterface space;
@@ -66,7 +68,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
 
     private PeriodicHarvest periodicHarvest;
 
-    public SemiSpaceAdmin(SemiSpaceInterface terraSpace) {
+    public SemiSpaceAdmin(SemiSpaceInterface terraSpace, SemiSpaceSerializer serializer) {
         ThreadPoolExecutor tpe = new ThreadPoolExecutor(0, 5000,
                 5L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(true));
@@ -81,6 +83,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         this.spaceId = 0;
         this.master = false;
         this.periodicHarvest = new PeriodicHarvest(this);
+        this.serializer = serializer;
     }
 
     /**
@@ -239,7 +242,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     }
 
     /**
-     * The very first query may take some time (when using terracotta), and it is therefore prudent to kick start the
+     * The very first query may take some time (when using terracotta), and it is therefore prudent to kickstart the
      * connection.
      *
      * @return Time it took in ms for an answer to be obtained.
@@ -254,8 +257,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         if (nvq == null) {
             throw new AssertionError("Unable to retrieve query which is designed to kickstart space.");
         }
-        long timed = System.currentTimeMillis() - bench;
-        return timed;
+        return System.currentTimeMillis() - bench;
     }
 
     /**
@@ -353,7 +355,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
             if (InternalQuery.class.getName().equals(event.getHolderClassName()) && space instanceof SemiSpace) {
                 Holder holder = ((SemiSpace) space).readHolderById(event.getEvent().getId());
                 if (holder != null) {
-                    notifyAboutInternalQuery((InternalQuery) new XStream().fromXML(holder.getXml()));
+                    notifyAboutInternalQuery((InternalQuery) serializer.xmlToObject(holder.getXml()));
                 }
             }
         }
