@@ -107,7 +107,14 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     private static SemiSpaceSerializer resolveSerializer() {
-        return new JacksonSerializer();
+        try {
+            Class.forName("com.fasterxml.jackson.databind.ObjectMapper", false, SemiSpace.class.getClassLoader());
+            return new JacksonSerializer();
+
+        } catch (ClassNotFoundException e) {
+            log.warn("Jackson serializer not found. Using insecure XStream instead.");
+            return new XStreamSerializer();
+        }
     }
 
     /**
@@ -515,6 +522,12 @@ public class SemiSpace implements SemiSpaceInterface {
     protected Map<String, String> retrievePropertiesFromObject(Object examine) {
         Map<String, String> map = fillMapWithPublicFields(examine);
         addGettersToMap(examine, map);
+        // TODO : Delete (probably)
+        /*
+        if (!map.getOrDefault("class", "").startsWith("class ")) {
+            // Workaround to make jackson serializer compatible with xstream same.
+            map.put("class", "class "+examine.getClass().toString());
+        }*/
 
         if (examine instanceof InternalQuery) {
             map.put(SemiSpace.ADMIN_GROUP_IS_FLAGGED, "true");

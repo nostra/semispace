@@ -29,7 +29,7 @@ public class JacksonSerializer implements SemiSpaceSerializer {
             holder.payload = mapper.writeValueAsString(obj);
             return mapper.writeValueAsString(holder);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new SemiSpaceObjectException("Could not process json", e);
         }
     }
 
