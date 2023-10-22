@@ -12,13 +12,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up JDK 1.17
+    - name: Set up JDK 1.21
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'temurin'
 
-    - name: Build with Maven
+    - name: Compile with Maven
+      run: mvn -B compile --file pom.xml
+
+    - name: Run tests with Maven
       run: mvn -B compile --file pom.xml
       # TODO Add tests again.
       # TODO Build site...
