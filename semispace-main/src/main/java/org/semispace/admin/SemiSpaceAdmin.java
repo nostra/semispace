@@ -33,6 +33,7 @@ import org.semispace.SemiSpace;
 import org.semispace.SemiSpaceInterface;
 import org.semispace.SemiSpaceSerializer;
 import org.semispace.event.SemiAvailabilityEvent;
+import org.semispace.exception.SemiSpaceInternalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +85,9 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         this.master = false;
         this.periodicHarvest = new PeriodicHarvest(this);
         this.serializer = serializer;
+        if ( this.serializer == null ) {
+            throw new SemiSpaceInternalException("SemiSpaceSerializer must be non-null");
+        }
     }
 
     /**
