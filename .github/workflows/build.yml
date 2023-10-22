@@ -22,6 +22,6 @@ jobs:
       run: mvn -B compile --file pom.xml
 
     - name: Run tests with Maven
-      run: mvn -B compile --file pom.xml
+      run: mvn -B test --file pom.xml
       # TODO Add tests again.
       # TODO Build site...
