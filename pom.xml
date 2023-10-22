@@ -55,7 +55,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <file.encoding>UTF-8</file.encoding>
 
-        <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
         <logback-classic.version>1.2.11</logback-classic.version>
         <xpp3_min.version>1.1.4c</xpp3_min.version>
         <wagon-ssh-external.version>3.5.2</wagon-ssh-external.version>
@@ -70,8 +70,8 @@
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <maven-scm-provider-gitexe.version>1.13.0</maven-scm-provider-gitexe.version>
         <java.version>1.${java.compiler.version}</java.version>
-        <java.compiler.version>17</java.compiler.version>
-        <jackson-core.version>2.13.3</jackson-core.version>
+        <java.compiler.version>21</java.compiler.version>
+        <jackson-core.version>2.15.3</jackson-core.version>
     </properties>
 
     <!--
@@ -239,7 +239,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.6.1</version>
+                                    <version>3.8.8</version>
                                 </requireMavenVersion>
                                 <dependencyConvergence/>
                                 <requireJavaVersion>
