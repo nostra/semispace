@@ -27,6 +27,11 @@
 package org.semispace.notification;
 
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -43,15 +48,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class NotificationTest {
     private static final Logger log = LoggerFactory.getLogger(NotificationTest.class);
     private SemiSpaceInterface space;
-    private ThreadPoolExecutor tpe;
+    private ExecutorService tpe;
 
     @BeforeAll
     protected void setUp() {
@@ -144,7 +148,7 @@ public class NotificationTest {
         final int numberOfListeners = StressTestConstants.NUMBER_OF_ELEMENTS_OR_LISTENERS;
         final int numberOfWrittenObjects = ((SemiSpace) space).numberOfWrite();
 
-        log.debug("Active before starting testing:" + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
+        // log.debug("Active before starting testing:" + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
         stabilizeThreadNumber();
 
         ToBeNotified[] a = new ToBeNotified[numberOfListeners];
@@ -157,30 +161,30 @@ public class NotificationTest {
             regs.add(space.notify(new NoticeB(), b[i], 90000));
         }
         final int numinserts = 50;
-        log.debug("Before insertion of {} elements. Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount(), Integer.valueOf(numinserts));
+        // log.debug("Before insertion of {} elements. Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount(), Integer.valueOf(numinserts));
         for (int i = 0; i < numinserts; i++) {
             insertIntoSpace(space, i);
-            //log.debug("Insertion into space. Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+            // //log.debug("Insertion into space. Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
         }
         assertEquals(numberOfWrittenObjects + (3 * numinserts), ((SemiSpace) space).numberOfWrite());
 
-        log.debug("Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
+        // log.debug("Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
         log.debug("Insertion finished, pausing for 400ms");
         space.read(new AlternateButEqual(), 400);
 
         stabilizeThreadNumber();
-        log.debug("Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
+        // log.debug("Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
 
-        log.debug("After sleep: Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
+        // log.debug("After sleep: Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
         int errorCount = 0;
         for (int i = 0; i < a.length; i++) {
             if (numinserts != a[i].getNotified() || numinserts != b[i].getNotified()) {
                 /*
                 log.error("Warning: Discrepancy. Trying to resolve by sleeping a bit more");
-                log.debug("Before sleeping: Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+                // log.debug("Before sleeping: Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
                 Thread.sleep(1000);
                 stabilizeThreadNumber();
-                log.debug("After sleeping (at "+i+" of "+a.length+"): Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
+                // log.debug("After sleeping (at "+i+" of "+a.length+"): Active threads "+tpe.getActiveCount()+", Main thread count: "+Thread.activeCount());
                 */
                 errorCount++;
             }
@@ -193,7 +197,7 @@ public class NotificationTest {
             er.getLease().cancel();
         }
         log.debug("Leases cancelled");
-        log.debug("Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
+        // log.debug("Active threads " + tpe.getActiveCount() + ", Main thread count: " + Thread.activeCount());
 
 
         for (int i = 0; i < a.length; i++) {
@@ -220,15 +224,17 @@ public class NotificationTest {
     }
 
     private void stabilizeThreadNumber() throws InterruptedException {
-        int lastCheckActive = tpe.getActiveCount() + Thread.activeCount();
+        // int lastCheckActive = tpe.getActiveCount() + Thread.activeCount();
+        /*
         for (int i = 0; i < 100; i++) {
             Thread.sleep(500);
-            int updatedActive = tpe.getActiveCount() + Thread.activeCount();
+            // int updatedActive = tpe.getActiveCount() + Thread.activeCount();
             if (updatedActive == lastCheckActive) {
                 break;
             }
             lastCheckActive = updatedActive;
         }
+         */
     }
 
     /**

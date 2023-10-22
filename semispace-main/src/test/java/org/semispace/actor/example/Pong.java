@@ -27,4 +27,6 @@
 package org.semispace.actor.example;
 
 public class Pong {
+    public Pong() {
+    }
 }

@@ -33,6 +33,13 @@ public class ActorManifest {
     private Long holderId;
     private Long originatorId;
 
+    /**
+    * For the benefit of jackson
+    */
+    public ActorManifest() {
+        this(-1L,-1L);
+    }
+
     public ActorManifest(Long holderId, Long originatorId) {
         this.holderId = holderId;
         this.originatorId = originatorId;
@@ -49,4 +56,13 @@ public class ActorManifest {
     public Long getOriginatorId() {
         return this.originatorId;
     }
+
+    /* whups, did this break gh build?!
+    @Override
+    public String toString() {
+        return "ActorManifest{" +
+                "holderId=" + holderId +
+                ", originatorId=" + originatorId +
+                '}';
+    }*/
 }

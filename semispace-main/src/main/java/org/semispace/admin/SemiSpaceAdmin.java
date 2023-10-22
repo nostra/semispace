@@ -33,6 +33,7 @@ import org.semispace.SemiSpace;
 import org.semispace.SemiSpaceInterface;
 import org.semispace.SemiSpaceSerializer;
 import org.semispace.event.SemiAvailabilityEvent;
+import org.semispace.exception.SemiSpaceInternalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +70,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
     private PeriodicHarvest periodicHarvest;
 
     public SemiSpaceAdmin(SemiSpaceInterface terraSpace, SemiSpaceSerializer serializer) {
+        //*
         ThreadPoolExecutor tpe = new ThreadPoolExecutor(0, 5000,
                 5L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(true));
@@ -77,6 +79,9 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         tpe.setRejectedExecutionHandler(new SemiSpaceRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy()));
         tpe.allowCoreThreadTimeOut(true);
         this.pool = tpe;
+        /*/
+        this.pool = Executors.newVirtualThreadPerTaskExecutor();
+        // */
         this.space = terraSpace;
         this.beenInitialized = false;
         this.clockSkew = 0;
@@ -84,6 +89,9 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         this.master = false;
         this.periodicHarvest = new PeriodicHarvest(this);
         this.serializer = serializer;
+        if ( this.serializer == null ) {
+            throw new SemiSpaceInternalException("SemiSpaceSerializer must be non-null");
+        }
     }
 
     /**
