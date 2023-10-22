@@ -77,7 +77,7 @@ public class SemiSpaceTest {
         fh.setFieldA("a");
         fh.setFieldB("b");
         SemiLease lease = space.write(fh, 1000);
-        space.setAdmin(new SemiSpaceAdmin(space, null));
+        space.setAdmin(new SemiSpaceAdmin(space, new JacksonSerializer()));
         assertTrue(lease.cancel());
         lease = space.write(fh, 1000);
 
@@ -92,7 +92,7 @@ public class SemiSpaceTest {
         fh.setFieldA("a");
         fh.setFieldB("b");
         SemiLease lease = space.write(fh, Long.MAX_VALUE);
-        space.setAdmin(new SemiSpaceAdmin(space, null));
+        space.setAdmin(new SemiSpaceAdmin(space, new JacksonSerializer()));
 
         assertNull(space.takeIfExists(fh), "If this test actually returns an object, an issue has been CORRECTED. As of now " +
                 "null is erroneously returned. Probably due to calculations on lease time.");
