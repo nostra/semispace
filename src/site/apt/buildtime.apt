@@ -4,6 +4,36 @@
 
  Internal document in order to register changes in setup / build time.
 
+~~~~~~~~~
+New notes
+~~~~~~~~~
+
+Notes when building on M1 mac
+
+*------+-----+
+|| 2.0.0-SNAPSHOT || Standalone with old threads
+*------+-----+
+| Total build time | 1 min 04 sec (1000 it in ListenerStarvationTest)
+| semispace-main build time | 36 sec (10 it in ListenerStarvationTest)
+*------+-----+
+| TerraSpaceTest | ~16 sec
+| testInsertionTime | (5 sec): 105000 items, 5864ms time
+*------+-----+
+| SpaceTest| 1.9 sec
+*------+-----+
+| SemiSpaceTest| 11.4 sec
+*------+-----+
+| NotificationTest | 180 ms Skipped??
+*------+-----+
+| ActorTest | Skipped test : JacksonSerializer
+*------+-----+
+| ListenerStarvationTest| Basic (10 it): 350ms, 1000 it: 30.1 sec
+*------+-----+
+
+~~~~~~~~~
+Old notes
+~~~~~~~~~
+
  Total (test) build times without cometd modules.
 
 *------+-----+
