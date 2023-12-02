@@ -56,7 +56,7 @@
         <file.encoding>UTF-8</file.encoding>
 
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
-        <logback-classic.version>1.4.11</logback-classic.version>
+        <logback-classic.version>1.4.14</logback-classic.version>
         <xpp3_min.version>1.1.4c</xpp3_min.version>
         <wagon-ssh-external.version>3.5.2</wagon-ssh-external.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
@@ -71,7 +71,7 @@
         <maven-scm-provider-gitexe.version>2.0.1</maven-scm-provider-gitexe.version>
         <java.version>1.${java.compiler.version}</java.version>
         <java.compiler.version>21</java.compiler.version>
-        <jackson-core.version>2.15.3</jackson-core.version> <!-- 2.16.0 makes build fail on linux, but not on M1 mac ?! TODO Fix  -->
+        <jackson-core.version>2.16.0</jackson-core.version>
     </properties>
 
     <!--
