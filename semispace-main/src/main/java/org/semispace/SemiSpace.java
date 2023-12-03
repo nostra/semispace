@@ -274,6 +274,7 @@ public class SemiSpace implements SemiSpaceInterface {
                         "expected. This warning is printed once for each class type.");
             }
         }
+        // TODO Error here when leasetime is Max long: FIX
         // Need to add holder within lock. This indicates that HolderContainer has some thread safety issues
         Holder holder = elements.addHolder(xml, admin.calculateTime() + leaseTimeMs, entryClassName, searchMap);
 

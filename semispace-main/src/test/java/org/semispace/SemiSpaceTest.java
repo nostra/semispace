@@ -26,18 +26,22 @@
 
 package org.semispace;
 
-import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.semispace.admin.IdentifyAdminQuery;
 import org.semispace.admin.SemiSpaceAdmin;
+import org.semispace.admin.SemiSpaceAdminInterface;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
 
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class SemiSpaceTest {
@@ -60,7 +64,8 @@ public class SemiSpaceTest {
     private SemiSpace space;
 
     // TODO If I choose beforeall, a problem occurs with notifications. This is fishy.
-    @BeforeEach
+    //@BeforeEach
+    @BeforeAll
     protected void setUp() throws Exception {
         // Need to cast, as some internal methods are tested.
         space = (SemiSpace) SemiSpace.retrieveSpace();
@@ -77,12 +82,16 @@ public class SemiSpaceTest {
         fh.setFieldA("a");
         fh.setFieldB("b");
         SemiLease lease = space.write(fh, 1000);
-        space.setAdmin(new SemiSpaceAdmin(space, new JacksonSerializer()));
+        SemiSpaceAdminInterface oldAdmin = space.getAdmin();
+        var admin = new SemiSpaceAdmin(space, new JacksonSerializer());
+        admin.performInitialization();
+        space.setAdmin(admin);
         assertTrue(lease.cancel());
         lease = space.write(fh, 1000);
 
         assertNotNull(space.takeIfExists(fh));
         assertFalse(lease.cancel());
+        space.setAdmin(oldAdmin);
     }
 
 
@@ -92,7 +101,6 @@ public class SemiSpaceTest {
         fh.setFieldA("a");
         fh.setFieldB("b");
         SemiLease lease = space.write(fh, Long.MAX_VALUE);
-        space.setAdmin(new SemiSpaceAdmin(space, new JacksonSerializer()));
 
         assertNull(space.takeIfExists(fh), "If this test actually returns an object, an issue has been CORRECTED. As of now " +
                 "null is erroneously returned. Probably due to calculations on lease time.");
