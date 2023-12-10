@@ -50,11 +50,12 @@ public class ActorManifest {
         return this.originatorId;
     }
 
+    /* whups, did this break gh build?!
     @Override
     public String toString() {
         return "ActorManifest{" +
                 "holderId=" + holderId +
                 ", originatorId=" + originatorId +
                 '}';
-    }
+    }*/
 }
