@@ -49,4 +49,12 @@ public class ActorManifest {
     public Long getOriginatorId() {
         return this.originatorId;
     }
+
+    @Override
+    public String toString() {
+        return "ActorManifest{" +
+                "holderId=" + holderId +
+                ", originatorId=" + originatorId +
+                '}';
+    }
 }
