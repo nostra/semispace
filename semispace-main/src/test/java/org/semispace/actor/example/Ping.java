@@ -27,5 +27,7 @@
 package org.semispace.actor.example;
 
 public class Ping {
+    public Ping() {
+    }
 }
     

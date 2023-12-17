@@ -4,6 +4,7 @@ import static com.fasterxml.jackson.core.JsonParser.Feature.INCLUDE_SOURCE_IN_LO
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import org.semispace.exception.SemiSpaceObjectException;
 
 public class JacksonSerializer implements SemiSpaceSerializer {
@@ -13,6 +14,10 @@ public class JacksonSerializer implements SemiSpaceSerializer {
         this(new ObjectMapper()
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false)
                 .configure(INCLUDE_SOURCE_IN_LOCATION, true)
+                .activateDefaultTyping(BasicPolymorphicTypeValidator.builder()
+                        .allowIfSubTypeIsArray()
+                        .allowIfBaseType(Object.class)
+                        .build())
         );
     }
 
@@ -58,4 +63,7 @@ public class JacksonSerializer implements SemiSpaceSerializer {
         public String payload;
     }
 
+//    public ObjectMapper jacksonMapper() {
+//        return mapper;
+//    }
 }
