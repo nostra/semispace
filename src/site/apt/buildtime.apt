@@ -13,19 +13,19 @@ Notes when building on M1 mac
 *------+-----+
 || 2.0.0-SNAPSHOT || Standalone with old threads
 *------+-----+
-| Total build time | 1 min 04 sec (1000 it in ListenerStarvationTest)
-| semispace-main build time | 36 sec (10 it in ListenerStarvationTest)
+| Total build time | 59 sec (1000 it in ListenerStarvationTest)
+| semispace-main build time | 32 sec (10 it in ListenerStarvationTest)
 *------+-----+
 | TerraSpaceTest | ~16 sec
-| testInsertionTime | (5 sec): 105000 items, 5864ms time
+| testInsertionTime | (5.6 sec): 102060 items, 5828ms time
 *------+-----+
 | SpaceTest| 1.9 sec
 *------+-----+
-| SemiSpaceTest| 11.4 sec
+| SemiSpaceTest| 4.2 sec
 *------+-----+
-| NotificationTest | 180 ms Skipped??
+| NotificationTest | 178 ms
 *------+-----+
-| ActorTest | Skipped test : JacksonSerializer
+| ActorTest |  0.113 s
 *------+-----+
 | ListenerStarvationTest| Basic (10 it): 350ms, 1000 it: 30.1 sec
 *------+-----+

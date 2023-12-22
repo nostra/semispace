@@ -61,6 +61,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * A tuple space implementation which can be distributed with terracotta. This is
@@ -227,7 +229,7 @@ public class SemiSpace implements SemiSpaceInterface {
         Future<?> future = admin.getThreadPool().submit(write);
         Exception exception = null;
         try {
-            future.get();
+            future.get(10, TimeUnit.SECONDS);
         } catch (CancellationException e) {
             log.error("Got exception", e);
             exception = e;
@@ -237,6 +239,9 @@ public class SemiSpace implements SemiSpaceInterface {
             e.notifyAll();
         } catch (ExecutionException e) {
             log.error("Got exception", e);
+            exception = e;
+        } catch (TimeoutException e) {
+            log.error("Not expected to run into a timeout writing an entry", e);
             exception = e;
         }
 
@@ -339,6 +344,7 @@ public class SemiSpace implements SemiSpaceInterface {
             found = findLeaseForTemplate(templateSet, isToTakeTheLease);
 
             if (found == null && duration > 0) {
+                Thread.yield(); // Need to yield to avoid rare deadlock
                 elements.waitHolder(className, duration);
             }
             if (isToTakeTheLease) {

@@ -108,18 +108,21 @@ public class ListenerStarvationTest {
 
             public void run() {
                 TestObject obj = null;
-                while ((obj == null || obj.getB() < ITERATION_NUM) && !hasError) {
+                do {
                     obj = space.take(tmpl, 1000);
+                    // System.out.println("Took in "+n+" "+obj.getB());
                     if (obj != null) {
                         obj.increment();
                         try {
                             // simulate update time
                             Thread.sleep(25);
+                            output.append("(" + n + ") writing " + obj.getB() + "  " + ((SemiSpace) space).getStatistics() + "\n");
                         } catch (InterruptedException ex) {
                             log.error("Exception", ex);
+                            output.append("interrupted");
+                        } finally {
+                            space.write(obj, 5000);
                         }
-                        output.append("(" + n + ") writing " + obj.getB() + "  " + ((SemiSpace) space).getStatistics() + "\n");
-                        space.write(obj, 5000);
 
                         try {
                             Thread.sleep(10);
@@ -130,7 +133,7 @@ public class ListenerStarvationTest {
                         hasError = true;
                         fail("(" + n + ") take timeout (bug) Statistics:\n" + ((SemiSpace) space).getStatistics());
                     }
-                }
+                } while ( obj.getB() < ITERATION_NUM && !hasError);
             }
         };
     }
@@ -144,30 +147,19 @@ public class ListenerStarvationTest {
     @Test
     public void testStarvation() {
         final TestObject tmpl = new TestObject("test");
-
-
-        Thread r1 = new Thread(null, makeReader("1", tmpl));
-        Thread r2 = new Thread(null, makeReader("2", tmpl));
-        Thread r3 = new Thread(null, makeReader("3", tmpl));
-        Thread r4 = new Thread(null, makeReader("4", tmpl));
-        Thread r5 = new Thread(null, makeReader("5", tmpl));
-        Thread r6 = new Thread(null, makeReader("6", tmpl));
-        Thread t1 = new Thread(null, makeTaker("a", tmpl));
-        Thread t2 = new Thread(null, makeTaker("b", tmpl));
-
         // write the singe object
         TestObject obj = new TestObject("test");
         obj.setB(0);
         space.write(obj, 1000);
 
-        r1.start();
-        r2.start();
-        r3.start();
-        r4.start();
-        r5.start();
-        r6.start();
-        t1.start();
-        t2.start();
+        Thread r1 = Thread.ofVirtual().start(makeReader("1", tmpl));
+        Thread r2 = Thread.ofVirtual().start(makeReader("2", tmpl));
+        Thread r3 = Thread.ofVirtual().start(makeReader("3", tmpl));
+        Thread r4 = Thread.ofVirtual().start(makeReader("4", tmpl));
+        Thread r5 = Thread.ofVirtual().start(makeReader("5", tmpl));
+        Thread r6 = Thread.ofVirtual().start(makeReader("6", tmpl));
+        Thread t1 = Thread.ofVirtual().start(makeTaker("a", tmpl));
+        Thread t2 = Thread.ofVirtual().start(makeTaker("b", tmpl));
 
         try {
             t1.join();

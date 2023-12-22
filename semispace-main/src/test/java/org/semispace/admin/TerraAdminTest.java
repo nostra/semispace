@@ -25,7 +25,7 @@ public class TerraAdminTest {
         SemiSpaceInterface ts = new JunitSpace();
         IdentifyAdminQuery iaq = new IdentifyAdminQuery();
         iaq.amIAdmin = Boolean.TRUE;
-        iaq.id = new Integer(1);
+        iaq.id = Integer.valueOf(1);
         iaq.hasAnswered = Boolean.TRUE;
         ts.write(iaq, 1000);
 
