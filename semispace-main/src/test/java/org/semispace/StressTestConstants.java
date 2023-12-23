@@ -23,5 +23,5 @@ package org.semispace;
 public class StressTestConstants {
     public static final int ITERATIONS_TO_PERFORM = 100; // For a more comprehensive test, use 20000 (checked in with 100)
     public static final int NUMBER_OF_ELEMENTS_OR_LISTENERS = 5000; // For a more comprehensive test, use 50000 (checked in with 5000)
-    static final int LARGE_QUANTITY_NUMBER=100; // For a more comprehensive tests, use 20000 (checked in with 100)
+    static final int LARGE_QUANTITY_NUMBER = 100; // For a more comprehensive tests, use 20000 (checked in with 100)
 }

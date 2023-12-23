@@ -10,35 +10,17 @@
 ~~ http://maven.apache.org/guides/mini/guide-snippet-macro.html
 ~~~~~~~~~~~~~~~~~~~~
 
-
   SemiSpace is a light weight Open Source interpretation of
   <<{{{http://www.wikipedia.org/wiki/tuple_space}Tuple Space / Object Space}}>> 
   based on ideas from 
   <<{{{http://www.jini.org/wiki/JavaSpaces_Specification}JavaSpaces}}.>>
-  It can be run as single, <<stand alone,>> space on one 
-  {{{http://java.sun.com/javase/6/docs/}J2SE 6.0}} 
-  VM (or greater), or
-  <<clustered>> with {{{http://www.terracotta.org}Terracotta}} version 3.4.0.
+  It can be run as single, <<stand alone,>> space.
 
-  Please see the 
-  {{{semispace-main/semispace-book}SemiSpace book}}
-  for in-depth information about installation and usage.
+  Historically, it was created in order to support distribution under Terracotta.
 
- Other information:
- 
- * Tutorials and examples are included. You find them in
-  {{{semispace-tutorials/index.html}the tutorials project}}, and
-  the description in the {{{semispace-main/semispace-book}SemiSpace book.}}
-  
- * Problems and limitations as far as they are known are listed
-  {{{semispace-main/semispace-book/beware.html}in a chapter in 
-  the book.}}
-  
- * The documentation for the 
-  current snapshot version: \
-  {{{../semispace-1.3.2-SNAPSHOT/}semispace-1.3.2-SNAPSHOT}}
+ {{{./changes.html}Changelist}} since version 1.0.0.
 
- * {{{./changes.html}Changelist}} since version 1.0.0. 
+ For usage, please see the {{{https://github.com/nostra/semispace/}SemiSpace entry page on GitHub}}.
 
  []
 
@@ -58,130 +40,43 @@ SemiSpace offers
 
  * supports <<generics>> for ease of usage
 
- * can be <<distributed>>: {{{semispace-main/semispace-book/terraconfig.html}Terracotta}} can be used for distributing the space and contents therein.
-
- * has a {{{http://www.terracotta.org/confluence/display/docs/Terracotta+Integration+Modules+Manual}Terracotta Integration Module}} (TIM) included.
- 
- * can be distributed (or not) both from <<console>> applications and <<J2EE>> application servers: 
- {{{http://geronimo.apache.org}Geronimo,}}
- {{{http://jetty.mortbay.org/jetty/}Jetty,}}
-  or some other J2EE- or webapp-server, can easily contain SemiSpace   
- 
- * <<does not need Jini>> installed ... as SemiSpace do not use Jini. 
+ * <<does not need Jini>> installed ... as SemiSpace do not use Jini.
  
  * uses <<getters>> in addition to public fields: In difference to the JavaSpaces specification 
  
  * does <<not>> use the <<<Entry>>> mix-in interface: Allows any {{{http://xstream.codehaus.org}XStream}}-able class to be put into the space. 
  
  * is <<Open Source>> and licensed under {{{http://www.apache.org/licenses/LICENSE-2.0}Apache 2}}
- 
- * exposes statistics over <<JMX>> (if you use the webapp module)
- 
+
  * supplies a simple <<actor pattern>> framework
 
- * a {{{http://www.cometd.org/}cometd-based}} interface to a SemiSpace-enabled webapp
 
  []
-
-
-~~~~~~~~~~~~~~~~~
-Maven2 repository 
-~~~~~~~~~~~~~~~~~
-
- SemiSpace resides in in Maven repo1, and the
- dependency reference is as follows - for stable versions:
- 
-%{snippet|id=semispaceDependency|file=semispace-tutorials/semispace-tutorial/pom.xml}
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* Accessing the repository directly
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
- In order to obtain snapshot versions, or just a direct download of 
- the packages, add the following to your pom:
- 
-~~~ %{snippet|id=dynamicusRepo|file=semispace-tutorials/pom.xml}
-
-+--------------------------------+
-<repositories>
-    <repository>
-        <id>semispace</id>
-        <name>Space resides in semispace-repo</name>
-        <layout>default</layout>
-        <url>http://www.semispace.org/maven2</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </repository>
-</repositories>
-+--------------------------------+
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* Source code and IDE integration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
- In order to download the source code (in the easiest manner), you can
- do something similar to the following:
- 
-+---------------------------------+
-# If you already have an eclipse project, first do: mvn eclipse:clean 
-mvn -DdownloadSources=true eclipse:eclipse
-+---------------------------------+
-
- Invocations are similar if you use 
- {{{http://www.jetbrains.com/idea/index.html}IntelliJ, }}
- <<<mvn idea:idea>>> - or just 
- open the pom file as a project. 
- 
-~~~~~~~~~~~~
-Subversion Checkout
-~~~~~~~~~~~~
-
- You can anonymously check out the project with an invocation similar to:
-
-+----------------------------------+
-svn co http://www.semispace.org/svn/trunk/ space
-+----------------------------------+
-
- The source code compiles with {{{http://maven.apache.org}Maven-2.2.1,}} and
- should also compile with later versions of Maven.
-
- The releases are tagged, and you can find them here:
- {{http://www.semispace.org/svn/tags}}
-
-~~~~~~~
-~~Sources
-~~~~~~~
-
- ~~If having the sources attached with Maven is not sufficient for your 
- ~~purposes, download the complete source set from the following URL:
- 
- ~~* {{{http://www.dynamicus.org/artifacts/}http://www.dynamicus.org/artifacts/}}
- 
-~~ * Or more specifically: \
-~~   {{{http://www.dynamicus.org/artifacts/space-latest.tar.gz}http://www.dynamicus.org/artifacts/space-latest.tar.gz}}
 
 
 ~~~~~~~~~~~~
 Alternatives
 ~~~~~~~~~~~~
 
-  JavaSpace alternatives are:
+  Historically, JavaSpace alternatives have been at least the following, but currently
+  few projects are still available:
   
-  * The JavaSpace implementation Sun offers as a part of {{{http://jini.org}Jini}}
+  * The JavaSpace implementation Sun offers as a part of Jini (http://jini.org)
   
-  * {{{http://www.dancres.org/blitz/}Blitz}} 
+  * Blitz (http://www.dancres.org/blitz/)
   
-  * {{{http://www.gigaspaces.com/}GigaSpaces}}
+  * {{{http://www.gigaspaces.com/}GigaSpaces}} where
+    {{{https://www.gigaspaces.com/technology/event-driven-architecture/}Event Driven Architecture}} seems to be a
+    remnant of JavaSpaces technology
 
-  * {{{http://incubator.apache.org/river/}Apache River}}
+  * {{{http://incubator.apache.org/river/}Apache River}} (retired)
 
-  * {{{http://lime.sourceforge.net/Lime/index.html}Lime}}
+  * {{{http://lime.sourceforge.net/Lime/index.html}Lime}} (which looks abandoned: https://sourceforge.net/projects/lime/ )
   
-  * {{{http://www.almaden.ibm.com/cs/TSpaces/}IBM TSpaces}}
+  * IBM TSpaces (http://www.almaden.ibm.com/cs/TSpaces/)
 
-  * {{{http://gruple.codehaus.org/}Gruple}}
+  * Gruple (http://gruple.codehaus.org/)
 
-  * {{{http://code.google.com/p/terrastore/}Terrastore}}
+  * {{{http://code.google.com/p/terrastore/}Terrastore}} which can now be found in Google Archive.
 
   []

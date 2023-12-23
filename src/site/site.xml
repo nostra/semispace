@@ -8,20 +8,20 @@
         <href>http://www.semispace.org</href>
     </bannerLeft>
   <publishDate position="navigation-bottom" format="dd/MM yyyy"/>
-  <skin>
+  <!--<skin>
     <groupId>org.dynamicus.maven</groupId>
     <artifactId>skinned</artifactId>
     <version>0.3</version>
-  </skin>
+  </skin>-->
   <body>
     <links>
     	<item name="SemiSpace home" href="http://www.semispace.org/semispace"/>
     	<!--item name="Continuum" href="http://www.semispace.org/continuum"/-->
     </links>
-    <menu name="SemiSpace book">
+    <!--menu name="SemiSpace book">
    		<item name="Browseable book" href="http://www.semispace.org/semispace/semispace-main/semispace-book/" />
    		<item name="PDF book" href="http://www.semispace.org/semispace/semispace-main/semispace-book.pdf" />
-  	</menu>
+  	</menu-->
     <menu ref="parent" />
     <menu ref="reports" />
     <menu ref="modules" />

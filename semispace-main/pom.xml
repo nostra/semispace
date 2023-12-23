@@ -1,17 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.semispace</groupId>
         <artifactId>semispace</artifactId>
-        <version>1.3.2-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.semispace</groupId>
     <artifactId>semispace-main</artifactId>
-	 <packaging>jar</packaging>
+    <packaging>jar</packaging>
     <name>semispace-main</name>
-    <version>1.3.2-SNAPSHOT</version>
-    <description>The main SemiSpace project, everything needed for running a (potentially) distributed JavaSpaces inspired space.</description>
+    <version>2.0.0-SNAPSHOT</version>
+    <description>The main SemiSpace project, a JavaSpaces inspired space.</description>
     <url>http://www.semispace.org/semispace/semispace-main</url>
 
     <dependencies>
@@ -19,26 +19,29 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>xpp3</groupId>
             <artifactId>xpp3_min</artifactId>
+            <optional>true</optional>
         </dependency>
-        <!-- If you need terracotta-toolkit:
-       <dependency>
-            <groupId>org.terracotta.toolkit</groupId>
-		      <artifactId>terracotta-toolkit-1.0</artifactId>
-	    </dependency>
-        -->
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <!--
@@ -47,56 +50,26 @@
     <build>
         <plugins>
             <plugin>
-                <!-- Book plugin resides here due to reference problems when 
-                    residing in parent pom.
-                -->
-                <groupId>org.apache.maven.doxia</groupId>
-                <artifactId>doxia-maven-plugin</artifactId>
-                <version>1.1.4</version>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
                 <executions>
                     <execution>
-                        <phase>pre-site</phase>
+                        <id>report</id>
                         <goals>
-                            <goal>render-books</goal>
+                            <goal>report-aggregate</goal>
                         </goals>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
-                <configuration>
-                    <books>
-                        <book>
-                            <directory>src/book</directory>
-                            <descriptor>src/book/semispace-book.xml</descriptor>
-                            <formats>
-                                <format>
-                                    <id>pdf</id>
-                                </format>
-                                <format>
-                                    <id>xdoc</id>
-                                </format>
-                            </formats>
-                        </book>
-                    </books>
-                </configuration>
             </plugin>
             <plugin>
-                <!-- Need to copy over pdf book to site area -->
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.3</version>
-                <executions>
-                    <execution>
-                        <id>pdfbook</id>
-                        <phase>site</phase>
-                        <configuration>
-                            <tasks>
-                                <copy file="target/generated-site/pdf/semispace-book/semispace-book.pdf" todir="target/site" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.compiler.version}</source>
+                    <target>${java.compiler.version}</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

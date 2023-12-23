@@ -6,22 +6,22 @@
  *
  * Copyright 2008 Erlend Nossum
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *
  *  Description:  See javadoc below
  *
  *  Created:      Jul 21, 2008
- * ============================================================================ 
+ * ============================================================================
  */
 
 package org.semispace.actor;
@@ -63,19 +63,19 @@ public class ActorNotification implements SemiEventListener<SemiAvailabilityEven
         this.space = space;
         this.template = template;
         this.toTake = toTake;
-        
+
         // Do not need pool if swing actor
-        if ( ! actor.getClass().isAnnotationPresent(SwingActor.class)) {
+        if (!actor.getClass().isAnnotationPresent(SwingActor.class)) {
             pool = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 5L, TimeUnit.SECONDS,
-                    new SynchronousQueue<Runnable>());    
+                    new SynchronousQueue<Runnable>());
         }
-        
+
     }
 
     @Override
     public void notify(SemiAvailabilityEvent theEvent) {
         final Runnable receive = new ActorMessageTaker(theEvent);
-        if ( pool == null ) {
+        if (pool == null) {
             SwingUtilities.invokeLater(receive);
         } else {
             pool.submit(receive);
@@ -130,16 +130,16 @@ public class ActorNotification implements SemiEventListener<SemiAvailabilityEven
 
 
             final ActorMessage msg = payload;
-            if ( msg.getOriginatorId() == null ){
-                throw new ActorException("Originator was not found for message with address "+msg.getAddress()+" and payload "+msg.getPayload().getClass().getName());
+            if (msg.getOriginatorId() == null) {
+                throw new ActorException("Originator was not found for message with address " + msg.getAddress() + " and payload " + msg.getPayload().getClass().getName());
             }
             //final long holderId = theEvent.getId();
             //log.debug("Holder id=" + holderId + " Notifying "+ actor.getActorId()+" ("+actor.getClass().getName() + ") of "+ msg.getPayload().getClass()+" with address "+msg.getAddress());
             try {
                 actor.receive(msg);
             } catch (Exception e) {
-                XStream xStream  = new XStream();
-                log.error("Got exception with template:\n"+xStream.toXML(template)+"\n... and incoming actor message ...\n"+xStream.toXML(msg), e);
+                XStream xStream = new XStream();
+                log.error("Got exception with template:\n" + xStream.toXML(template) + "\n... and incoming actor message ...\n" + xStream.toXML(msg), e);
             }
         }
     }
