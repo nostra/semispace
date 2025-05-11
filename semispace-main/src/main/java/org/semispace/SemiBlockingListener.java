@@ -26,6 +26,7 @@
 
 package org.semispace;
 
+import org.jspecify.annotations.NullMarked;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Block until notification or timeout.
  */
+@NullMarked
 public class SemiBlockingListener implements SemiEventListener<SemiAvailabilityEvent> {
     private static final Logger log = LoggerFactory.getLogger(SemiBlockingListener.class);
     private transient CountDownLatch latch;

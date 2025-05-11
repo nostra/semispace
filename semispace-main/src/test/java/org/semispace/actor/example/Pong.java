@@ -26,6 +26,13 @@
 
 package org.semispace.actor.example;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import org.jspecify.annotations.NullMarked;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
+@JsonTypeName("Pong")
+@NullMarked
 public class Pong {
     public Pong() {
     }

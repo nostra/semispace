@@ -1,24 +1,40 @@
 package org.semispace;
 
-import static com.fasterxml.jackson.core.JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import org.jspecify.annotations.NullMarked;
 import org.semispace.exception.SemiSpaceObjectException;
+import tools.jackson.core.JacksonException;
+import static tools.jackson.core.StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import tools.jackson.dataformat.xml.XmlMapper;
 
+@NullMarked
 public class JacksonSerializer implements SemiSpaceSerializer {
     private final ObjectMapper mapper;
 
-    public JacksonSerializer() {
-        this(new ObjectMapper()
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false)
-                .configure(INCLUDE_SOURCE_IN_LOCATION, true)
-                .activateDefaultTyping(BasicPolymorphicTypeValidator.builder()
-                        .allowIfSubTypeIsArray()
-                        .allowIfBaseType(Object.class)
-                        .build())
-        );
+    public static final JacksonSerializer jacksonSerializerFactory( boolean json) {
+        if ( json ) {
+            return new JacksonSerializer(JsonMapper.builder()
+                    .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                    .enable(INCLUDE_SOURCE_IN_LOCATION)
+                    .activateDefaultTyping(
+                            BasicPolymorphicTypeValidator.builder().build(),
+                            DefaultTyping.JAVA_LANG_OBJECT
+                    )
+                    .build());
+        } else {
+            return new JacksonSerializer(XmlMapper.builder()
+                    .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                    .enable(INCLUDE_SOURCE_IN_LOCATION)
+                    .activateDefaultTyping(
+                            BasicPolymorphicTypeValidator.builder().build(),
+                            DefaultTyping.JAVA_LANG_OBJECT
+                    )
+                    .build());
+        }
     }
 
     public JacksonSerializer(ObjectMapper mapper) {
@@ -35,7 +51,7 @@ public class JacksonSerializer implements SemiSpaceSerializer {
             holder.className = obj.getClass().getName();
             holder.payload = mapper.writeValueAsString(obj);
             return mapper.writeValueAsString(holder);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new SemiSpaceObjectException("Could not process json", e);
         }
     }
@@ -50,7 +66,7 @@ public class JacksonSerializer implements SemiSpaceSerializer {
             JacksonObject holder = mapper.readValue( xml, JacksonObject.class);
             Class type = Class.forName(holder.className);
             return mapper.readValue(holder.payload, type);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new SemiSpaceObjectException("Jackson could not process json", e);
         } catch (ClassNotFoundException e) {
             throw new SemiSpaceObjectException("Class not found, which implies that objects in backend storage are " +
@@ -62,8 +78,4 @@ public class JacksonSerializer implements SemiSpaceSerializer {
         public String className;
         public String payload;
     }
-
-//    public ObjectMapper jacksonMapper() {
-//        return mapper;
-//    }
 }

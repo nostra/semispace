@@ -63,10 +63,8 @@ public class SemiSpaceTest {
 
     private SemiSpace space;
 
-    // TODO If I choose beforeall, a problem occurs with notifications. This is fishy.
-    //@BeforeEach
     @BeforeAll
-    protected void setUp() throws Exception {
+    protected void setUp() {
         // Need to cast, as some internal methods are tested.
         space = (SemiSpace) SemiSpace.retrieveSpace();
     }
@@ -83,7 +81,7 @@ public class SemiSpaceTest {
         fh.setFieldB("b");
         SemiLease lease = space.write(fh, 1000);
         SemiSpaceAdminInterface oldAdmin = space.getAdmin();
-        var admin = new SemiSpaceAdmin(space, new JacksonSerializer());
+        var admin = new SemiSpaceAdmin(space, JacksonSerializer.jacksonSerializerFactory(false));
         admin.performInitialization();
         space.setAdmin(admin);
         assertTrue(lease.cancel());
@@ -282,19 +280,21 @@ public class SemiSpaceTest {
         SemiEventRegistration reg1 = space.notify(fh, listener1, 400);
         SemiEventRegistration reg2 = space.notify(fh, listener2, 400);
         SemiEventRegistration reg3 = space.notify(fh, listener3, 400);
-        space.write(fh, 250);
+        space.write(fh, 100);
 
         // Test if increase in listener is deterministic
         SemiSpaceStatistics after = space.getStatistics();
         assertEquals(before.getNumberOfListeners() + 3, after.getNumberOfListeners());
+
+        Thread.sleep(100); // Sleep for the validity of the object
+
         assertTrue(reg1.getLease().cancel());
         assertTrue(reg2.getLease().cancel());
         assertTrue(reg3.getLease().cancel());
 
         after = space.getStatistics();
         assertEquals(before.getNumberOfListeners(), after.getNumberOfListeners(), "Number of listeners should now be on same level");
-
-        Thread.sleep(100);
+        assertEquals(before.getTake() + 1, after.getTake());
         assertNull(space.takeIfExists(fh), "Element should have been taken by listener");
         assertEquals(1, listener1.getCount());
         assertEquals(1, listener2.getCount());

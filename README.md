@@ -2,6 +2,15 @@
 
 SemiSpace is a lightweight Open Source interpretation of Tuple Space / Object Space based on ideas from JavaSpaces. 
 
+## Maven wrapepr
+
+Latest versions:
+https://central.sonatype.com/artifact/org.apache.maven/apache-maven/versions
+
+```
+./mvnw wrapper:wrapper -Dmaven=3.9.9
+```
+
 ## Installation
 
 You can use https://jitpack.io/#nostra/semispace to fetch the SemiSpace binarier. See

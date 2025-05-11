@@ -26,11 +26,14 @@
 
 package org.semispace;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Holder for statistical elements
  */
+@NullMarked
 public class SemiSpaceStatistics {
     private AtomicInteger read = new AtomicInteger();
     private AtomicInteger take = new AtomicInteger();

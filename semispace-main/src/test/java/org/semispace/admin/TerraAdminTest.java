@@ -11,7 +11,7 @@ public class TerraAdminTest {
     @Test
     public void testPerformInitializationAsMaster() {
         SemiSpaceInterface ts = new JunitSpace();
-        SemiSpaceAdmin admin = new SemiSpaceAdmin(ts, new JacksonSerializer());
+        SemiSpaceAdmin admin = new SemiSpaceAdmin(ts, JacksonSerializer.jacksonSerializerFactory(false));
         assertNotNull(admin);
         admin.performInitialization();
         // Double initialization does not give error(s)
@@ -32,7 +32,7 @@ public class TerraAdminTest {
         TimeQuery tq = new TimeQuery();
         tq.isFinished = Boolean.TRUE;
 
-        SemiSpaceAdmin admin = new SemiSpaceAdmin(ts, new JacksonSerializer());
+        SemiSpaceAdmin admin = new SemiSpaceAdmin(ts, JacksonSerializer.jacksonSerializerFactory(false));
         admin.performInitialization();
         assertFalse(admin.isMaster());
 

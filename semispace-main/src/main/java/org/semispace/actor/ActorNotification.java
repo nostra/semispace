@@ -27,6 +27,7 @@
 package org.semispace.actor;
 
 import com.thoughtworks.xstream.XStream;
+import org.jspecify.annotations.NullMarked;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiSpaceInterface;
 import org.semispace.event.SemiAvailabilityEvent;
@@ -45,6 +46,7 @@ import java.util.concurrent.TimeUnit;
  * Listener of a semispace template. The actor will be notified
  * with actor message.
  */
+@NullMarked
 public class ActorNotification implements SemiEventListener<SemiAvailabilityEvent> {
     private static final Logger log = LoggerFactory.getLogger(ActorNotification.class);
 

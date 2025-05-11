@@ -1,18 +1,18 @@
 package org.semispace;
 
-import static com.fasterxml.jackson.core.JsonParser.Feature.INCLUDE_SOURCE_IN_LOCATION;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.semispace.actor.ActorManifest;
 import org.semispace.actor.ActorMessage;
 import org.semispace.actor.example.Ping;
 import org.semispace.actor.example.Pong;
+import static tools.jackson.core.StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.List;
  * In order to test some jackson serializer settings
  */
 class JacksonSerializerTest {
-    private JacksonSerializer jackson = new JacksonSerializer();
+    private JacksonSerializer jackson = JacksonSerializer.jacksonSerializerFactory(true);
 
     @Test
     void objectToXml() {
@@ -48,21 +48,22 @@ class JacksonSerializerTest {
         msg.setAddress(2L);
         msg.setPayload(new Pong());
         var str = jackson.objectToXml(msg);
-        assertEquals("{\"className\":\"org.semispace.actor.ActorMessage\",\"payload\":\"{\\\"originatorId\\\":1,\\\"address\\\":2,\\\"payload\\\":[\\\"org.semispace.actor.example.Pong\\\",{}]}\"}",
+        assertEquals("{\"className\":\"org.semispace.actor.ActorMessage\",\"payload\":\"{\\\"address\\\":2,\\\"originatorId\\\":1,\\\"payload\\\":[\\\"org.semispace.actor.example.Pong\\\",{}]}\"}",
                 str);
     }
 
     @Test
-    @Disabled("Missing type at the moment ?")
-    void actorMessageDirect() throws JsonProcessingException {
-        ObjectMapper MAPPER = new ObjectMapper()
-                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,false)
-                .configure(INCLUDE_SOURCE_IN_LOCATION, true)
-                .activateDefaultTyping(BasicPolymorphicTypeValidator.builder()
-                        .allowIfSubTypeIsArray()
-                        .allowIfBaseType(Object.class)
-                        .build());
+    void actorMessageDirect() {
+        ObjectMapper MAPPER = JsonMapper.builder()
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .enable(INCLUDE_SOURCE_IN_LOCATION)
+                .activateDefaultTyping(
+                        BasicPolymorphicTypeValidator.builder().build(),
+                        DefaultTyping.JAVA_LANG_OBJECT
+                )
+                .build();
 
+        // No need to register subtypes when class is annotated
         //MAPPER.registerSubtypes(new NamedType(Ping.class, "Ping"));
         //MAPPER.registerSubtypes(new NamedType(Pong.class, "Pong"));
 
@@ -82,6 +83,6 @@ class JacksonSerializerTest {
         msg.setAddress(2L);
         msg.setPayload(new Pong());
         var str = MAPPER.writeValueAsString(msg);
-        assertEquals("{\"originatorId\":1,\"address\":2,\"payload\":[\"org.semispace.actor.example.Pong\",{}]}", str);
+        assertEquals("{\"address\":2,\"originatorId\":1,\"payload\":[\"org.semispace.actor.example.Pong\",{}]}", str);
     }
 }

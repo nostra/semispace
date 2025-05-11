@@ -16,6 +16,11 @@
 
 package org.semispace;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -25,14 +30,12 @@ import org.semispace.admin.SemiSpaceAdminInterface;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @TestInstance(Lifecycle.PER_CLASS)
 public class SpaceTest {
     private SemiSpaceInterface space;
 
     @BeforeAll
-    public void setUp() throws Exception {
+    public void setUp() {
         space = SemiSpace.retrieveSpace();
         // If running within eclipse, you will have this on your classpath
         // space = SemiSpaceProxy.retrieveSpace("http://localhost:8080/semispace-war/services/space");

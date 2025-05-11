@@ -26,11 +26,13 @@
 
 package org.semispace;
 
+import org.jspecify.annotations.NullMarked;
 import org.semispace.event.SemiEvent;
 
 /**
  * Event listener interface
  */
+@NullMarked
 public interface SemiEventListener<E extends SemiEvent> {
     /**
      * @param theEvent Event which is subclass of the abstract SemiEvent

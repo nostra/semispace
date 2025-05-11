@@ -3,9 +3,9 @@
   xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd"
   name="SemiSpace">
     <bannerLeft>
-        <src>http://www.semispace.org/semispace/images/semispace.png</src>
+        <src>https://www.semispace.org/semispace/images/semispace.png</src>
         <alt>SemiSpace</alt>
-        <href>http://www.semispace.org</href>
+        <href>https://www.semispace.org</href>
     </bannerLeft>
   <publishDate position="navigation-bottom" format="dd/MM yyyy"/>
   <!--<skin>
@@ -15,12 +15,12 @@
   </skin>-->
   <body>
     <links>
-    	<item name="SemiSpace home" href="http://www.semispace.org/semispace"/>
-    	<!--item name="Continuum" href="http://www.semispace.org/continuum"/-->
+    	<item name="SemiSpace home" href="https://www.semispace.org/semispace"/>
+    	<!--item name="Continuum" href="https://www.semispace.org/continuum"/-->
     </links>
     <!--menu name="SemiSpace book">
-   		<item name="Browseable book" href="http://www.semispace.org/semispace/semispace-main/semispace-book/" />
-   		<item name="PDF book" href="http://www.semispace.org/semispace/semispace-main/semispace-book.pdf" />
+   		<item name="Browseable book" href="https://www.semispace.org/semispace/semispace-main/semispace-book/" />
+   		<item name="PDF book" href="https://www.semispace.org/semispace/semispace-main/semispace-book.pdf" />
   	</menu-->
     <menu ref="parent" />
     <menu ref="reports" />

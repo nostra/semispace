@@ -26,6 +26,7 @@
 
 package org.semispace;
 
+import org.jspecify.annotations.NullMarked;
 import org.semispace.admin.InternalQuery;
 import org.semispace.admin.SemiSpaceAdmin;
 import org.semispace.admin.SemiSpaceAdminInterface;
@@ -68,6 +69,7 @@ import java.util.concurrent.TimeoutException;
  * A tuple space implementation which can be distributed with terracotta. This is
  * the main class from which the SemiSpace interface is obtained.
  */
+@NullMarked
 public class SemiSpace implements SemiSpaceInterface {
 
     private static final String ADMIN_GROUP_IS_FLAGGED = "adminGroupIsFlagged";
@@ -109,9 +111,10 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     private static SemiSpaceSerializer resolveSerializer() {
+        if ( false ) return new XStreamSerializer();
         try {
-            Class.forName("com.fasterxml.jackson.databind.ObjectMapper", false, SemiSpace.class.getClassLoader());
-            return new JacksonSerializer();
+            Class.forName("tools.jackson.databind.ObjectMapper", false, SemiSpace.class.getClassLoader());
+            return JacksonSerializer.jacksonSerializerFactory(false);
 
         } catch (ClassNotFoundException e) {
             log.warn("Jackson serializer not found. Using insecure XStream instead.");

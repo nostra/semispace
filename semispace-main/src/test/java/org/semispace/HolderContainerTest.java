@@ -26,13 +26,15 @@
 
 package org.semispace;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class HolderContainerTest {
     private static final Logger log = LoggerFactory.getLogger(HolderContainerTest.class);

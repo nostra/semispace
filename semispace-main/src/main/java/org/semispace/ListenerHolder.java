@@ -22,11 +22,14 @@
  */
 package org.semispace;
 
+import org.jspecify.annotations.NullMarked;
+
 import java.util.Map;
 
 /**
  * Holds a reference to the listener, including how long it shall live.
  */
+@NullMarked
 public class ListenerHolder {
     private long liveUntil;
     private long id;

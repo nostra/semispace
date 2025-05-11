@@ -73,7 +73,7 @@ public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
         //*
         ThreadPoolExecutor tpe = new ThreadPoolExecutor(0, 5000,
                 5L, TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>(true));
+                new SynchronousQueue<>(true));
         tpe.setThreadFactory(new DaemonDelegateFactory(tpe.getThreadFactory()));
         // Exchanging strategy. When thread pool is full, try to run on local thread.
         tpe.setRejectedExecutionHandler(new SemiSpaceRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy()));

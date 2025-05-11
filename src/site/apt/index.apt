@@ -11,12 +11,14 @@
 ~~~~~~~~~~~~~~~~~~~~
 
   SemiSpace is a light weight Open Source interpretation of
-  <<{{{http://www.wikipedia.org/wiki/tuple_space}Tuple Space / Object Space}}>> 
+  {{{http://www.wikipedia.org/wiki/tuple_space}Tuple Space / Object Space}} 
   based on ideas from 
-  <<{{{http://www.jini.org/wiki/JavaSpaces_Specification}JavaSpaces}}.>>
+  http://www.jini.org/wiki/JavaSpaces_Specification (now defunct), see also
+  {{{https://river.apache.org/release-doc/current/specs/html/js-spec.html}Apache River}}.
   It can be run as single, <<stand alone,>> space.
 
-  Historically, it was created in order to support distribution under Terracotta.
+  Historically, it was created in order to support distribution under Terracotta. Now it is
+  retained as a curiosity.
 
  {{{./changes.html}Changelist}} since version 1.0.0.
 
