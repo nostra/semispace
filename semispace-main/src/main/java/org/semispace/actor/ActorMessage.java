@@ -27,9 +27,6 @@
 package org.semispace.actor;
 
 
-import org.jspecify.annotations.NullMarked;
-
-@NullMarked
 public class ActorMessage {
     private Long originatorId;
     private Long address;

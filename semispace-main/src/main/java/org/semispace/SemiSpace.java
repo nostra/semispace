@@ -26,7 +26,6 @@
 
 package org.semispace;
 
-import org.jspecify.annotations.NullMarked;
 import org.semispace.admin.InternalQuery;
 import org.semispace.admin.SemiSpaceAdmin;
 import org.semispace.admin.SemiSpaceAdminInterface;
@@ -69,7 +68,6 @@ import java.util.concurrent.TimeoutException;
  * A tuple space implementation which can be distributed with terracotta. This is
  * the main class from which the SemiSpace interface is obtained.
  */
-@NullMarked
 public class SemiSpace implements SemiSpaceInterface {
 
     private static final String ADMIN_GROUP_IS_FLAGGED = "adminGroupIsFlagged";
@@ -116,6 +114,7 @@ public class SemiSpace implements SemiSpaceInterface {
             return JacksonSerializer.jacksonSerializerFactory(false);
 
         } catch (ClassNotFoundException e) {
+            // TODO Fallback to older jackson
             log.error("tools.jackson.databind.ObjectMapper serializer not found.");
             throw new SemiSpaceInternalException("Jackson serializer not found.", e);
         }
@@ -167,7 +166,7 @@ public class SemiSpace implements SemiSpaceInterface {
             return null;
         }
         if (duration <= 0) {
-            log.warn("Not registering notification when duration is <= 0. It was " + duration);
+            log.warn("Not registering notification when duration is <= 0. It was {}", duration);
             return null;
         }
 
@@ -210,7 +209,6 @@ public class SemiSpace implements SemiSpaceInterface {
             }
         }
 
-
         admin.notifyAboutEvent(distributedEvent);
     }
 
@@ -232,16 +230,13 @@ public class SemiSpace implements SemiSpaceInterface {
         Exception exception = null;
         try {
             future.get(10, TimeUnit.SECONDS);
-        } catch (CancellationException e) {
+        } catch (CancellationException | ExecutionException e) {
             log.error("Got exception", e);
             exception = e;
         } catch (InterruptedException e) {
             log.error("Got exception", e);
             exception = e;
-            e.notifyAll();
-        } catch (ExecutionException e) {
-            log.error("Got exception", e);
-            exception = e;
+            Thread.currentThread().interrupt();
         } catch (TimeoutException e) {
             log.error("Not expected to run into a timeout writing an entry", e);
             exception = e;
@@ -683,7 +678,7 @@ public class SemiSpace implements SemiSpaceInterface {
                     beforeEvict.add(elem);
                 }
             }
-            long afterSize = beforeEvict.size() - evictSize;
+            int afterSize = beforeEvict.size() - evictSize;
             if (afterSize > 0) {
                 List<Long> ids = new ArrayList<>();
                 for (Holder evict : beforeEvict) {
@@ -852,11 +847,11 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     /**
-     * Exposing xstream instance in order to allow outside manipulation of aliases and classloader affiliation.
+     * Exposing serializer instance in order to allow outside manipulation of aliases and classloader affiliation.
      *
-     * @return The xstream instance used.
+     * @return The serializer used.
      */
-    public SemiSpaceSerializer getXStream() {
+    public SemiSpaceSerializer getSerializer() {
         return serializer;
     }
 

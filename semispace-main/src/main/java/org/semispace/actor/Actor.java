@@ -26,7 +26,6 @@
 
 package org.semispace.actor;
 
-import org.jspecify.annotations.NullMarked;
 import org.semispace.NameValueQuery;
 import org.semispace.SemiEventRegistration;
 import org.semispace.SemiLease;
@@ -45,7 +44,6 @@ import java.util.List;
  * order to get a lifetime of the actor. The read and take templates are
  * registered at this time as well.
  */
-@NullMarked
 public abstract class Actor {
     private static final Logger log = LoggerFactory.getLogger(Actor.class);
     /**

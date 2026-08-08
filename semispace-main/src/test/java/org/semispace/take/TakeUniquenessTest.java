@@ -16,14 +16,13 @@
 
 package org.semispace.take;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 import org.semispace.SemiSpace;
 import org.semispace.StressTestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Testing uniqueness of take. Thanks to <b>Chris Mcfarlen</b> of Yahoo for providing the

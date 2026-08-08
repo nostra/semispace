@@ -26,6 +26,11 @@
 
 package org.semispace.actor;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -39,8 +44,6 @@ import org.semispace.actor.example.PongActor;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class ActorTest {
@@ -71,15 +74,15 @@ public class ActorTest {
         ActorMessage match = space.takeIfExists(template);
 
         assertNull(match, "The take template should not match any element in space. Template: \n" +
-                space.getXStream().objectToXml(template) + "\n... should not match match...\n" +
-                space.getXStream().objectToXml(match));
+                space.getSerializer().objectToXml(template) + "\n... should not match match...\n" +
+                space.getSerializer().objectToXml(match));
         assertNotNull(space.takeIfExists(msg));
 
     }
 
     @Test
     public void testSimpleActor() throws InterruptedException {
-        if ( space.getXStream() instanceof JacksonSerializer) {
+        if ( space.getSerializer() instanceof JacksonSerializer) {
             // TODO Correct test when using jacksonserializer
             log.error("Skipping test, because JacksonSerializer is not supported by this test");
             return;
@@ -98,7 +101,7 @@ public class ActorTest {
 
     @Test
     public void testManyCallsForActor() throws InterruptedException {
-        if ( space.getXStream() instanceof JacksonSerializer) {
+        if ( space.getSerializer() instanceof JacksonSerializer) {
             // TODO Correct test when using jacksonserializer
             log.error("Skipping test, because JacksonSerializer is not supported by this test");
             return;

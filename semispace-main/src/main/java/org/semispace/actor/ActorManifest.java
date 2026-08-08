@@ -26,12 +26,9 @@
 
 package org.semispace.actor;
 
-import org.jspecify.annotations.NullMarked;
-
 /**
  * The manifest is used when an object is sent without having a clear destination.
  */
-@NullMarked
 public class ActorManifest {
     private Long holderId;
     private Long originatorId;

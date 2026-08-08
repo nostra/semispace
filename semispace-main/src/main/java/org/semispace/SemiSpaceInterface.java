@@ -23,13 +23,11 @@
 
 package org.semispace;
 
-import org.jspecify.annotations.NullMarked;
 import org.semispace.event.SemiEvent;
 
 /**
  * Operations possible to perform on space, inspired by the JavaSpace interface.
  */
-@NullMarked
 public interface SemiSpaceInterface {
     /**
      * Write object into tuple space, with a lifetime

@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <version>2.0.0-SNAPSHOT</version>
     <name>semispace</name>
-    <description>SemiSpace is a light weight distributed JavaSpaces inspired tuple space which is easy to integrate with
+    <description>SemiSpace is a light weight JavaSpaces inspired tuple space which is easy to integrate with
         existing technology.
     </description>
     <inceptionYear>2008</inceptionYear>
@@ -38,9 +38,10 @@
     </developers>
 
     <scm>
-        <connection>scm:git:ssh://git@github.com/nostra/semispace.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/nostra/semispace.git</developerConnection>
-        <url>git@github.com:nostra/semispace.git</url>
+        <connection>scm:git:git://github.com/nostra/semispace.git</connection>
+        <developerConnection>scm:git:ssh://github.com:nostra/semispace.git</developerConnection>
+        <url>http://github.com/nostra/semispace/</url>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
@@ -54,30 +55,27 @@
         <file.encoding>UTF-8</file.encoding>
 
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
-        <logback-classic.version>1.6.1</logback-classic.version>
-        <xpp3_min.version>1.1.4c</xpp3_min.version>
+        <logback-classic.version>1.6.3</logback-classic.version>
         <wagon-ssh-external.version>3.5.2</wagon-ssh-external.version>
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
         <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
-        <doxia-maven-plugin.version>1.2</doxia-maven-plugin.version>
-        <doxia-module-xdoc.version>1.11.1</doxia-module-xdoc.version>
-        <doxia-module-markdown.version>${doxia-module-xdoc.version}</doxia-module-markdown.version>
-        <doxia.version>2.1.0</doxia.version>
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
         <junit-jupiter.version>6.1.3</junit-jupiter.version>
         <maven-scm-provider-gitexe.version>2.2.1</maven-scm-provider-gitexe.version>
-        <java.version>1.${java.compiler.version}</java.version>
         <java.compiler.version>25</java.compiler.version>
-        <jackson-core.version>3.2.1</jackson-core.version>
+        <jackson-core.version>3.2.2</jackson-core.version>
         <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
         <maven-site-plugin.version>3.22.0</maven-site-plugin.version>
         <enforce.maven.version>3.9.9</enforce.maven.version>
         <jspecify.version>1.0.1</jspecify.version>
         <pitest-maven.version>1.25.9</pitest-maven.version>
-        <pitest-junit5-plugin>1.2.3</pitest-junit5-plugin>
+        <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
+        <pitest-junit5-plugin.version>1.2.3</pitest-junit5-plugin.version>
         <tabletest-junit.version>1.2.2</tabletest-junit.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <maven-gpg-plugin.keyname>${env.GPG_KEYNAME}</maven-gpg-plugin.keyname>
     </properties>
 
     <!--
@@ -162,7 +160,6 @@
                     <version>${maven-javadoc-plugin.version}</version>
                     <configuration>
                         <encoding>UTF-8</encoding>
-                        <javadocVersion>1.8</javadocVersion>
                     </configuration>
                 </plugin>
 
@@ -221,10 +218,18 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
                     <version>${maven-release-plugin.version}</version>
+                    <configuration>
+                        <releaseProfiles>release</releaseProfiles>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <goals>deploy</goals>
+                    </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>org.apache.maven.scm</groupId>
                             <artifactId>maven-scm-provider-gitexe</artifactId>
+                            <version>${maven-scm-provider-gitexe.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -242,18 +247,15 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>${maven-project-info-reports-plugin.version}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.doxia</groupId>
-                            <artifactId>doxia-sink-api</artifactId>
-                            <version>${doxia.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.maven.doxia</groupId>
-                            <artifactId>doxia-core</artifactId>
-                            <version>${doxia.version}</version>
-                        </dependency>
-                    </dependencies>
+                </plugin>
+
+                <!-- Must be managed here, not only in <reporting>: the site lifecycle otherwise
+                     binds Maven's built-in default (3.12.1), which supplies Doxia 1.x to every
+                     report plugin and breaks reports compiled against Doxia 2.x. -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -273,7 +275,7 @@
                                 </requireMavenVersion>
                                 <dependencyConvergence/>
                                 <requireJavaVersion>
-                                    <version>${java.version}</version>
+’†                                    <version>${java.compiler.version}</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -296,7 +298,7 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <phase>verify</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -344,7 +346,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
 
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${central-publishing-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>sonatype-central</publishingServerId>
+                    <autoPublish>false</autoPublish><!-- Intentionally need manual approval -->
+                    <waitUntil>published</waitUntil>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -355,7 +368,7 @@
                     <dependency>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-junit5-plugin</artifactId>
-                        <version>${pitest-junit5-plugin}</version>
+                        <version>${pitest-junit5-plugin.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -372,8 +385,6 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
-                    <!-- Trying to create doc java-1.8 only -->
-                    <javadocVersion>${java.version}</javadocVersion>
                     <minmemory>128m</minmemory>
                     <maxmemory>768m</maxmemory>
                     <breakiterator>true</breakiterator>
@@ -381,30 +392,16 @@
                     <charset>UTF-8</charset>
                     <encoding>UTF-8</encoding>
                     <docencoding>UTF-8</docencoding>
-                    <breakiterator>true</breakiterator>
                     <version>true</version>
                     <author>true</author>
                     <keywords>true</keywords>
                 </configuration>
-
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>${maven-project-info-reports-plugin.version}</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>${maven-site-plugin.version}</version>
             </plugin>
         </plugins>
     </reporting>
@@ -448,6 +445,45 @@
                 <tests.to.exclude>*IntegrationTest.java</tests.to.exclude>
             </properties>
         </profile>
+
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${maven-javadoc-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <phase>package</phase>
+                                <goals><goal>jar</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${maven-gpg-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals><goal>sign</goal></goals>
+                                <configuration>
+                                    <!-- Non-interactive: passphrase from $MAVEN_GPG_PASSPHRASE -->
+                                    <useAgent>false</useAgent>
+                                    <keyname>${maven-gpg-plugin.keyname}</keyname>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
     <!-- 
