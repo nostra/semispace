@@ -111,14 +111,13 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     private static SemiSpaceSerializer resolveSerializer() {
-        if ( false ) return new XStreamSerializer();
         try {
             Class.forName("tools.jackson.databind.ObjectMapper", false, SemiSpace.class.getClassLoader());
             return JacksonSerializer.jacksonSerializerFactory(false);
 
         } catch (ClassNotFoundException e) {
-            log.warn("Jackson serializer not found. Using insecure XStream instead.");
-            return new XStreamSerializer();
+            log.error("tools.jackson.databind.ObjectMapper serializer not found.");
+            throw new SemiSpaceInternalException("Jackson serializer not found.", e);
         }
     }
 

@@ -13,6 +13,10 @@ https://central.sonatype.com/artifact/org.apache.maven/apache-maven/versions
 
 ## Installation
 
+SemiSpace is distributed on Maven Central: https://central.sonatype.com/search?q=semispace-main.semispace.org
+
+### Jitpack
+
 You can use https://jitpack.io/#nostra/semispace to fetch the SemiSpace binarier. See
 the [JitPack homepage](https://jitpack.io/) for details.
 

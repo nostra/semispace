@@ -45,8 +45,6 @@
 
     <properties>
         <slf4j.version>2.0.18</slf4j.version>
-        <!-- TODO: Later upgrade past 1.4.17. Cannot at the moment as it needs insecure vm setting -->
-        <xstream.version>1.4.17</xstream.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <asciidoctor.version>3.2.0</asciidoctor.version>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -102,26 +100,11 @@
             </dependency>
 
             <dependency>
-                <groupId>com.thoughtworks.xstream</groupId>
-                <artifactId>xstream</artifactId>
-                <version>${xstream.version}</version>
-            </dependency>
-
-            <!--START SNIPPET: xpp3Dependency -->
-            <dependency>
-                <groupId>xpp3</groupId>
-                <artifactId>xpp3_min</artifactId>
-                <version>${xpp3_min.version}</version>
-            </dependency>
-            <!--END SNIPPET: xpp3Dependency -->
-
-
-            <!-- Drop-in replacement for commons logging -->
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>

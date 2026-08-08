@@ -26,7 +26,6 @@
 
 package org.semispace.actor;
 
-import com.thoughtworks.xstream.XStream;
 import org.jspecify.annotations.NullMarked;
 import org.semispace.SemiEventListener;
 import org.semispace.SemiSpaceInterface;
@@ -69,7 +68,7 @@ public class ActorNotification implements SemiEventListener<SemiAvailabilityEven
         // Do not need pool if swing actor
         if (!actor.getClass().isAnnotationPresent(SwingActor.class)) {
             pool = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 5L, TimeUnit.SECONDS,
-                    new SynchronousQueue<Runnable>());
+                    new SynchronousQueue<>());
         }
 
     }
@@ -140,8 +139,7 @@ public class ActorNotification implements SemiEventListener<SemiAvailabilityEven
             try {
                 actor.receive(msg);
             } catch (Exception e) {
-                XStream xStream = new XStream();
-                log.error("Got exception with template:\n" + xStream.toXML(template) + "\n... and incoming actor message ...\n" + xStream.toXML(msg), e);
+                log.error("Got exception with template:\n" + template + "\n... and incoming actor message ...\n" + msg, e);
             }
         }
     }

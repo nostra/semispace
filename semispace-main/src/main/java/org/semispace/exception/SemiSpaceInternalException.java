@@ -23,4 +23,8 @@ public class SemiSpaceInternalException extends SemiSpaceException {
     public SemiSpaceInternalException(String message) {
         super(message);
     }
+
+    public SemiSpaceInternalException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
