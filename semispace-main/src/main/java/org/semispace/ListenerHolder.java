@@ -22,6 +22,8 @@
  */
 package org.semispace;
 
+import org.semispace.event.SemiEvent;
+
 import java.util.Map;
 
 /**
@@ -29,18 +31,18 @@ import java.util.Map;
  */
 public class ListenerHolder {
     private long liveUntil;
-    private long id;
-    private SemiEventListener listener;
-    private Map<String, String> searchMap;
+    private final long id;
+    private final SemiEventListener<SemiEvent> listener;
+    private final Map<String, String> searchMap;
 
-    public ListenerHolder(long id, SemiEventListener listener, long liveUntil, Map<String, String> map) {
+    public ListenerHolder(long id, SemiEventListener<SemiEvent> listener, long liveUntil, Map<String, String> map) {
         this.listener = listener;
         this.liveUntil = liveUntil;
         this.searchMap = map;
         this.id = id;
     }
 
-    public SemiEventListener getListener() {
+    public SemiEventListener<SemiEvent> getListener() {
         return this.listener;
     }
 

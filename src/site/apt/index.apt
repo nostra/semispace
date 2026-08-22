@@ -36,7 +36,7 @@ SemiSpace offers
 
  * easy to <<configure>>: {{{http://www.springframework.org}Spring}}-based configuration
 
- * has very <<few dependencies>>: Basically just {{{semispace-main/dependencies.html}XStream and logging}}
+ * has very <<few dependencies>>: Basically just {{{semispace-main/dependencies.html}Jackson and logging}}
 
  * easy to <<integrate>> into your J2EE or stand alone applications: You should easily be able to slip it into your standard J2EE stack
 
@@ -45,9 +45,7 @@ SemiSpace offers
  * <<does not need Jini>> installed ... as SemiSpace do not use Jini.
  
  * uses <<getters>> in addition to public fields: In difference to the JavaSpaces specification 
- 
- * does <<not>> use the <<<Entry>>> mix-in interface: Allows any {{{http://xstream.codehaus.org}XStream}}-able class to be put into the space. 
- 
+
  * is <<Open Source>> and licensed under {{{http://www.apache.org/licenses/LICENSE-2.0}Apache 2}}
 
  * supplies a simple <<actor pattern>> framework

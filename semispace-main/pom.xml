@@ -32,6 +32,13 @@
     <description>The main SemiSpace project, a JavaSpaces inspired space.</description>
     <url>https://www.semispace.org/semispace/semispace-main</url>
 
+    <distributionManagement>
+        <site>
+            <id>github-pages</id>
+            <url>file:///site-staging/semispace-main</url>
+        </site>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>

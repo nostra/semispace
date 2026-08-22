@@ -29,7 +29,7 @@ import java.util.concurrent.ThreadFactory;
  * which makes all threads it creates become daemon threads.
  */
 public final class DaemonDelegateFactory implements ThreadFactory {
-    private ThreadFactory threadFactory;
+    private final ThreadFactory threadFactory;
 
     public DaemonDelegateFactory(ThreadFactory threadFactory) {
         this.threadFactory = threadFactory;

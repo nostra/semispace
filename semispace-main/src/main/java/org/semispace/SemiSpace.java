@@ -65,17 +65,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
- * A tuple space implementation which can be distributed with terracotta. This is
+ * A tuple space implementation. This is
  * the main class from which the SemiSpace interface is obtained.
  */
 public class SemiSpace implements SemiSpaceInterface {
 
-    private static final String ADMIN_GROUP_IS_FLAGGED = "adminGroupIsFlagged";
-
-    private static final Logger log = LoggerFactory.getLogger(SemiSpace.class);
-
     public static final long ONE_DAY = 86_400_000L;
-
+    private static final String ADMIN_GROUP_IS_FLAGGED = "adminGroupIsFlagged";
+    private static final Logger log = LoggerFactory.getLogger(SemiSpace.class);
     private static SemiSpace instance = null;
 
     private long listenerId = 0;
@@ -88,24 +85,24 @@ public class SemiSpace implements SemiSpaceInterface {
 
     private transient Map<String, Field[]> classFieldMap = new WeakHashMap<String, Field[]>();
 
-    private SemiSpaceStatistics statistics;
+    private final SemiSpaceStatistics statistics;
 
     private transient SemiSpaceSerializer serializer;
 
-    private EventDistributor eventDistributor = EventDistributor.getInstance();
+    private final EventDistributor eventDistributor = EventDistributor.getInstance();
 
 
     /**
      * Holder for sanity check of stored class. It should not be an inner class.
      */
-    private Set<String> checkedClassSet = new HashSet<String>();
+    private final Set<String> checkedClassSet = new HashSet<String>();
 
-    private SemiSpace() {
+    private SemiSpace(SemiSpaceSerializer serializer) {
         elements = HolderContainer.retrieveContainer();
         listeners = new ConcurrentHashMap<>();
         statistics = new SemiSpaceStatistics();
-        serializer = resolveSerializer();
-        setAdmin(new SemiSpaceAdmin(this, serializer));
+        this.serializer = serializer;
+        setAdmin(new SemiSpaceAdmin(this, this.serializer));
     }
 
     private static SemiSpaceSerializer resolveSerializer() {
@@ -124,8 +121,12 @@ public class SemiSpace implements SemiSpaceInterface {
      * @return Return the space
      */
     public static synchronized SemiSpaceInterface retrieveSpace() {
+        return retrieveSpace(resolveSerializer());
+    }
+
+    public static synchronized SemiSpaceInterface retrieveSpace(SemiSpaceSerializer serializer) {
         if (instance == null) {
-            instance = new SemiSpace();
+            instance = new SemiSpace(serializer);
         }
         if (!instance.admin.hasBeenInitialized()) {
             instance.admin.performInitialization();
@@ -146,8 +147,7 @@ public class SemiSpace implements SemiSpaceInterface {
             return null;
         }
         Map<String, String> searchProps = retrievePropertiesFromObject(tmpl);
-        SemiEventRegistration registration = notify(searchProps, listener, duration);
-        return registration;
+        return notify(searchProps, listener, duration);
     }
 
     /**
@@ -156,7 +156,7 @@ public class SemiSpace implements SemiSpaceInterface {
      *
      * @return Returning null if something went wrong or was wrong, a registration object otherwise.
      */
-    public SemiEventRegistration notify(Map<String, String> searchProps, SemiEventListener listener, long duration) {
+    public SemiEventRegistration notify(Map<String, String> searchProps, SemiEventListener<SemiEvent> listener, long duration) {
         if (listener == null) {
             log.warn("Not allowing listener to be null.");
             return null;
@@ -468,32 +468,6 @@ public class SemiSpace implements SemiSpaceInterface {
         return take(tmpl, 0);
     }
 
-    private static class PreprocessedTemplate {
-        private Object object;
-        private Map<String, String> cachedSet;
-
-        public PreprocessedTemplate(Object object, Map<String, String> cachedSet) {
-            this.object = object;
-            this.cachedSet = cachedSet;
-        }
-
-        public Map<String, String> getCachedSet() {
-            return cachedSet;
-        }
-
-        public void setCachedSet(Map<String, String> cachedSet) {
-            this.cachedSet = cachedSet;
-        }
-
-        public Object getObject() {
-            return object;
-        }
-
-        public void setObject(Object object) {
-            this.object = object;
-        }
-    }
-
     /**
      * Create a pre-processed template object that can be used to reduce the amount of
      * work required to match templates during a take.  Applications that take a lot of
@@ -600,6 +574,13 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     /**
+     * Return admin element
+     */
+    public SemiSpaceAdminInterface getAdmin() {
+        return this.admin;
+    }
+
+    /**
      * Preparing for future injection of admin. Note that you
      * must call initialization <b>yourself</b> after setting the
      * object
@@ -609,50 +590,6 @@ public class SemiSpace implements SemiSpaceInterface {
      */
     public void setAdmin(SemiSpaceAdminInterface admin) {
         this.admin = admin;
-    }
-
-    /**
-     * Return admin element
-     */
-    public SemiSpaceAdminInterface getAdmin() {
-        return this.admin;
-    }
-
-    /**
-     * Need to wrap write in own thread in order to make terracotta pick it up.
-     */
-    protected class WrappedInternalWriter implements Runnable {
-        private Object entry;
-
-        private long leaseTimeMs;
-
-        private Exception exception;
-
-        private SemiLease lease;
-
-        public Exception getException() {
-            return this.exception;
-        }
-
-        public SemiLease getLease() {
-            return lease;
-        }
-
-        protected WrappedInternalWriter(Object entry, long leaseTimeMs) {
-            this.entry = entry;
-            this.leaseTimeMs = leaseTimeMs;
-        }
-
-        @Override
-        @SuppressWarnings("synthetic-access")
-        public void run() {
-            try {
-                lease = writeInternally(entry, leaseTimeMs);
-            } catch (Exception e) {
-                log.debug("Got exception writing object.", e);
-                exception = e;
-            }
-        }
     }
 
     /**
@@ -855,6 +792,32 @@ public class SemiSpace implements SemiSpaceInterface {
         return serializer;
     }
 
+    private static class PreprocessedTemplate {
+        private Object object;
+        private Map<String, String> cachedSet;
+
+        public PreprocessedTemplate(Object object, Map<String, String> cachedSet) {
+            this.object = object;
+            this.cachedSet = cachedSet;
+        }
+
+        public Map<String, String> getCachedSet() {
+            return cachedSet;
+        }
+
+        public void setCachedSet(Map<String, String> cachedSet) {
+            this.cachedSet = cachedSet;
+        }
+
+        public Object getObject() {
+            return object;
+        }
+
+        public void setObject(Object object) {
+            this.object = object;
+        }
+    }
+
     private static class ShortestTtlComparator implements Comparator<ListenerHolder>, Serializable {
         @Override
         public int compare(ListenerHolder o1, ListenerHolder o2) {
@@ -862,6 +825,43 @@ public class SemiSpace implements SemiSpaceInterface {
                 throw new SemiSpaceUsageException("Did not expect any null values for listenerHolder.");
             }
             return (int) (o1.getLiveUntil() - o2.getLiveUntil());
+        }
+    }
+
+    /**
+     * Need to wrap write in own thread in order to make terracotta pick it up.
+     */
+    protected class WrappedInternalWriter implements Runnable {
+        private Object entry;
+
+        private long leaseTimeMs;
+
+        private Exception exception;
+
+        private SemiLease lease;
+
+        protected WrappedInternalWriter(Object entry, long leaseTimeMs) {
+            this.entry = entry;
+            this.leaseTimeMs = leaseTimeMs;
+        }
+
+        public Exception getException() {
+            return this.exception;
+        }
+
+        public SemiLease getLease() {
+            return lease;
+        }
+
+        @Override
+        @SuppressWarnings("synthetic-access")
+        public void run() {
+            try {
+                lease = writeInternally(entry, leaseTimeMs);
+            } catch (Exception e) {
+                log.debug("Got exception writing object.", e);
+                exception = e;
+            }
         }
     }
 }
