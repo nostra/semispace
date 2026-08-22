@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-Created-By: Maven Site Plugin 3.22.0
-Java-Version: 25
-Build-Jdk-Spec: 26
-

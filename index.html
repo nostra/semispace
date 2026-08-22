@@ -10,18 +10,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content="Apache Maven Doxia Site Renderer 2.1.0" />
-    <title>SemiSpace</title>
+    <meta name="author" content="Erlend Nossum" />
+    <title>SemiSpace – SemiSpace</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-2.1.0.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
     <script src="./js/apache-maven-fluido-2.1.0.min.js"></script>
-    <link rel="SHORTCUT ICON" HREF="images/semiicon.gif"/>
   </head>
   <body>
     <div class="container-fluid container-fluid-top">
       <header>
         <div id="banner">
-          <div class="pull-left"><div id="bannerLeft"><h1><a href="../.."><img src="../images/semispace.png" alt="SemiSpace" /> SemiSpace</a></h1></div></div>
+          <div class="pull-left"><div id="bannerLeft"><h1><a href=".."><img src="images/semispace.png" alt="SemiSpace" /> SemiSpace</a></h1></div></div>
           <div class="pull-right"></div>
           <div class="clear"><hr/></div>
         </div>
@@ -29,7 +29,7 @@
         <div id="breadcrumbs">
           <ul class="breadcrumb">
         <li id="projectVersion">Version: 2.0.0</li>
-        <li class="pull-right"><a href="..">SemiSpace home</a></li>
+        <li class="pull-right"><a href="./">SemiSpace home</a></li>
           </ul>
         </div>
       </header>
@@ -37,6 +37,26 @@
         <header id="leftColumn" class="span2">
           <nav class="well sidebar-nav">
   <ul class="nav nav-list">
+   <li class="nav-header">Project Documentation</li>
+    <li><a href="project-info.html"><span class="icon-chevron-down"></span>Project Information</a>
+     <ul class="nav nav-list">
+      <li><a href="dependencies.html">Dependencies</a></li>
+      <li><a href="dependency-convergence.html">Dependency Convergence</a></li>
+      <li><a href="dependency-info.html">Maven Coordinates</a></li>
+      <li><a href="dependency-management.html">Dependency Management</a></li>
+      <li><a href="distribution-management.html">Distribution Management</a></li>
+      <li class="active"><a>About</a></li>
+      <li><a href="licenses.html">Licenses</a></li>
+      <li><a href="modules.html">Project Modules</a></li>
+      <li><a href="plugin-management.html">Plugin Management</a></li>
+      <li><a href="plugins.html">Plugins</a></li>
+      <li><a href="scm.html">Source Code Management</a></li>
+      <li><a href="summary.html">Summary</a></li>
+      <li><a href="team.html">Team</a></li>
+     </ul></li>
+    <li><a href="project-reports.html"><span class="icon-chevron-right"></span>Project Reports</a></li>
+   <li class="nav-header">Modules</li>
+    <li><a href="semispace-main/index.html">semispace-main</a></li>
   </ul>
       <div id="lastPublished">
         <span id="publishDate">Last Published: 22/08 2026</span>
@@ -51,7 +71,34 @@
           </div>
         </header>
         <main id="bodyColumn" class="span10">
-<p>This is the main module of SemiSpace, and the only dependency you need for beginning to use SemiSpace.</p>        </main>
+<p>SemiSpace is a light weight Open Source interpretation of <a class="externalLink" href="http://www.wikipedia.org/wiki/tuple_space">Tuple Space / Object Space</a> based on ideas from http://www.jini.org/wiki/JavaSpaces_Specification (now defunct), see also <a class="externalLink" href="https://river.apache.org/release-doc/current/specs/html/js-spec.html">Apache River</a>. It can be run as single, <b>stand alone,</b> space.</p>
+<p>Historically, it was created in order to support distribution under Terracotta. Now it is retained as a curiosity.</p>
+<p><a href="./changes.html">Changelist</a> since version 1.0.0.</p>
+<p>For usage, please see the <a class="externalLink" href="https://github.com/nostra/semispace/">SemiSpace entry page on GitHub</a>.</p><section><a id="SemiSpace_offers"></a>
+<h1>SemiSpace offers</h1>
+<p>... a light weight JavaSpaces inspired tuple space which</p>
+<ul>
+<li>is <b>non-intrusive</b>: You do not need to change existing code</li>
+<li>easy to <b>configure</b>: <a class="externalLink" href="http://www.springframework.org">Spring</a>-based configuration</li>
+<li>has very <b>few dependencies</b>: Basically just <a href="#semispace-main.2Fdependencies.html">XStream and logging</a></li>
+<li>easy to <b>integrate</b> into your J2EE or stand alone applications: You should easily be able to slip it into your standard J2EE stack</li>
+<li>supports <b>generics</b> for ease of usage</li>
+<li><b>does not need Jini</b> installed ... as SemiSpace do not use Jini.</li>
+<li>uses <b>getters</b> in addition to public fields: In difference to the JavaSpaces specification </li>
+<li>does <b>not</b> use the <code>Entry</code> mix-in interface: Allows any <a class="externalLink" href="http://xstream.codehaus.org">XStream</a>-able class to be put into the space. </li>
+<li>is <b>Open Source</b> and licensed under <a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2</a></li>
+<li>supplies a simple <b>actor pattern</b> framework</li></ul></section><section><a id="Alternatives"></a>
+<h1>Alternatives</h1>
+<p>Historically, JavaSpace alternatives have been at least the following, but currently few projects are still available:</p>
+<ul>
+<li>The JavaSpace implementation Sun offers as a part of Jini (http://jini.org)</li>
+<li>Blitz (http://www.dancres.org/blitz/)</li>
+<li><a class="externalLink" href="http://www.gigaspaces.com/">GigaSpaces</a> where <a class="externalLink" href="https://www.gigaspaces.com/technology/event-driven-architecture/">Event Driven Architecture</a> seems to be a remnant of JavaSpaces technology</li>
+<li><a class="externalLink" href="http://incubator.apache.org/river/">Apache River</a> (retired)</li>
+<li><a class="externalLink" href="http://lime.sourceforge.net/Lime/index.html">Lime</a> (which looks abandoned: https://sourceforge.net/projects/lime/ )</li>
+<li>IBM TSpaces (http://www.almaden.ibm.com/cs/TSpaces/)</li>
+<li>Gruple (http://gruple.codehaus.org/)</li>
+<li><a class="externalLink" href="http://code.google.com/p/terrastore/">Terrastore</a> which can now be found in Google Archive.</li></ul></section>        </main>
       </div>
     </div>
     <hr/>

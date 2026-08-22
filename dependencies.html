@@ -10,7 +10,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content="Apache Maven Doxia Site Renderer 2.1.0" />
-    <title>Project Dependencies – semispace-main</title>
+    <title>Project Dependencies – SemiSpace</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-2.1.0.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -20,7 +20,7 @@
     <div class="container-fluid container-fluid-top">
       <header>
         <div id="banner">
-          <div class="pull-left"><div id="bannerLeft"><h1><a href="../.."><img src="../images/semispace.png" alt="SemiSpace" /> SemiSpace</a></h1></div></div>
+          <div class="pull-left"><div id="bannerLeft"><h1><a href=".."><img src="images/semispace.png" alt="SemiSpace" /> SemiSpace</a></h1></div></div>
           <div class="pull-right"></div>
           <div class="clear"><hr/></div>
         </div>
@@ -28,7 +28,7 @@
         <div id="breadcrumbs">
           <ul class="breadcrumb">
         <li id="projectVersion">Version: 2.0.0</li>
-        <li class="pull-right"><a href="..">SemiSpace home</a></li>
+        <li class="pull-right"><a href="./">SemiSpace home</a></li>
           </ul>
         </div>
       </header>
@@ -36,6 +36,26 @@
         <header id="leftColumn" class="span2">
           <nav class="well sidebar-nav">
   <ul class="nav nav-list">
+   <li class="nav-header">Project Documentation</li>
+    <li><a href="project-info.html"><span class="icon-chevron-down"></span>Project Information</a>
+     <ul class="nav nav-list">
+      <li class="active"><a>Dependencies</a></li>
+      <li><a href="dependency-convergence.html">Dependency Convergence</a></li>
+      <li><a href="dependency-info.html">Maven Coordinates</a></li>
+      <li><a href="dependency-management.html">Dependency Management</a></li>
+      <li><a href="distribution-management.html">Distribution Management</a></li>
+      <li><a href="index.html">About</a></li>
+      <li><a href="licenses.html">Licenses</a></li>
+      <li><a href="modules.html">Project Modules</a></li>
+      <li><a href="plugin-management.html">Plugin Management</a></li>
+      <li><a href="plugins.html">Plugins</a></li>
+      <li><a href="scm.html">Source Code Management</a></li>
+      <li><a href="summary.html">Summary</a></li>
+      <li><a href="team.html">Team</a></li>
+     </ul></li>
+    <li><a href="project-reports.html"><span class="icon-chevron-right"></span>Project Reports</a></li>
+   <li class="nav-header">Modules</li>
+    <li><a href="semispace-main/index.html">semispace-main</a></li>
   </ul>
       <div id="lastPublished">
         <span id="publishDate">Last Published: 22/08 2026</span>
@@ -51,45 +71,7 @@
         </header>
         <main id="bodyColumn" class="span10">
 <section><a id="Project_Dependencies"></a>
-<h1>Project Dependencies</h1><section><a id="Project_Dependencies_compile"></a>
-<h2>compile</h2>
-<p>The following is a list of compile dependencies for this project. These dependencies are required to compile and run the application:</p>
-<table class="table table-striped">
-<tr class="a">
-<th>GroupId</th>
-<th>ArtifactId</th>
-<th>Version</th>
-<th>Type</th>
-<th>Licenses</th>
-<th>Optional</th></tr>
-<tr class="b">
-<td>org.slf4j</td>
-<td><a class="externalLink" href="http://www.slf4j.org">jcl-over-slf4j</a></td>
-<td>2.0.18</td>
-<td>jar</td>
-<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache-2.0</a></td>
-<td>No</td></tr>
-<tr class="a">
-<td>ch.qos.logback</td>
-<td><a class="externalLink" href="http://logback.qos.ch/logback-classic">logback-classic</a></td>
-<td>1.6.3</td>
-<td>jar</td>
-<td><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">EPL-2.0</a><a class="externalLink" href="https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL-2.1-only</a></td>
-<td>Yes</td></tr>
-<tr class="b">
-<td>tools.jackson.core</td>
-<td><a class="externalLink" href="https://github.com/FasterXML/jackson">jackson-databind</a></td>
-<td>3.2.2</td>
-<td>jar</td>
-<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td>
-<td>Yes</td></tr>
-<tr class="a">
-<td>tools.jackson.dataformat</td>
-<td><a class="externalLink" href="https://github.com/FasterXML/jackson-dataformat-xml">jackson-dataformat-xml</a></td>
-<td>3.2.2</td>
-<td>jar</td>
-<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td>
-<td>Yes</td></tr></table></section><section><a id="Project_Dependencies_test"></a>
+<h1>Project Dependencies</h1><section><a id="Project_Dependencies_test"></a>
 <h2>test</h2>
 <p>The following is a list of test dependencies for this project. These dependencies are only required to compile and run unit tests for the application:</p>
 <table class="table table-striped">
@@ -104,67 +86,9 @@
 <td><a class="externalLink" href="https://junit.org/">junit-jupiter</a></td>
 <td>6.1.3</td>
 <td>jar</td>
-<td><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">Eclipse Public License v2.0</a></td></tr>
-<tr class="a">
-<td>org.tabletest</td>
-<td><a class="externalLink" href="https://github.com/nchaugen/tabletest">tabletest-junit</a></td>
-<td>1.2.2</td>
-<td>jar</td>
-<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr></table></section></section><section><a id="Project_Transitive_Dependencies"></a>
+<td><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">Eclipse Public License v2.0</a></td></tr></table></section></section><section><a id="Project_Transitive_Dependencies"></a>
 <h1>Project Transitive Dependencies</h1>
-<p>The following is a list of transitive dependencies for this project. Transitive dependencies are the dependencies of the project dependencies.</p><section><a id="Project_Transitive_Dependencies_compile"></a>
-<h2>compile</h2>
-<p>The following is a list of compile dependencies for this project. These dependencies are required to compile and run the application:</p>
-<table class="table table-striped">
-<tr class="a">
-<th>GroupId</th>
-<th>ArtifactId</th>
-<th>Version</th>
-<th>Type</th>
-<th>Licenses</th>
-<th>Optional</th></tr>
-<tr class="b">
-<td>org.slf4j</td>
-<td><a class="externalLink" href="http://www.slf4j.org">slf4j-api</a></td>
-<td>2.0.18</td>
-<td>jar</td>
-<td><a class="externalLink" href="https://opensource.org/license/mit">MIT</a></td>
-<td>No</td></tr>
-<tr class="a">
-<td>ch.qos.logback</td>
-<td><a class="externalLink" href="http://logback.qos.ch/logback-core">logback-core</a></td>
-<td>1.6.3</td>
-<td>jar</td>
-<td><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">EPL-2.0</a><a class="externalLink" href="https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL-2.1-only</a></td>
-<td>Yes</td></tr>
-<tr class="b">
-<td>com.fasterxml.jackson.core</td>
-<td><a class="externalLink" href="https://github.com/FasterXML/jackson">jackson-annotations</a></td>
-<td>2.22</td>
-<td>jar</td>
-<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td>
-<td>Yes</td></tr>
-<tr class="a">
-<td>com.fasterxml.woodstox</td>
-<td><a class="externalLink" href="https://github.com/FasterXML/woodstox">woodstox-core</a></td>
-<td>7.2.1</td>
-<td>jar</td>
-<td><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache License, Version 2.0</a></td>
-<td>Yes</td></tr>
-<tr class="b">
-<td>org.codehaus.woodstox</td>
-<td><a class="externalLink" href="http://github.com/FasterXML/stax2-api">stax2-api</a></td>
-<td>4.3.0</td>
-<td>jar</td>
-<td><a class="externalLink" href="http://www.opensource.org/licenses/bsd-license.php">The BSD 2-Clause License</a></td>
-<td>Yes</td></tr>
-<tr class="a">
-<td>tools.jackson.core</td>
-<td><a class="externalLink" href="https://github.com/FasterXML/jackson-core">jackson-core</a></td>
-<td>3.2.2</td>
-<td>jar</td>
-<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></td>
-<td>Yes</td></tr></table></section><section><a id="Project_Transitive_Dependencies_test"></a>
+<p>The following is a list of transitive dependencies for this project. Transitive dependencies are the dependencies of the project dependencies.</p><section><a id="Project_Transitive_Dependencies_test"></a>
 <h2>test</h2>
 <p>The following is a list of test dependencies for this project. These dependencies are only required to compile and run unit tests for the application:</p>
 <table class="table table-striped">
@@ -221,13 +145,7 @@
 <td><a class="externalLink" href="https://github.com/ota4j-team/opentest4j">opentest4j</a></td>
 <td>1.3.0</td>
 <td>jar</td>
-<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">The Apache License, Version 2.0</a></td></tr>
-<tr class="b">
-<td>org.tabletest</td>
-<td><a class="externalLink" href="https://github.com/nchaugen/tabletest">tabletest-parser</a></td>
-<td>1.2.1</td>
-<td>jar</td>
-<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></td></tr></table></section></section><section><a id="Project_Dependency_Graph"></a>
+<td><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">The Apache License, Version 2.0</a></td></tr></table></section></section><section><a id="Project_Dependency_Graph"></a>
 <h1>Project Dependency Graph</h1>
 <script>
       function toggleDependencyDetails( divId, imgId )
@@ -252,132 +170,18 @@
 <section><a id="Dependency_Tree"></a>
 <h2>Dependency Tree</h2>
 <ul>
-<li>org.semispace:semispace-main:jar:2.0.0 <img id="_img1" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep0', '_img1' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep0" style="display:none">
+<li>org.semispace:semispace:pom:2.0.0 <img id="_img1" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep0', '_img1' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep0" style="display:none">
 <table class="table table-striped">
 <tr class="a">
-<th>semispace-main</th></tr>
+<th>semispace</th></tr>
 <tr class="b">
 <td>
-<p><b>Description: </b>The main SemiSpace project, a JavaSpaces inspired space.</p>
-<p><b>URL: </b><a class="externalLink" href="https://www.semispace.org/semispace/semispace-main">https://www.semispace.org/semispace/semispace-main</a></p>
+<p><b>Description: </b>SemiSpace is a light weight JavaSpaces inspired tuple space which is easy to integrate with
+        existing technology.</p>
+<p><b>URL: </b><a class="externalLink" href="https://www.semispace.org/semispace">https://www.semispace.org/semispace</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
 <ul>
-<li>org.slf4j:jcl-over-slf4j:jar:2.0.18 (compile) <img id="_img3" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep2', '_img3' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep2" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>JCL 1.2 implemented over SLF4J</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>JCL 1.2 implemented over SLF4J</p>
-<p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache-2.0</a></p></td></tr></table></div>
-<ul>
-<li>org.slf4j:slf4j-api:jar:2.0.18 (compile) <img id="_img5" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep4', '_img5' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep4" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>SLF4J API Module</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>The slf4j API</p>
-<p><b>URL: </b><a class="externalLink" href="http://www.slf4j.org">http://www.slf4j.org</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="https://opensource.org/license/mit">MIT</a></p></td></tr></table></div></li></ul></li>
-<li>ch.qos.logback:logback-classic:jar:1.6.3 (compile) <img id="_img7" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep6', '_img7' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep6" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>Logback Classic Module</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>logback-classic module</p>
-<p><b>URL: </b><a class="externalLink" href="http://logback.qos.ch/logback-classic">http://logback.qos.ch/logback-classic</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">EPL-2.0</a>, <a class="externalLink" href="https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL-2.1-only</a></p></td></tr></table></div>
-<ul>
-<li>ch.qos.logback:logback-core:jar:1.6.3 (compile) <img id="_img9" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep8', '_img9' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep8" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>Logback Core Module</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>logback-core module</p>
-<p><b>URL: </b><a class="externalLink" href="http://logback.qos.ch/logback-core">http://logback.qos.ch/logback-core</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">EPL-2.0</a>, <a class="externalLink" href="https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL-2.1-only</a></p></td></tr></table></div></li></ul></li>
-<li>tools.jackson.core:jackson-databind:jar:3.2.2 (compile) <img id="_img11" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep10', '_img11' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep10" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>jackson-databind</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>General data-binding functionality for Jackson: works on core streaming API</p>
-<p><b>URL: </b><a class="externalLink" href="https://github.com/FasterXML/jackson">https://github.com/FasterXML/jackson</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div>
-<ul>
-<li>com.fasterxml.jackson.core:jackson-annotations:jar:2.22 (compile) <img id="_img13" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep12', '_img13' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep12" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>Jackson-annotations</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>Core annotations used for value types, used by Jackson data binding package.</p>
-<p><b>URL: </b><a class="externalLink" href="https://github.com/FasterXML/jackson">https://github.com/FasterXML/jackson</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li>
-<li>tools.jackson.core:jackson-core:jar:3.2.2 (compile) <img id="_img15" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep14', '_img15' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep14" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>Jackson-core</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>Core Jackson processing abstractions (aka Streaming API), implementation for JSON</p>
-<p><b>URL: </b><a class="externalLink" href="https://github.com/FasterXML/jackson-core">https://github.com/FasterXML/jackson-core</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
-<li>tools.jackson.dataformat:jackson-dataformat-xml:jar:3.2.2 (compile) <img id="_img17" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep16', '_img17' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep16" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>Jackson-dataformat-XML</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>Data format extension for Jackson to offer
-alternative support for serializing POJOs as XML and deserializing XML as POJOs.</p>
-<p><b>URL: </b><a class="externalLink" href="https://github.com/FasterXML/jackson-dataformat-xml">https://github.com/FasterXML/jackson-dataformat-xml</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache Software License, Version 2.0</a></p></td></tr></table></div>
-<ul>
-<li>org.codehaus.woodstox:stax2-api:jar:4.3.0 (compile) <img id="_img19" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep18', '_img19' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep18" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>Stax2 API</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>Stax2 API is an extension to basic Stax 1.0 API that adds significant new functionality, such as full-featured bi-direction validation interface and high-performance Typed Access API.</p>
-<p><b>URL: </b><a class="externalLink" href="http://github.com/FasterXML/stax2-api">http://github.com/FasterXML/stax2-api</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="http://www.opensource.org/licenses/bsd-license.php">The BSD 2-Clause License</a></p></td></tr></table></div></li>
-<li>com.fasterxml.woodstox:woodstox-core:jar:7.2.1 (compile) <img id="_img21" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep20', '_img21' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep20" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>Woodstox</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>Woodstox is a high-performance XML processor that implements Stax (JSR-173),
-SAX2 and Stax2 APIs</p>
-<p><b>URL: </b><a class="externalLink" href="https://github.com/FasterXML/woodstox">https://github.com/FasterXML/woodstox</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
-<li>org.tabletest:tabletest-junit:jar:1.2.2 (test) <img id="_img23" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep22', '_img23' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep22" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>TableTest JUnit</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>Extension to JUnit for data-driven testing with the TableTest format</p>
-<p><b>URL: </b><a class="externalLink" href="https://github.com/nchaugen/tabletest">https://github.com/nchaugen/tabletest</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div>
-<ul>
-<li>org.tabletest:tabletest-parser:jar:1.2.1 (test) <img id="_img25" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep24', '_img25' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep24" style="display:none">
-<table class="table table-striped">
-<tr class="a">
-<th>TableTest Parser</th></tr>
-<tr class="b">
-<td>
-<p><b>Description: </b>Java implementation for parsing the TableTest format</p>
-<p><b>URL: </b><a class="externalLink" href="https://github.com/nchaugen/tabletest">https://github.com/nchaugen/tabletest</a></p>
-<p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
-<li>org.junit.jupiter:junit-jupiter:jar:6.1.3 (test) <img id="_img27" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep26', '_img27' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep26" style="display:none">
+<li>org.junit.jupiter:junit-jupiter:jar:6.1.3 (test) <img id="_img3" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep2', '_img3' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep2" style="display:none">
 <table class="table table-striped">
 <tr class="a">
 <th>JUnit Jupiter (Aggregator)</th></tr>
@@ -387,7 +191,7 @@ SAX2 and Stax2 APIs</p>
 <p><b>URL: </b><a class="externalLink" href="https://junit.org/">https://junit.org/</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">Eclipse Public License v2.0</a></p></td></tr></table></div>
 <ul>
-<li>org.junit.jupiter:junit-jupiter-api:jar:6.1.3 (test) <img id="_img29" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep28', '_img29' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep28" style="display:none">
+<li>org.junit.jupiter:junit-jupiter-api:jar:6.1.3 (test) <img id="_img5" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep4', '_img5' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep4" style="display:none">
 <table class="table table-striped">
 <tr class="a">
 <th>JUnit Jupiter API</th></tr>
@@ -397,7 +201,7 @@ SAX2 and Stax2 APIs</p>
 <p><b>URL: </b><a class="externalLink" href="https://junit.org/">https://junit.org/</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">Eclipse Public License v2.0</a></p></td></tr></table></div>
 <ul>
-<li>org.opentest4j:opentest4j:jar:1.3.0 (test) <img id="_img31" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep30', '_img31' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep30" style="display:none">
+<li>org.opentest4j:opentest4j:jar:1.3.0 (test) <img id="_img7" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep6', '_img7' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep6" style="display:none">
 <table class="table table-striped">
 <tr class="a">
 <th>org.opentest4j:opentest4j</th></tr>
@@ -406,7 +210,7 @@ SAX2 and Stax2 APIs</p>
 <p><b>Description: </b>Open Test Alliance for the JVM</p>
 <p><b>URL: </b><a class="externalLink" href="https://github.com/ota4j-team/opentest4j">https://github.com/ota4j-team/opentest4j</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="https://www.apache.org/licenses/LICENSE-2.0.txt">The Apache License, Version 2.0</a></p></td></tr></table></div></li>
-<li>org.junit.platform:junit-platform-commons:jar:6.1.3 (test) <img id="_img33" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep32', '_img33' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep32" style="display:none">
+<li>org.junit.platform:junit-platform-commons:jar:6.1.3 (test) <img id="_img9" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep8', '_img9' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep8" style="display:none">
 <table class="table table-striped">
 <tr class="a">
 <th>JUnit Platform Commons</th></tr>
@@ -415,7 +219,7 @@ SAX2 and Stax2 APIs</p>
 <p><b>Description: </b>Module &quot;junit-platform-commons&quot; of JUnit</p>
 <p><b>URL: </b><a class="externalLink" href="https://junit.org/">https://junit.org/</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">Eclipse Public License v2.0</a></p></td></tr></table></div></li>
-<li>org.apiguardian:apiguardian-api:jar:1.1.2 (test) <img id="_img35" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep34', '_img35' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep34" style="display:none">
+<li>org.apiguardian:apiguardian-api:jar:1.1.2 (test) <img id="_img11" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep10', '_img11' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep10" style="display:none">
 <table class="table table-striped">
 <tr class="a">
 <th>org.apiguardian:apiguardian-api</th></tr>
@@ -424,7 +228,7 @@ SAX2 and Stax2 APIs</p>
 <p><b>Description: </b>@API Guardian</p>
 <p><b>URL: </b><a class="externalLink" href="https://github.com/apiguardian-team/apiguardian">https://github.com/apiguardian-team/apiguardian</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache License, Version 2.0</a></p></td></tr></table></div></li>
-<li>org.jspecify:jspecify:jar:1.0.1 (test) <img id="_img37" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep36', '_img37' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep36" style="display:none">
+<li>org.jspecify:jspecify:jar:1.0.1 (test) <img id="_img13" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep12', '_img13' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep12" style="display:none">
 <table class="table table-striped">
 <tr class="a">
 <th>JSpecify annotations</th></tr>
@@ -433,7 +237,7 @@ SAX2 and Stax2 APIs</p>
 <p><b>Description: </b>An artifact of well-named and well-specified annotations to power static analysis checks</p>
 <p><b>URL: </b><a class="externalLink" href="https://jspecify.dev/">https://jspecify.dev/</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="http://www.apache.org/licenses/LICENSE-2.0.txt">The Apache License, Version 2.0</a></p></td></tr></table></div></li></ul></li>
-<li>org.junit.jupiter:junit-jupiter-params:jar:6.1.3 (test) <img id="_img39" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep38', '_img39' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep38" style="display:none">
+<li>org.junit.jupiter:junit-jupiter-params:jar:6.1.3 (test) <img id="_img15" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep14', '_img15' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep14" style="display:none">
 <table class="table table-striped">
 <tr class="a">
 <th>JUnit Jupiter Params</th></tr>
@@ -442,7 +246,7 @@ SAX2 and Stax2 APIs</p>
 <p><b>Description: </b>Module &quot;junit-jupiter-params&quot; of JUnit</p>
 <p><b>URL: </b><a class="externalLink" href="https://junit.org/">https://junit.org/</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">Eclipse Public License v2.0</a></p></td></tr></table></div></li>
-<li>org.junit.jupiter:junit-jupiter-engine:jar:6.1.3 (test) <img id="_img41" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep40', '_img41' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep40" style="display:none">
+<li>org.junit.jupiter:junit-jupiter-engine:jar:6.1.3 (test) <img id="_img17" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep16', '_img17' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep16" style="display:none">
 <table class="table table-striped">
 <tr class="a">
 <th>JUnit Jupiter Engine</th></tr>
@@ -452,7 +256,7 @@ SAX2 and Stax2 APIs</p>
 <p><b>URL: </b><a class="externalLink" href="https://junit.org/">https://junit.org/</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">Eclipse Public License v2.0</a></p></td></tr></table></div>
 <ul>
-<li>org.junit.platform:junit-platform-engine:jar:6.1.3 (test) <img id="_img43" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep42', '_img43' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep42" style="display:none">
+<li>org.junit.platform:junit-platform-engine:jar:6.1.3 (test) <img id="_img19" src="./images/icon_info_sml.gif" alt="[Information]" onclick="toggleDependencyDetails( '_dep18', '_img19' );" style="cursor: pointer; vertical-align: text-bottom;" /><div id="_dep18" style="display:none">
 <table class="table table-striped">
 <tr class="a">
 <th>JUnit Platform Engine API</th></tr>
@@ -462,15 +266,9 @@ SAX2 and Stax2 APIs</p>
 <p><b>URL: </b><a class="externalLink" href="https://junit.org/">https://junit.org/</a></p>
 <p><b>Project Licenses: </b><a class="externalLink" href="https://www.eclipse.org/legal/epl-v20.html">Eclipse Public License v2.0</a></p></td></tr></table></div></li></ul></li></ul></li></ul></li></ul></section></section><section><a id="Licenses"></a>
 <h1>Licenses</h1>
-<p><b>The Apache License, Version 2.0: </b>JSpecify annotations, Woodstox, org.apiguardian:apiguardian-api, org.opentest4j:opentest4j</p>
-<p><b>LGPL-2.1-only: </b>Logback Classic Module, Logback Core Module</p>
-<p><b>The BSD 2-Clause License: </b>Stax2 API</p>
-<p><b>Apache License, Version 2.0: </b>TableTest JUnit, TableTest Parser, semispace-main</p>
-<p><b>Apache-2.0: </b>JCL 1.2 implemented over SLF4J</p>
-<p><b>Eclipse Public License v2.0: </b>JUnit Jupiter (Aggregator), JUnit Jupiter API, JUnit Jupiter Engine, JUnit Jupiter Params, JUnit Platform Commons, JUnit Platform Engine API</p>
-<p><b>MIT: </b>SLF4J API Module</p>
-<p><b>EPL-2.0: </b>Logback Classic Module, Logback Core Module</p>
-<p><b>The Apache Software License, Version 2.0: </b>Jackson-annotations, Jackson-core, Jackson-dataformat-XML, jackson-databind</p></section><section><a id="Dependency_File_Details"></a>
+<p><b>The Apache License, Version 2.0: </b>JSpecify annotations, org.apiguardian:apiguardian-api, org.opentest4j:opentest4j</p>
+<p><b>Apache License, Version 2.0: </b>semispace</p>
+<p><b>Eclipse Public License v2.0: </b>JUnit Jupiter (Aggregator), JUnit Jupiter API, JUnit Jupiter Engine, JUnit Jupiter Params, JUnit Platform Commons, JUnit Platform Engine API</p></section><section><a id="Dependency_File_Details"></a>
 <h1>Dependency File Details</h1>
 <table class="table table-striped">
 <tr class="a">
@@ -554,174 +352,6 @@ SAX2 and Stax2 APIs</p>
 <td style="text-align: center;">1.6</td>
 <td style="text-align: center;">Yes</td></tr>
 <tr class="a">
-<td style="text-align: left;">jcl-over-slf4j-2.0.18.jar</td>
-<td style="text-align: right;">18.4 kB</td>
-<td style="text-align: right;">26</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">-</td></tr>
-<tr class="b">
-<td style="text-align: left;">&#160;&#160;&#160;&#x2022; Root</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">24</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: center;">1.8</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="a">
-<td style="text-align: left;">&#160;&#160;&#160;&#x2022; Versioned</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: center;">9</td>
-<td style="text-align: center;">No</td></tr>
-<tr class="b">
-<td style="text-align: left;">slf4j-api-2.0.18.jar</td>
-<td style="text-align: right;">70 kB</td>
-<td style="text-align: right;">71</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">-</td></tr>
-<tr class="a">
-<td style="text-align: left;">&#160;&#160;&#160;&#x2022; Root</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">69</td>
-<td style="text-align: right;">55</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: center;">1.8</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="b">
-<td style="text-align: left;">&#160;&#160;&#160;&#x2022; Versioned</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: center;">9</td>
-<td style="text-align: center;">No</td></tr>
-<tr class="a">
-<td style="text-align: left;">tabletest-junit-1.2.2.jar</td>
-<td style="text-align: right;">37.5 kB</td>
-<td style="text-align: right;">36</td>
-<td style="text-align: right;">21</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: center;">1.8</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="b">
-<td style="text-align: left;">tabletest-parser-1.2.1.jar</td>
-<td style="text-align: right;">26.5 kB</td>
-<td style="text-align: right;">23</td>
-<td style="text-align: right;">13</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: center;">1.8</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="a">
-<td style="text-align: left;">logback-classic-1.6.3.jar</td>
-<td style="text-align: right;">293.3 kB</td>
-<td style="text-align: right;">224</td>
-<td style="text-align: right;">181</td>
-<td style="text-align: right;">29</td>
-<td style="text-align: center;">11</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="b">
-<td style="text-align: left;">logback-core-1.6.3.jar</td>
-<td style="text-align: right;">650.1 kB</td>
-<td style="text-align: right;">535</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">-</td></tr>
-<tr class="a">
-<td style="text-align: left;">&#160;&#160;&#160;&#x2022; Root</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">535</td>
-<td style="text-align: right;">485</td>
-<td style="text-align: right;">39</td>
-<td style="text-align: center;">11</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="b">
-<td style="text-align: left;">jackson-annotations-2.22.jar</td>
-<td style="text-align: right;">84.2 kB</td>
-<td style="text-align: right;">91</td>
-<td style="text-align: right;">78</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: center;">1.8</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="a">
-<td style="text-align: left;">woodstox-core-7.2.1.jar</td>
-<td style="text-align: right;">1.6 MB</td>
-<td style="text-align: right;">1095</td>
-<td style="text-align: right;">946</td>
-<td style="text-align: right;">78</td>
-<td style="text-align: center;">1.8</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="b">
-<td style="text-align: left;">stax2-api-4.3.0.jar</td>
-<td style="text-align: right;">194.1 kB</td>
-<td style="text-align: right;">146</td>
-<td style="text-align: right;">125</td>
-<td style="text-align: right;">12</td>
-<td style="text-align: center;">1.8</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="a">
-<td style="text-align: left;">jackson-core-3.2.2.jar</td>
-<td style="text-align: right;">606 kB</td>
-<td style="text-align: right;">275</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: center;">-</td>
-<td style="text-align: center;">-</td></tr>
-<tr class="b">
-<td style="text-align: left;">&#160;&#160;&#160;&#x2022; Root</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">248</td>
-<td style="text-align: right;">213</td>
-<td style="text-align: right;">17</td>
-<td style="text-align: center;">17</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="a">
-<td style="text-align: left;">&#160;&#160;&#160;&#x2022; Versioned</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: center;">17</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="b">
-<td style="text-align: left;">&#160;&#160;&#160;&#x2022; Versioned</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: center;">21</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="a">
-<td style="text-align: left;">&#160;&#160;&#160;&#x2022; Versioned</td>
-<td style="text-align: right;">-</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: center;">23</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="b">
-<td style="text-align: left;">jackson-databind-3.2.2.jar</td>
-<td style="text-align: right;">2 MB</td>
-<td style="text-align: right;">957</td>
-<td style="text-align: right;">908</td>
-<td style="text-align: right;">37</td>
-<td style="text-align: center;">17</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="a">
-<td style="text-align: left;">jackson-dataformat-xml-3.2.2.jar</td>
-<td style="text-align: right;">160.7 kB</td>
-<td style="text-align: right;">103</td>
-<td style="text-align: right;">83</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: center;">17</td>
-<td style="text-align: center;">Yes</td></tr>
-<tr class="b">
 <th>Total</th>
 <th>Size</th>
 <th>Entries</th>
@@ -729,30 +359,22 @@ SAX2 and Stax2 APIs</p>
 <th>Packages</th>
 <th>Java Version</th>
 <th>Debug Information</th></tr>
-<tr class="a">
-<td style="text-align: right;">21</td>
-<td style="text-align: right;">7.2 MB</td>
-<td style="text-align: right;">4627</td>
-<td style="text-align: right;">4047</td>
-<td style="text-align: right;">283</td>
-<td style="text-align: center;">17</td>
-<td style="text-align: right;">19</td></tr>
 <tr class="b">
-<td style="text-align: right;">compile: 10</td>
-<td style="text-align: right;">compile: 5.7 MB</td>
-<td style="text-align: right;">compile: 3523</td>
-<td style="text-align: right;">compile: 3082</td>
-<td style="text-align: right;">compile: 226</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1.5 MB</td>
+<td style="text-align: right;">1045</td>
+<td style="text-align: right;">931</td>
+<td style="text-align: right;">54</td>
 <td style="text-align: center;">17</td>
-<td style="text-align: right;">compile: 10</td></tr>
+<td style="text-align: right;">7</td></tr>
 <tr class="a">
-<td style="text-align: right;">test: 11</td>
-<td style="text-align: right;">test: 1.6 MB</td>
-<td style="text-align: right;">test: 1104</td>
-<td style="text-align: right;">test: 965</td>
-<td style="text-align: right;">test: 57</td>
+<td style="text-align: right;">test: 9</td>
+<td style="text-align: right;">test: 1.5 MB</td>
+<td style="text-align: right;">test: 1045</td>
+<td style="text-align: right;">test: 931</td>
+<td style="text-align: right;">test: 54</td>
 <td style="text-align: center;">17</td>
-<td style="text-align: right;">test: 9</td></tr></table></section>        </main>
+<td style="text-align: right;">test: 7</td></tr></table></section>        </main>
       </div>
     </div>
     <hr/>
