@@ -17,10 +17,14 @@ package org.semispace.exception;
 
 /**
  * Internal logical error. This exception should not be thrown as a
- * part of the normal operation of SemiSpace. 
+ * part of the normal operation of SemiSpace.
  */
 public class SemiSpaceInternalException extends SemiSpaceException {
     public SemiSpaceInternalException(String message) {
         super(message);
+    }
+
+    public SemiSpaceInternalException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

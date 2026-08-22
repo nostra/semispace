@@ -16,7 +16,9 @@
 
 package org.semispace.take;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.Test;
 import org.semispace.SemiSpace;
 import org.semispace.StressTestConstants;
 import org.slf4j.Logger;
@@ -26,10 +28,11 @@ import org.slf4j.LoggerFactory;
  * Testing uniqueness of take. Thanks to <b>Chris Mcfarlen</b> of Yahoo for providing the
  * scenario and the initial test code.
  */
-public class TakeUniquenessTest extends TestCase {
+public class TakeUniquenessTest {
     private static final Logger log = LoggerFactory.getLogger(TakeUniquenessTest.class);
 
-    public void testMultipleInsertAndTake()  {
+    @Test
+    public void testMultipleInsertAndTake() {
         Thread[] threads = new Thread[6];
 
         log.debug("Starting up " + threads.length + " workers.");
@@ -45,10 +48,10 @@ public class TakeUniquenessTest extends TestCase {
                 throw new RuntimeException("Error", e);
             }
         }
-        Item result = SemiSpace.retrieveSpace().takeIfExists( new Item());
-        assertNull( "Expecting all elements to have been removed from space, but had: "+result, result );
+        Item result = SemiSpace.retrieveSpace().takeIfExists(new Item());
+        assertNull(result, "Expecting all elements to have been removed from space, but had: " + result);
         log.debug("All threads joined!");
-        assertEquals("Not expecting any residual items. Collected errors: "+Storage.getInstance().getErrors(), 0, Storage.getInstance().dumpItems());
-        assertEquals("Not expecting errors", "", Storage.getInstance().getErrors());
+        assertEquals(0, Storage.getInstance().dumpItems(), "Not expecting any residual items. Collected errors: " + Storage.getInstance().getErrors());
+        assertEquals("", Storage.getInstance().getErrors());
     }
 }

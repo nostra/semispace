@@ -1,0 +1,15 @@
+version: 2
+
+updates:
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: "sunday"
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
