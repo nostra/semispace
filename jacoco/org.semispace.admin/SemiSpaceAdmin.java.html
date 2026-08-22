@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SemiSpaceAdmin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">semispace-main</a> &gt; <a href="index.source.html" class="el_package">org.semispace.admin</a> &gt; <span class="el_source">SemiSpaceAdmin.java</span></div><h1>SemiSpaceAdmin.java</h1><pre class="source lang-java linenums">/*
+ * ============================================================================
+ *
+ *  File:     SemiSpaceAdmin.java
+ *----------------------------------------------------------------------------
+ *
+ * Copyright 2008 Erlend Nossum
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *  Description:  See javadoc below
+ *
+ *  Created:      16. feb.. 2008
+ * ============================================================================
+ */
+
+package org.semispace.admin;
+
+import org.semispace.DistributedEvent;
+import org.semispace.Holder;
+import org.semispace.NameValueQuery;
+import org.semispace.SemiSpace;
+import org.semispace.SemiSpaceInterface;
+import org.semispace.SemiSpaceSerializer;
+import org.semispace.event.SemiAvailabilityEvent;
+import org.semispace.exception.SemiSpaceInternalException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+public class SemiSpaceAdmin implements SemiSpaceAdminInterface {
+<span class="fc" id="L52">    private static final Logger log = LoggerFactory.getLogger(SemiSpaceAdmin.class);</span>
+
+    private final SemiSpaceSerializer serializer;
+
+    private boolean master;
+
+    private SemiSpaceInterface space;
+
+    private boolean beenInitialized;
+
+    private long clockSkew;
+
+    private int spaceId;
+
+    private ExecutorService pool;
+
+    private Thread shutDownHook;
+
+    private PeriodicHarvest periodicHarvest;
+
+<span class="fc" id="L72">    public SemiSpaceAdmin(SemiSpaceInterface terraSpace, SemiSpaceSerializer serializer) {</span>
+        //*
+<span class="fc" id="L74">        ThreadPoolExecutor tpe = new ThreadPoolExecutor(0, 5000,</span>
+                5L, TimeUnit.SECONDS,
+                new SynchronousQueue&lt;&gt;(true));
+<span class="fc" id="L77">        tpe.setThreadFactory(new DaemonDelegateFactory(tpe.getThreadFactory()));</span>
+        // Exchanging strategy. When thread pool is full, try to run on local thread.
+<span class="fc" id="L79">        tpe.setRejectedExecutionHandler(new SemiSpaceRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy()));</span>
+<span class="fc" id="L80">        tpe.allowCoreThreadTimeOut(true);</span>
+<span class="fc" id="L81">        this.pool = tpe;</span>
+        /*/
+        this.pool = Executors.newVirtualThreadPerTaskExecutor();
+        // */
+<span class="fc" id="L85">        this.space = terraSpace;</span>
+<span class="fc" id="L86">        this.beenInitialized = false;</span>
+<span class="fc" id="L87">        this.clockSkew = 0;</span>
+<span class="fc" id="L88">        this.spaceId = 0;</span>
+<span class="fc" id="L89">        this.master = false;</span>
+<span class="fc" id="L90">        this.periodicHarvest = new PeriodicHarvest(this);</span>
+<span class="fc" id="L91">        this.serializer = serializer;</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if ( this.serializer == null ) {</span>
+<span class="nc" id="L93">            throw new SemiSpaceInternalException(&quot;SemiSpaceSerializer must be non-null&quot;);</span>
+        }
+<span class="fc" id="L95">    }</span>
+
+    /**
+     * Used from junit test.
+     */
+    protected int getSpaceId() {
+<span class="fc" id="L101">        return spaceId;</span>
+    }
+
+    /**
+     * @return space configured for this admin. Beneficiary for subclasses.
+     */
+    protected SemiSpaceInterface getSpace() {
+<span class="nc" id="L108">        return space;</span>
+    }
+
+    @Override
+    public ExecutorService getThreadPool() {
+<span class="fc" id="L113">        return pool;</span>
+    }
+
+    @Override
+    public boolean hasBeenInitialized() {
+<span class="fc" id="L118">        return this.beenInitialized;</span>
+    }
+
+    @Override
+    public boolean isMaster() {
+<span class="fc" id="L123">        return this.master;</span>
+    }
+
+    @Override
+    public long calculateTime() {
+<span class="fc" id="L128">        return System.currentTimeMillis() - clockSkew;</span>
+    }
+
+    @Override
+    public void performInitialization() {
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (beenInitialized) {</span>
+<span class="fc" id="L134">            log.warn(&quot;Initialization called more than once.&quot;);</span>
+<span class="fc" id="L135">            return;</span>
+        }
+<span class="fc" id="L137">        beenInitialized = true;</span>
+
+<span class="fc" id="L139">        Runnable hook = new Runnable() {</span>
+            @Override
+            @SuppressWarnings(&quot;synthetic-access&quot;)
+            public void run() {
+<span class="fc" id="L143">                log.info(&quot;Shutdown hook shutting down semispace.&quot;);</span>
+<span class="fc" id="L144">                shutdownAndAwaitTermination();</span>
+<span class="fc" id="L145">            }</span>
+        };
+<span class="fc" id="L147">        shutDownHook = new Thread(hook);</span>
+<span class="fc" id="L148">        Runtime.getRuntime().addShutdownHook(shutDownHook);</span>
+
+        //
+        // Fire up connection
+        //
+        long last;
+<span class="fc" id="L154">        long current = SemiSpace.ONE_DAY;</span>
+<span class="fc" id="L155">        int count = 0;</span>
+        // Perform query as long as the connection is improving
+        do {
+<span class="fc" id="L158">            count++;</span>
+<span class="fc" id="L159">            last = current;</span>
+<span class="fc" id="L160">            current = fireUpConnection();</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        } while (current &lt; last);</span>
+<span class="fc" id="L162">        log.info(&quot;Needed &quot; + count + &quot; iterations in order to find the best time, which was &quot; + current + &quot; ms.&quot;);</span>
+
+        //
+        // Figure out the ID of this space
+        //
+<span class="fc" id="L167">        spaceId = figureOutSpaceId();</span>
+<span class="fc" id="L168">        log.info(&quot;Space id was found to be &quot; + spaceId);</span>
+
+        //
+        // (Try to) find clock skew
+<span class="fc" id="L172">        queryForMasterTime();</span>
+        // log.info( &quot;Calculate time, which should give an approximation of the master time, reports [&quot;+new
+        // Date(calculateTime())+&quot;]&quot;);
+
+<span class="fc" id="L176">        periodicHarvest = new PeriodicHarvest(this);</span>
+<span class="fc" id="L177">        periodicHarvest.startReaper();</span>
+<span class="fc" id="L178">    }</span>
+
+    private int figureOutSpaceId() {
+<span class="fc" id="L181">        List&lt;IdentifyAdminQuery&gt; admins = new ArrayList&lt;IdentifyAdminQuery&gt;();</span>
+
+<span class="fc" id="L183">        IdentifyAdminQuery masterFound = populateListOfAllSpaces(admins);</span>
+
+<span class="fc" id="L185">        Collections.sort(admins, new IdentifyAdminQueryComparator());</span>
+<span class="fc" id="L186">        int foundId = 1;</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        if (!admins.isEmpty()) {</span>
+            // Collection is sorted, and therefore the admin should increase
+<span class="fc" id="L189">            IdentifyAdminQuery admin = admins.get(0);</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">            if (admin.id != null) {</span>
+<span class="fc" id="L191">                foundId = admin.id.intValue() + 1;</span>
+            }
+        }
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        if (masterFound == null) {</span>
+<span class="fc" id="L195">            log.info(&quot;I am master, as no other master was identified.&quot;);</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">            assumeAdminResponsibility(!admins.isEmpty());</span>
+        }
+<span class="fc" id="L198">        return foundId;</span>
+    }
+
+    protected void assumeAdminResponsibility(boolean sendAdminInfoAboutSystemTime) {
+<span class="fc" id="L202">        master = true;</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">        if (sendAdminInfoAboutSystemTime) {</span>
+<span class="fc" id="L204">            log.info(&quot;Informing other masters of system time.&quot;);</span>
+<span class="fc" id="L205">            TimeAnswer ta = new TimeAnswer();</span>
+<span class="fc" id="L206">            ta.masterId = getSpaceId();</span>
+<span class="fc" id="L207">            ta.timeFromMaster = Long.valueOf(System.currentTimeMillis());</span>
+<span class="fc" id="L208">            space.write(ta, 1000);</span>
+        }
+<span class="fc" id="L210">    }</span>
+
+    /**
+     * Protected as it is used every once in a while from periodic object reaper
+     *
+     * @param admins List to fill with the admin processes found
+     * @return List of identified SemiSpace admin classes
+     */
+    protected IdentifyAdminQuery populateListOfAllSpaces(List&lt;IdentifyAdminQuery&gt; admins) {
+<span class="fc" id="L219">        IdentifyAdminQuery identifyAdmin = new IdentifyAdminQuery();</span>
+<span class="fc" id="L220">        identifyAdmin.hasAnswered = Boolean.FALSE;</span>
+<span class="fc" id="L221">        space.write(identifyAdmin, SemiSpace.ONE_DAY);</span>
+
+<span class="fc" id="L223">        IdentifyAdminQuery iaq = new IdentifyAdminQuery();</span>
+<span class="fc" id="L224">        iaq.hasAnswered = Boolean.TRUE;</span>
+
+<span class="fc" id="L226">        IdentifyAdminQuery masterFound = null;</span>
+<span class="fc" id="L227">        IdentifyAdminQuery answer = null;</span>
+<span class="fc" id="L228">        long waitFor = 750;</span>
+        do {
+<span class="fc" id="L230">            answer = space.take(iaq, waitFor);</span>
+            // When the first answer has arrived, the others, if any, should come close behind.
+<span class="fc" id="L232">            waitFor = 250;</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">            if (answer != null) {</span>
+<span class="fc" id="L234">                admins.add(answer);</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">                if (Boolean.TRUE.equals(answer.amIAdmin)) {</span>
+<span class="pc bpc" id="L236" title="1 of 2 branches missed.">                    if (masterFound != null) {</span>
+<span class="nc" id="L237">                        log.error(&quot;More than one admin found, both &quot; + masterFound.id + &quot; and &quot; + answer.id);</span>
+                    }
+<span class="fc" id="L239">                    masterFound = answer;</span>
+                }
+            }
+            // Looping until we do not find any more admins
+<span class="fc bfc" id="L243" title="All 2 branches covered.">        } while (answer != null);</span>
+
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        while (space.takeIfExists(new IdentifyAdminQuery()) != null) { // NOSONAR</span>
+            // Remove identity query from space as we do not need it anymore. If more than one present, we have a race condition (not likely)
+        }
+
+<span class="fc" id="L249">        return masterFound;</span>
+    }
+
+    /**
+     * The very first query may take some time (when using terracotta), and it is therefore prudent to kickstart the
+     * connection.
+     *
+     * @return Time it took in ms for an answer to be obtained.
+     */
+    private long fireUpConnection() {
+<span class="fc" id="L259">        long bench = System.currentTimeMillis();</span>
+<span class="fc" id="L260">        NameValueQuery nvq = new NameValueQuery();</span>
+<span class="fc" id="L261">        nvq.name = &quot;Internal admin query&quot;;</span>
+<span class="fc" id="L262">        nvq.value = &quot;Dummy-value in order to be (quite) unique [&quot; + bench + &quot;]&quot;;</span>
+<span class="fc" id="L263">        space.write(nvq, SemiSpace.ONE_DAY);</span>
+<span class="fc" id="L264">        nvq = space.take(nvq, 1000);</span>
+<span class="pc bpc" id="L265" title="1 of 2 branches missed.">        if (nvq == null) {</span>
+<span class="nc" id="L266">            throw new AssertionError(&quot;Unable to retrieve query which is designed to kickstart space.&quot;);</span>
+        }
+<span class="fc" id="L268">        return System.currentTimeMillis() - bench;</span>
+    }
+
+    /**
+     * Obtaining time by querying with internal query
+     */
+    private void queryForMasterTime() {
+<span class="fc" id="L275">        TimeQuery tq = new TimeQuery();</span>
+<span class="fc" id="L276">        tq.isFinished = Boolean.FALSE;</span>
+        // Letting the query itself exist a day. This is as skew can be large.
+<span class="fc" id="L278">        space.write(tq, SemiSpace.ONE_DAY);</span>
+
+<span class="fc" id="L280">        space.read(new TimeAnswer(), 2500);</span>
+<span class="fc" id="L281">        space.takeIfExists(tq);</span>
+<span class="fc" id="L282">    }</span>
+
+    /**
+     *
+     */
+    private void notifyAboutInternalQuery(InternalQuery incoming) {
+        // log.info(&quot;Incoming admin query for space &quot;+getSpaceId()+&quot; of type &quot;+incoming.getClass().getName());
+<span class="fc bfc" id="L289" title="All 2 branches covered.">        if (incoming instanceof TimeQuery) {</span>
+<span class="fc" id="L290">            answerTimeQuery((TimeQuery) incoming);</span>
+
+<span class="fc bfc" id="L292" title="All 2 branches covered.">        } else if (incoming instanceof IdentifyAdminQuery) {</span>
+<span class="fc" id="L293">            answerIdentityQuery((IdentifyAdminQuery) incoming);</span>
+
+<span class="pc bpc" id="L295" title="1 of 2 branches missed.">        } else if (incoming instanceof TimeAnswer) {</span>
+<span class="fc" id="L296">            treatIncomingTimeAnswer((TimeAnswer) incoming);</span>
+
+        } else {
+<span class="nc" id="L299">            log.warn(&quot;Unknown internal query&quot;);</span>
+        }
+<span class="fc" id="L301">    }</span>
+
+    /**
+     * A (potentially new) admin process has given time answer. Adjust time accordingly
+     */
+    private void treatIncomingTimeAnswer(TimeAnswer incoming) {
+<span class="pc bpc" id="L307" title="1 of 2 branches missed.">        if (isMaster()) {</span>
+<span class="pc bpc" id="L308" title="1 of 2 branches missed.">            if (incoming.masterId != getSpaceId()) {</span>
+<span class="nc" id="L309">                String adminfo = &quot;Got more than one space that perceives it is admin space: &quot; + incoming.masterId</span>
+<span class="nc" id="L310">                        + &quot; and myself: &quot; + getSpaceId();</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">                if (incoming.masterId &lt; getSpaceId()) {</span>
+<span class="nc" id="L312">                    master = false;</span>
+<span class="nc" id="L313">                    adminfo += &quot;. Removing this space as master.&quot;;</span>
+                } else {
+<span class="nc" id="L315">                    adminfo += &quot;. Keeping this space as master.&quot;;</span>
+                }
+<span class="nc" id="L317">                log.warn(adminfo);</span>
+<span class="nc" id="L318">            } else {</span>
+<span class="fc" id="L319">                clockSkew = 0;</span>
+            }
+
+        }
+
+        // Need to test again as we may have been reset:
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">        if (!isMaster()) {</span>
+<span class="nc" id="L326">            long systime = System.currentTimeMillis();</span>
+<span class="nc" id="L327">            clockSkew = systime - incoming.timeFromMaster.longValue();</span>
+<span class="nc" id="L328">            log.info(&quot;Master has &quot; + &quot; [&quot; + new Date(incoming.timeFromMaster.longValue()) + &quot;]&quot; + &quot;, whereas I have [&quot;</span>
+                    + new Date(systime) + &quot;]. This gives a skew of &quot; + clockSkew + &quot;.&quot;);
+        }
+
+<span class="fc" id="L332">    }</span>
+
+    private void answerIdentityQuery(IdentifyAdminQuery identify) {
+<span class="pc bpc" id="L335" title="1 of 2 branches missed.">        if (spaceId &lt; 1) {</span>
+<span class="nc" id="L336">            return;</span>
+        }
+<span class="pc bpc" id="L338" title="1 of 4 branches missed.">        if (identify.hasAnswered != null &amp;&amp; identify.hasAnswered.booleanValue()) {</span>
+<span class="fc" id="L339">            return;</span>
+        }
+<span class="fc" id="L341">        IdentifyAdminQuery answer = new IdentifyAdminQuery();</span>
+<span class="fc" id="L342">        answer.amIAdmin = Boolean.valueOf(master);</span>
+<span class="fc" id="L343">        answer.hasAnswered = Boolean.TRUE;</span>
+<span class="fc" id="L344">        answer.id = Integer.valueOf(spaceId);</span>
+<span class="pc bpc" id="L345" title="1 of 2 branches missed.">        log.debug(&quot;Giving identity answer for space &quot; + spaceId + &quot;, which is&quot; + (master ? &quot;&quot; : &quot; NOT&quot;) + &quot; master.&quot;);</span>
+<span class="fc" id="L346">        space.write(answer, SemiSpace.ONE_DAY);</span>
+<span class="fc" id="L347">    }</span>
+
+    private void answerTimeQuery(TimeQuery tq) {
+<span class="pc bpc" id="L350" title="2 of 4 branches missed.">        if (isMaster() &amp;&amp; !tq.isFinished.booleanValue()) {</span>
+<span class="fc" id="L351">            TimeAnswer answer = new TimeAnswer();</span>
+<span class="fc" id="L352">            answer.timeFromMaster = Long.valueOf(System.currentTimeMillis());</span>
+<span class="fc" id="L353">            answer.masterId = getSpaceId();</span>
+<span class="fc" id="L354">            space.write(answer, 1000);</span>
+<span class="fc" id="L355">            log.info(&quot;Giving answer about time (which was found to be &quot; + answer.timeFromMaster + &quot;, which is &quot;</span>
+<span class="fc" id="L356">                    + new Date(answer.timeFromMaster.longValue()) + &quot;)&quot;);</span>
+        }
+<span class="fc" id="L358">    }</span>
+
+    @Override
+    public void notifyAboutEvent(DistributedEvent event) {
+<span class="fc bfc" id="L362" title="All 2 branches covered.">        if (event.getEvent() instanceof SemiAvailabilityEvent) {</span>
+<span class="pc bpc" id="L363" title="1 of 4 branches missed.">            if (InternalQuery.class.getName().equals(event.getHolderClassName()) &amp;&amp; space instanceof SemiSpace) {</span>
+<span class="fc" id="L364">                Holder holder = ((SemiSpace) space).readHolderById(event.getEvent().getId());</span>
+<span class="fc bfc" id="L365" title="All 2 branches covered.">                if (holder != null) {</span>
+<span class="fc" id="L366">                    notifyAboutInternalQuery((InternalQuery) serializer.xmlToObject(holder.getXml()));</span>
+                }
+            }
+        }
+<span class="fc" id="L370">    }</span>
+
+    /**
+     * The cached thread pool has a timeout of a minute, so a shutdown is not immediate. This method will try to speed
+     * up the process, but it is not mandatory to use it.
+     * The method is protected for the benefit of subclasses.
+     */
+    protected void shutdownAndAwaitTermination() {
+<span class="pc bpc" id="L378" title="3 of 4 branches missed.">        if (pool.isShutdown() &amp;&amp; periodicHarvest.isCancelled()) {</span>
+            // Already had a shutdown notification.
+<span class="nc" id="L380">            return;</span>
+        }
+<span class="fc" id="L382">        periodicHarvest.cancelReaper();</span>
+<span class="fc" id="L383">        pool.shutdown(); // Disable new tasks from being submitted</span>
+        try {
+            // Wait a while for existing tasks to terminate
+<span class="pc bpc" id="L386" title="1 of 2 branches missed.">            if (!pool.awaitTermination(10, TimeUnit.SECONDS)) {</span>
+<span class="nc" id="L387">                pool.shutdownNow(); // Cancel currently executing tasks</span>
+                // Wait a while for tasks to respond to being cancelled
+<span class="nc bnc" id="L389" title="All 2 branches missed.">                if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {</span>
+<span class="nc" id="L390">                    log.warn(&quot;Pool did not terminate&quot;);</span>
+                }
+            }
+<span class="nc" id="L393">        } catch (InterruptedException ignored) {</span>
+            // (Re-)Cancel if current thread also interrupted
+<span class="nc" id="L395">            pool.shutdownNow();</span>
+            // Preserve interrupt status
+<span class="nc" id="L397">            Thread.currentThread().interrupt();</span>
+<span class="fc" id="L398">        }</span>
+<span class="fc" id="L399">    }</span>
+
+    /**
+     * Remove shutdown hook which otherwise is run when the space is shut down.
+     * Primarily used when exchanging this admin with another.
+     */
+    public void removeShutDownHook() {
+<span class="nc" id="L406">        periodicHarvest.cancelReaper();</span>
+<span class="nc bnc" id="L407" title="All 2 branches missed.">        if (shutDownHook != null) {</span>
+<span class="nc" id="L408">            Runtime.getRuntime().removeShutdownHook(shutDownHook);</span>
+        }
+<span class="nc" id="L410">    }</span>
+
+    private static class IdentifyAdminQueryComparator implements Comparator&lt;IdentifyAdminQuery&gt;, Serializable {
+        @Override
+        public int compare(IdentifyAdminQuery a1, IdentifyAdminQuery a2) {
+<span class="pc bpc" id="L415" title="1 of 2 branches missed.">            if (a1.id == null) {</span>
+<span class="fc" id="L416">                return 1;</span>
+<span class="nc bnc" id="L417" title="All 2 branches missed.">            } else if (a2.id == null) {</span>
+<span class="nc" id="L418">                return -1;</span>
+            }
+<span class="nc" id="L420">            return a2.id.intValue() - a1.id.intValue();</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

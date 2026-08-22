@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JacksonSerializer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">semispace-main</a> &gt; <a href="index.source.html" class="el_package">org.semispace</a> &gt; <span class="el_source">JacksonSerializer.java</span></div><h1>JacksonSerializer.java</h1><pre class="source lang-java linenums">/*
+ * Copyright © 2026 Erlend Nossum
+ *
+ * This file is part of the semispace project.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Description:  See javadoc below
+ */
+
+package org.semispace;
+
+import org.semispace.exception.SemiSpaceObjectException;
+import tools.jackson.core.JacksonException;
+import static tools.jackson.core.StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import tools.jackson.dataformat.xml.XmlMapper;
+
+public class JacksonSerializer implements SemiSpaceSerializer {
+    private final ObjectMapper mapper;
+
+    public static final JacksonSerializer jacksonSerializerFactory( boolean json) {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if ( json ) {</span>
+<span class="fc" id="L38">            return new JacksonSerializer(JsonMapper.builder()</span>
+<span class="fc" id="L39">                    .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)</span>
+<span class="fc" id="L40">                    .enable(INCLUDE_SOURCE_IN_LOCATION)</span>
+<span class="fc" id="L41">                    .activateDefaultTyping(</span>
+<span class="fc" id="L42">                            BasicPolymorphicTypeValidator.builder().build(),</span>
+                            DefaultTyping.JAVA_LANG_OBJECT
+                    )
+<span class="fc" id="L45">                    .build());</span>
+        } else {
+<span class="fc" id="L47">            return new JacksonSerializer(XmlMapper.builder()</span>
+<span class="fc" id="L48">                    .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)</span>
+<span class="fc" id="L49">                    .enable(INCLUDE_SOURCE_IN_LOCATION)</span>
+<span class="fc" id="L50">                    .activateDefaultTyping(</span>
+<span class="fc" id="L51">                            BasicPolymorphicTypeValidator.builder().build(),</span>
+                            DefaultTyping.JAVA_LANG_OBJECT
+                    )
+<span class="fc" id="L54">                    .build());</span>
+        }
+    }
+
+<span class="fc" id="L58">    public JacksonSerializer(ObjectMapper mapper) {</span>
+<span class="fc" id="L59">        this.mapper = mapper;</span>
+<span class="fc" id="L60">    }</span>
+
+    @Override
+    public String objectToXml(Object obj) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if ( obj == null ) {</span>
+<span class="fc" id="L65">            return null;</span>
+        }
+        try {
+<span class="fc" id="L68">            JacksonObject holder = new JacksonObject();</span>
+<span class="fc" id="L69">            holder.className = obj.getClass().getName();</span>
+<span class="fc" id="L70">            holder.payload = mapper.writeValueAsString(obj);</span>
+<span class="fc" id="L71">            return mapper.writeValueAsString(holder);</span>
+<span class="nc" id="L72">        } catch (JacksonException e) {</span>
+<span class="nc" id="L73">            throw new SemiSpaceObjectException(&quot;Could not process json&quot;, e);</span>
+        }
+    }
+
+    @Override
+    public Object xmlToObject(String xml) {
+<span class="pc bpc" id="L79" title="1 of 4 branches missed.">        if (xml == null || xml.isEmpty()) {</span>
+<span class="fc" id="L80">            return null;</span>
+        }
+
+        try {
+<span class="fc" id="L84">            JacksonObject holder = mapper.readValue( xml, JacksonObject.class);</span>
+<span class="fc" id="L85">            Class type = Class.forName(holder.className);</span>
+<span class="fc" id="L86">            return mapper.readValue(holder.payload, type);</span>
+<span class="nc" id="L87">        } catch (JacksonException e) {</span>
+<span class="nc" id="L88">            throw new SemiSpaceObjectException(&quot;Jackson could not process json&quot;, e);</span>
+<span class="nc" id="L89">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L90">            throw new SemiSpaceObjectException(&quot;Class not found, which implies that objects in backend storage are &quot; +</span>
+                    &quot;broken, or that distribution uses different versions of application&quot;, e);
+        }
+    }
+
+    private static class JacksonObject {
+        public String className;
+        public String payload;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

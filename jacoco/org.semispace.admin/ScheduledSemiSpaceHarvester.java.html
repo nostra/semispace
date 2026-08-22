@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScheduledSemiSpaceHarvester.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">semispace-main</a> &gt; <a href="index.source.html" class="el_package">org.semispace.admin</a> &gt; <span class="el_source">ScheduledSemiSpaceHarvester.java</span></div><h1>ScheduledSemiSpaceHarvester.java</h1><pre class="source lang-java linenums">/*
+ * Copyright © 2026 Erlend Nossum
+ *
+ * This file is part of the semispace project.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Description:  See javadoc below
+ */
+
+package org.semispace.admin;
+
+import org.semispace.SemiSpace;
+import org.semispace.SemiSpaceInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+
+/**
+ * Timed instance which will periodically call semispace harvest method. It will also
+ * periodically check that a master is present.
+ */
+public class ScheduledSemiSpaceHarvester implements Runnable {
+<span class="fc" id="L35">    private static final Logger log = LoggerFactory.getLogger(ScheduledSemiSpaceHarvester.class);</span>
+    private SemiSpaceAdmin semiSpaceAdmin;
+    private long lastCheck;
+    /**
+     * At least a 2 minute wait between checking for presence of master
+     */
+    private static final long MIN_CHECK_WAIT_MS = 1000 * 60 * 2;
+
+<span class="fc" id="L43">    public ScheduledSemiSpaceHarvester(SemiSpaceAdmin semiSpaceAdmin) {</span>
+<span class="fc" id="L44">        this.semiSpaceAdmin = semiSpaceAdmin;</span>
+<span class="fc" id="L45">        this.lastCheck = System.currentTimeMillis();</span>
+<span class="fc" id="L46">    }</span>
+
+    public void run() {
+<span class="nc" id="L49">        SemiSpaceInterface space = semiSpaceAdmin.getSpace();</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (semiSpaceAdmin.isMaster()) {</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">            if (space instanceof SemiSpace) {</span>
+                //log.debug(&quot;Harvesting - start - ...&quot;);
+<span class="nc" id="L53">                ((SemiSpace) space).harvest();</span>
+                //log.debug(&quot;Harvesting - end - ...&quot;);
+            }
+        } else {
+<span class="nc" id="L57">            ensurePresenceOfAdmin();</span>
+        }
+
+<span class="nc" id="L60">    }</span>
+
+    private void ensurePresenceOfAdmin() {
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (semiSpaceAdmin.isMaster()) {</span>
+            // Rather unlikely that this method has been called if current instance is master
+<span class="nc" id="L65">            return;</span>
+        }
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (lastCheck + MIN_CHECK_WAIT_MS &gt; System.currentTimeMillis()) {</span>
+            // In order not to check too often
+<span class="nc" id="L69">            return;</span>
+        }
+<span class="nc" id="L71">        lastCheck = System.currentTimeMillis();</span>
+<span class="nc" id="L72">        IdentifyAdminQuery admin = semiSpaceAdmin.populateListOfAllSpaces(new ArrayList&lt;IdentifyAdminQuery&gt;());</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (admin == null) {</span>
+<span class="nc" id="L74">            log.info(&quot;Assuming admin responsibility in current space, as admin instance was not found&quot;);</span>
+            // Always writing time answer, as if the admin was lost, there is a good chance there are more instances present.
+<span class="nc" id="L76">            semiSpaceAdmin.assumeAdminResponsibility(true);</span>
+        }
+<span class="nc" id="L78">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

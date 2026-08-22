@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HolderContainer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">semispace-main</a> &gt; <a href="index.source.html" class="el_package">org.semispace</a> &gt; <span class="el_source">HolderContainer.java</span></div><h1>HolderContainer.java</h1><pre class="source lang-java linenums">/*
+ * ============================================================================
+ *
+ *  File:     HolderContainer.java
+ *----------------------------------------------------------------------------
+ *
+ * Copyright 2008 Erlend Nossum
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *  Description:  See javadoc below
+ *
+ *  Created:      Apr 27, 2008
+ * ============================================================================
+ */
+
+package org.semispace;
+
+import org.semispace.exception.SemiSpaceObjectException;
+import org.semispace.exception.SemiSpaceUsageException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+/**
+ * Container for holder elements.
+ */
+public class HolderContainer {
+<span class="fc" id="L43">    private AtomicLong idseq = new AtomicLong();</span>
+
+<span class="fc" id="L45">    private Map&lt;String, HolderElement&gt; heads = null;</span>
+
+    /**
+     * Read / write lock
+     */
+<span class="fc" id="L50">    private ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();</span>
+
+<span class="fc" id="L52">    private static HolderContainer instance = new HolderContainer();</span>
+
+<span class="fc" id="L54">    private HolderContainer() {</span>
+<span class="fc" id="L55">        heads = new ConcurrentHashMap&lt;String, HolderElement&gt;();</span>
+<span class="fc" id="L56">    }</span>
+
+    public static synchronized HolderContainer retrieveContainer() {
+<span class="fc" id="L59">        return instance;</span>
+    }
+
+    public HolderElement next(String className) {
+<span class="fc" id="L63">        rwl.writeLock().lock();</span>
+        try {
+<span class="fc" id="L65">            return heads.get(className);</span>
+        } finally {
+<span class="fc" id="L67">            rwl.writeLock().unlock();</span>
+        }
+    }
+
+    public Holder removeHolderById(long id, String className) {
+<span class="fc" id="L72">        Holder toReturn = null;</span>
+<span class="fc" id="L73">        rwl.writeLock().lock();</span>
+        try {
+<span class="fc" id="L75">            HolderElement head = heads.get(className);</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">            if (head == null) {</span>
+<span class="nc" id="L77">                return null;</span>
+            }
+<span class="fc" id="L79">            toReturn = head.removeHolderById(id);</span>
+<span class="pc bpc" id="L80" title="1 of 4 branches missed.">            if ((idseq.longValue() % 5000) == 0 &amp;&amp; head.size() &lt; 1) {</span>
+                // It may not be deterministic when this actually occurs, but that does not matter. 
+<span class="fc" id="L82">                removeEmptyHeads();</span>
+            }
+
+        } finally {
+<span class="fc" id="L86">            rwl.writeLock().unlock();</span>
+        }
+<span class="fc" id="L88">        return toReturn;</span>
+    }
+
+    /**
+     * Instance need to have been locked in beforehand.
+     * Intended to be used occasionally in order to remove empty heads.
+     */
+    private void removeEmptyHeads() {
+<span class="fc" id="L96">        List&lt;String&gt; toPurge = new ArrayList&lt;String&gt;();</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        for (String name : heads.keySet()) {</span>
+<span class="fc" id="L98">            HolderElement head = heads.get(name);</span>
+<span class="pc bpc" id="L99" title="1 of 4 branches missed.">            if (!head.isWaiting() &amp;&amp; head.size() &lt; 1) {</span>
+<span class="fc" id="L100">                toPurge.add(name);</span>
+            }
+<span class="fc" id="L102">        }</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">        for (String name : toPurge) {</span>
+<span class="fc" id="L104">            heads.remove(name);</span>
+<span class="fc" id="L105">        }</span>
+<span class="fc" id="L106">    }</span>
+
+    public Holder findById(long id, String className) {
+<span class="fc" id="L109">        rwl.readLock().lock();</span>
+
+        try {
+<span class="fc" id="L112">            HolderElement n = heads.get(className);</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">            if (n == null) {</span>
+<span class="nc" id="L114">                return null;</span>
+            }
+<span class="fc" id="L116">            return n.findById(id);</span>
+        } finally {
+<span class="fc" id="L118">            rwl.readLock().unlock();</span>
+        }
+    }
+
+    /**
+     * Protected for the benefit of junit tests.
+     */
+    protected void addHolder(Holder add) {
+<span class="fc" id="L126">        rwl.writeLock().lock();</span>
+        try {
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">            if (add == null) {</span>
+<span class="nc" id="L129">                throw new SemiSpaceUsageException(&quot;Illegal to add null&quot;);</span>
+            }
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">            if (add.getClassName() == null) {</span>
+<span class="nc" id="L132">                throw new SemiSpaceObjectException(&quot;Need classname in holder with contents &quot; + add.getXml());</span>
+            }
+<span class="fc" id="L134">            HolderElement head = heads.get(add.getClassName());</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            if (head == null) {</span>
+<span class="fc" id="L136">                head = HolderElement.createNewCollection(add);</span>
+<span class="fc" id="L137">                heads.put(add.getClassName(), head);</span>
+            } else {
+<span class="fc" id="L139">                head.addHolder(add);</span>
+            }
+        } finally {
+<span class="fc" id="L142">            rwl.writeLock().unlock();</span>
+        }
+<span class="fc" id="L144">    }</span>
+
+    /**
+     * Method presumed called on first object, which is the holder object. Returning count, excluding holder.
+     */
+    public int size() {
+<span class="fc" id="L150">        rwl.readLock().lock();</span>
+        try {
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">            if (heads == null) {</span>
+<span class="nc" id="L153">                return 0;</span>
+            }
+<span class="fc" id="L155">            int size = 0;</span>
+
+<span class="fc bfc" id="L157" title="All 2 branches covered.">            for (HolderElement head : heads.values()) {</span>
+<span class="fc" id="L158">                size += head.size();</span>
+<span class="fc" id="L159">            }</span>
+<span class="fc" id="L160">            return size;</span>
+        } finally {
+<span class="fc" id="L162">            rwl.readLock().unlock();</span>
+        }
+
+    }
+
+    public String[] retrieveGroupNames() {
+<span class="fc" id="L168">        rwl.readLock().lock();</span>
+<span class="fc" id="L169">        String[] result = null;</span>
+        try {
+<span class="fc" id="L171">            result = heads.keySet().toArray(new String[0]);</span>
+        } finally {
+<span class="fc" id="L173">            rwl.readLock().unlock();</span>
+        }
+<span class="fc" id="L175">        return result;</span>
+    }
+
+    public Holder readHolderWithId(long id) {
+<span class="fc" id="L179">        String[] cnames = retrieveClassNames();</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">        for (String lookup : cnames) {</span>
+<span class="fc" id="L181">            HolderElement next = next(lookup);</span>
+<span class="fc" id="L182">            Holder toReturn = next.findById(id);</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">            if (toReturn != null) {</span>
+<span class="fc" id="L184">                return toReturn;</span>
+            }
+        }
+<span class="fc" id="L187">        return null;</span>
+    }
+
+    /**
+     * Return all ids present. Notice that this method will
+     * be rather network expensive, and is only intended to
+     * be used for persistence purposes.
+     */
+    public Long[] findAllHolderIds() {
+<span class="fc" id="L196">        List&lt;Long&gt; allIds = new ArrayList&lt;Long&gt;();</span>
+<span class="fc" id="L197">        String[] cnames = retrieveClassNames();</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        for (String lookup : cnames) {</span>
+<span class="fc" id="L199">            HolderElement next = next(lookup);</span>
+<span class="fc" id="L200">            rwl.readLock().lock();</span>
+            try {
+<span class="pc bpc" id="L202" title="1 of 2 branches missed.">                for (Holder elem : next.toArray()) {</span>
+<span class="nc" id="L203">                    allIds.add(Long.valueOf(elem.getId()));</span>
+                }
+
+            } finally {
+<span class="fc" id="L207">                rwl.readLock().unlock();</span>
+            }
+        }
+<span class="fc" id="L210">        return allIds.toArray(new Long[0]);</span>
+    }
+
+    private String[] retrieveClassNames() {
+<span class="fc" id="L214">        rwl.readLock().lock();</span>
+<span class="fc" id="L215">        String[] cnames = null;</span>
+        try {
+<span class="fc" id="L217">            cnames = heads.keySet().toArray(new String[0]);</span>
+        } finally {
+<span class="fc" id="L219">            rwl.readLock().unlock();</span>
+        }
+
+<span class="fc" id="L222">        return cnames;</span>
+    }
+
+    public Holder addHolder(String xml, long liveUntil, String entryClassName, Map&lt;String, String&gt; searchMap) {
+        // Methods used herein are thread safe, and therefore no reason to lock at this point.
+<span class="fc" id="L227">        long holderId = incrementReturnNextId();</span>
+<span class="fc" id="L228">        Holder holder = new Holder(xml, liveUntil, entryClassName, holderId, searchMap);</span>
+<span class="fc" id="L229">        addHolder(holder);</span>
+<span class="fc" id="L230">        return holder;</span>
+    }
+
+    public long incrementReturnNextId() {
+<span class="fc" id="L234">        return idseq.incrementAndGet();</span>
+    }
+
+    public void waitHolder(String className, long timeout) {
+<span class="fc" id="L238">        HolderElement e = null;</span>
+<span class="fc" id="L239">        rwl.writeLock().lock();</span>
+        try {
+<span class="fc" id="L241">            e = heads.get(className);</span>
+<span class="fc bfc" id="L242" title="All 2 branches covered.">            if (e == null) {</span>
+<span class="fc" id="L243">                e = new HolderElement();</span>
+<span class="fc" id="L244">                heads.put(className, e);</span>
+            }
+        } finally {
+<span class="fc" id="L247">            rwl.writeLock().unlock();</span>
+        }
+<span class="fc" id="L249">        e.waitHolder(timeout);</span>
+<span class="fc" id="L250">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
