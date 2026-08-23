@@ -1,0 +1,38 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:use="http://www.w3.org/1999/XSL/Transform" elementFormDefault="qualified">
+
+    <!-- Root element -->
+    <xs:element name="root">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="item" type="itemType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Item representing a Class, Method, Field, or Parameter -->
+    <xs:complexType name="itemType">
+        <xs:sequence>
+            <xs:element name="annotation" type="annotationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <!-- The signature name (e.g., 'java.lang.String com.example.Foo.bar(int)') -->
+        <xs:attribute name="name" type="xs:string" use:required="true"/>
+    </xs:complexType>
+
+    <!-- Annotation properties -->
+    <xs:complexType name="annotationType">
+        <xs:sequence>
+            <xs:element name="val" type="valType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <!-- Fully qualified annotation class name -->
+        <xs:attribute name="name" type="xs:string" use:required="true"/>
+    </xs:complexType>
+
+    <!-- Parameter key/value pairs inside an annotation -->
+    <xs:complexType name="valType">
+        <!-- The annotation parameter name (defaults to 'value' if omitted) -->
+        <xs:attribute name="name" type="xs:string" use:optional="true"/>
+        <!-- The actual value assigned -->
+        <xs:attribute name="val" type="xs:string" use:required="true"/>
+    </xs:complexType>
+
+</xs:schema>
