@@ -76,7 +76,7 @@
         <maven-site-plugin.version>3.22.0</maven-site-plugin.version>
         <enforce.maven.version>3.9.9</enforce.maven.version>
         <jspecify.version>1.0.1</jspecify.version>
-        <pitest-maven.version>1.25.9</pitest-maven.version>
+        <pitest-maven.version>1.30.0</pitest-maven.version>
         <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
         <pitest-junit5-plugin.version>1.2.3</pitest-junit5-plugin.version>
         <tabletest-junit.version>1.2.2</tabletest-junit.version>
