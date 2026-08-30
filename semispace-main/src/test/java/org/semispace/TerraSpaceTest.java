@@ -76,7 +76,6 @@ public class TerraSpaceTest {
         fh.setFieldA("a");
         fh.setFieldB("b");
 
-        space.write(null, 100);
         assertNull(space.readIfExists(new FieldHolder()));
         space.write(fh, 1000);
         space.write(fh, 1000);
@@ -129,7 +128,7 @@ public class TerraSpaceTest {
     }
 
     @Test
-    public void testPreciseRead() throws InterruptedException {
+    public void testPreciseRead() {
         FieldHolder fh1 = new FieldHolder();
         FieldHolder fh2 = new FieldHolder();
         fh1.setFieldA("1-a");
@@ -389,7 +388,7 @@ public class TerraSpaceTest {
                 for (int i = 0; i < numberOfIterations; i++) {
                     fh.setFieldB("b" + i);
                     if (problem == null) {
-                        FieldHolder r = space.take(fh, 10 + (globalCounter * 9500));
+                        FieldHolder r = space.take(fh, 10 + (globalCounter * 9500L));
                         if (r == null) {
                             r = space.takeIfExists(fh);
                             problem = "Got null when taking element b" + i + ". Result when trying to re-take: " + r;
@@ -409,7 +408,7 @@ public class TerraSpaceTest {
                 for (int i = 0; i < numberOfIterations; i++) {
                     fh.setFieldA("a" + i);
                     if (problem == null) {
-                        FieldHolder r = space.take(fh, 10 + (globalCounter * 9500));
+                        FieldHolder r = space.take(fh, 10 + (globalCounter * 9500L));
                         if (r == null) {
                             r = space.takeIfExists(fh);
                             problem = "Got null when taking element a" + i + ". Result when trying to re-take: " + r;

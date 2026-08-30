@@ -34,10 +34,10 @@ public interface SemiSpaceInterface {
      * given in ms.
      *
      * @param obj      Object to be written into the space
-     * @param duration Life time in milliseconds of the written object
-     * @return either the resulting lease, or null if an error occurred
+     * @param duration Lifetime in milliseconds of the written object
+     * @return the resulting lease
      */
-    public SemiLease write(Object obj, long duration);
+    SemiLease write(Object obj, long duration);
 
     /**
      * Read an object from the space, which has matching fields (or getters)
@@ -48,21 +48,21 @@ public interface SemiSpaceInterface {
      * @param duration How long you are willing to wait for an answer / match.
      * @return An object when matches the template, or null of none are found.
      */
-    public <T> T read(T template, long duration);
+    <T> T read(T template, long duration);
 
     /**
      * Same as read, with duration 0
      *
      * @see #read(Object, long)
      */
-    public <T> T readIfExists(T template);
+    <T> T readIfExists(T template);
 
     /**
      * Same as read, except that the object is removed from the space.
      *
      * @see #read(Object, long)
      */
-    public <T> T take(T template, long duration);
+    <T> T take(T template, long duration);
 
     /**
      * Same as take, with a duration of 0
@@ -70,7 +70,7 @@ public interface SemiSpaceInterface {
      * @see #take(Object, long)
      * @see #read(Object, long)
      */
-    public <T> T takeIfExists(T template);
+    <T> T takeIfExists(T template);
 
     /**
      * Register a listener for a particular template search.
@@ -78,9 +78,9 @@ public interface SemiSpaceInterface {
      * @param template Template to be matched.
      * @param listener Listener to be notified when object with a matching template is found
      * @param duration How long this particular listener is valid.
-     * @return An event registration or null
+     * @return An event registration
      */
-    public SemiEventRegistration notify(Object template,
+    SemiEventRegistration notify(Object template,
                                         SemiEventListener<? extends SemiEvent> listener,
                                         long duration);
 

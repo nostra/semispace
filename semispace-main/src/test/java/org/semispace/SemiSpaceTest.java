@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,7 @@ import org.semispace.admin.SemiSpaceAdmin;
 import org.semispace.admin.SemiSpaceAdminInterface;
 import org.semispace.event.SemiAvailabilityEvent;
 import org.semispace.event.SemiEvent;
+import org.semispace.exception.SemiSpaceUsageException;
 
 import java.util.Map;
 
@@ -147,16 +149,16 @@ public class SemiSpaceTest {
     }
 
     /**
-     * None of these operations should give NPE
+     * All of these should give NPE
      */
     @Test
-    public void testThatOperationsWithNullValuesAreNotFatal() {
-        assertNull(space.read(null, 100));
-        assertNull(space.readIfExists(null));
-        assertNull(space.take(null, 100));
-        assertNull(space.takeIfExists(null));
-        space.notify(null, null, 100);
-
+    public void testThatOperationsWithNull() {
+        assertThrows(NullPointerException.class, () -> space.read(null, 100));
+        assertThrows(NullPointerException.class, () -> space.readIfExists(null));
+        assertThrows(NullPointerException.class, () -> space.take(null, 100));
+        assertThrows(NullPointerException.class, () -> space.takeIfExists(null));
+        assertThrows(NullPointerException.class, () -> space.notify(null, null, 100));
+        assertThrows(SemiSpaceUsageException.class, () -> space.notify(new FieldHolder(), new JunitIdListener(), -1));
     }
 
     @Test

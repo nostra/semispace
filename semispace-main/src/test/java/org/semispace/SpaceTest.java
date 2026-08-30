@@ -63,9 +63,7 @@ public class SpaceTest {
 
     @Test
     public void testPresenceOfAdmin() {
-        if (space instanceof SemiSpace) {
-            // Casting, etc, is just because this test sometimes is used for testing proxy
-            SemiSpace semi = (SemiSpace) space;
+        if (space instanceof SemiSpace semi) {
             SemiSpaceAdminInterface admin = semi.getAdmin();
             assertNotNull(admin);
         }
@@ -217,11 +215,7 @@ public class SpaceTest {
         FieldHolder fh = new FieldHolder();
         fh.setFieldA("notify");
         NotificationTestListener listener = new NotificationTestListener();
-        SemiEventRegistration reg = space.notify(null, listener, 1000);
-        assertNull(reg);
-        reg = space.notify(fh, null, 1000);
-        assertNull(reg);
-        reg = space.notify(fh, listener, 1000);
+        SemiEventRegistration reg = space.notify(fh, listener, 1000);
         assertNotNull(reg);
         assertFalse(listener.notified);
         space.write(fh, 1000);

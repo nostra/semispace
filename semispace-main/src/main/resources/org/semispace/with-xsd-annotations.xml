@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="annotations.xsd">
+    <!-- Method return annotation -->
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object read(java.lang.Object, long)">
+        <annotation name="org.jetbrains.annotations.Nullable"/>
+        <annotation name="org.jetbrains.annotations.Contract">
+            <val name="pure" val="true"/>
+        </annotation>
+    </item>
+
+    <!-- Parameter 0 (template) annotation -->
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object read(java.lang.Object, long) 0">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+    </item>
+
+</root>

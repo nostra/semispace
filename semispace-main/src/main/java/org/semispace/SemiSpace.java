@@ -54,6 +54,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CancellationException;
@@ -135,17 +136,13 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     /**
-     * None of the parameters can be null
      *
-     * @return Returning null if something went wrong or was wrong, a registration object otherwise.
      * @see org.semispace.SemiSpaceInterface#notify(Object, SemiEventListener, long)
      */
     @Override
     public SemiEventRegistration notify(Object tmpl, SemiEventListener listener, long duration) {
-        if (tmpl == null) {
-            log.warn("Not registering notification on null object.");
-            return null;
-        }
+        Objects.requireNonNull(tmpl, "Template cannot be null");
+        Objects.requireNonNull(listener, "Listener cannot be null");
         Map<String, String> searchProps = retrievePropertiesFromObject(tmpl);
         return notify(searchProps, listener, duration);
     }
@@ -154,20 +151,15 @@ public class SemiSpace implements SemiSpaceInterface {
      * Basically the same as the notify method demanded by the interface, except that it accepts search properties
      * directly. Used from the web services class. None of the parameters can be null
      *
-     * @return Returning null if something went wrong or was wrong, a registration object otherwise.
+     * @return a registration object
+     * @throws org.semispace.exception.SemiSpaceException if trouble
      */
     public SemiEventRegistration notify(Map<String, String> searchProps, SemiEventListener<SemiEvent> listener, long duration) {
-        if (listener == null) {
-            log.warn("Not allowing listener to be null.");
-            return null;
-        }
-        if (searchProps == null) {
-            log.warn("Not allowing search props to be null");
-            return null;
-        }
+        Objects.requireNonNull(listener, "Listener cannot be null");
+        Objects.requireNonNull(searchProps, "Search properties cannot be null");
+
         if (duration <= 0) {
-            log.warn("Not registering notification when duration is <= 0. It was {}", duration);
-            return null;
+            throw new SemiSpaceUsageException("Duration must be greater than 0. It was " + duration);
         }
 
         ListenerHolder holder = null;
@@ -216,13 +208,11 @@ public class SemiSpace implements SemiSpaceInterface {
      * Notice that the lease time is the time in milliseconds the element is wants to live, <b>not</b> the system time
      * plus the time to live.
      *
-     * @return Either the resulting lease or null if an error
+     * @return The resulting lease
      */
     @Override
     public SemiLease write(final Object entry, final long leaseTimeMs) {
-        if (entry == null) {
-            return null;
-        }
+        Objects.requireNonNull(entry, "Entry cannot be null");
 
         WrappedInternalWriter write = new WrappedInternalWriter(entry, leaseTimeMs);
 
@@ -254,6 +244,7 @@ public class SemiSpace implements SemiSpaceInterface {
     }
 
     private SemiLease writeInternally(Object entry, long leaseTimeMs) {
+        Objects.requireNonNull(entry, "Entry cannot be null");
         String entryClassName = entry.getClass().getName();
         if (entry instanceof InternalQuery) {
             entryClassName = InternalQuery.class.getName();
@@ -307,10 +298,8 @@ public class SemiSpace implements SemiSpaceInterface {
 
     @Override
     public <T> T read(T tmpl, long timeout) {
-        String found = null;
-        if (tmpl != null) {
-            found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, false);
-        }
+        Objects.requireNonNull(tmpl, "Template cannot be null");
+        String found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, false);
         return (T) serializer.xmlToObject(found);
     }
 
@@ -359,6 +348,7 @@ public class SemiSpace implements SemiSpaceInterface {
 
     @Override
     public <T> T readIfExists(T tmpl) {
+        Objects.requireNonNull(tmpl, "Template cannot be null");
         return read(tmpl, 0);
     }
 
@@ -456,15 +446,14 @@ public class SemiSpace implements SemiSpaceInterface {
 
     @Override
     public <T> T take(T tmpl, long timeout) {
-        String found = null;
-        if (tmpl != null) {
-            found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, true);
-        }
+        Objects.requireNonNull(tmpl, "Template cannot be null");
+        String found = findOrWaitLeaseForTemplate(getPropertiesForObject(tmpl), timeout, true);
         return (T) serializer.xmlToObject(found);
     }
 
     @Override
     public <T> T takeIfExists(T tmpl) {
+        Objects.requireNonNull(tmpl, "Template cannot be null");
         return take(tmpl, 0);
     }
 

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ IntelliJ external annotations for org.semispace.SemiSpaceInterface.
+  ~
+  ~ Signatures use ERASURE, not source types: <T> T read(T, long) is written as
+  ~ "java.lang.Object read(java.lang.Object, long)". A trailing integer denotes a parameter
+  ~ position (0-based).
+  ~
+  ~ Derived from the Objects.requireNonNull guards in SemiSpace, the implementing class. Every
+  ~ template/entry/listener parameter now throws NullPointerException on null, so each is
+  ~ @NotNull; the earlier "null -> null" contracts described the old null-tolerant behaviour and
+  ~ have been removed.
+  ~
+  ~ Deliberately absent: pure = true. Every method here mutates state (statistics counters, the
+  ~ element store, listener registrations), so claiming purity would be false and would let
+  ~ IntelliJ reason unsoundly about calls.
+  -->
+<root>
+
+    <!--
+      ~ write: requireNonNull on the entry (SemiSpace.java:217). Returns
+      ~ WrappedInternalWriter.getLease() (SemiSpace.java:245), which is set from
+      ~ writeToElements' "new ElementLease(...)" (SemiSpace.java:276) and is never null; any
+      ~ failure path throws SemiSpaceObjectException (SemiSpace.java:243) instead of returning.
+      ~ So the result is @NotNull, matching the updated javadoc "@return the resulting lease".
+      ~ Blocks up to 10 seconds on the writer future (SemiSpace.java:224).
+      -->
+    <item name="org.semispace.SemiSpaceInterface org.semispace.SemiLease write(java.lang.Object, long)">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+        <annotation name="org.jetbrains.annotations.Blocking"/>
+    </item>
+    <item name="org.semispace.SemiSpaceInterface org.semispace.SemiLease write(java.lang.Object, long) 0">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+    </item>
+
+    <!--
+      ~ read: requireNonNull on the template (SemiSpace.java:303). Still nullable on return,
+      ~ because a miss leaves the found XML null and serializer.xmlToObject(null) yields null.
+      ~ Blocks for up to `duration` ms via HolderContainer.waitHolder.
+      -->
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object read(java.lang.Object, long)">
+        <annotation name="org.jetbrains.annotations.Nullable"/>
+        <annotation name="org.jetbrains.annotations.Blocking"/>
+    </item>
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object read(java.lang.Object, long) 0">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+    </item>
+
+    <!--
+      ~ readIfExists: requireNonNull on the template (SemiSpace.java:353), then delegates to
+      ~ read(tmpl, 0). A zero timeout makes the retry loop run exactly once, so it does not wait
+      ~ and is not marked @Blocking.
+      -->
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object readIfExists(java.lang.Object)">
+        <annotation name="org.jetbrains.annotations.Nullable"/>
+    </item>
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object readIfExists(java.lang.Object) 0">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+    </item>
+
+    <!-- take: as read, with the matched element removed from the space (SemiSpace.java:451). -->
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object take(java.lang.Object, long)">
+        <annotation name="org.jetbrains.annotations.Nullable"/>
+        <annotation name="org.jetbrains.annotations.Blocking"/>
+    </item>
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object take(java.lang.Object, long) 0">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+    </item>
+
+    <!-- takeIfExists: requireNonNull (SemiSpace.java:458), then delegates to take(tmpl, 0). -->
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object takeIfExists(java.lang.Object)">
+        <annotation name="org.jetbrains.annotations.Nullable"/>
+    </item>
+    <item name="org.semispace.SemiSpaceInterface java.lang.Object takeIfExists(java.lang.Object) 0">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+    </item>
+
+    <!--
+      ~ notify: requireNonNull on both template and listener (SemiSpace.java:146-147), so both
+      ~ are @NotNull. The return is @NotNull too: the delegate throws SemiSpaceUsageException for
+      ~ a duration <= 0 (SemiSpace.java:164) rather than returning null, and otherwise returns
+      ~ "new SemiEventRegistration(...)" (SemiSpace.java:176-177). No path yields null.
+      -->
+    <item name="org.semispace.SemiSpaceInterface org.semispace.SemiEventRegistration notify(java.lang.Object, org.semispace.SemiEventListener, long)">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+    </item>
+    <item name="org.semispace.SemiSpaceInterface org.semispace.SemiEventRegistration notify(java.lang.Object, org.semispace.SemiEventListener, long) 0">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+    </item>
+    <item name="org.semispace.SemiSpaceInterface org.semispace.SemiEventRegistration notify(java.lang.Object, org.semispace.SemiEventListener, long) 1">
+        <annotation name="org.jetbrains.annotations.NotNull"/>
+    </item>
+
+</root>
