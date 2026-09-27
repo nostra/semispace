@@ -71,7 +71,7 @@
         <junit-jupiter.version>6.1.3</junit-jupiter.version>
         <maven-scm-provider-gitexe.version>2.2.1</maven-scm-provider-gitexe.version>
         <java.compiler.version>25</java.compiler.version>
-        <jackson-core.version>3.2.2</jackson-core.version>
+        <jackson-core.version>3.2.3</jackson-core.version>
         <maven-project-info-reports-plugin.version>3.9.0</maven-project-info-reports-plugin.version>
         <maven-site-plugin.version>3.22.0</maven-site-plugin.version>
         <enforce.maven.version>3.9.9</enforce.maven.version>
