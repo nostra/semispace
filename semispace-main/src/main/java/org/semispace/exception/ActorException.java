@@ -22,4 +22,8 @@ public class ActorException extends SemiSpaceException {
     public ActorException(String message) {
         super(message);
     }
+
+    public ActorException(String message, Exception e) {
+        super(message, e);
+    }
 }

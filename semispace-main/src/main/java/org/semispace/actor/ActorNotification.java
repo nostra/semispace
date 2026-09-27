@@ -34,7 +34,8 @@ import org.semispace.exception.ActorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -75,9 +76,29 @@ public class ActorNotification implements SemiEventListener<SemiAvailabilityEven
     public void notify(SemiAvailabilityEvent theEvent) {
         final Runnable receive = new ActorMessageTaker(theEvent);
         if (pool == null) {
-            SwingUtilities.invokeLater(receive);
+            invokeOnSwingEventThread(receive);
         } else {
             pool.submit(receive);
+        }
+    }
+
+    /**
+     * Dispatches to {@code java.awt.EventQueue.invokeLater(Runnable)} via reflection.
+     * <p>
+     * Reflection confines the {@code java.desktop} dependency to the code path that
+     * actually needs it; {@code module-info.java} declares it with
+     * {@code requires static java.desktop} accordingly.
+     */
+    private static void invokeOnSwingEventThread(Runnable task) {
+        try {
+            Method invokeLater = Class.forName("java.awt.EventQueue")
+                    .getMethod("invokeLater", Runnable.class);
+            invokeLater.invoke(null, task);
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            throw new ActorException("@SwingActor requires the java.desktop module, "
+                    + "which is not present on the module/class path.", e);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new ActorException("Failed to dispatch actor message on the Swing event thread.", e);
         }
     }
 

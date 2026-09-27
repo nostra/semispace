@@ -1,3 +1,10 @@
+# Testing in intellij
+
+Add this to VM options:
+```
+-ea --add-reads org.semispace=ALL-UNNAMED,org.junit.jupiter.api,com.fasterxml.jackson.annotation
+```
+
 # Mutation tests
 
 Run mutation tests with the following. Notice that you might

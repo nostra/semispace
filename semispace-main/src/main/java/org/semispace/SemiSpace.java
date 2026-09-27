@@ -109,7 +109,7 @@ public class SemiSpace implements SemiSpaceInterface {
     private static SemiSpaceSerializer resolveSerializer() {
         try {
             Class.forName("tools.jackson.databind.ObjectMapper", false, SemiSpace.class.getClassLoader());
-            return JacksonSerializer.jacksonSerializerFactory(false);
+            return JacksonSerializer.jacksonSerializerFactory(true);
 
         } catch (ClassNotFoundException e) {
             // TODO Fallback to older jackson

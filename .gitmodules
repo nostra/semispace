@@ -1,0 +1,4 @@
+[submodule ".jenesis"]
+	path = .jenesis
+	url = git@github.com:jenesis/jenesis.git
+	shallow = true

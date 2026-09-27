@@ -55,12 +55,12 @@
         <dependency>
             <groupId>org.jspecify</groupId>
             <artifactId>jspecify</artifactId>
-        </dependency>-->
+        </dependency>
+-->
 
         <dependency>
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -102,6 +102,20 @@
                 <configuration>
                     <source>${java.compiler.version}</source>
                     <target>${java.compiler.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>
+                        --add-opens org.semispace/org.semispace=tools.jackson.databind
+                        --add-opens org.semispace/org.semispace.actor=tools.jackson.databind
+                        --add-opens org.semispace/org.semispace.actor.example=tools.jackson.databind
+                        --add-opens org.semispace/org.semispace.admin=tools.jackson.databind
+                        --add-opens org.semispace/org.semispace.notification=tools.jackson.databind
+                        --add-opens org.semispace/org.semispace.take=tools.jackson.databind
+                    </argLine>
                 </configuration>
             </plugin>
         </plugins>
